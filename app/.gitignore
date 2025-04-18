@@ -1,76 +1,60 @@
-# Flutter/Dart 관련
+# 🔧 Dart / Flutter
 .dart_tool/
 .packages
-.pub-cache/
 .pub/
 build/
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
 .flutter-plugins
 .flutter-plugins-dependencies
 .melos_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.metadata
 
-# macOS
-.DS_Store
+# 🚫 Flutter generated files
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/.symlinks/
+ios/Pods/
+ios/Podfile.lock
+android/.gradle/
+android/app/build/
+android/local.properties
 
-# Android 관련
-**/android/.gradle
-**/android/app/build
-**/android/local.properties
-**/android/.idea
-
-# Xcode
-**/ios/Pods
-**/ios/.symlinks
-**/ios/Flutter/ephemeral
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Runner.xcworkspace
-**/ios/Runner.xcuserstate
-**/ios/.generated.xcconfig
-
-# VS Code
+# 📦 VS Code
 .vscode/
 
-# IntelliJ/Android Studio
+# 💻 IntelliJ / Android Studio
 .idea/
 *.iml
 
-# Web 빌드 결과
-web/.dart_tool/
-web/build/
-
-# Linux
-linux/flutter/ephemeral/
-linux/build/
-
-# Windows
-windows/flutter/ephemeral/
-windows/build/
-
-# 환경변수 파일
-.env
-assets/.env
-
-# Firebase Functions (Node.js)
-functions/node_modules/
-functions/lib/
-functions/.env
-functions/.firebaserc
-
-# Hive DB 파일
-*.hive
-*.lock
-
-# 기타 로그 및 백업
+# 📱 Device-specific
 *.log
-*.tmp
+*.lock
 *.swp
-*.bak
+*.DS_Store
+*.apk
+*.ipa
 
-# Firebase Hosting 배포 디렉토리
-firebase/public/
+# 🔐 Firebase (보안 중요!)
+**/firebase_options.dart
+**/google-services.json
+**/GoogleService-Info.plist
+.firebase/
+
+# 📁 FVM (Flutter Version Management)
+.fvm/
+.fvmrc
+
+# 🔍 Hive (로컬 DB 파일 - 선택적 무시)
+*.hive
+*.hive.lock
+
+# 📦 Web
+web/firebase-messaging-sw.js
+web/firebase-config.js
+
+# 🧪 Test / Coverage (선택 사항)
+coverage/
+
+# 🔒 기타 민감한 정보 가능성 있는 파일
+.env
+.env.*
+assets/.env

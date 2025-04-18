@@ -1,6 +1,8 @@
 import * as admin from "firebase-admin";
 
 admin.initializeApp();
+const db = admin.firestore();
+db.settings({ databaseId: 'mcp-demo-database' });
 
 export { inviteCouple } from "./couple/invite";
 export { acceptCoupleInvite } from "./couple/accept";

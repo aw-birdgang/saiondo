@@ -2,6 +2,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
+const db = admin.firestore();
+
 export const deleteEmotion = functions
     .region('asia-northeast3')
     .https.onCall(async (data, context) => {
@@ -12,7 +14,7 @@ export const deleteEmotion = functions
     }
 
     try {
-        const docRef = admin.firestore().collection("emotions").doc(docId);
+        const docRef = db.collection("emotions").doc(docId);
         const docSnap = await docRef.get();
 
         if (!docSnap.exists || docSnap.data()?.userId !== userId) {
@@ -21,7 +23,7 @@ export const deleteEmotion = functions
 
         await docRef.delete();
 
-        return { success: true, message: "감정 기록이 삭제되었습니다." };
+        return { success: true, message: "감정 기록이 삭제 되었습니다." };
     } catch (err) {
         console.error("감정 삭제 오류:", err);
         throw new functions.https.HttpsError("internal", "감정 삭제 중 오류가 발생했어요.");

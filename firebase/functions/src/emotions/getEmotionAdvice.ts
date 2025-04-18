@@ -2,6 +2,8 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { callClaude } from "../utils/claude";
 
+const db = admin.firestore();
+
 export const getEmotionAdvice = functions
     .region('asia-northeast3')
     .https.onCall(async (data, context) => {
@@ -10,8 +12,6 @@ export const getEmotionAdvice = functions
     if (!userId || !partnerId) {
         throw new functions.https.HttpsError("invalid-argument", "userId와 partnerId는 필수 입니다.");
     }
-
-    const db = admin.firestore();
 
     try {
         const getLogs = async (id: string) => {

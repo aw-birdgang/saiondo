@@ -2,6 +2,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
+const db = admin.firestore();
+
 export const register = functions
     .region('asia-northeast3')
     .https.onCall(async (data, context) => {
@@ -20,7 +22,7 @@ export const register = functions
         });
 
         // Firestore에 유저 정보 저장
-        await admin.firestore().collection("users").doc(userRecord.uid).set({
+        await db.collection("users").doc(userRecord.uid).set({
             uid: userRecord.uid,
             name,
             email,

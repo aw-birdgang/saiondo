@@ -2,6 +2,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
+const db = admin.firestore();
+
 export const updateEmotion = functions
     .region('asia-northeast3')
     .https.onCall(async (data, context) => {
@@ -18,7 +20,7 @@ export const updateEmotion = functions
     if (note != null) updates.note = note;
 
     try {
-        const docRef = admin.firestore().collection("emotions").doc(docId);
+        const docRef = db.collection("emotions").doc(docId);
         const docSnap = await docRef.get();
 
         if (!docSnap.exists || docSnap.data()?.userId !== userId) {

@@ -2,6 +2,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
+const db = admin.firestore();
+
 export const login = functions
     .region('asia-northeast3')
     .https.onCall(async (data, context) => {
@@ -16,7 +18,7 @@ export const login = functions
         // 그러므로 Firestore에서 유저 존재 여부만 확인하고,
         // 실제 로그인은 클라이언트 SDK로 처리하는 방식
 
-        const usersRef = admin.firestore().collection("users");
+        const usersRef = db.collection("users");
         const snapshot = await usersRef.where("email", "==", email).limit(1).get();
 
         if (snapshot.empty) {
