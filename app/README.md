@@ -1,6 +1,10 @@
 # build
 ````
+fvm flutter build web
+
 fvm flutter pub run build_runner build
+fvm dart run build_runner build --delete-conflicting-outputs
+
 ````
 
 ## build for firebase hosting deploy

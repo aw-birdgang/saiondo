@@ -5,17 +5,15 @@ class CoupleProfileCard extends StatelessWidget {
   final String myMbti;
   final String myLang;
   final String myAvatar;
-
   final String partnerName;
   final String partnerMbti;
   final String partnerLang;
   final String partnerAvatar;
-
   final DateTime startDate;
   final String statusMessage;
 
   const CoupleProfileCard({
-    super.key,
+    Key? key,
     required this.myName,
     required this.myMbti,
     required this.myLang,
@@ -26,82 +24,158 @@ class CoupleProfileCard extends StatelessWidget {
     required this.partnerAvatar,
     required this.startDate,
     required this.statusMessage,
-  });
+  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text("💑 우리 커플", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/profile");
-                  },
-                  icon: const Icon(Icons.edit, color: Colors.pinkAccent),
-                )
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                _buildProfile(myAvatar, myName, myMbti, myLang),
-                const SizedBox(width: 8),
-                const Text("❤️", style: TextStyle(fontSize: 24)),
-                const SizedBox(width: 8),
-                _buildProfile(partnerAvatar, partnerName, partnerMbti, partnerLang),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Icon(Icons.favorite, color: Colors.pink),
-                const SizedBox(width: 8),
-                Text("연애 시작일: ${startDate.toLocal().toString().split(' ')[0]}"),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.chat_bubble, color: Colors.purple),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text("현재 상태: $statusMessage"),
-                ),
-              ],
-            ),
-          ],
+  Widget _buildAvatar(String imageUrl, String name) {
+    if (imageUrl.isEmpty || !Uri.parse(imageUrl).isAbsolute) {
+      // 기본 아바타 표시
+      return CircleAvatar(
+        radius: 30,
+        backgroundColor: Colors.grey.shade200,
+        child: Text(
+          name.isNotEmpty ? name[0].toUpperCase() : '?',
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
+
+    return CircleAvatar(
+      radius: 30,
+      backgroundImage: NetworkImage(imageUrl),
+      onBackgroundImageError: (exception, stackTrace) {
+        debugPrint('이미지 로드 실패: $imageUrl');
+        debugPrint('에러: $exception');
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.pink.shade100,
+            width: 2,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildProfile(String avatar, String name, String mbti, String lang) {
-    return Expanded(
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(avatar),
-            radius: 20,
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text("$mbti / $lang", style: const TextStyle(fontSize: 12)),
+  String _formatDDay(DateTime date) {
+    final difference = DateTime.now().difference(date).inDays;
+    return 'D+$difference';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    _buildAvatar(myAvatar, myName),
+                    const SizedBox(height: 8),
+                    Text(
+                      myName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (myMbti.isNotEmpty)
+                      Text(
+                        myMbti,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    if (myLang.isNotEmpty)
+                      Text(
+                        myLang,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.pink.shade50,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        _formatDDay(startDate),
+                        style: TextStyle(
+                          color: Colors.pink.shade500,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Icon(Icons.favorite, color: Colors.pink),
+                  ],
+                ),
+                Column(
+                  children: [
+                    _buildAvatar(partnerAvatar, partnerName),
+                    const SizedBox(height: 8),
+                    Text(
+                      partnerName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (partnerMbti.isNotEmpty)
+                      Text(
+                        partnerMbti,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    if (partnerLang.isNotEmpty)
+                      Text(
+                        partnerLang,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 12,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            if (statusMessage.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  statusMessage,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -5,7 +5,7 @@ class RetryInterceptor extends Interceptor {
   final Dio dio;
   final RetryOptions options;
   final bool shouldLog;
-
+ 
   RetryInterceptor(
       {required this.dio, RetryOptions? options, this.shouldLog = true})
       : this.options = options ?? const RetryOptions();

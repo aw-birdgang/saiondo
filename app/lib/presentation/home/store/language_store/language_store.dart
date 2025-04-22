@@ -1,8 +1,8 @@
 import 'package:mobx/mobx.dart';
 
 import '../../../../core/stores/error/error_store.dart';
-import '../../../../domain/entry/language/Language.dart';
-import '../../../../domain/repository/setting/setting_repository.dart';
+import '../../../../domain/entities/language/Language.dart';
+import '../../../../domain/repositories/setting/setting_repository.dart';
 
 part 'language_store.g.dart';
 

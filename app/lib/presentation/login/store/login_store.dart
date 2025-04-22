@@ -1,11 +1,11 @@
 import 'package:app/core/stores/error/error_store.dart';
 import 'package:app/core/stores/form/form_store.dart';
-import 'package:app/domain/entry/user/user.dart';
-import 'package:app/domain/usecase/user/is_logged_in_usecase.dart';
-import 'package:app/domain/usecase/user/save_login_in_status_usecase.dart';
+import 'package:app/domain/entities/user/user.dart';
+import 'package:app/domain/usecases/user/is_logged_in_usecase.dart';
+import 'package:app/domain/usecases/user/save_login_in_status_usecase.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../domain/usecase/user/login_usecase.dart';
+import '../../../domain/usecases/user/login_usecase.dart';
 
 part 'login_store.g.dart';
 
@@ -55,7 +55,11 @@ abstract class _UserStore with Store {
       ObservableFuture.value(null);
 
   // store variables:-----------------------------------------------------------
+  @observable
   bool isLoggedIn = false;
+
+  @observable
+  bool loading = false;
 
   @observable
   bool success = false;
@@ -68,28 +72,39 @@ abstract class _UserStore with Store {
 
   // actions:-------------------------------------------------------------------
   @action
-  Future login(String email, String password) async {
-    final LoginParams loginParams = LoginParams(username: email, password: password);
-    final future = _loginUseCase.call(params: loginParams);
-    loginFuture = ObservableFuture(future);
+  Future<void> login(String email, String password) async {
+    loading = true;
+    try {
+      final LoginParams loginParams = LoginParams(username: email, password: password);
+      final future = _loginUseCase.call(params: loginParams);
+      loginFuture = ObservableFuture(future);
 
-    await future.then((value) async {
-      if (value != null) {
-        await _saveLoginStatusUseCase.call(params: true);
-        this.isLoggedIn = true;
-        this.success = true;
-      }
-    }).catchError((e) {
-      print(e);
-      this.isLoggedIn = false;
-      this.success = false;
-      throw e;
-    });
+      await future.then((value) async {
+        if (value != null) {
+          await _saveLoginStatusUseCase.call(params: true);
+          this.isLoggedIn = true;
+          this.success = true;
+        }
+      }).catchError((e) {
+        print(e);
+        this.isLoggedIn = false;
+        this.success = false;
+        throw e;
+      });
+    } finally {
+      loading = false;
+    }
   }
 
-  logout() async {
-    this.isLoggedIn = false;
-    await _saveLoginStatusUseCase.call(params: false);
+  @action
+  Future<void> logout() async {
+    loading = true;
+    try {
+      this.isLoggedIn = false;
+      await _saveLoginStatusUseCase.call(params: false);
+    } finally {
+      loading = false;
+    }
   }
 
   // general methods:-----------------------------------------------------------

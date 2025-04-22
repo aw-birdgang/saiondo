@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { callClaude } from "../utils/claude";
+import { callClaude } from "../services/claude";
 
 const db = admin.firestore();
 
@@ -16,7 +16,7 @@ export const getEmotionAdvice = functions
     try {
         const getLogs = async (id: string) => {
             const snapshot = await db
-                .collection("emotions")
+                .collection("emotion_logs")
                 .where("userId", "==", id)
                 .orderBy("date", "desc")
                 .limit(5)

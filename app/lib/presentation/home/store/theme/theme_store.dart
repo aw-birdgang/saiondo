@@ -2,7 +2,7 @@ import 'package:app/core/stores/error/error_store.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../../domain/repository/setting/setting_repository.dart';
+import '../../../../domain/repositories/setting/setting_repository.dart';
 
 part 'theme_store.g.dart';
 

@@ -24,19 +24,19 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
-  late final _$sliderDrawerKeyAtom =
-      Atom(name: '_HomeStore.sliderDrawerKey', context: context);
+  late final _$currentIndexAtom =
+      Atom(name: '_HomeStore.currentIndex', context: context);
 
   @override
-  GlobalKey<SliderDrawerState> get sliderDrawerKey {
-    _$sliderDrawerKeyAtom.reportRead();
-    return super.sliderDrawerKey;
+  int get currentIndex {
+    _$currentIndexAtom.reportRead();
+    return super.currentIndex;
   }
 
   @override
-  set sliderDrawerKey(GlobalKey<SliderDrawerState> value) {
-    _$sliderDrawerKeyAtom.reportWrite(value, super.sliderDrawerKey, () {
-      super.sliderDrawerKey = value;
+  set currentIndex(int value) {
+    _$currentIndexAtom.reportWrite(value, super.currentIndex, () {
+      super.currentIndex = value;
     });
   }
 
@@ -59,22 +59,11 @@ mixin _$HomeStore on _HomeStore, Store {
       ActionController(name: '_HomeStore', context: context);
 
   @override
-  void setTitle(String newTitle) {
-    final _$actionInfo =
-        _$_HomeStoreActionController.startAction(name: '_HomeStore.setTitle');
-    try {
-      return super.setTitle(newTitle);
-    } finally {
-      _$_HomeStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void onMenuItemClick(String newTitle) {
+  void setCurrentIndex(int index) {
     final _$actionInfo = _$_HomeStoreActionController.startAction(
-        name: '_HomeStore.onMenuItemClick');
+        name: '_HomeStore.setCurrentIndex');
     try {
-      return super.onMenuItemClick(newTitle);
+      return super.setCurrentIndex(index);
     } finally {
       _$_HomeStoreActionController.endAction(_$actionInfo);
     }
@@ -84,7 +73,7 @@ mixin _$HomeStore on _HomeStore, Store {
   String toString() {
     return '''
 success: ${success},
-sliderDrawerKey: ${sliderDrawerKey},
+currentIndex: ${currentIndex},
 title: ${title}
     ''';
   }

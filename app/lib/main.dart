@@ -6,13 +6,18 @@ import 'package:flutter/services.dart';
 import 'di/service_locator.dart';
 import 'firebase_custom_options.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: CustomFirebaseOptions.currentPlatform,
-  );
-  await setPreferredOrientations();
+  try {
+    await Firebase.initializeApp(
+      options: FirebaseCustomOptions.currentPlatform,
+    );
+    print('Firebase 초기화 성공');
+  } catch (e) {
+    print('Firebase 초기화 실패: $e');
+  }
   await ServiceLocator.configureDependencies();
+  await setPreferredOrientations();
 
   runApp(MyApp());
 }

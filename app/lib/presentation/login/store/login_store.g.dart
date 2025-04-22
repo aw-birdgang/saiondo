@@ -16,6 +16,37 @@ mixin _$UserStore on _UserStore, Store {
           Computed<bool>(() => super.isLoading, name: '_UserStore.isLoading'))
       .value;
 
+  late final _$isLoggedInAtom =
+      Atom(name: '_UserStore.isLoggedIn', context: context);
+
+  @override
+  bool get isLoggedIn {
+    _$isLoggedInAtom.reportRead();
+    return super.isLoggedIn;
+  }
+
+  @override
+  set isLoggedIn(bool value) {
+    _$isLoggedInAtom.reportWrite(value, super.isLoggedIn, () {
+      super.isLoggedIn = value;
+    });
+  }
+
+  late final _$loadingAtom = Atom(name: '_UserStore.loading', context: context);
+
+  @override
+  bool get loading {
+    _$loadingAtom.reportRead();
+    return super.loading;
+  }
+
+  @override
+  set loading(bool value) {
+    _$loadingAtom.reportWrite(value, super.loading, () {
+      super.loading = value;
+    });
+  }
+
   late final _$successAtom = Atom(name: '_UserStore.success', context: context);
 
   @override
@@ -51,13 +82,23 @@ mixin _$UserStore on _UserStore, Store {
       AsyncAction('_UserStore.login', context: context);
 
   @override
-  Future<dynamic> login(String email, String password) {
+  Future<void> login(String email, String password) {
     return _$loginAsyncAction.run(() => super.login(email, password));
+  }
+
+  late final _$logoutAsyncAction =
+      AsyncAction('_UserStore.logout', context: context);
+
+  @override
+  Future<void> logout() {
+    return _$logoutAsyncAction.run(() => super.logout());
   }
 
   @override
   String toString() {
     return '''
+isLoggedIn: ${isLoggedIn},
+loading: ${loading},
 success: ${success},
 loginFuture: ${loginFuture},
 isLoading: ${isLoading}

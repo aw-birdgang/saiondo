@@ -18,8 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/sharedpref/constants/preferences.dart';
 import '../home/store/theme/theme_store.dart';
 
-
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (context) {
             return Visibility(
               visible: _userStore.isLoading,
-              child: CustomProgressIndicatorWidget(),
+              child: const CustomProgressIndicatorWidget(),
             );
           },
         )
@@ -106,12 +106,13 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            AppIconWidget(image: 'assets/icons/ic_launcher.png'),
-            SizedBox(height: 24.0),
+            const AppIconWidget(image: 'assets/icons/ic_launcher.png'),
+            const SizedBox(height: 24.0),
             _buildUserIdField(),
             _buildPasswordField(),
             _buildForgotPasswordButton(),
-            _buildSignInButton()
+            _buildSignInButton(),
+            _buildSignUpButton(),
           ],
         ),
       ),
@@ -148,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
           hint:
           AppLocalizations.of(context).translate('login_et_user_password'),
           isObscure: true,
-          padding: EdgeInsets.only(top: 16.0),
+          padding: const EdgeInsets.only(top: 16.0),
           icon: Icons.lock,
           iconColor: _themeStore.darkMode ? Colors.white70 : Colors.black54,
           textController: _passwordController,
@@ -166,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Align(
       alignment: FractionalOffset.centerRight,
       child: MaterialButton(
-        padding: EdgeInsets.all(0.0),
+        padding: const EdgeInsets.all(0.0),
         child: Text(
           AppLocalizations.of(context).translate('login_btn_forgot_password'),
           style: Theme.of(context)
@@ -187,11 +188,49 @@ class _LoginScreenState extends State<LoginScreen> {
       onPressed: () async {
         if (_formStore.canLogin) {
           DeviceUtils.hideKeyboard(context);
-          _userStore.login(_userEmailController.text, _passwordController.text);
+          try {
+            await _userStore.login(_userEmailController.text, _passwordController.text);
+            
+            // 로그인 성공 시 홈 화면으로 이동
+            if (_userStore.success) {
+              // 로그인 상태 저장
+              await SharedPreferences.getInstance().then((prefs) {
+                prefs.setBool(Preferences.is_logged_in, true);
+              });
+              
+              // 로그인 완료 메시지 표시
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('로그인이 완료되었습니다.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              
+              // 홈 화면으로 이동
+              Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<dynamic> route) => false);
+            }
+          } catch (e) {
+            _showErrorMessage(e.toString());
+          }
         } else {
           _showErrorMessage('Please fill in all fields');
         }
       },
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: TextButton(
+        onPressed: () {
+          Navigator.pushNamed(context, Routes.signup);
+        },
+        child: const Text(
+          '아직 계정이 없으신가요? 회원가입하기',
+          style: TextStyle(color: Colors.orangeAccent),
+        ),
+      ),
     );
   }
 
@@ -200,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
       prefs.setBool(Preferences.is_logged_in, true);
     });
 
-    Future.delayed(Duration(milliseconds: 0), () {
+    Future.delayed(const Duration(milliseconds: 0), () {
       Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<dynamic> route) => false);
     });
 
@@ -210,18 +249,18 @@ class _LoginScreenState extends State<LoginScreen> {
   // General Methods:-----------------------------------------------------------
   _showErrorMessage(String message) {
     if (message.isNotEmpty) {
-      Future.delayed(Duration(milliseconds: 0), () {
+      Future.delayed(const Duration(milliseconds: 0), () {
         if (message.isNotEmpty) {
           FlushbarHelper.createError(
             message: message,
             title: AppLocalizations.of(context).translate('home_tv_error'),
-            duration: Duration(seconds: 3),
+            duration: const Duration(seconds: 3),
           )..show(context);
         }
       });
     }
 
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   // dispose:-------------------------------------------------------------------

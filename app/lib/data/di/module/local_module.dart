@@ -31,7 +31,6 @@ class LocalModule {
     // data sources:------------------------------------------------------------
 
 
-
     // logger:------------------------------------------------------------------
     getIt.registerSingleton<Logger>(
       Logger(

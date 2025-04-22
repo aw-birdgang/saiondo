@@ -13,3 +13,4 @@ export { createEmotion } from "./emotions/createEmotion";
 export { updateEmotion } from "./emotions/updateEmotion";
 export { deleteEmotion } from "./emotions/deleteEmotion";
 export { getEmotionAdvice } from "./emotions/getEmotionAdvice";
+export { updateDailyTips } from './daily-tips/controller';

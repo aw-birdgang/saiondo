@@ -6,7 +6,7 @@ class DioClient {
 
   // injecting dio instance
   DioClient(this._dio);
-
+  
   // Get:-----------------------------------------------------------------------
   Future<dynamic> get(
       String uri, {
