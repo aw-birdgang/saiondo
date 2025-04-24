@@ -14,7 +14,9 @@ class ChatInput(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str = Field(..., description="AI 응답")
-    sentiment: str = Field(..., description="감정 분석 결과")
+    intent: str = Field(..., description="의도 분석 결과")
+    tool_used: Optional[str] = Field(None, description="사용된 도구")
+    sentiment: Optional[str] = Field(None, description="감정 분석 결과")
     history: List[Dict[str, str]] = Field(..., description="업데이트된 대화 기록")
     end: bool = Field(..., description="대화 종료 여부")
 

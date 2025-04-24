@@ -35,28 +35,28 @@ class Settings(BaseSettings):
     MODEL_TEMPERATURE: float = Field(
         default=0.7,
         env="MODEL_TEMPERATURE",
-        description="모델 temperature 설정 (0.0 ~ 1.0)"
+        description="모델 temperature 설정"
     )
     
     # 로깅 설정
     LOG_LEVEL: str = Field(
         default="INFO",
         env="LOG_LEVEL",
-        description="로깅 레벨 (DEBUG, INFO, WARNING, ERROR, CRITICAL)"
+        description="로깅 레벨"
     )
     
     # CORS 설정
     CORS_ORIGINS: List[str] = Field(
         default=["*"],
         env="CORS_ORIGINS",
-        description="CORS 허용 도메인 목록"
+        description="CORS 허용 도메인"
     )
     
     class Config:
         env_file = ".env"
         env_file_encoding = 'utf-8'
         case_sensitive = True
-        extra = "allow"  # 추가 필드 허용
+        extra = "allow"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

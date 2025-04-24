@@ -126,6 +126,12 @@ curl "http://localhost:8000/health"
 curl -X POST "http://localhost:8000/api/v1/chat" \
      -H "Content-Type: application/json" \
      -d '{"message": "최근 개봉한 영화 중에서 평점이 가장 높은 것 찾아보고 줄거리 알려줘"}'
+
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "message": "최근 인공지능 기술 트렌드에 대해 알려줘"
+     }'
 ```
 
 #위키피디아 검색:
@@ -140,6 +146,12 @@ curl -X POST "http://localhost:8000/api/v1/chat" \
 curl -X POST "http://localhost:8000/api/v1/chat" \
      -H "Content-Type: application/json" \
      -d '{"message": "345 곱하기 67은 얼마야?"}'
+
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "message": "234 곱하기 567은 얼마야?"
+     }'
 ```
 
 ### DELETE /api/chat/{user_id}
@@ -176,36 +188,33 @@ LOG_LEVEL=DEBUG python main.py
 ```
 langgraph-server/
 ├── app/
-│   ├── __init__.py
 │   ├── api/
 │   │   ├── __init__.py
-│   │   ├── routes.py
-│   │   └── schemas.py
+│   │   ├── routes.py      # API 엔드포인트
+│   │   └── schemas.py     # API 요청/응답 스키마
 │   ├── core/
 │   │   ├── __init__.py
-│   │   ├── config.py
-│   │   └── logger.py
+│   │   ├── config.py      # 설정 관리
+│   │   ├── log_config.py  # 로깅 기본 설정
+│   │   └── logger.py      # 로깅 유틸리티
 │   ├── services/
 │   │   ├── __init__.py
-│   │   ├── base.py
-│   │   ├── chat_service.py
-│   │   ├── llm_service.py
-│   │   └── memory_service.py
-│   └── utils/
-│       ├── __init__.py
-│       └── helpers.py
+│   │   ├── base.py        # 기본 서비스 클래스
+│   │   ├── chat_service.py # 채팅 서비스
+│   │   ├── llm_service.py  # LLM 서비스
+│   │   └── tools.py       # 도구 서비스
+│   └── __init__.py
 ├── tests/
 │   ├── __init__.py
-│   ├── conftest.py
-│   └── test_services/
-│       ├── __init__.py
-│       ├── test_chat_service.py
-│       └── test_llm_service.py
-├── .env.example
+│   ├── conftest.py        # 테스트 설정
+│   ├── test_api.py        # API 테스트
+│   └── test_services.py   # 서비스 테스트
+├── .env                   # 환경 변수
+├── .env.example          # 환경 변수 예시
 ├── .gitignore
-├── main.py
 ├── README.md
-└── requirements.txt
+├── requirements.txt      # 의존성
+└── main.py              # 앱 진입점
 ```
 
 # 추가 도구

@@ -15,21 +15,23 @@ async def chat(chat_input: ChatInput):
             "has_history": bool(chat_input.history)
         })
         
-        result = await chat_service.process_chat(
+        result = await chat_service.process_message(
             message=chat_input.message,
             history=chat_input.history
         )
         
         response = ChatResponse(
             response=result["response"],
-            sentiment=result["sentiment"],
+            intent=result["intent"],
+            tool_used=result.get("tool_used"),
+            sentiment=result.get("sentiment"),
             history=result["history"],
             end=result["end"]
         )
         
         log_info("채팅 응답 완료", {
-            "sentiment": result["sentiment"],
-            "end": result["end"],
+            "intent": result["intent"],
+            "tool_used": result.get("tool_used"),
             "response_length": len(result["response"])
         })
         

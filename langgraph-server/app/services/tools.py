@@ -24,17 +24,17 @@ class ToolService:
             Tool(
                 name="Web_Search",
                 func=self.search.run,
-                description="최신 정보나 실시간 데이터를 검색할 때 사용합니다. 질문: {query}"
+                description="최신 정보나 실시간 데이터를 검색할 때 사용"
             ),
             Tool(
                 name="Wikipedia",
                 func=self.wikipedia.run,
-                description="위키피디아에서 상세한 정보를 찾을 때 사용합니다. 질문: {query}"
+                description="위키피디아에서 상세한 정보를 찾을 때 사용"
             ),
             Tool(
                 name="Calculator",
                 func=self._calculate,
-                description="수학 계산이 필요할 때 사용합니다. 예: 1 + 1, 2 * 3"
+                description="수학 계산이 필요할 때 사용"
             )
         ]
         
@@ -52,3 +52,13 @@ class ToolService:
             return str(eval(expression))
         except Exception as e:
             return f"계산 오류: {str(e)}"
+
+    async def _get_weather(self, location: str) -> str:
+        """날씨 정보 조회"""
+        # 날씨 API 호출 로직
+        pass
+
+    async def _get_news(self, query: str) -> str:
+        """뉴스 검색"""
+        # 뉴스 API 호출 로직
+        pass
