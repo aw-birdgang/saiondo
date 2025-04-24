@@ -232,7 +232,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   Widget _buildDailyTip() {
     final tip = _store.currentDailyTip;
     if (tip == null) {
-      debugPrint('Daily Tip이 없습니다.');
+      debugPrint('Daily Tip 이 없습니다.');
       return const SizedBox.shrink();
     }
 
@@ -347,7 +347,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
                               ),
                             ),
                           )),
-                          if (paragraphs.length > 2)  // 긴 내용일 경우 스크롤 힌트
+                          if (paragraphs.length > 2)
                             const Center(
                               child: Icon(
                                 Icons.keyboard_arrow_down,

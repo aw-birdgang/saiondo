@@ -20,5 +20,6 @@ ex) flutter build web --dart-define=webApiKey=AIzaSyDxxxx --dart-define=webAppId
 
 ## deploy on firebase hosting
 ````
+./build_web_env.sh
 firebase deploy --only hosting
 ````

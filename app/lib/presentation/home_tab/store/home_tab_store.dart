@@ -205,7 +205,8 @@ $stackTrace
         'situation': latestLog.note ?? '',
         'partnerBehavior': '',
         'intensity': latestLog.temperature,
-        'category': latestLog.tags.isNotEmpty ? latestLog.tags.first : 'general',
+        // 'category': latestLog.tags.isNotEmpty ? latestLog.tags.first : 'general',
+        'category': 'general',
         'isPrivate': false,
       });
 
@@ -225,8 +226,7 @@ $stackTrace
               ? Timestamp(
             tipData['createdAt']['_seconds'] ?? 0,
             tipData['createdAt']['_nanoseconds'] ?? 0,
-          )
-              : Timestamp.now(),
+          ) : Timestamp.now(),
           priority: 0,
         );
         debugPrint('새로운 Daily Tip 업데이트 완료');
