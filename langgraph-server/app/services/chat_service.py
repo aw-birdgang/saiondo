@@ -2,6 +2,7 @@ from typing import Dict, Any, List, Optional
 from app.services.llm_service import LLMService
 from app.core.logger import log_info, log_error
 from app.services.base import BaseService
+import time
 
 class ChatService(BaseService):
     def __init__(self):
@@ -14,6 +15,7 @@ class ChatService(BaseService):
         history: Optional[List[Dict[str, str]]] = None
     ) -> Dict[str, Any]:
         """채팅 메시지 처리"""
+        start_time = time.time()
         try:
             log_info("채팅 처리 시작", {
                 "message_length": len(message),
@@ -26,10 +28,12 @@ class ChatService(BaseService):
                 history=history
             )
             
+            processing_time = time.time() - start_time
             log_info("채팅 처리 완료", {
                 "intent": result.get("intent"),
                 "tool_used": result.get("tool_used"),
-                "response_length": len(result.get("response", ""))
+                "response_length": len(result.get("response", "")),
+                "processing_time_ms": round(processing_time * 1000, 2)
             })
             
             return {

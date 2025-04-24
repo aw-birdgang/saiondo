@@ -1,4 +1,5 @@
 from typing import Dict, Any, List, Optional
+import time
 
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
@@ -35,6 +36,7 @@ class LLMService(BaseService):
     async def analyze_sentiment(self, text: str) -> str:
         """감정 분석 수행"""
         try:
+            start_time = time.time()
             messages = [
                 SystemMessage(content="당신은 텍스트의 감정을 분석하는 전문가입니다. 텍스트에서 감지되는 감정을 '긍정', '부정', '중립' 중 하나로만 응답해주세요."),
                 HumanMessage(content=text)
@@ -43,7 +45,11 @@ class LLMService(BaseService):
             response = await self.llm.ainvoke(messages)
             sentiment = response.content.strip()
             
-            log_debug("감정 분석 완료", {"sentiment": sentiment})
+            log_debug("감정 분석 완료", {
+                "sentiment": sentiment,
+                "text_length": len(text),
+                "processing_time_ms": round((time.time() - start_time) * 1000, 2)
+            })
             return sentiment
             
         except Exception as e:
@@ -79,7 +85,14 @@ class LLMService(BaseService):
             ]
             
             response = await self.llm.ainvoke(messages)
-            return response.content.strip()
+            response_text = response.content.strip()
+            
+            log_debug("응답 생성 완료", {
+                "response_length": len(response_text),
+                "contains_question": "?" in response_text,
+                "sentiment_reflected": sentiment.lower() in response_text.lower()
+            })
+            return response_text
             
         except Exception as e:
             log_error("응답 생성 실패", {

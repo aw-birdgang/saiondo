@@ -103,7 +103,7 @@ curl -X POST "http://localhost:8000/api/v1/chat" \
 curl -X POST "http://localhost:8000/api/v1/chat" \
      -H "Content-Type: application/json" \
      -d '{
-       "message": "오늘 승진 소식을 들었어요! 정말 기쁩니다!"
+       "message": "오늘 정말 기분이 좋아요! 날씨도 좋고 모든게 완벽해요 ��"
      }'
 ```
 
