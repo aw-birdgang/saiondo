@@ -1,0 +1,1 @@
+export { updateDailyTips } from './updateDailyTips';
