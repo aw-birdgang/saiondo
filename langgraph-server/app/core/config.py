@@ -15,26 +15,55 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     
     # 보안 설정
-    SECRET_KEY: str = Field(default="your-secret-key-here", env="SECRET_KEY")
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    SECRET_KEY: str = Field(
+        default="your-secret-key-here",
+        env="SECRET_KEY",
+        description="JWT 토큰 생성에 사용되는 비밀 키"
+    )
     
     # OpenAI 설정
-    OPENAI_API_KEY: Optional[SecretStr] = Field(None, env="OPENAI_API_KEY")
-    MODEL_NAME: str = "gpt-3.5-turbo"
-    MODEL_TEMPERATURE: float = 0.7
+    OPENAI_API_KEY: Optional[SecretStr] = Field(
+        default=None,
+        env="OPENAI_API_KEY",
+        description="OpenAI API 키"
+    )
+    MODEL_NAME: str = Field(
+        default="gpt-3.5-turbo",
+        env="MODEL_NAME",
+        description="사용할 OpenAI 모델 이름"
+    )
+    MODEL_TEMPERATURE: float = Field(
+        default=0.7,
+        env="MODEL_TEMPERATURE",
+        description="모델 temperature 설정 (0.0 ~ 1.0)"
+    )
     
     # 로깅 설정
-    LOG_LEVEL: str = "INFO"
-    LOG_FORMAT: str = "json"
+    LOG_LEVEL: str = Field(
+        default="INFO",
+        env="LOG_LEVEL",
+        description="로깅 레벨 (DEBUG, INFO, WARNING, ERROR, CRITICAL)"
+    )
     
     # CORS 설정
-    CORS_ORIGINS: List[str] = ["*"]
+    CORS_ORIGINS: List[str] = Field(
+        default=["*"],
+        env="CORS_ORIGINS",
+        description="CORS 허용 도메인 목록"
+    )
     
     class Config:
         env_file = ".env"
+        env_file_encoding = 'utf-8'
         case_sensitive = True
-        extra = "ignore"
+        extra = "allow"  # 추가 필드 허용
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # 설정 유효성 검사
+        if not self.OPENAI_API_KEY:
+            from app.core.log_config import default_logger
+            default_logger.warning("OpenAI API 키가 설정되지 않았습니다.")
 
 @lru_cache()
 def get_settings() -> Settings:

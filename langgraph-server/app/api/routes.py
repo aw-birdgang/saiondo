@@ -10,7 +10,10 @@ chat_service = ChatService()
 async def chat(chat_input: ChatInput):
     """채팅 API 엔드포인트"""
     try:
-        log_info("채팅 요청 수신", {"message": chat_input.message})
+        log_info("채팅 요청 수신", {
+            "input_length": len(chat_input.message),
+            "has_history": bool(chat_input.history)
+        })
         
         result = await chat_service.process_chat(
             message=chat_input.message,
@@ -26,18 +29,24 @@ async def chat(chat_input: ChatInput):
         
         log_info("채팅 응답 완료", {
             "sentiment": result["sentiment"],
-            "end": result["end"]
+            "end": result["end"],
+            "response_length": len(result["response"])
         })
         
         return response
         
     except Exception as e:
-        log_error("채팅 처리 실패", {"error": str(e)})
+        error_context = {
+            "error_type": type(e).__name__,
+            "error_details": str(e)
+        }
+        log_error("채팅 처리 중 오류 발생", error_context)
+        
         raise HTTPException(
             status_code=500,
             detail=ErrorResponse(
                 error="채팅 처리 중 오류가 발생했습니다",
-                details={"error_message": str(e)}
+                details=error_context
             ).dict()
         )
 

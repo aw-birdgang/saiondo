@@ -76,6 +76,52 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 }
 ```
 
+#기본 대화 테스트:
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "message": "안녕하세요, 오늘 날씨가 정말 좋네요!"
+     }'
+```
+
+#대화 기록을 포함한 테스트:
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "message": "그래서 오늘 공원에 산책하러 갈까 생각중이에요",
+       "history": [
+         {"role": "user", "content": "안녕하세요, 오늘 날씨가 정말 좋네요!"},
+         {"role": "assistant", "content": "네, 정말 좋은 날씨네요! 기분 좋은 하루가 될 것 같아요."}
+       ]
+     }'
+```
+
+#감정 분석 테스트
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "message": "오늘 승진 소식을 들었어요! 정말 기쁩니다!"
+     }'
+```
+
+#대화 종료 테스트:
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "message": "대화 종료"
+     }'
+```
+
+#헬스 체크 테스트:
+```bash
+curl "http://localhost:8000/health"
+```
+
+
 ### DELETE /api/chat/{user_id}
 사용자의 대화 기록 삭제
 
@@ -110,7 +156,7 @@ LOG_LEVEL=DEBUG python main.py
 
 
 #
-````
+```
 langgraph-server/
 ├── app/
 │   ├── __init__.py
@@ -143,4 +189,4 @@ langgraph-server/
 ├── main.py
 ├── README.md
 └── requirements.txt
-````
+```

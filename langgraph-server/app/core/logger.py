@@ -4,13 +4,20 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 from pythonjsonlogger import jsonlogger
 from app.core.config import settings
+from app.core.log_config import default_logger, _format_extra
 
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
-    def add_fields(self, log_record, record, message_dict):
+    def add_fields(self, log_record: Dict[str, Any], record: logging.LogRecord, message_dict: Dict[str, Any]) -> None:
         super(CustomJsonFormatter, self).add_fields(log_record, record, message_dict)
         log_record['timestamp'] = datetime.now().isoformat()
         log_record['level'] = record.levelname
         log_record['logger'] = record.name
+        
+        # extra 필드가 있으면 병합
+        if getattr(record, 'extra', None):
+            for key, value in record.extra.items():
+                if key != 'message':  # message 필드는 건너뜀
+                    log_record[key] = value
 
 def setup_logger(name: str = "langgraph_server") -> logging.Logger:
     """로거 설정 및 초기화"""
@@ -22,7 +29,9 @@ def setup_logger(name: str = "langgraph_server") -> logging.Logger:
         logger.handlers.clear()
 
     # JSON 포맷터
-    formatter = CustomJsonFormatter('%(timestamp)s %(level)s %(name)s %(message)s')
+    formatter = CustomJsonFormatter(
+        '%(timestamp)s %(level)s %(name)s %(message)s'
+    )
 
     # 콘솔 핸들러
     console_handler = logging.StreamHandler(sys.stdout)
@@ -38,25 +47,22 @@ def setup_logger(name: str = "langgraph_server") -> logging.Logger:
 
 logger = setup_logger()
 
-def log_with_context(level: str, message: str, extra: Optional[Dict[str, Any]] = None):
-    """컨텍스트와 함께 로그 기록"""
-    if extra is None:
-        extra = {}
-    
-    log_func = getattr(logger, level.lower())
-    log_func(message, extra=extra)
+def log_debug(message: str, extra: Optional[Dict[str, Any]] = None) -> None:
+    """디버그 레벨 로그"""
+    default_logger.debug(message, extra=_format_extra(extra))
 
-def log_debug(message: str, extra: Optional[Dict[str, Any]] = None):
-    log_with_context("DEBUG", message, extra)
+def log_info(message: str, extra: Optional[Dict[str, Any]] = None) -> None:
+    """정보 레벨 로그"""
+    default_logger.info(message, extra=_format_extra(extra))
 
-def log_info(message: str, extra: Optional[Dict[str, Any]] = None):
-    log_with_context("INFO", message, extra)
+def log_warning(message: str, extra: Optional[Dict[str, Any]] = None) -> None:
+    """경고 레벨 로그"""
+    default_logger.warning(message, extra=_format_extra(extra))
 
-def log_warning(message: str, extra: Optional[Dict[str, Any]] = None):
-    log_with_context("WARNING", message, extra)
+def log_error(message: str, extra: Optional[Dict[str, Any]] = None) -> None:
+    """에러 레벨 로그"""
+    default_logger.error(message, extra=_format_extra(extra))
 
-def log_error(message: str, extra: Optional[Dict[str, Any]] = None):
-    log_with_context("ERROR", message, extra)
-
-def log_critical(message: str, extra: Optional[Dict[str, Any]] = None):
-    log_with_context("CRITICAL", message, extra)
+def log_critical(message: str, extra: Optional[Dict[str, Any]] = None) -> None:
+    """치명적 에러 레벨 로그"""
+    default_logger.critical(message, extra=_format_extra(extra))
