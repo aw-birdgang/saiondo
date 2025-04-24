@@ -121,6 +121,26 @@ curl -X POST "http://localhost:8000/api/v1/chat" \
 curl "http://localhost:8000/health"
 ```
 
+#웹 검색 기능:
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{"message": "최근 개봉한 영화 중에서 평점이 가장 높은 것 찾아보고 줄거리 알려줘"}'
+```
+
+#위키피디아 검색:
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{"message": "인공지능의 역사에 대해 알려줘"}'
+```
+
+#계산기능:
+```bash
+curl -X POST "http://localhost:8000/api/v1/chat" \
+     -H "Content-Type: application/json" \
+     -d '{"message": "345 곱하기 67은 얼마야?"}'
+```
 
 ### DELETE /api/chat/{user_id}
 사용자의 대화 기록 삭제
@@ -151,9 +171,6 @@ tail -f langgraph_server.log
 
 # 더 자세한 로그 보기
 LOG_LEVEL=DEBUG python main.py
-
-
-
 
 #
 ```
@@ -190,3 +207,9 @@ langgraph-server/
 ├── README.md
 └── requirements.txt
 ```
+
+# 추가 도구
+langchain-community>=0.0.10
+wikipedia
+duckduckgo-search
+python-dotenv>=1.0.0
