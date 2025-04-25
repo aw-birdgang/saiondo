@@ -109,8 +109,11 @@ langgraph-server/
 - GET /health: 서버 상태 확인
 
 ### API 스키마
+
+#### 요청 형식
+채팅 메시지를 전송하기 위한 JSON 구조 입니다.
+
 ```json
-// 요청 형식
 {
     "message": "사용자 메시지",
     "history": [
@@ -118,8 +121,19 @@ langgraph-server/
         {"role": "assistant", "content": "이전 응답"}
     ]
 }
+```
 
-// 응답 형식
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| message | string | 사용자가 전송하는 메시지 |
+| history | array | 이전 대화 기록 배열 |
+| history[].role | string | 메시지 작성자 역할 ("user" 또는 "assistant") |
+| history[].content | string | 메시지 내용 |
+
+#### 응답 형식
+서버가 반환하는 응답의 JSON 구조입니다.
+
+```json
 {
     "response": "AI 응답",
     "sentiment": "감정 분석 결과",
@@ -127,6 +141,13 @@ langgraph-server/
     "tool_used": "사용된 도구"
 }
 ```
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| response | string | AI가 생성한 응답 메시지 |
+| sentiment | string | 감정 분석 결과 (긍정/부정/중립) |
+| intent | string | 사용자 의도 분석 결과 |
+| tool_used | string | 응답 생성에 사용된 도구 이름 |
 
 ## 개발 가이드
 
