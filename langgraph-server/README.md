@@ -49,6 +49,7 @@ git clone <repository-url>
 cd langgraph-server
 
 # 환경 설정
+rm -rf venv
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # or
@@ -66,7 +67,7 @@ cp .env.example .env
 ### 실행 방법
 ```bash
 # 개발 모드
-python main.py
+python3 main.py
 
 # 또는
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
