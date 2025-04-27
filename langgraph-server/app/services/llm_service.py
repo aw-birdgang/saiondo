@@ -234,6 +234,13 @@ class LLMService(BaseService):
             log_error("계산 실패", {"error": str(e)})
             return "죄송합니다. 계산 중 오류가 발생했습니다."
 
+    def _determine_required_tools(self, intent: Dict[str, Any]) -> List[str]:
+        """필요한 도구 결정"""
+        tools = []
+        if intent["requires_tool"]:
+            tools.append(intent["tool_type"])
+        return tools
+
     async def handle_complex_query(self, query: str) -> Dict[str, Any]:
         """복합 쿼리 처리"""
         try:
@@ -243,21 +250,41 @@ class LLMService(BaseService):
             # 2. 필요한 도구들 결정
             tools_needed = self._determine_required_tools(intent)
             
-            # 3. 순차적 도구 실행
+            # 3. 도구 실행 및 결과 수집
             results = {}
             for tool in tools_needed:
-                if tool == "Weather":
-                    results["weather"] = await self.tool_service.agent.arun(
-                        f"다음 지역의 날씨를 알려주세요: {query}"
+                try:
+                    tool_response = await self.tool_service.agent.arun(
+                        f"{query} (도구: {tool})"
                     )
-                elif tool == "News":
-                    results["news"] = await self.tool_service.agent.arun(
-                        f"다음 주제의 최신 뉴스를 찾아주세요: {query}"
-                    )
+                    results[tool] = tool_response
+                except Exception as e:
+                    log_error(f"{tool} 도구 실행 실패", {"error": str(e)})
+                    results[tool] = f"{tool} 실행 중 오류 발생"
+
+            # 4. 결과 통합
+            if not results:
+                return await self._handle_general_chat(query, [])
             
-            # 4. 결과 종합
-            return self._combine_results(results)
+            combined_response = "\n".join([
+                f"{tool}: {response}"
+                for tool, response in results.items()
+            ])
+
+            return {
+                "response": combined_response,
+                "intent": intent["intent"],
+                "tools_used": tools_needed,
+                "raw_results": results,
+                "end": False
+            }
             
         except Exception as e:
             log_error("복합 쿼리 처리 실패", {"error": str(e)})
-            return {"error": "처리 중 오류가 발생했습니다."}
+            return {
+                "response": "죄송합니다. 처리 중 오류가 발생했습니다.",
+                "intent": "오류",
+                "tools_used": [],
+                "raw_results": {},
+                "end": True
+            }

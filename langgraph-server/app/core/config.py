@@ -52,6 +52,9 @@ class Settings(BaseSettings):
         description="CORS 허용 도메인"
     )
     
+    # WeatherAPI.com API 설정
+    WEATHER_API_KEY: SecretStr
+    
     class Config:
         env_file = ".env"
         env_file_encoding = 'utf-8'
