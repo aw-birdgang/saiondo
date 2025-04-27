@@ -1,5 +1,6 @@
 from typing import Dict, Any, List, Optional
 import time
+import json
 
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
@@ -102,29 +103,33 @@ class LLMService(BaseService):
             })
             return "응답 생성에 실패했습니다."
 
-    async def analyze_intent(self, text: str) -> Dict[str, Any]:
+    async def analyze_intent(self, text: str) -> dict:
         """사용자 의도 분석"""
         try:
             prompt = ChatPromptTemplate.from_template("""
-            다음 사용자 메시지의 의도를 분석해주세요:
-            {text}
-            
-            다음 형식으로 응답해주세요:
-            {
-                "intent": "검색" 또는 "계산" 또는 "일반대화",
-                "requires_tool": true/false,
-                "tool_type": "Web_Search" 또는 "Wikipedia" 또는 "Calculator" 또는 "None",
-                "query": "검색이나 계산이 필요한 경우 구체적인 질의"
-            }
-            """)
-            
+다음 사용자 메시지의 의도를 분석해주세요:
+{text}
+
+다음 형식으로 응답해주세요:
+{{
+    "intent": "계산" 또는 "날씨" 또는 "뉴스" 또는 "검색" 또는 "일반대화",
+    "requires_tool": true/false,
+    "tool_type": "Calculator" 또는 "Weather" 또는 "News" 또는 "Web_Search" 또는 "Wikipedia" 또는 "None",
+    "query": "계산, 날씨, 뉴스, 검색이 필요한 경우 구체적인 질의"
+}}
+
+예시:
+- "123 더하기 456은?" → intent: "계산", requires_tool: true, tool_type: "Calculator", query: "123 + 456"
+- "서울의 현재 날씨 알려줘" → intent: "날씨", requires_tool: true, tool_type: "Weather", query: "서울"
+- "오늘 IT 뉴스 알려줘" → intent: "뉴스", requires_tool: true, tool_type: "News", query: "IT"
+- "오늘 뉴스 알려줘" → intent: "뉴스", requires_tool: true, tool_type: "News", query: ""
+- "안녕?" → intent: "일반대화", requires_tool: false, tool_type: "None", query: ""
+""")
             chain = prompt | self.llm
             response = await chain.ainvoke({"text": text})
-            
-            import json
             intent_data = json.loads(response.content)
+            print("analyze_intent 결과:", intent_data)  # 디버깅용 로그
             return intent_data
-            
         except Exception as e:
             log_error("의도 분석 실패", {"error": str(e)})
             return {
@@ -151,14 +156,14 @@ class LLMService(BaseService):
 
             # 의도 분석
             intent = await self.analyze_intent(message)
-            
+            print("process_message - intent:", intent)  # 디버깅용 로그
+
             # 도구 사용이 필요한 경우
-            if intent["requires_tool"]:
+            if intent["requires_tool"] and intent["tool_type"] in [tool.name for tool in self.tool_service.tools]:
                 try:
                     tool_response = await self.tool_service.agent.arun(
-                        f"{message}\n이전 대화: {str(history)}"
+                        f"{intent['query'] if intent['query'] else message}"
                     )
-                    
                     return {
                         "response": tool_response,
                         "intent": intent["intent"],

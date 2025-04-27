@@ -83,19 +83,9 @@ class ToolService:
         # 도구 정의
         self.tools = [
             Tool(
-                name="Web_Search",
-                func=self.search.run,
-                description="최신 정보나 실시간 데이터를 검색할 때 사용"
-            ),
-            Tool(
-                name="Wikipedia",
-                func=self.wikipedia.run,
-                description="위키피디아에서 상세한 정보를 찾을 때 사용"
-            ),
-            Tool(
                 name="Calculator",
                 func=self._calculate,
-                description="수학 계산이 필요할 때 사용 (예: '2 + 2', '3 * 4')"
+                description="수학 계산이 필요할 때 사용"
             ),
             Tool(
                 name="Weather",
@@ -106,7 +96,17 @@ class ToolService:
                 name="News",
                 func=self._get_news,
                 description="최신 뉴스를 조회할 때 사용"
-            )
+            ),
+            Tool(
+                name="Web_Search",
+                func=self.search.run,
+                description="최신 정보나 실시간 데이터를 검색할 때 사용"
+            ),
+            Tool(
+                name="Wikipedia",
+                func=self.wikipedia.run,
+                description="위키피디아에서 상세한 정보를 찾을 때 사용"
+            ),
         ]
 
         # 에이전트 초기화

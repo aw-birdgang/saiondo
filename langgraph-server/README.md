@@ -285,3 +285,19 @@ MIT License
 - **News API**  
   최신 뉴스 헤드라인 제공  
   [https://newsapi.org/account](https://newsapi.org/account)
+
+[사용자] 
+   ↓ (메시지 전송)
+[FastAPI 서버: /api/v1/chat]
+   ↓
+[ChatService]
+   ↓
+[LLMService]
+   ↓
+[의도 분석 → 도구 필요?]
+   ├─(필요)→ [ToolService → 외부 API 호출(날씨/뉴스 등)]
+   └─(불필요)→ [LLM이 직접 답변 생성]
+   ↓
+[응답 포맷팅]
+   ↓
+[FastAPI → 사용자에게 응답 반환]
