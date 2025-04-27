@@ -30,6 +30,25 @@ class WeatherService:
                 else:
                     raise Exception(f"WeatherAPI 오류: {resp.status}")
 
+class NewsService:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.base_url = "https://newsapi.org/v2/top-headlines"
+
+    async def get_news(self, query: str, language: str = "ko") -> dict:
+        params = {
+            "q": query,
+            "apiKey": self.api_key,
+            "language": language,
+            "pageSize": 3
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self.base_url, params=params) as resp:
+                if resp.status == 200:
+                    return await resp.json()
+                else:
+                    raise Exception(f"NewsAPI 오류: {resp.status}")
+
 class ToolService:
     def __init__(self):
         self.llm = ChatOpenAI(
@@ -44,6 +63,9 @@ class ToolService:
             self.wikipedia = WikipediaAPIWrapper()
             self.weather_service = WeatherService(
                 api_key=settings.WEATHER_API_KEY.get_secret_value()
+            )
+            self.news_service = NewsService(
+                api_key=settings.NEWS_API_KEY.get_secret_value()
             )
             log_info("도구 서비스 초기화 성공")
         except Exception as e:
@@ -80,6 +102,11 @@ class ToolService:
                 name="Weather",
                 func=self._get_weather,
                 description="특정 도시나 지역의 현재 날씨 정보를 조회할 때 사용"
+            ),
+            Tool(
+                name="News",
+                func=self._get_news,
+                description="최신 뉴스를 조회할 때 사용"
             )
         ]
 
@@ -141,6 +168,14 @@ class ToolService:
             return f"날씨 정보를 가져오는데 실패했습니다: {str(e)}"
 
     async def _get_news(self, query: str) -> str:
-        """뉴스 검색"""
-        # 뉴스 API 호출 로직
-        pass
+        try:
+            data = await self.news_service.get_news(query)
+            articles = data.get("articles", [])
+            if not articles:
+                return "관련 뉴스를 찾을 수 없습니다."
+            result = []
+            for art in articles:
+                result.append(f"- {art['title']} ({art['source']['name']})")
+            return "\n".join(result)
+        except Exception as e:
+            return f"뉴스 정보를 가져오는데 실패했습니다: {str(e)}"
