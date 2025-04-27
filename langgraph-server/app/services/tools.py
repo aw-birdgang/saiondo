@@ -85,28 +85,18 @@ class ToolService:
             Tool(
                 name="Calculator",
                 func=self._calculate,
-                description="수학 계산이 필요할 때 사용"
+                description="숫자 계산이 필요할 때 사용합니다. (예: '2 + 2')"
             ),
             Tool(
                 name="Weather",
                 func=self._get_weather,
-                description="특정 도시나 지역의 현재 날씨 정보를 조회할 때 사용"
+                description="도시의 현재 날씨를 조회합니다."
             ),
             Tool(
                 name="News",
                 func=self._get_news,
-                description="최신 뉴스를 조회할 때 사용"
-            ),
-            Tool(
-                name="Web_Search",
-                func=self.search.run,
-                description="최신 정보나 실시간 데이터를 검색할 때 사용"
-            ),
-            Tool(
-                name="Wikipedia",
-                func=self.wikipedia.run,
-                description="위키피디아에서 상세한 정보를 찾을 때 사용"
-            ),
+                description="특정 주제의 최신 뉴스를 검색합니다."
+            )
         ]
 
         # 에이전트 초기화
@@ -122,59 +112,41 @@ class ToolService:
             log_error("에이전트 초기화 실패", {"error": str(e)})
             raise
 
-    def _calculate(self, expression: str) -> str:
-        """안전한 수학 계산 수행"""
+    async def _calculate(self, expression: str) -> str:
+        """계산기 도구"""
         try:
-            # 수식을 토큰으로 분리
-            tokens = expression.split()
-            if len(tokens) != 3:
-                return "올바른 형식: 숫자 연산자 숫자 (예: 2 + 2)"
-
-            num1, op, num2 = tokens
-
-            # 숫자 변환
-            try:
-                num1 = float(num1)
-                num2 = float(num2)
-            except ValueError:
-                return "올바른 숫자를 입력해주세요"
-
-            # 연산자 확인 및 계산
-            if op not in self.safe_operators:
-                return f"지원하지 않는 연산자입니다. 지원 연산자: {', '.join(self.safe_operators.keys())}"
-
-            result = self.safe_operators[op](num1, num2)
-            return str(result)
-
+            result = eval(expression.replace('×', '*').replace('÷', '/'))
+            return f"계산 결과는 {result:,}입니다."
         except Exception as e:
-            log_error("계산 오류", {"error": str(e), "expression": expression})
             return f"계산 중 오류가 발생했습니다: {str(e)}"
 
     async def _get_weather(self, location: str) -> str:
+        """날씨 도구"""
         try:
-            data = await self.weather_service.get_weather(location)
-            current = data["current"]
-            location_info = data["location"]
+            weather_data = await self.weather_service.get_weather(location)
             return (
-                f"{location_info['name']}({location_info['country']})의 현재 날씨:\n"
-                f"- 온도: {current['temp_c']}°C\n"
-                f"- 체감 온도: {current['feelslike_c']}°C\n"
-                f"- 습도: {current['humidity']}%\n"
-                f"- 상태: {current['condition']['text']}\n"
-                f"- 바람: {current['wind_kph']}km/h"
+                f"{location}의 현재 날씨입니다:\n"
+                f"🌡️ 기온: {weather_data['temp_c']}°C\n"
+                f"🌤️ 날씨: {weather_data['condition']}\n"
+                f"💧 습도: {weather_data['humidity']}%\n"
+                f"💨 풍속: {weather_data['wind_kph']}km/h"
             )
         except Exception as e:
             return f"날씨 정보를 가져오는데 실패했습니다: {str(e)}"
 
     async def _get_news(self, query: str) -> str:
+        """뉴스 도구"""
         try:
-            data = await self.news_service.get_news(query)
-            articles = data.get("articles", [])
+            news_data = await self.news_service.get_news(query)
+            articles = news_data.get("articles", [])[:3]
+            
             if not articles:
-                return "관련 뉴스를 찾을 수 없습니다."
-            result = []
-            for art in articles:
-                result.append(f"- {art['title']} ({art['source']['name']})")
-            return "\n".join(result)
+                return f"{query} 관련 뉴스를 찾을 수 없습니다."
+            
+            result = [f"📰 {query} 관련 최신 뉴스:"]
+            for i, art in enumerate(articles, 1):
+                result.append(f"{i}. {art['title']}\n   출처: {art['source']['name']}")
+            
+            return "\n\n".join(result)
         except Exception as e:
-            return f"뉴스 정보를 가져오는데 실패했습니다: {str(e)}"
+            return f"뉴스를 가져오는데 실패했습니다: {str(e)}"
