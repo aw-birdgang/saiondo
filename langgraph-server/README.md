@@ -273,3 +273,15 @@ pytest --cov=app tests/
 ## 라이선스
 
 MIT License
+
+---
+
+## 🔗 Tools Reference
+
+- **Weather API**  
+  실시간 날씨 정보 제공  
+  [https://www.weatherapi.com/my/](https://www.weatherapi.com/my/)
+
+- **News API**  
+  최신 뉴스 헤드라인 제공  
+  [https://newsapi.org/account](https://newsapi.org/account)

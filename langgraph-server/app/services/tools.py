@@ -1,16 +1,15 @@
-from langchain_community.tools import DuckDuckGoSearchRun
-from langchain.tools import Tool
+import operator
+
+import aiohttp
 from langchain.agents import initialize_agent, AgentType
+from langchain.tools import Tool
+from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.utilities import WikipediaAPIWrapper
 from langchain_openai import ChatOpenAI
-from typing import List, Dict, Any
-import operator
-import aiohttp
-import json
-from datetime import datetime
 
 from app.core.config import settings
 from app.core.logger import log_error, log_info
+
 
 class WeatherService:
     def __init__(self, api_key: str):
@@ -132,7 +131,7 @@ class ToolService:
                 return "올바른 형식: 숫자 연산자 숫자 (예: 2 + 2)"
 
             num1, op, num2 = tokens
-            
+
             # 숫자 변환
             try:
                 num1 = float(num1)
