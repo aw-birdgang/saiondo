@@ -12,7 +12,8 @@ dist/
 build/
 *.log
 
-# 가상환경
+# Python 가상환경
+python_backend/venv/
 venv/
 ENV/
 env/

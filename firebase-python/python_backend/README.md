@@ -8,6 +8,13 @@ LangChain, LangGraph 기반의 AI 분석 Python 백엔드입니다.
 ## 실행 방법
 
 ```bash
+# MacOS/Linux
+source venv/bin/activate
+
+# Windows
+.\venv\Scripts\activate
+
+# 필요한 패키지 설치
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -67,7 +74,7 @@ gcloud run deploy python-backend \
   --region asia-northeast3 \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars FIRESTORE_DATABASE_ID=mcp-demo-database
+  --set-env-vars "FIRESTORE_DATABASE_ID=mcp-demo-database,OPENAI_API_KEY="
 ```
 
 ## 추가 안내
@@ -75,3 +82,23 @@ gcloud run deploy python-backend \
 - 설치 중 오류가 있으면, 구체적인 에러 메시지를 알려주시면 추가로 도와드릴 수 있습니다.
 
 설치 후에도 문제가 있으면 언제든 질문해 주세요!
+
+## 테스트 명령
+
+```bash
+curl -X POST "http://localhost:8000/analyze" \
+-H "Content-Type: application/json" \
+-d '{
+    "prompt": "Docker 컨테이너의 장단점을 분석해주세요.",
+    "id": "example-id-123"
+}'
+```
+
+# Docker 이미지 빌드
+docker build -t python-backend .
+
+# 로컬에서 실행
+docker run -p 8080:8080 \
+  -e GOOGLE_APPLICATION_CREDENTIALS=/app/service-account.json \
+  -e OPENAI_API_KEY=your_openai_api_key \
+  python-backend
