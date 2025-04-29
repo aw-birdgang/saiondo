@@ -67,8 +67,7 @@ gcloud run deploy python-backend \
   --region asia-northeast3 \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars GOOGLE_APPLICATION_CREDENTIALS=/secrets/serviceAccountKey.json \
-  --add-cloudsql-instances=[YOUR_INSTANCE_CONNECTION_NAME] # (Cloud SQL 사용시)
+  --set-env-vars FIRESTORE_DATABASE_ID=mcp-demo-database
 ```
 
 ## 추가 안내

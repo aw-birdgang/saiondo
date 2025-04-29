@@ -42,6 +42,9 @@ package-lock.json
 .firebase/
 .firebaserc
 serviceAccountKey.json
+service-account.json
+*-service-account*.json
+*serviceAccount*.json
 # (serviceAccountKey.json은 실제 서비스 계정 키 파일명에 맞게 조정)
 
 # 환경변수/시크릿
@@ -63,3 +66,6 @@ htmlcov/
 .tox/
 .nox/
 .pytest_cache/
+
+# Added from the code block
+echo "service-account.json" >> functions/.gitignore
