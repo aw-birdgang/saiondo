@@ -1,9 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import axios from 'axios';
+import {ConfigService} from "@nestjs/config";
+import {AllConfigType} from "../config/config.type";
 
 @Injectable()
 export class LlmService {
-    private readonly llmApiUrl = 'http://localhost:8000/chat';
+    private readonly llmApiUrl: string;
+
+    constructor(
+        private readonly configService: ConfigService<AllConfigType>,
+    ) {
+        this.llmApiUrl = configService.getOrThrow('common', { infer: true }).llmApiUrl;
+    }
 
     async forwardToLLM(prompt: string): Promise<any> {
         try {
