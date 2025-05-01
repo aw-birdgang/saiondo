@@ -62,6 +62,6 @@ export default registerAs<CommonConfig>('common', () => {
     apiPrefix: process.env.API_PREFIX || 'api',
     fallbackLanguage: process.env.APP_FALLBACK_LANGUAGE || 'en',
     headerLanguage: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
-    llmApiUrl: process.env.LLM_API_URL || 'http://localhost:8000/chat',
+    llmApiUrl: process.env.LLM_API_URL || 'http://localhost:8000',
   };
 });
