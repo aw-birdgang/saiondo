@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+
+import '../../presentation/chat/chat.dart';
+import '../../presentation/home/home.dart';
+
+class Routes {
+  Routes._();
+
+  static const String home = '/home';
+  static const String chat = '/chat';
+
+  static final routes = <String, WidgetBuilder>{
+    home: (BuildContext context) => HomeScreen(),
+    chat: (BuildContext context) => ChatScreen(),
+  };
+
+}

@@ -1,0 +1,60 @@
+# 🔧 Dart / Flutter
+.dart_tool/
+.packages
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+
+# 🚫 Flutter generated files
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/.symlinks/
+ios/Pods/
+ios/Podfile.lock
+android/.gradle/
+android/app/build/
+android/local.properties
+
+# 📦 VS Code
+.vscode/
+
+# 💻 IntelliJ / Android Studio
+.idea/
+*.iml
+
+# 📱 Device-specific
+*.log
+*.lock
+*.swp
+*.DS_Store
+*.apk
+*.ipa
+
+# 🔐 Firebase (보안 중요!)
+**/firebase_options.dart
+**/google-services.json
+**/GoogleService-Info.plist
+.firebase/
+
+# 📁 FVM (Flutter Version Management)
+.fvm/
+.fvmrc
+
+# 🔍 Hive (로컬 DB 파일 - 선택적 무시)
+*.hive
+*.hive.lock
+
+# 📦 Web
+web/firebase-messaging-sw.js
+web/firebase-config.js
+
+# 🧪 Test / Coverage (선택 사항)
+coverage/
+
+# 🔒 기타 민감한 정보 가능성 있는 파일
+.env
+.env.*
+assets/.env
