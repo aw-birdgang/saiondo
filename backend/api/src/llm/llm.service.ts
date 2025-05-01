@@ -13,13 +13,16 @@ export class LlmService {
         this.llmApiUrl = configService.getOrThrow('common', { infer: true }).llmApiUrl;
     }
 
-    async forwardToLLM(prompt: string): Promise<any> {
+    async forwardToLLM(prompt: string, model: 'openai' | 'claude'): Promise<string> {
         try {
-            const response = await axios.post(this.llmApiUrl, { prompt });
-            return response.data;
+            const response = await axios.post(this.llmApiUrl, {
+                prompt,
+                model,
+            });
+            return response.data.response;
         } catch (error) {
-            console.error('LLM 서버 호출 실패:', error.message);
-            throw new Error('LLM 응답 실패');
+            console.error('LLM 호출 실패:', error.message);
+            throw error;
         }
     }
 }

@@ -1,24 +1,11 @@
-import os
-from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage
-from dotenv import load_dotenv
+from providers.claude_client import ask_claude
+from providers.openai_client import ask_openai
 
-load_dotenv()
+def ask_llm(prompt: str, model: str) -> str:
+    if model == 'openai':
+        return ask_openai(prompt)
+    elif model == 'claude':
+        return ask_claude(prompt)
+    else:
+        return "❌ 지원하지 않는 모델입니다 (openai 또는 claude 선택)"
 
-openai_key = os.getenv("OPENAI_API_KEY")
-if not openai_key:
-    raise ValueError("OPENAI_API_KEY가 .env에 설정되어 있지 않아요, Oppa!")
-
-llm = ChatOpenAI(
-    temperature=0.7,
-    model_name="gpt-3.5-turbo",
-    openai_api_key=openai_key,
-)
-
-def ask_llm(prompt: str) -> str:
-    message = [HumanMessage(content=prompt)]
-    try:
-        response = llm(message)
-        return response.content
-    except Exception as e:
-        return f"⚠️ LLM 호출 중 에러 발생: {str(e)}"

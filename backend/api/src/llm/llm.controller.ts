@@ -20,13 +20,10 @@ export class LlmController {
     @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
     async chat(@Body() body: ChatRequestDto): Promise<ChatResponseDto> {
         try {
-            const result = await this.llmService.forwardToLLM(body.prompt);
+            const result = await this.llmService.forwardToLLM(body.prompt, body.model);
             return { response: result };
         } catch (error) {
-            throw new HttpException(
-                'LLM 서버 호출 중 에러 발생',
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
+            throw new HttpException('LLM 호출 실패', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

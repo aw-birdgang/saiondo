@@ -29,7 +29,11 @@ PYTHONPATH=src uvicorn main:app --reload --port 8000
 ````
 curl -X POST http://localhost:8000/chat \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "안녕! 오늘 날씨 어때?"}'
+  -d '{"prompt": "안녕!", "model": "openai"}'
+
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "안녕!", "model": "claude"}'
 
 curl http://localhost:8000/health
 
