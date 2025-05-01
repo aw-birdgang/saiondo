@@ -4,6 +4,8 @@ pydantic
 python-dotenv
 
 langchain
+langgraph
+
 langchain-openai
 langchain-community
 openai
