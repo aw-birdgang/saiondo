@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import axios from 'axios';
 import {ConfigService} from "@nestjs/config";
-import {AllConfigType} from "../config/config.type";
+import {AllConfigType} from "../../config/config.type";
 import {AnalyzeRequestDto} from "./dto/analyze.dto";
 
 @Injectable()

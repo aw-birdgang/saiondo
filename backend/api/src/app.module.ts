@@ -1,8 +1,13 @@
 import {Module} from '@nestjs/common';
-import {LlmModule} from "./llm/llm.module";
+import {LlmModule} from "./modules/llm/llm.module";
 import {ConfigModule} from "@nestjs/config";
 import commonConfig from "./config/common.config";
 import {PrismaModule} from "./common/prisma/prisma.module";
+import {UserModule} from "@modules/user/user.module";
+import {AdviceReportModule} from "@modules/advice-report/advice-report.module";
+import {ChatHistoryModule} from "@modules/chat-history/chat-history.module";
+import {PersonaProfileModule} from "@modules/persona-profile/persona-profile.module";
+import {RelationshipModule} from "@modules/relationship/relationship.module";
 
 @Module({
   imports: [
@@ -15,6 +20,11 @@ import {PrismaModule} from "./common/prisma/prisma.module";
     }),
     PrismaModule,
     LlmModule,
+    UserModule,
+    AdviceReportModule,
+    ChatHistoryModule,
+    PersonaProfileModule,
+    RelationshipModule,
   ],
 })
 export class AppModule {}
