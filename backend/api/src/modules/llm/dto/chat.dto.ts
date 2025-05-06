@@ -3,6 +3,10 @@ import { IsString, IsIn } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ChatRequestDto {
+    @ApiProperty({ example: 'user-uuid', description: '유저 ID' })
+    @IsString()
+    userId: string;
+
     @ApiProperty({ example: '안녕!', description: '프롬프트 메시지' })
     @IsString()
     prompt: string;
