@@ -1,0 +1,87 @@
+@startuml
+title Saiondo ERD (초안)
+
+entity User {
+  *id : UUID <<PK>>
+  name : String
+  birth_date : Date
+  gender : Enum
+  mbti : String
+  created_at : Timestamp
+  updated_at : Timestamp
+}
+
+entity Relationship {
+  *id : UUID <<PK>>
+  user1_id : UUID <<FK>>
+  user2_id : UUID <<FK>>
+  status : Enum
+  started_at : Timestamp
+  ended_at : Timestamp
+}
+
+entity ChatHistory {
+  *id : UUID <<PK>>
+  user_id : UUID <<FK>>
+  message : Text
+  sender : Enum
+  is_question_response : Boolean
+  is_user_initiated : Boolean
+  analyzed_by_llm : Boolean
+  timestamp : Timestamp
+}
+
+entity PersonaProfile {
+  *id : UUID <<PK>>
+  user_id : UUID <<FK>>
+  category_code : String
+  content : Text
+  is_static : Boolean
+  source : Enum
+  confidence_score : Float
+  created_at : Timestamp
+  updated_at : Timestamp
+}
+
+entity AdviceReport {
+  *id : UUID <<PK>>
+  relationship_id : UUID <<FK>>
+  generated_by : UUID <<FK>>
+  report_date : Date
+  summary : Text
+  advice_for_user1 : Text
+  advice_for_user2 : Text
+}
+
+entity QuestionTemplate {
+  *id : UUID <<PK>>
+  category_code : String
+  question_text : Text
+  tier : Int
+  type : Enum
+  created_at : Timestamp
+}
+
+entity PushSchedule {
+  *id : UUID <<PK>>
+  user_id : UUID <<FK>>
+  question_id : UUID <<FK>>
+  scheduled_at : Timestamp
+  sent_at : Timestamp
+  status : Enum
+}
+
+' 관계 정의
+User ||--o{ ChatHistory
+User ||--o{ PersonaProfile
+User ||--o{ PushSchedule
+User ||--o{ AdviceReport : generated_by
+User ||--o{ Relationship : user1_id
+User ||--o{ Relationship : user2_id
+
+Relationship ||--o{ AdviceReport
+ChatHistory }o--|| User
+PersonaProfile }o--|| User
+PushSchedule }o--|| QuestionTemplate
+
+@enduml
