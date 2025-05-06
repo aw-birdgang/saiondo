@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-saiondo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-saiondo}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-saiondo}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  llm:
+    build:
+      context: ./llm
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/src
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      llm:
+        condition: service_started
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://saiondo:password@postgres:5432/saiondo}
+      APP_PORT: ${APP_PORT:-3000}
+      LLM_API_URL: http://llm:8000
+    command: yarn migrate-and-start
+    env_file:
+      - .env
+
+volumes:
+  pgdata:

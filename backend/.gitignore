@@ -1,0 +1,36 @@
+# 💡 Python 가상환경
+venv/
+.env
+.env.*
+
+# 💡 Python 캐시 및 빌드 파일
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+
+# 💡 VS Code, PyCharm 등 IDE 설정
+.vscode/
+.idea/
+*.code-workspace
+
+# 💡 테스트/디버그 로그
+*.log
+*.sqlite3
+*.db
+
+# 💡 macOS 시스템 파일
+.DS_Store
+
+# 💡 Jupyter/IPython (혹시 쓸 경우)
+.ipynb_checkpoints/
+
+# 💡 pyproject 빌드 관련 (optional)
+*.lock
+poetry.lock
+Pipfile.lock
