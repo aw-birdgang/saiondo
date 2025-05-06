@@ -27,6 +27,7 @@ export class LlmService {
         }
     }
 
+
     async analyze(data: AnalyzeRequestDto): Promise<any> {
         try {
             const response = await axios.post(`${this.llmApiUrl}/analyze`, data);

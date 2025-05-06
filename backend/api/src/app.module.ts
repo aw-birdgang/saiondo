@@ -2,6 +2,7 @@ import {Module} from '@nestjs/common';
 import {LlmModule} from "./llm/llm.module";
 import {ConfigModule} from "@nestjs/config";
 import commonConfig from "./config/common.config";
+import {PrismaModule} from "./common/prisma/prisma.module";
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import commonConfig from "./config/common.config";
       ],
       envFilePath: ['.env'],
     }),
+    PrismaModule,
     LlmModule,
   ],
 })
