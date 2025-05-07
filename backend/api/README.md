@@ -180,12 +180,20 @@ curl -X POST http://localhost:3000/llm/chat \
 
 ##
 ````
+
 {
-  "user_prompt": "나는 감정을 잘 표현하지 않아.",
-  "partner_prompt": "나는 대화를 통해 감정을 공유하길 원해.",
+  "user_prompt": "나는 감정 표현이 서툴고 대화를 많이 하는 걸 좋아하지 않아.",
+  "partner_prompt": "나는 대화를 통해 감정을 확인하는 걸 중요하게 생각해.",
   "user_gender": "male",
   "partner_gender": "female",
-  "model": "openai"
+  "model": "openai",
+  "metadata": {
+    "sessionId": "b7e23ec2-8d5a-4c2a-9e3b-1e2f3a4b5c6d",
+    "user_mbti": "ISTJ",
+    "partner_mbti": "ENFP",
+    "user_age": 44,
+    "relationship_duration_months": 6
+  }
 }
 
 ````

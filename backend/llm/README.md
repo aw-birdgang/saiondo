@@ -41,7 +41,14 @@ curl -X POST http://localhost:8000/analyze \
     "partner_prompt": "나는 대화를 통해 감정을 확인하는 걸 중요하게 생각해.",
     "user_gender": "male",
     "partner_gender": "female",
-    "model": "openai"
+    "model": "openai",
+    "metadata": {
+      "sessionId": "b7e23ec2-8d5a-4c2a-9e3b-1e2f3a4b5c6d",
+      "user_mbti": "ISTJ",
+      "partner_mbti": "ENFP",
+      "user_age": 29,
+      "relationship_duration_months": 6
+    }
 }'
 
 

@@ -1,5 +1,5 @@
-import { IsString, IsIn } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsIn, IsOptional, IsObject } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AnalyzeRequestDto {
     @ApiProperty()
@@ -24,6 +24,11 @@ export class AnalyzeRequestDto {
     @IsString()
     @IsIn(['openai', 'claude'])
     model: 'openai' | 'claude';
+
+    @ApiPropertyOptional({ description: '추가 메타데이터', type: 'object', example: { sessionId: "abc123", mbti: "ENFP", age: 29 } })
+    @IsOptional()
+    @IsObject()
+    metadata?: Record<string, any>;
 }
 
 export class AnalyzeResponseDto {
