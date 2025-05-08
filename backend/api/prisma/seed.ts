@@ -1,9 +1,61 @@
-import { PrismaClient, MessageSender, RelationshipStatus, ProfileSource } from '@prisma/client';
+import { PrismaClient, ProfileSource, QuestionType, RelationshipStatus, MessageSender } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-    console.log('1. user1');
+    // 1. 카테고리 코드 생성
+    const categoryMbti = await prisma.categoryCode.create({
+        data: { code: 'MBTI', description: 'MBTI 유형' },
+    });
+    const categoryHobby = await prisma.categoryCode.create({
+        data: { code: 'HOBBY', description: '취미' },
+    });
+    const categoryValue = await prisma.categoryCode.create({
+        data: { code: 'VALUE', description: '가치관' },
+    });
+
+    // 2. 질문 템플릿 생성
+    await prisma.questionTemplate.createMany({
+        data: [
+            {
+                categoryCodeId: categoryMbti.id,
+                questionText: '당신의 MBTI는 무엇인가요?',
+                tier: 1,
+                type: QuestionType.MBTI,
+                createdAt: new Date(),
+            },
+            {
+                categoryCodeId: categoryHobby.id,
+                questionText: '가장 좋아하는 취미는 무엇인가요?',
+                tier: 1,
+                type: QuestionType.PERSONALITY,
+                createdAt: new Date(),
+            },
+            {
+                categoryCodeId: categoryValue.id,
+                questionText: '인생에서 가장 중요하게 생각하는 가치는 무엇인가요?',
+                tier: 2,
+                type: QuestionType.PERSONALITY,
+                createdAt: new Date(),
+            },
+            {
+                categoryCodeId: categoryHobby.id,
+                questionText: '최근에 새로 시작한 취미가 있나요?',
+                tier: 2,
+                type: QuestionType.DAILY,
+                createdAt: new Date(),
+            },
+            {
+                categoryCodeId: categoryValue.id,
+                questionText: '친구를 사귈 때 가장 중요하게 생각하는 점은?',
+                tier: 1,
+                type: QuestionType.RELATIONSHIP,
+                createdAt: new Date(),
+            },
+        ],
+    });
+
+    // 3. 유저 생성
     const user1 = await prisma.user.create({
         data: {
             name: '김철수',
@@ -12,7 +64,6 @@ async function main() {
         },
     });
 
-    console.log('2. user2');
     const user2 = await prisma.user.create({
         data: {
             name: '이영희',
@@ -21,7 +72,7 @@ async function main() {
         },
     });
 
-    console.log('3. relationship');
+    // 4. 관계 및 방 생성
     const relationship = await prisma.relationship.create({
         data: {
             user1Id: user1.id,
@@ -31,20 +82,13 @@ async function main() {
         },
     });
 
-    console.log('4. room');
     const room = await prisma.room.create({
         data: {
             relationshipId: relationship.id,
         },
     });
 
-    console.log('5. relationship update');
-    await prisma.relationship.update({
-        where: { id: relationship.id },
-        data: { room: { connect: { id: room.id } } },
-    });
-
-    console.log('6. chatHistory');
+    // 5. 채팅 기록 생성
     await prisma.chatHistory.createMany({
         data: [
             {
@@ -80,38 +124,7 @@ async function main() {
         ],
     });
 
-    console.log('7. personaProfile');
-    const categoryMbti = await prisma.categoryCode.create({
-        data: { code: 'MBTI', description: 'MBTI 유형' },
-    });
-    const categoryHobby = await prisma.categoryCode.create({
-        data: { code: 'HOBBY', description: '취미' },
-    });
-    const categoryValue = await prisma.categoryCode.create({
-        data: { code: 'VALUE', description: '가치관' },
-    });
-    const categoryInterest = await prisma.categoryCode.create({
-        data: { code: 'INTEREST', description: '관심사' },
-    });
-    const categoryJob = await prisma.categoryCode.create({
-        data: { code: 'JOB', description: '직업' },
-    });
-    const categoryDream = await prisma.categoryCode.create({
-        data: { code: 'DREAM', description: '꿈/목표' },
-    });
-    const categoryStrength = await prisma.categoryCode.create({
-        data: { code: 'STRENGTH', description: '강점' },
-    });
-    const categoryWeakness = await prisma.categoryCode.create({
-        data: { code: 'WEAKNESS', description: '약점' },
-    });
-    const categoryFavoriteFood = await prisma.categoryCode.create({
-        data: { code: 'FAVORITE_FOOD', description: '좋아하는 음식' },
-    });
-    const categoryDislike = await prisma.categoryCode.create({
-        data: { code: 'DISLIKE', description: '싫어하는 것' },
-    });
-
+    // 6. 페르소나 프로필 생성
     await prisma.personaProfile.createMany({
         data: [
             {
@@ -146,91 +159,11 @@ async function main() {
             },
             {
                 userId: user2.id,
-                categoryCodeId: categoryHobby.id,
-                content: '등산',
-                isStatic: false,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.85,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user1.id,
                 categoryCodeId: categoryValue.id,
                 content: '정직',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.9,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user2.id,
-                categoryCodeId: categoryInterest.id,
-                content: '인공지능',
-                isStatic: false,
-                source: ProfileSource.AI_ANALYSIS,
-                confidenceScore: 0.7,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user1.id,
-                categoryCodeId: categoryJob.id,
-                content: '개발자',
-                isStatic: true,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.95,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user2.id,
-                categoryCodeId: categoryDream.id,
-                content: '세계 여행',
-                isStatic: false,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.8,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user1.id,
-                categoryCodeId: categoryStrength.id,
-                content: '문제 해결 능력',
-                isStatic: true,
-                source: ProfileSource.AI_ANALYSIS,
-                confidenceScore: 0.88,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user2.id,
-                categoryCodeId: categoryWeakness.id,
-                content: '조급함',
-                isStatic: false,
-                source: ProfileSource.AI_ANALYSIS,
-                confidenceScore: 0.6,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user1.id,
-                categoryCodeId: categoryFavoriteFood.id,
-                content: '초밥',
-                isStatic: true,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.99,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
-                userId: user2.id,
-                categoryCodeId: categoryDislike.id,
-                content: '곤충',
-                isStatic: true,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.95,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },

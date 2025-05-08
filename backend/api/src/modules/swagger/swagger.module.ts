@@ -6,8 +6,8 @@ import { INestApplication } from '@nestjs/common';
 export class SwaggerModuleConfig {
     static setupSwagger(app: INestApplication): void {
         const config = new DocumentBuilder()
-            .setTitle('My NestJS Project')
-            .setDescription('API documentation for my NestJS project')
+            .setTitle('API 문서')
+            .setDescription('서비스 API 명세')
             .setVersion('1.0')
             .build();
         const document = SwaggerModule.createDocument(app, config);

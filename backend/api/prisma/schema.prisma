@@ -107,7 +107,8 @@ model CategoryCode {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  personaProfiles PersonaProfile[]
+  questionTemplates QuestionTemplate[]
+  personaProfiles   PersonaProfile[]
 
   @@map("category_codes")
 }
@@ -146,15 +147,15 @@ model AdviceReport {
 }
 
 model QuestionTemplate {
-  id           String        @id @default(uuid())
-  categoryCode String       @map("category_code")
-  questionText String       @map("question_text") @db.Text
-  tier         Int
-  type         QuestionType
-  createdAt    DateTime     @default(now()) @map("created_at")
+  id             String        @id @default(uuid())
+  categoryCodeId String        @map("category_code_id")
+  questionText   String        @map("question_text") @db.Text
+  tier           Int
+  type           QuestionType
+  createdAt      DateTime      @default(now()) @map("created_at")
 
-  // 관계 정의
-  pushSchedules PushSchedule[]
+  categoryCode   CategoryCode  @relation(fields: [categoryCodeId], references: [id])
+  pushSchedules  PushSchedule[]
 
   @@map("question_templates")
 }
@@ -167,9 +168,9 @@ model PushSchedule {
   sentAt       DateTime?   @map("sent_at")
   status       PushStatus
 
-  // 관계 정의
   user         User        @relation(fields: [userId], references: [id])
   question     QuestionTemplate @relation(fields: [questionId], references: [id])
+  userAnswer   UserAnswer?
 
   @@map("push_schedules")
 }
@@ -183,4 +184,13 @@ model Room {
   // ... 필요시 adviceReports, personaProfiles 등도 연결
 
   @@map("rooms")
+}
+
+model UserAnswer {
+  id           String      @id @default(uuid())
+  pushScheduleId String    @map("push_schedule_id") @unique
+  answerText   String      @db.Text
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  pushSchedule PushSchedule @relation(fields: [pushScheduleId], references: [id])
 }

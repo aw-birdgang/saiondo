@@ -27,4 +27,23 @@ export class PersonaProfileService {
       },
     });
   }
+
+  async saveProfileFromAnalysis(
+    userId: string,
+    categoryCodeId: string,
+    content: string,
+    source: ProfileSource,
+    confidenceScore: number,
+  ) {
+    return this.prisma.personaProfile.create({
+      data: {
+        userId,
+        categoryCodeId,
+        content,
+        isStatic: false,
+        source,
+        confidenceScore,
+      },
+    });
+  }
 }

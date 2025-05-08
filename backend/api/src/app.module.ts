@@ -8,7 +8,10 @@ import {AdviceReportModule} from "@modules/advice-report/advice-report.module";
 import {ChatHistoryModule} from "@modules/chat-history/chat-history.module";
 import {PersonaProfileModule} from "@modules/persona-profile/persona-profile.module";
 import {RelationshipModule} from "@modules/relationship/relationship.module";
-import { CategoryCodeModule } from './modules/category-code/category-code.module';
+import {CategoryCodeModule} from './modules/category-code/category-code.module';
+import {QuestionTemplateModule} from "@modules/question-template/question-template.module";
+import {PushScheduleModule} from "@modules/push-schedule/push-schedule.module";
+import {UserAnswerModule} from "@modules/user-answer/user-answer.module";
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { CategoryCodeModule } from './modules/category-code/category-code.module
     PersonaProfileModule,
     RelationshipModule,
     CategoryCodeModule,
+    QuestionTemplateModule,
+    PushScheduleModule,
+    UserAnswerModule,
   ],
 })
 export class AppModule {}

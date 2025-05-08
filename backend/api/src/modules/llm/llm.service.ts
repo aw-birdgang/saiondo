@@ -3,6 +3,7 @@ import axios from 'axios';
 import {ConfigService} from "@nestjs/config";
 import {AllConfigType} from "../../config/config.type";
 import {AnalyzeRequestDto} from "./dto/analyze.dto";
+import {AnalyzeAnswerDto} from "@modules/llm/dto/analyze-answer.dto";
 
 @Injectable()
 export class LlmService {
@@ -27,8 +28,17 @@ export class LlmService {
         }
     }
 
-
     async analyze(data: AnalyzeRequestDto): Promise<any> {
+        try {
+            const response = await axios.post(`${this.llmApiUrl}/analyze`, data);
+            return response.data;
+        } catch (error) {
+            console.error('LLM 분석 요청 실패:', error.message);
+            throw error;
+        }
+    }
+
+    async analyzeAnswer(data: AnalyzeAnswerDto) {
         try {
             const response = await axios.post(`${this.llmApiUrl}/analyze`, data);
             return response.data;

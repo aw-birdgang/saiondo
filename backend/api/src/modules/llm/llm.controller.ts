@@ -11,8 +11,9 @@ import { LlmService } from './llm.service';
 import { ChatRequestDto, ChatResponseDto } from './dto/chat.dto';
 import { ChatHistoryService } from '../chat-history/chat-history.service';
 import { CreateChatHistoryDto } from '../chat-history/dto/create-chat-history.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {ApiTags, ApiOperation, ApiResponse, ApiBody} from '@nestjs/swagger';
 import {AnalyzeRequestDto, AnalyzeResponseDto} from "./dto/analyze.dto";
+import {AnalyzeAnswerDto} from "@modules/llm/dto/analyze-answer.dto";
 
 @ApiTags('LLM')
 @Controller('llm')
@@ -67,5 +68,13 @@ export class LlmController {
     @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
     async analyze(@Body() body: AnalyzeRequestDto): Promise<AnalyzeResponseDto> {
         return this.llmService.analyze(body);
+    }
+
+    @Post('analyze-answer')
+    @ApiOperation({ summary: '유저 답변 LLM 분석' })
+    @ApiBody({ type: AnalyzeAnswerDto })
+    @ApiResponse({ status: 200, description: 'LLM 분석 결과 반환' })
+    async analyzeAnswer(@Body() dto: AnalyzeAnswerDto) {
+        return this.llmService.analyzeAnswer(dto);
     }
 }
