@@ -1,4 +1,4 @@
-import { PrismaClient, MessageSender, RelationshipStatus } from '@prisma/client';
+import { PrismaClient, MessageSender, RelationshipStatus, ProfileSource } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -76,6 +76,42 @@ async function main() {
                 isUserInitiated: true,
                 analyzedByLlm: false,
                 timestamp: new Date(),
+            },
+        ],
+    });
+
+    console.log('7. personaProfile');
+    await prisma.personaProfile.createMany({
+        data: [
+            {
+                userId: user1.id,
+                categoryCode: 'MBTI',
+                content: 'INTJ',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.95,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCode: 'MBTI',
+                content: 'ENFP',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.92,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCode: 'HOBBY',
+                content: '영화 감상',
+                isStatic: false,
+                source: ProfileSource.AI_ANALYSIS,
+                confidenceScore: 0.8,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             },
         ],
     });
