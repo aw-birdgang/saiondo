@@ -1,26 +1,42 @@
-##
-````
-curl -X POST http://localhost:3000/llm/chat \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "요즘 날씨 어때?", "model": "claude"}'
+# Saiondo Backend Monorepo
 
-curl -X POST http://localhost:3000/llm/chat \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "GPT야 안녕?", "model": "openai"}'
-````
+이 저장소는 NestJS(Typescript, Prisma) 기반의 API 서버(`api/`)와  
+FastAPI(Python) 기반의 LLM 서버(`llm/`)를 통합 관리하는 백엔드 모노레포입니다.  
+PostgreSQL 데이터베이스와 함께 Docker Compose로 전체 서비스를 오케스트레이션합니다.
 
+## 📦 프로젝트 구조
 
-##
-````
-{
-  "user_prompt": "나는 감정을 잘 표현하지 않아.",
-  "partner_prompt": "나는 대화를 통해 감정을 공유하길 원해.",
-  "user_gender": "male",
-  "partner_gender": "female",
-  "model": "openai"
-}
+## 🚀 빠른 시작
 
-````
+1. `.env` 파일 작성 (DB, API, LLM 등 환경변수)
+2. 의존성 설치:  
+   ```sh
+   cd api && yarn install
+   ```
+3. 전체 서비스 실행:  
+   ```sh
+   cd .. # backend 루트
+   docker compose up -d
+   ```
+4. DB 마이그레이션/시드:  
+   ```sh
+   docker compose exec api yarn prisma:migrate
+   docker compose exec api yarn prisma:seed
+   ```
+
+## 🛠️ 주요 서비스
+
+- **api/**: NestJS + Prisma 기반 REST API
+- **llm/**: FastAPI 기반 LLM 연동 서버
+- **Postgres**: 관계형 데이터베이스
+
+## 📝 개발/운영 팁
+
+- 각 서비스별 README 참고
+- Prisma 마이그레이션/시드, DB 볼륨 초기화 등은 개발환경에서만 안전하게 실행
+- 트러블슈팅, 도메인 구조, 확장 방법 등은 하위 README 및 코드 주석 참고
+
+---
 
 
 #
@@ -40,21 +56,8 @@ docker compose -f docker-compose.yml up --build
 #
 ````
 backend/
-├── api/                  # NestJS(Typescript) 백엔드 API 서버
-│   ├── src/              # NestJS 소스코드 (컨트롤러, 서비스, 모듈 등)
-│   ├── prisma/           # Prisma 스키마, 마이그레이션, 시드 등
-│   ├── Dockerfile        # api 서비스용 Dockerfile
-│   ├── package.json      # Node.js 의존성 및 스크립트
-│   ├── tsconfig.json     # TypeScript 컴파일 설정
-│   └── ...               # 기타 설정/테스트 파일
-│
-├── llm/                  # FastAPI(Python) 기반 LLM 프록시 서버
-│   ├── src/              # FastAPI 소스코드 (main.py, 라우터 등)
-│   ├── requirements.txt  # Python 의존성 목록
-│   ├── Dockerfile        # llm 서비스용 Dockerfile
-│   └── ...               # 기타 설정/가상환경 등
-│
-├── docker-compose.yml    # 전체 서비스(backend, llm, db) 오케스트레이션
-├── .env                  # 공통 환경변수 파일 (포트, DB, LLM 등)
-└── ...                   # (필요시) README, 기타 문서
+├── api/ # NestJS + Prisma 기반 메인 API 서버
+├── llm/ # FastAPI 기반 LLM 서버
+├── docker-compose.yml # 전체 서비스 오케스트레이션
+└── .env # 공통 환경변수
 ````
