@@ -3,6 +3,9 @@ import { MessageSender } from '@prisma/client';
 
 export class CreateChatHistoryDto {
   @ApiProperty()
+  roomId: string;
+
+  @ApiProperty()
   userId: string;
 
   @ApiProperty()

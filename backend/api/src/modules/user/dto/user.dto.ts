@@ -9,12 +9,12 @@ export enum Gender {
 }
 
 export class CreateUserDto {
-    @ApiProperty({ example: '홍길동' })
+    @ApiProperty({ example: '홍길동', description: '유저 이름' })
     @IsString()
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({ example: 'MALE', enum: Gender })
+    @ApiProperty({ example: 'MALE', description: '성별(MALE/FEMALE/OTHER)' })
     @IsEnum(Gender)
     gender: Gender;
 }

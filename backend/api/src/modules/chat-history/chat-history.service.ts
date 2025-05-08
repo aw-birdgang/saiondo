@@ -16,6 +16,7 @@ export class ChatHistoryService {
       data: {
         ...data,
         sender: data.sender as MessageSender,
+        roomId: data.roomId,
       },
     });
   }

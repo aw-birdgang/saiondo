@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -7,7 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
+    "target": "ES2015",
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
@@ -24,8 +23,11 @@
       "@core/prisma/*": ["../prisma/*"]
     },
     "lib": [
-      "es2023.full",
-      "es2015.iterable"
+      "es2023"
     ]
-  }
+  },
+  "include": [
+    "src/**/*",
+    "prisma/seed.ts"
+  ]
 }

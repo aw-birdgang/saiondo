@@ -20,8 +20,23 @@ yarn prisma:migrate      # 마이그레이션 적용
 yarn prisma:studio       # 웹 GUI (localhost:5555)
 yarn prisma:reset        # 전체 리셋 (개발용)
 
+
+yarn prisma migrate dev --name add-room-model
+yarn prisma migrate deploy
+yarn prisma generate
+or
+docker compose exec api yarn prisma:generate
+docker compose exec api yarn prisma:migrate
+docker compose exec api yarn prisma:seed
 ````
 
+
+
+# docker container exec
+````
+docker compose exec api sh
+
+````
 
 
 # 테이블 생성 확인

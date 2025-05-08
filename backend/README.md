@@ -25,7 +25,12 @@ curl -X POST http://localhost:3000/llm/chat \
 
 #
 ````
+docker rm -f $(docker ps -aq)
+docker rmi -f $(docker images -aq)
+docker volume rm $(docker volume ls -q)
+docker network rm $(docker network ls -q)
 docker compose down -v
+
 docker compose build --no-cache
 docker compose up
 docker compose up --build
