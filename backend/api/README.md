@@ -141,12 +141,8 @@ yarn prisma:migrate      # 마이그레이션 적용
 yarn prisma:studio       # 웹 GUI (localhost:5555)
 yarn prisma:reset        # 전체 리셋 (개발용)
 
-
-yarn prisma migrate dev --name add-room-model
-yarn prisma migrate deploy
-yarn prisma generate
-or
 docker compose exec api yarn prisma:generate
+docker compose exec api yarn prisma:reset
 docker compose exec api yarn prisma:migrate
 docker compose exec api yarn prisma:seed
 ````
@@ -159,96 +155,12 @@ docker compose exec api sh
 ````
 
 
-# 테이블 생성 확인
+# 
 ````
--- 1. 유저 생성 (필요 시)
-CREATE USER saiondo WITH PASSWORD 'password';
-
--- 2. DB 생성 및 소유자 지정
-CREATE DATABASE saiondo OWNER saiondo;
-
--- 3. 권한 부여 (옵션)
-GRANT ALL PRIVILEGES ON DATABASE saiondo TO saiondo;
-
--- 4. 접속 종료
-\q
 
 psql -U saiondo -d saiondo
 saiondo=> \dt
 ````
-
-
-
-# 데이타 추가
-````
-{
-  "name": "김철수",
-  "gender": "MALE"
-}
-{
-  "name": "이영희",
-  "gender": "FEMALE"
-}
-{
-  "user1Id": "userId_김철수",
-  "user2Id": "userId_이영희",
-  "status": "ACTIVE",
-  "startedAt": "2024-05-01T00:00:00.000Z"
-}
-{
-  "userId": "userId_김철수",
-  "message": "오늘 영화 볼래?",
-  "sender": "USER",
-  "isQuestionResponse": false,
-  "isUserInitiated": true,
-  "analyzedByLlm": false,
-  "timestamp": "2024-05-10T12:00:00.000Z"
-}
-{
-  "userId": "userId_이영희",
-  "message": "좋아! 어떤 영화 볼까?",
-  "sender": "USER",
-  "isQuestionResponse": true,
-  "isUserInitiated": false,
-  "analyzedByLlm": false,
-  "timestamp": "2024-05-10T12:01:00.000Z"
-}
-{
-  "userId": "userId_김철수",
-  "message": "로맨틱 코미디를 추천해드릴게요.",
-  "sender": "AI",
-  "isQuestionResponse": false,
-  "isUserInitiated": false,
-  "analyzedByLlm": true,
-  "timestamp": "2024-05-10T12:02:00.000Z"
-}
-{
-  "userId": "userId_김철수",
-  "categoryCode": "MBTI",
-  "content": "ISTJ, 신중하고 계획적인 성격",
-  "isStatic": true,
-  "source": "USER_INPUT",
-  "confidenceScore": 0.9
-}
-{
-  "userId": "userId_이영희",
-  "categoryCode": "MBTI",
-  "content": "ENFP, 감정 표현이 풍부하고 대화를 좋아함",
-  "isStatic": false,
-  "source": "AI_ANALYSIS",
-  "confidenceScore": 0.95
-}
-{
-  "relationshipId": "relationshipId_커플1",
-  "generatedById": "userId_김철수",
-  "reportDate": "2024-05-10T12:00:00.000Z",
-  "summary": "두 사람은 서로의 차이를 이해하며 잘 지내고 있습니다.",
-  "adviceForUser1": "상대방의 감정 표현을 존중해 주세요.",
-  "adviceForUser2": "상대방이 말이 적어도 기다려 주세요."
-}
-
-```
-
 
 
 

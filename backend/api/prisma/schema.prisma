@@ -100,10 +100,22 @@ model ChatHistory {
   @@map("chat_histories")
 }
 
+model CategoryCode {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  personaProfiles PersonaProfile[]
+
+  @@map("category_codes")
+}
+
 model PersonaProfile {
   id              String        @id @default(uuid())
   userId          String       @map("user_id")
-  categoryCode    String       @map("category_code")
+  categoryCodeId  String       @map("category_code_id")
   content         String       @db.Text
   isStatic        Boolean      @default(false) @map("is_static")
   source          ProfileSource
@@ -111,8 +123,8 @@ model PersonaProfile {
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @updatedAt @map("updated_at")
 
-  // 관계 정의
   user            User         @relation(fields: [userId], references: [id])
+  categoryCode    CategoryCode @relation(fields: [categoryCodeId], references: [id])
 
   @@map("persona_profiles")
 }

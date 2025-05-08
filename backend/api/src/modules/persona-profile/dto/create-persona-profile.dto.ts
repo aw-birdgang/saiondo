@@ -6,7 +6,7 @@ export class CreatePersonaProfileDto {
   userId: string;
 
   @ApiProperty()
-  categoryCode: string;
+  categoryCodeId: string;
 
   @ApiProperty()
   content: string;

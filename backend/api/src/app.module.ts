@@ -8,6 +8,7 @@ import {AdviceReportModule} from "@modules/advice-report/advice-report.module";
 import {ChatHistoryModule} from "@modules/chat-history/chat-history.module";
 import {PersonaProfileModule} from "@modules/persona-profile/persona-profile.module";
 import {RelationshipModule} from "@modules/relationship/relationship.module";
+import { CategoryCodeModule } from './modules/category-code/category-code.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {RelationshipModule} from "@modules/relationship/relationship.module";
     ChatHistoryModule,
     PersonaProfileModule,
     RelationshipModule,
+    CategoryCodeModule,
   ],
 })
 export class AppModule {}
