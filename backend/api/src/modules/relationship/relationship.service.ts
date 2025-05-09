@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { CreateRelationshipDto } from './dto/create-relationship.dto';
-import { RelationshipStatus } from '@prisma/client';
-import { InviteRelationshipDto } from './dto/invite-relationship.dto';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {CreateRelationshipDto} from './dto/create-relationship.dto';
+import {RelationshipStatus} from '@prisma/client';
+import {InviteRelationshipDto} from './dto/invite-relationship.dto';
 
 @Injectable()
 export class RelationshipService {
@@ -12,11 +12,13 @@ export class RelationshipService {
     return this.prisma.relationship.findMany();
   }
 
-  async create(data: CreateRelationshipDto) {
+  async create(dto: CreateRelationshipDto) {
+    // 상태는 기본적으로 PENDING
     return this.prisma.relationship.create({
       data: {
-        ...data,
-        status: data.status as RelationshipStatus,
+        user1Id: dto.user1Id,
+        user2Id: dto.user2Id,
+        status: RelationshipStatus.PENDING,
       },
     });
   }
@@ -32,27 +34,55 @@ export class RelationshipService {
   }
 
   async accept(id: string) {
-    // 1. 관계 상태 ACTIVE로 변경
+    // 상태 ACTIVE로 변경 + Room 자동 생성
     const relationship = await this.prisma.relationship.update({
       where: { id },
-      data: { status: 'ACTIVE', startedAt: new Date() },
+      data: { status: RelationshipStatus.ACTIVE },
     });
-    // 2. Room 생성
-    const room = await this.prisma.room.create({
-      data: { relationshipId: id },
-    });
-    // 3. 관계에 room 연결 (Prisma 1:1 관계에서는 relation connect 사용)
-    await this.prisma.relationship.update({
-      where: { id },
-      data: { room: { connect: { id: room.id } } },
-    });
-    return { relationship, room };
+
+    // Room 자동 생성
+    const existingRoom = await this.prisma.room.findUnique({ where: { relationshipId: id } });
+    if (!existingRoom) {
+      await this.prisma.room.create({ data: { relationshipId: id } });
+    }
+    return relationship;
   }
 
   async reject(id: string) {
+    // 상태 ENDED(또는 REJECTED)로 변경
     return this.prisma.relationship.update({
       where: { id },
-      data: { status: 'ENDED', endedAt: new Date() },
+      data: { status: RelationshipStatus.ENDED },
     });
+  }
+
+  async updateStatus(id: string, status: RelationshipStatus) {
+    // 상태 변경
+    const relationship = await this.prisma.relationship.update({
+      where: { id },
+      data: { status },
+    });
+
+    // ACTIVE로 변경 시 Room 자동 생성
+    if (status === RelationshipStatus.ACTIVE) {
+      const existingRoom = await this.prisma.room.findUnique({
+        where: { relationshipId: id },
+      });
+      if (!existingRoom) {
+        await this.prisma.room.create({
+          data: { relationshipId: id },
+        });
+      }
+    }
+    return relationship;
+  }
+
+  async findOne(id: string) {
+    const relationship = await this.prisma.relationship.findUnique({
+      where: { id },
+      include: { room: true },
+    });
+    if (!relationship) throw new NotFoundException('Not found');
+    return relationship;
   }
 }

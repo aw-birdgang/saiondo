@@ -2,16 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MessageSender } from '@prisma/client';
 
 export class CreateChatHistoryDto {
-  @ApiProperty()
-  roomId: string;
-
-  @ApiProperty()
+  @ApiProperty({ example: 'user-uuid' })
   userId: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'room-uuid' })
+  roomId: string;
+
+  @ApiProperty({ example: '안녕하세요!' })
   message: string;
 
-  @ApiProperty({ enum: MessageSender })
+  @ApiProperty({ enum: MessageSender, example: MessageSender.USER })
   sender: MessageSender;
 
   @ApiProperty({ required: false })

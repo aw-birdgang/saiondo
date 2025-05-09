@@ -12,6 +12,8 @@ import {CategoryCodeModule} from './modules/category-code/category-code.module';
 import {QuestionTemplateModule} from "@modules/question-template/question-template.module";
 import {PushScheduleModule} from "@modules/push-schedule/push-schedule.module";
 import {UserAnswerModule} from "@modules/user-answer/user-answer.module";
+import {RoomModule} from './modules/room/room.module';
+import {ChatModule} from "@modules/chat/chat.module";
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import {UserAnswerModule} from "@modules/user-answer/user-answer.module";
     QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,
+    RoomModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { RelationshipStatus } from '@prisma/client';
 
 export class CreateRelationshipDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'user1-uuid' })
   user1Id: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'user2-uuid' })
   user2Id: string;
 
   @ApiProperty({ enum: RelationshipStatus })

@@ -11,13 +11,21 @@ export class ChatHistoryService {
     return this.prisma.chatHistory.findMany();
   }
 
-  async create(data: CreateChatHistoryDto) {
+  async create(dto: CreateChatHistoryDto) {
     return this.prisma.chatHistory.create({
       data: {
-        ...data,
-        sender: data.sender as MessageSender,
-        roomId: data.roomId,
+        userId: dto.userId,
+        message: dto.message,
+        sender: dto.sender,
+        roomId: dto.roomId,
       },
+    });
+  }
+
+  async findByRoom(roomId: string) {
+    return this.prisma.chatHistory.findMany({
+      where: { roomId },
+      orderBy: { timestamp: 'asc' },
     });
   }
 }

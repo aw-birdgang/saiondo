@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
 import { RelationshipService } from './relationship.service';
 import { CreateRelationshipDto } from './dto/create-relationship.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { InviteRelationshipDto } from './dto/invite-relationship.dto';
+import { RelationshipStatus } from '@prisma/client';
 
 @ApiTags('Relationship')
 @Controller('relationships')
@@ -17,11 +18,11 @@ export class RelationshipController {
   }
 
   @Post()
-  @ApiOperation({ summary: '관계 생성' })
+  @ApiOperation({ summary: '커플 초대(생성)' })
   @ApiBody({ type: CreateRelationshipDto })
   @ApiResponse({ status: 201, description: '생성된 관계 반환' })
-  async create(@Body() body: CreateRelationshipDto) {
-    return this.service.create(body);
+  async create(@Body() dto: CreateRelationshipDto) {
+    return this.service.create(dto);
   }
 
   @Post('invite')
@@ -43,5 +44,20 @@ export class RelationshipController {
   @ApiResponse({ status: 200, description: '거절된 관계 반환' })
   async reject(@Param('id') id: string) {
     return this.service.reject(id);
+  }
+
+  @Patch(':id/status')
+  @ApiOperation({ summary: '커플 상태 변경(수락/종료 등) 및 Room 자동 생성' })
+  async updateStatus(
+    @Param('id') id: string,
+    @Body('status') status: RelationshipStatus,
+  ) {
+    return this.service.updateStatus(id, status);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Relationship 단건 조회' })
+  async findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
   }
 }
