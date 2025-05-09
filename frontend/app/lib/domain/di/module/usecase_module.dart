@@ -5,7 +5,8 @@ import 'package:app/domain/usecase/home/get_menu_items_usecase.dart';
 import 'package:app/domain/usecase/home/navigate_to_screen_usecase.dart';
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
 
-import '../../repository/chat/chat_repository.dart';
+import '../../../data/repository/chat_history_repository_impl.dart';
+import '../../usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../usecase/chat/send_message_usecase.dart';
 
 class UseCaseModule {
@@ -19,9 +20,11 @@ class UseCaseModule {
     getIt.registerLazySingleton(() => GetMenuItemsUseCase());
 
     // chat:--------------------------------------------------------------------
-    getIt.registerSingleton<SendMessageUseCase>(
-      SendMessageUseCase(getIt<ChatRepository>()),
-    );
+    getIt.registerLazySingleton<FetchChatHistoriesUseCase>(
+            () => FetchChatHistoriesUseCase(getIt<ChatHistoryRepositoryImpl>()));
+
+    getIt.registerLazySingleton<SendMessageUseCase>(
+            () => SendMessageUseCase(getIt<ChatHistoryRepositoryImpl>()));
 
   }
 }

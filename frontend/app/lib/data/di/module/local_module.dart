@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../di/service_locator.dart';
+import '../../local/datasources/chat/chat_history_datasource.dart';
 
 class LocalModule {
   static Future<void> configureLocalModuleInjection() async {
@@ -31,6 +32,7 @@ class LocalModule {
 
     // data sources:------------------------------------------------------------
     getIt.registerSingleton(FaqDataSource(await getIt.getAsync<SembastClient>()));
+    getIt.registerSingleton(ChatHistoryDataSource(await getIt.getAsync<SembastClient>()));
 
     // logger:------------------------------------------------------------------
     getIt.registerSingleton<Logger>(

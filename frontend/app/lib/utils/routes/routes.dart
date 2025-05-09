@@ -11,7 +11,12 @@ class Routes {
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
-    chat: (BuildContext context) => ChatScreen(),
+    chat: (BuildContext context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+      return ChatScreen(
+        userId: args['userId'] as String,
+        roomId: args['roomId'] as String,
+      );
+    },
   };
-
 }

@@ -13,13 +13,13 @@ mixin _$ChatStore on _ChatStore, Store {
       Atom(name: '_ChatStore.messages', context: context);
 
   @override
-  ObservableList<Chat> get messages {
+  ObservableList<ChatHistory> get messages {
     _$messagesAtom.reportRead();
     return super.messages;
   }
 
   @override
-  set messages(ObservableList<Chat> value) {
+  set messages(ObservableList<ChatHistory> value) {
     _$messagesAtom.reportWrite(value, super.messages, () {
       super.messages = value;
     });
@@ -41,12 +41,21 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$loadMessagesAsyncAction =
+      AsyncAction('_ChatStore.loadMessages', context: context);
+
+  @override
+  Future<void> loadMessages(String roomId) {
+    return _$loadMessagesAsyncAction.run(() => super.loadMessages(roomId));
+  }
+
   late final _$sendMessageAsyncAction =
       AsyncAction('_ChatStore.sendMessage', context: context);
 
   @override
-  Future<void> sendMessage(String message) {
-    return _$sendMessageAsyncAction.run(() => super.sendMessage(message));
+  Future<void> sendMessage(String userId, String roomId, String message) {
+    return _$sendMessageAsyncAction
+        .run(() => super.sendMessage(userId, roomId, message));
   }
 
   @override

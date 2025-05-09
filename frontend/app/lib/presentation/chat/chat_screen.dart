@@ -1,8 +1,7 @@
-import 'package:app/presentation/chat/store/chat_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-
+import 'store/chat_store.dart';
 import 'chat_message_widget.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -26,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _chatStore.loadMessages(widget.roomId); // 방 입장 시 메시지 불러오기
+    _chatStore.loadMessages(widget.roomId);
   }
 
   @override

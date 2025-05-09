@@ -1,19 +1,10 @@
-import 'dart:async';
+import '../../entry/chat/chat_history.dart';
+import '../../repository/chat_history/chat_history_repository.dart';
 
-import 'package:either_dart/either.dart';
-
-import '../../../core/domain/error/failure.dart';
-import '../../../core/domain/usecase/use_case.dart';
-import '../../entry/chat/chat.dart';
-import '../../repository/chat/chat_repository.dart';
-
-class SendMessageUseCase extends UseCase<Chat, String> {
-  final ChatRepository repository;
-
+class SendMessageUseCase {
+  final ChatHistoryRepository repository;
   SendMessageUseCase(this.repository);
 
-  @override
-  Future<Either<Failure, Chat>> call({required String params}) async {
-    return await repository.sendMessage(params);
-  }
+  Future<ChatHistory> call(String userId, String roomId, String message) =>
+      repository.sendMessage(userId, roomId, message);
 }
