@@ -27,6 +27,8 @@ import {ChatModule} from "@modules/chat/chat.module";
     PrismaModule,
     LlmModule,
     UserModule,
+    RoomModule,
+    ChatModule,
     AdviceReportModule,
     ChatHistoryModule,
     PersonaProfileModule,
@@ -35,8 +37,6 @@ import {ChatModule} from "@modules/chat/chat.module";
     QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,
-    RoomModule,
-    ChatModule,
   ],
 })
 export class AppModule {}

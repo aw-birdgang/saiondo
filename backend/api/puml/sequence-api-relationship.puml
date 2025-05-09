@@ -1,0 +1,19 @@
+@startuml
+title Relationship Matching & Room Creation
+
+actor User1
+actor User2
+participant "RelationshipController" as RC
+participant "RelationshipService" as RS
+participant "RoomService" as RoomS
+database "PostgreSQL" as DB
+
+User1 -> RC : POST /relationships (user1Id, user2Id)
+RC -> RS : create()
+RS -> DB : Relationship(PENDING) 생성
+User2 -> RC : PATCH /relationships/:id/accept
+RC -> RS : accept()
+RS -> DB : Relationship 상태 ACTIVE로 변경
+RS -> RoomS : Room 생성 (relationshipId)
+RoomS -> DB : Room 생성
+@enduml

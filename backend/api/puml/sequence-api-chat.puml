@@ -1,0 +1,21 @@
+@startuml
+title Chat + LLM Feedback Sequence
+
+actor User
+participant "ChatController" as CC
+participant "ChatService" as CS
+participant "LlmService" as LS
+database "PostgreSQL" as DB
+participant "LLM Server (FastAPI)" as LLM
+
+User -> CC : POST /chat (userId, roomId, message)
+CC -> CS : chatWithFeedback()
+CS -> DB : chat_histories에 사용자 메시지 저장
+CS -> LS : getFeedback(message, roomId)
+LS -> LLM : POST /feedback
+LLM --> LS : LLM 피드백 반환
+LS --> CS : 피드백 반환
+CS -> DB : chat_histories에 LLM 피드백 저장
+CS --> CC : {userChat, aiChat}
+CC --> User : 결과 반환
+@enduml

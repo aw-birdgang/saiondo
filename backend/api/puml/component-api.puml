@@ -1,0 +1,35 @@
+@startuml
+title Saiondo API Component Diagram
+
+package "NestJS API" {
+  [UserModule]
+  [RelationshipModule]
+  [RoomModule]
+  [ChatHistoryModule]
+  [AdviceReportModule]
+  [PersonaProfileModule]
+  [QuestionTemplateModule]
+  [PushScheduleModule]
+  [LlmModule]
+  [CategoryCodeModule]
+  [UserAnswerModule]
+  [SwaggerModule]
+}
+
+database "PostgreSQL" as DB
+
+[UserModule] --> DB
+[RelationshipModule] --> DB
+[RoomModule] --> DB
+[ChatHistoryModule] --> DB
+[AdviceReportModule] --> DB
+[PersonaProfileModule] --> DB
+[QuestionTemplateModule] --> DB
+[PushScheduleModule] --> DB
+[UserAnswerModule] --> DB
+
+[RelationshipModule] --> [RoomModule] : Room 자동 생성
+[ChatHistoryModule] --> [LlmModule] : LLM 분석/피드백 요청
+[LlmModule] --> [LLM Server (FastAPI)] : HTTP 요청
+
+@enduml
