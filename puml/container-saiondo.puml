@@ -1,0 +1,24 @@
+@startuml
+title Saiondo Deployment Diagram
+
+node "User Device" {
+  [Flutter App]
+}
+
+node "Web Server" {
+  [NestJS API]
+}
+
+node "LLM Server" {
+  [FastAPI + LangChain]
+}
+
+database "PostgreSQL" as DB
+
+[Flutter App] --> [NestJS API] : HTTPS
+[NestJS API] --> [FastAPI + LangChain] : HTTP
+[NestJS API] --> DB : Prisma ORM
+[FastAPI + LangChain] --> [OpenAI API]
+[FastAPI + LangChain] --> [Claude API]
+
+@enduml

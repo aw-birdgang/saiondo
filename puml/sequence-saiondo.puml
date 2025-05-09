@@ -1,63 +1,23 @@
 @startuml
-title Saiondo 전체 서비스 흐름도 (자동 질문 + 성향 실시간 추출 포함)
+title Saiondo: 프롬프트 입력 ~ LLM 분석 ~ 결과 반환
 
-actor 사용자 as User
+actor User
 participant "Flutter App" as App
-participant "Nest.js API" as API
-participant "PostgreSQL DB" as DB
-participant "LangGraph\n(LangChain 포함)" as LLM
-participant "Persona DB\n(성향 DB)" as PersonaDB
-participant "Notification/Push" as Push
+participant "NestJS API" as API
+participant "LLM Proxy (NestJS)" as Proxy
+participant "FastAPI + LangChain" as LLM
+database "PostgreSQL" as DB
 
-== 1. 온보딩 ==
-User -> App : 앱 실행
-App -> API : 온보딩 정보 전송 (이름, 생일, 성별, MBTI 등)
-API -> DB : 사용자 정보 저장
-DB --> API : 저장 완료
-API --> App : 온보딩 완료
-
-== 2. 시스템이 질문 푸시 ==
-Push -> App : 오늘의 질문 알림
-App -> User : 질문 표시 (ex. "요즘 가장 행복했던 순간은?")
-User -> App : 답변 입력
-App -> API : 답변 전송
-
-API -> DB : 대화 로그 저장 (ChatHistory)
-API -> LLM : 성향 분석 요청 (질문 + 답변)
-
-LLM -> PersonaDB : 성향 추출 결과 저장 (예: 과거 경험, 사랑 스타일)
-PersonaDB --> LLM : 저장 완료
-LLM --> API : 분석 완료
-
-API --> App : 결과 완료 응답 (필요 시 감정 피드백 등 제공)
-
-== 3. 일반 대화 중 성향 추출 ==
-User -> App : 파트너 관련 질문/상담 요청
-App -> API : 일반 메시지 전송
-API -> DB : 대화 로그 저장
-API -> LLM : 대화 분석 요청 (성향 추출 여부 포함)
-
-LLM -> PersonaDB : 의미 있는 성향 정보 있다면 저장
-LLM --> API : 없음 or 결과 있음 반환
-
-API --> App : 답변 제공 + 필요 시 성향 변화 시각화
-
-== 4. 리포트 생성 ==
-User -> App : 커플 리포트 요청
-App -> API : 리포트 요청
-API -> PersonaDB : 두 사용자 성향 데이터 요청
-PersonaDB --> API : 성향 정보 반환
-
-API -> LLM : 비교 분석 요청
-LLM --> API : 요약/조언/이슈 포인트 생성
-API -> App : 커플 리포트 제공
-App -> User : 리포트 표시
-
-== 5. 미션 제안 ==
-App -> API : 오늘의 미션 요청
-API -> PersonaDB : 최신 성향 확인
-PersonaDB --> API : 정보 반환
-API -> App : 미션 제안 (ex. “오늘 파트너 칭찬하기”)
-App -> User : 미션 표시
+User -> App : 프롬프트 입력
+App -> API : POST /chat (프롬프트, userId, roomId)
+API -> DB : chat-histories에 사용자 메시지 저장
+API -> Proxy : LLM 분석 요청 (프롬프트, roomId)
+Proxy -> LLM : POST /chat (프롬프트, 모델)
+LLM -> LLM : LLM 분석 (OpenAI/Claude)
+LLM --> Proxy : 분석 결과/피드백 반환
+Proxy --> API : LLM 결과 반환
+API -> DB : chat-histories에 LLM 피드백 저장
+API --> App : 사용자 메시지 + LLM 피드백 반환
+App --> User : 결과 표시
 
 @enduml

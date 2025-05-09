@@ -1,0 +1,28 @@
+@startuml
+title Saiondo System Component Diagram
+
+package "Frontend" {
+  [Flutter App]
+}
+
+package "Backend" {
+  [NestJS API]
+  [LLM Proxy (NestJS)]
+}
+
+package "LLM Server" {
+  [FastAPI + LangChain]
+  [OpenAI API]
+  [Claude API]
+}
+
+database "PostgreSQL" as DB
+
+[Flutter App] -down-> [NestJS API] : REST API (HTTPS)
+[NestJS API] -down-> [LLM Proxy (NestJS)] : 내부 모듈 호출
+[LLM Proxy (NestJS)] -down-> [FastAPI + LangChain] : HTTP (프롬프트/분석)
+[NestJS API] -right-> DB : ORM (Prisma)
+[FastAPI + LangChain] -down-> [OpenAI API] : LLM 호출
+[FastAPI + LangChain] -down-> [Claude API] : LLM 호출
+
+@enduml
