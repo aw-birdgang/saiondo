@@ -7,3 +7,12 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+
+# 신규: FeedbackRequest/FeedbackResponse
+class FeedbackRequest(BaseModel):
+    message: str
+    roomId: str
+    model: Literal['openai', 'claude'] = 'openai'  # 기본값 openai
+
+class FeedbackResponse(BaseModel):
+    response: str
