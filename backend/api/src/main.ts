@@ -13,6 +13,10 @@ async function bootstrap() {
   const port = configService.getOrThrow('common', { infer: true }).port;
   console.log(`app > bootstrap > apiPrefix::${llmApiUrl}, port::${port} `);
 
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  });
   SwaggerModuleConfig.setupSwagger(app);
   await app.listen(process.env.PORT ?? 3000);
 }
