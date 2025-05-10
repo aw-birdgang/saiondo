@@ -55,6 +55,45 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$roomsAtom = Atom(name: '_HomeStore.rooms', context: context);
+
+  @override
+  ObservableList<Room> get rooms {
+    _$roomsAtom.reportRead();
+    return super.rooms;
+  }
+
+  @override
+  set rooms(ObservableList<Room> value) {
+    _$roomsAtom.reportWrite(value, super.rooms, () {
+      super.rooms = value;
+    });
+  }
+
+  late final _$isLoadingAtom =
+      Atom(name: '_HomeStore.isLoading', context: context);
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
+  late final _$loadRoomsAsyncAction =
+      AsyncAction('_HomeStore.loadRooms', context: context);
+
+  @override
+  Future<void> loadRooms(String userId) {
+    return _$loadRoomsAsyncAction.run(() => super.loadRooms(userId));
+  }
+
   late final _$_HomeStoreActionController =
       ActionController(name: '_HomeStore', context: context);
 
@@ -85,7 +124,9 @@ mixin _$HomeStore on _HomeStore, Store {
     return '''
 success: ${success},
 title: ${title},
-currentScreen: ${currentScreen}
+currentScreen: ${currentScreen},
+rooms: ${rooms},
+isLoading: ${isLoading}
     ''';
   }
 }

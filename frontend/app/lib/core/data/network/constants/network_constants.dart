@@ -2,7 +2,7 @@ class NetworkConstants {
   NetworkConstants._();
 
   // base url
-  static const String baseUrl = "https://member-api.develop.happy545.com";
+  static const String baseUrl = "http://localhost:3000";
 
   // receiveTimeout
   static const int receiveTimeout = 15000;

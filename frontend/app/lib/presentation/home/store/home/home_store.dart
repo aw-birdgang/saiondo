@@ -2,6 +2,7 @@ import 'package:app/core/stores/error/error_store.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../../data/network/model/room.dart';
 import '../../../ticket/ticket.dart';
 
 part 'home_store.g.dart';
@@ -34,6 +35,12 @@ abstract class _HomeStore with Store {
   @observable
   Widget currentScreen = AuthorList();
 
+  @observable
+  ObservableList<Room> rooms = ObservableList<Room>();
+
+  @observable
+  bool isLoading = false;
+
   @action
   void setTitle(String newTitle) {
     title = newTitle;
@@ -42,6 +49,20 @@ abstract class _HomeStore with Store {
   @action
   void setCurrentScreen(Widget screen) {
     currentScreen = screen;
+  }
+
+  @action
+  Future<void> loadRooms(String userId) async {
+    isLoading = true;
+    try {
+      // 실제 RoomApi 등에서 방 목록 불러오기
+      rooms = ObservableList.of([
+        Room(id: 'room1', relationshipId: 'rel1', createdAt: DateTime.now()),
+        Room(id: 'room2', relationshipId: 'rel2', createdAt: DateTime.now()),
+      ]);
+    } finally {
+      isLoading = false;
+    }
   }
 
   // dispose method
