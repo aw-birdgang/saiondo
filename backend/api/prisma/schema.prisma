@@ -50,6 +50,8 @@ enum PushStatus {
 model User {
   id        String   @id @default(uuid())
   name      String
+  email     String   @unique
+  password  String
   birthDate DateTime @map("birth_date")
   gender    Gender
   mbti      String?

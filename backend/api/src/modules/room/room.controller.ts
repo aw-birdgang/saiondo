@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Patch, Delete, Query } from '@nestj
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Room')
 @Controller('rooms')
@@ -11,6 +11,7 @@ export class RoomController {
 
   @Post()
   @ApiOperation({ summary: 'Room 생성' })
+  @ApiBody({ type: CreateRoomDto })
   @ApiResponse({ status: 201, description: '생성된 Room 반환' })
   async create(@Body() dto: CreateRoomDto) {
     return this.service.create(dto);

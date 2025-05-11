@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
-import { RelationshipService } from './relationship.service';
-import { CreateRelationshipDto } from './dto/create-relationship.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { InviteRelationshipDto } from './dto/invite-relationship.dto';
-import { RelationshipStatus } from '@prisma/client';
+import {Body, Controller, Get, Param, Patch, Post} from '@nestjs/common';
+import {RelationshipService} from './relationship.service';
+import {CreateRelationshipDto} from './dto/create-relationship.dto';
+import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {InviteRelationshipDto} from './dto/invite-relationship.dto';
+import {RelationshipStatus} from '@prisma/client';
 
 @ApiTags('Relationship')
 @Controller('relationships')

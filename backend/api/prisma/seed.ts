@@ -1,4 +1,5 @@
 import { PrismaClient, ProfileSource, QuestionType, RelationshipStatus, MessageSender } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -56,11 +57,14 @@ async function main() {
     });
 
     // 3. 유저 생성
+    const hash = await bcrypt.hash('password123', 10);
     const user1 = await prisma.user.create({
         data: {
             name: '김철수',
             gender: 'MALE',
             birthDate: new Date('1990-01-01'),
+            email: 'kim@example.com',
+            password: hash,
         },
     });
 
@@ -69,6 +73,8 @@ async function main() {
             name: '이영희',
             gender: 'FEMALE',
             birthDate: new Date('1992-02-02'),
+            email: 'lee@example.com',
+            password: hash,
         },
     });
 

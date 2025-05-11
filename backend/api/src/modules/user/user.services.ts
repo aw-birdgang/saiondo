@@ -19,6 +19,8 @@ export class UserService {
                 name: data.name,
                 gender: data.gender,
                 birthDate: new Date(),
+                email: data.email,
+                password: data.password,
             },
         });
     }

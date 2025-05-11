@@ -1,17 +1,8 @@
-import {
-    Controller,
-    Post,
-    Body,
-    HttpException,
-    HttpStatus,
-    Inject,
-    forwardRef,
-} from '@nestjs/common';
-import { LlmService } from './llm.service';
-import { ChatRequestDto, ChatResponseDto } from './dto/chat.dto';
-import { ChatHistoryService } from '../chat-history/chat-history.service';
-import { CreateChatHistoryDto } from '../chat-history/dto/create-chat-history.dto';
-import {ApiTags, ApiOperation, ApiResponse, ApiBody} from '@nestjs/swagger';
+import {Body, Controller, forwardRef, HttpException, HttpStatus, Inject, Post,} from '@nestjs/common';
+import {LlmService} from './llm.service';
+import {ChatRequestDto, ChatResponseDto} from './dto/chat.dto';
+import {ChatHistoryService} from '../chat-history/chat-history.service';
+import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {AnalyzeRequestDto, AnalyzeResponseDto} from "./dto/analyze.dto";
 import {AnalyzeAnswerDto} from "@modules/llm/dto/analyze-answer.dto";
 
@@ -26,6 +17,7 @@ export class LlmController {
 
     @Post('chat')
     @ApiOperation({ summary: 'LLM 프롬프트 전송' })
+    @ApiBody({ type: ChatRequestDto })
     @ApiResponse({ status: 200, description: 'LLM 응답 성공', type: ChatResponseDto })
     @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
     async chat(@Body() body: ChatRequestDto): Promise<ChatResponseDto> {

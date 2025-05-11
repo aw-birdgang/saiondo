@@ -1,7 +1,6 @@
 import {Module} from '@nestjs/common';
 import {LlmModule} from "./modules/llm/llm.module";
 import {ConfigModule} from "@nestjs/config";
-import commonConfig from "./config/common.config";
 import {PrismaModule} from "./common/prisma/prisma.module";
 import {UserModule} from "@modules/user/user.module";
 import {AdviceReportModule} from "@modules/advice-report/advice-report.module";
@@ -14,6 +13,9 @@ import {PushScheduleModule} from "@modules/push-schedule/push-schedule.module";
 import {UserAnswerModule} from "@modules/user-answer/user-answer.module";
 import {RoomModule} from './modules/room/room.module';
 import {ChatModule} from "@modules/chat/chat.module";
+import {AuthModule} from "./modules/auth/auth.module";
+import commonConfig from "./config/common.config";
+import authConfig from "./config/auth.config";
 
 @Module({
   imports: [
@@ -21,11 +23,13 @@ import {ChatModule} from "@modules/chat/chat.module";
       isGlobal: true,
       load: [
         commonConfig,
+        authConfig
       ],
       envFilePath: ['.env'],
     }),
     PrismaModule,
     LlmModule,
+    AuthModule,
     UserModule,
     RoomModule,
     ChatModule,
