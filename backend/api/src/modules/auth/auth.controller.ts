@@ -29,7 +29,7 @@ export class AuthController {
                 accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
                 user: {
                     id: 'uuid-1234',
-                    email: 'test@example.com',
+                    email: 'kim@example.com',
                     name: '홍길동',
                     gender: 'MALE',
                     birthDate: '1990-01-01T00:00:00.000Z',

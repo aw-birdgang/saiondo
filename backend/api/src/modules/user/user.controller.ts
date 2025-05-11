@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, HttpException, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Post, HttpException, HttpStatus, Param } from '@nestjs/common';
 import { UserService } from './user.services';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import {CreateUserDto} from "@modules/user/dto/user.dto";
@@ -26,5 +26,12 @@ export class UserController {
         } catch (e) {
             throw new HttpException(e.message || '유저 생성 실패', HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Get(':id/rooms')
+    @ApiOperation({ summary: '유저가 속한 Room 목록 조회' })
+    @ApiResponse({ status: 200, description: 'Room 목록 반환' })
+    async getRoomsByUserId(@Param('id') userId: string) {
+        return this.userService.getRoomsByUserId(userId);
     }
 }

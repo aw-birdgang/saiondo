@@ -24,4 +24,22 @@ export class UserService {
             },
         });
     }
+
+    async getRoomsByUserId(userId: string) {
+        // user가 user1 또는 user2인 모든 relationship 조회
+        const relationships = await this.prisma.relationship.findMany({
+            where: {
+                OR: [
+                    { user1Id: userId },
+                    { user2Id: userId }
+                ]
+            },
+            include: { room: true }
+        });
+
+        // room이 연결된 relationship만 필터링
+        return relationships
+            .filter(r => r.room)
+            .map(r => r.room);
+    }
 }
