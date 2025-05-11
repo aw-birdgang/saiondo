@@ -6,8 +6,10 @@ import '../../../core/data/network/dio/configs/dio_configs.dart';
 import '../../../core/data/network/dio/dio_client.dart';
 import '../../../core/data/network/dio/interceptors/logging_interceptor.dart';
 import '../../../di/service_locator.dart';
+import '../../network/apis/auth_api.dart';
 import '../../network/apis/chat_history_api.dart';
 import '../../network/apis/faqs/faq_api.dart';
+import '../../network/apis/user_api.dart';
 import '../../network/constants/endpoints.dart';
 import '../../network/interceptors/error_interceptor.dart';
 import '../../network/rest_client.dart';
@@ -46,6 +48,9 @@ class NetworkModule {
     getIt.registerSingleton(FaqApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(ChatApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(ChatHistoryApi(getIt<DioClient>(), getIt<RestClient>()));
+
+    getIt.registerSingleton(UserApi(getIt<DioClient>(), getIt<RestClient>()));
+    getIt.registerSingleton(AuthApi(getIt<DioClient>(), getIt<RestClient>()));
 
   }
 }

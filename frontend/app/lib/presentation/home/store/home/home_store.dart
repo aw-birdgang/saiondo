@@ -41,6 +41,9 @@ abstract class _HomeStore with Store {
   @observable
   bool isLoading = false;
 
+  @observable
+  String? selectedRoomId;
+
   @action
   void setTitle(String newTitle) {
     title = newTitle;
@@ -63,6 +66,11 @@ abstract class _HomeStore with Store {
     } finally {
       isLoading = false;
     }
+  }
+
+  @action
+  void selectRoom(String roomId) {
+    selectedRoomId = roomId;
   }
 
   // dispose method

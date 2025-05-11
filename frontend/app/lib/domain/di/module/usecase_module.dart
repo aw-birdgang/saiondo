@@ -5,7 +5,11 @@ import 'package:app/domain/usecase/home/get_menu_items_usecase.dart';
 import 'package:app/domain/usecase/home/navigate_to_screen_usecase.dart';
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
 
+import '../../../data/network/apis/auth_api.dart';
 import '../../../data/repository/chat_history_repository_impl.dart';
+import '../../repository/auth/auth_repository.dart';
+import '../../usecase/auth/login_usecase.dart';
+import '../../usecase/auth/register_usecase.dart';
 import '../../usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../usecase/chat/send_message_usecase.dart';
 
@@ -25,6 +29,14 @@ class UseCaseModule {
 
     getIt.registerLazySingleton<SendMessageUseCase>(
             () => SendMessageUseCase(getIt<ChatHistoryRepositoryImpl>()));
+
+    // auth:--------------------------------------------------------------------
+    getIt.registerLazySingleton<LoginUseCase>(
+            () => LoginUseCase(getIt<AuthRepository>()));
+    getIt.registerLazySingleton<RegisterUseCase>(
+            () => RegisterUseCase(getIt<AuthRepository>()));
+
+    // user:--------------------------------------------------------------------
 
   }
 }

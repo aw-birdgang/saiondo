@@ -86,6 +86,22 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$selectedRoomIdAtom =
+      Atom(name: '_HomeStore.selectedRoomId', context: context);
+
+  @override
+  String? get selectedRoomId {
+    _$selectedRoomIdAtom.reportRead();
+    return super.selectedRoomId;
+  }
+
+  @override
+  set selectedRoomId(String? value) {
+    _$selectedRoomIdAtom.reportWrite(value, super.selectedRoomId, () {
+      super.selectedRoomId = value;
+    });
+  }
+
   late final _$loadRoomsAsyncAction =
       AsyncAction('_HomeStore.loadRooms', context: context);
 
@@ -120,13 +136,25 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
+  void selectRoom(String roomId) {
+    final _$actionInfo =
+        _$_HomeStoreActionController.startAction(name: '_HomeStore.selectRoom');
+    try {
+      return super.selectRoom(roomId);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 success: ${success},
 title: ${title},
 currentScreen: ${currentScreen},
 rooms: ${rooms},
-isLoading: ${isLoading}
+isLoading: ${isLoading},
+selectedRoomId: ${selectedRoomId}
     ''';
   }
 }

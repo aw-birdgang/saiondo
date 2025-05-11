@@ -10,8 +10,20 @@ class Endpoints {
   // connectTimeout
   static const int connectionTimeout = 30000;
 
-  // booking endpoints
-  static const String getFaqs = baseUrl + "/v1/faq/list?pageRows=10&pageNumber=1&languageType=EN";
-  static const String getChats = baseUrl + "/v1/chat/list?pageRows=10&pageNumber=1&languageType=EN";
+  //
+  static const String authRegister = baseUrl + "/auth/register";
+  static const String authLogin = baseUrl + "/auth/login";
+
+  //
+  static const String users = '/users';
+  static String userById(String id) => '/users/$id';
+  static String userRooms(String id) => '/users/$id/rooms';
+
+  //
+  static const String getFaqs = baseUrl + "/faq/list?pageRows=10&pageNumber=1&languageType=EN";
+  static const String getChats = baseUrl + "/chat/list?pageRows=10&pageNumber=1&languageType=EN";
+
+  static const String chatHistories = baseUrl + "/chat-histories";
+
 
 }

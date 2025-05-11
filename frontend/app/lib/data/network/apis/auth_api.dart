@@ -1,0 +1,55 @@
+import 'package:dio/dio.dart';
+
+import '../../../../core/data/network/dio/dio_client.dart';
+import '../constants/endpoints.dart';
+import '../rest_client.dart';
+
+
+class AuthApi {
+  final DioClient _dioClient;
+  final RestClient _restClient;
+
+  AuthApi(this._dioClient, this._restClient);
+
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    try {
+      final response = await _dioClient.dio.post(
+        Endpoints.authLogin,
+        data: {
+          'email': email,
+          'password': password,
+        },
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
+      // Dio는 이미 JSON 파싱된 Map을 반환
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      // 서버에서 에러 메시지를 내려주면 그대로 전달
+      final message = e.response?.data?['message'] ?? e.message ?? '로그인 실패';
+      throw Exception('로그인 실패: $message');
+    }
+  }
+
+  Future<Map<String, dynamic>> register(String email, String password, String name, String gender) async {
+    try {
+      final response = await _dioClient.dio.post(
+        Endpoints.authRegister,
+        data: {
+          'email': email,
+          'password': password,
+          'name': name,
+          'gender': gender,
+        },
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+        ),
+      );
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      final message = e.response?.data?['message'] ?? e.message ?? '회원가입 실패';
+      throw Exception('회원가입 실패: $message');
+    }
+  }
+}
