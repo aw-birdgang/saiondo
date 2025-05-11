@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'chat_message_bubble.dart';
 import 'store/chat_store.dart';
@@ -54,8 +55,18 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF6F8FC),
       appBar: AppBar(
-        title: Text('채팅방'),
+        backgroundColor: const Color(0xFFF6F8FC),
+        elevation: 0,
+        title: Text(
+          '사이온도 채팅',
+          style: GoogleFonts.nunito(
+            color: Color(0xFF22223B),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: IconThemeData(color: Color(0xFF22223B)),
       ),
       body: Column(
         children: [
@@ -73,8 +84,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     final message = messages[index];
                     final isMe = message.sender == 'USER';
                     return Row(
-                      mainAxisAlignment:
-                      isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                      mainAxisAlignment: isMe
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
                       children: [
                         Flexible(
                           child: ChatMessageBubble(
@@ -98,19 +110,30 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildMessageInput() {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        color: Colors.grey[100],
+        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          color: Color(0xFFF6F8FC),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Row(
           children: [
             Expanded(
               child: TextField(
                 controller: _textController,
+                style: GoogleFonts.nunito(fontSize: 16),
                 decoration: InputDecoration(
                   hintText: '메시지 입력...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  hintStyle: GoogleFonts.nunito(color: Colors.grey[500]),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
                 onSubmitted: (_) => _sendMessage(),
               ),
@@ -118,7 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
             SizedBox(width: 8),
             Observer(
               builder: (_) => IconButton(
-                icon: Icon(Icons.send, color: Colors.blue),
+                icon: Icon(Icons.send, color: Color(0xFF7EC8E3)),
                 onPressed: _chatStore.isLoading ? null : _sendMessage,
               ),
             ),

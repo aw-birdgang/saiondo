@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../domain/entry/chat/chat_history.dart';
 
 class ChatMessageBubble extends StatelessWidget {
@@ -13,44 +14,83 @@ class ChatMessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bubbleColor = isMe ? Colors.blue[200] : Colors.grey[300];
+    final isAI = message.sender == 'AI';
+    final bubbleColor = isMe
+        ? const Color(0xFF7EC8E3) // 내 메시지: 파스텔 블루
+        : (isAI
+            ? const Color(0xFFF3E8FF) // AI: 연보라
+            : Colors.white); // 상대: 화이트
+
+    final textColor = isMe ? Colors.white : const Color(0xFF22223B);
+
     final align = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
     final radius = isMe
         ? const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(16),
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomLeft: Radius.circular(18),
           )
         : const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-            bottomRight: Radius.circular(16),
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomRight: Radius.circular(18),
           );
+
+    Widget bubble = Container(
+      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: bubbleColor,
+        borderRadius: radius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Text(
+        message.message,
+        style: GoogleFonts.nunito(
+          fontSize: 16,
+          color: textColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+
+    // AI 메시지면 로봇 아이콘 + 말풍선 Row로 배치
+    if (isAI) {
+      bubble = Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 4.0, bottom: 2),
+            child: Icon(Icons.smart_toy, color: Color(0xFFB388FF), size: 20),
+          ),
+          bubble,
+        ],
+      );
+    }
 
     return Column(
       crossAxisAlignment: align,
       children: [
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-          decoration: BoxDecoration(
-            color: bubbleColor,
-            borderRadius: radius,
-          ),
-          child: Text(
-            message.message,
-            style: TextStyle(fontSize: 16, color: Colors.black87),
-          ),
-        ),
+        bubble,
         Padding(
           padding: EdgeInsets.only(
-            left: isMe ? 0 : 12,
-            right: isMe ? 12 : 0,
-            bottom: 4,
+            left: isMe ? 0 : 16,
+            right: isMe ? 16 : 0,
+            bottom: 2,
           ),
           child: Text(
             _formatTime(message.timestamp),
-            style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+            style: GoogleFonts.nunito(
+              fontSize: 11,
+              color: Colors.grey[500],
+            ),
           ),
         ),
       ],
