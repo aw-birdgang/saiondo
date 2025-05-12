@@ -17,10 +17,23 @@ class _HomeScreenState extends State<HomeScreen> {
   final logger = getIt<Logger>();
   final AuthStore _authStore = getIt<AuthStore>();
 
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    Center(child: Text('홈')),
+    Center(child: Text('마이페이지')),
+  ];
+
   @override
   void initState() {
     super.initState();
     _authStore.loadAuthFromPrefs();
+  }
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -56,15 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
           if (myUserId == null) {
             return Center(child: CircularProgressIndicator());
           }
-          return Container();
+          return _screens[_selectedIndex];
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (_authStore.roomId == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('채팅방을 먼저 선택하세요!')),
-            );
             return;
           }
           Navigator.pushNamed(
@@ -78,6 +88,20 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Icon(Icons.chat),
         tooltip: 'Start Chat',
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onTabTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: '마이',
+          ),
+        ],
       ),
     );
   }
