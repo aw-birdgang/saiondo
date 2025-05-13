@@ -97,4 +97,18 @@ export class LlmService {
             }
         }
     }
+
+    /**
+     * 채팅 데이터 기반 성향 분석 요청
+     * @param chatData 채팅 데이터 배열
+     */
+    async analyzePersona(chatData: any[]): Promise<any> {
+        try {
+            const response = await axios.post(`${this.llmApiUrl}/analyze-persona`, { chatData });
+            return response.data;
+        } catch (error: any) {
+            console.error('LLM 성향 분석 요청 실패:', error.message);
+            throw error;
+        }
+    }
 }

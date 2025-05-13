@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
-import { ProfileSource } from '@prisma/client';
+import {Injectable} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
+import {ProfileSource} from '@prisma/client';
+import {LlmService} from "@modules/llm/llm.service";
 
 @Injectable()
 export class PersonaProfileService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly llmService: LlmService,
+  ) {}
 
   async findAll() {
     return this.prisma.personaProfile.findMany({
@@ -43,6 +47,31 @@ export class PersonaProfileService {
         isStatic: false,
         source,
         confidenceScore,
+      },
+    });
+  }
+
+  async getRecentChatData(userId: string) {
+    // ChatHistory에서 최근 N개 메시지 조회
+    return this.prisma.chatHistory.findMany({
+      where: { userId },
+      orderBy: { timestamp: 'desc' },
+      take: 30,
+    });
+  }
+
+  async analyzeAndSavePersona(userId: string) {
+    const chatData = await this.getRecentChatData(userId);
+    const analysis = await this.llmService.analyzePersona(chatData);
+
+    // 예시: analysis = { categoryCodeId, content, confidenceScore }
+    return this.prisma.personaProfile.create({
+      data: {
+        userId,
+        categoryCodeId: analysis.categoryCodeId,
+        content: analysis.content,
+        confidenceScore: analysis.confidenceScore,
+        source: 'AI_ANALYSIS',
       },
     });
   }

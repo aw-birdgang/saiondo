@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from mcp.context import MCPContext
 from graph.love_analysis_graph import build_graph
 from schemas import (
@@ -32,3 +32,15 @@ def analyze_love(ctx: MCPContext):
         "match_result": result["metadata"]["match_result"],
         "advice": result["metadata"]["advice"]
     }
+
+@router.post("/analyze-persona")
+async def analyze_persona(request: Request):
+    data = await request.json()
+    chat_data = data["chatData"]
+    # 실제 LLM 분석 로직으로 대체
+    result = {
+        "categoryCodeId": "category-001",
+        "content": "분석된 성향 내용 예시",
+        "confidenceScore": 0.91,
+    }
+    return result

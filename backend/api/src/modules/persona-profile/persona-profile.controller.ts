@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { PersonaProfileService } from './persona-profile.service';
 import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
@@ -21,5 +21,10 @@ export class PersonaProfileController {
   @ApiResponse({ status: 201, description: '생성된 페르소나 프로필 반환' })
   async create(@Body() body: CreatePersonaProfileDto) {
     return this.service.create(body);
+  }
+
+  @Post('analyze/:userId')
+  async analyzePersona(@Param('userId') userId: string) {
+    return this.service.analyzeAndSavePersona(userId);
   }
 }
