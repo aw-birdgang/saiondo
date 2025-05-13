@@ -9,4 +9,5 @@ export type CommonConfig = {
   fallbackLanguage: string;
   headerLanguage: string;
   llmApiUrl: string;
+  wsPort: number;
 };

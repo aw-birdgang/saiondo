@@ -18,6 +18,7 @@ async function bootstrap() {
     credentials: true,
   });
   SwaggerModuleConfig.setupSwagger(app);
+  // app.useWebSocketAdapter(new WsAdapter(app));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

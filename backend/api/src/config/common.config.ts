@@ -43,6 +43,12 @@ class EnvironmentVariablesValidator {
   @IsString()
   @IsOptional()
   LLM_API_URL: string;
+
+  @IsInt()
+  @Min(0)
+  @Max(65535)
+  @IsOptional()
+  WS_PORT: number;
 }
 
 export default registerAs<CommonConfig>('common', () => {
@@ -63,5 +69,6 @@ export default registerAs<CommonConfig>('common', () => {
     fallbackLanguage: process.env.APP_FALLBACK_LANGUAGE || 'en',
     headerLanguage: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
     llmApiUrl: process.env.LLM_API_URL || 'http://localhost:8000',
+    wsPort:process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10): 3000,
   };
 });
