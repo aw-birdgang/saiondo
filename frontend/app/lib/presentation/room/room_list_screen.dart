@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/network/model/room.dart';
+import '../../data/network/dto/room_request.dart';
 
 class RoomListScreen extends StatelessWidget {
   final List<Room> rooms;

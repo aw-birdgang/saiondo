@@ -1,4 +1,4 @@
-import '../../../data/network/model/user.dart';
+import '../../entry/user/user.dart';
 
 abstract class UserRepository {
   // 서버에서 유저 목록/단건 조회

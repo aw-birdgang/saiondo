@@ -58,6 +58,20 @@ mixin _$ChatStore on _ChatStore, Store {
         .run(() => super.sendMessage(userId, roomId, message));
   }
 
+  late final _$_ChatStoreActionController =
+      ActionController(name: '_ChatStore', context: context);
+
+  @override
+  void addMessage(ChatHistory message) {
+    final _$actionInfo =
+        _$_ChatStoreActionController.startAction(name: '_ChatStore.addMessage');
+    try {
+      return super.addMessage(message);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

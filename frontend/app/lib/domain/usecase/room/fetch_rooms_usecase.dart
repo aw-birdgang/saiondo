@@ -1,4 +1,4 @@
-import '../../../data/network/model/room.dart';
+import '../../../data/network/dto/room_request.dart';
 import '../../repository/room/room_repository.dart';
 
 class FetchRoomsUseCase {

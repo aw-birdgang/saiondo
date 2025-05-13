@@ -1,6 +1,7 @@
 import 'package:mobx/mobx.dart';
+import '../../../domain/entry/user/user.dart';
 import '../../../domain/repository/user/user_repository.dart';
-import '../../../data/network/model/user.dart';
+import '../../../data/network/dto/user_request.dart';
 
 part 'user_store.g.dart';
 

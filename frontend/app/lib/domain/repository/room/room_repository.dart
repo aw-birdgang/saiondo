@@ -1,4 +1,4 @@
-import '../../../data/network/model/room.dart';
+import '../../../data/network/dto/room_request.dart';
 
 abstract class RoomRepository {
   Future<List<Room>> fetchRooms(String userId);

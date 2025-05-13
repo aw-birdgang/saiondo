@@ -1,6 +1,6 @@
 import '../../data/network/apis/room_api.dart';
 import '../../domain/repository/room/room_repository.dart';
-import '../network/model/room.dart';
+import '../network/dto/room_request.dart';
 
 class RoomRepositoryImpl implements RoomRepository {
   final RoomApi api;

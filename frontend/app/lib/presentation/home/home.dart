@@ -74,15 +74,19 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (_authStore.roomId == null) {
+          var roomId = _authStore.roomId;
+          if (roomId == null) {
             return;
           }
+
+          print('userId :: $myUserId, roomId :: $roomId');
+
           Navigator.pushNamed(
             context,
             Routes.chat,
             arguments: {
               'userId': myUserId,
-              'roomId': _authStore.roomId,
+              'roomId': roomId,
             },
           );
         },

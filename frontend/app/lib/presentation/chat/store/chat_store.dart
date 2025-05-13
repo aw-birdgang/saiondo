@@ -34,4 +34,9 @@ abstract class _ChatStore with Store {
     messages.insert(0, chat);
     isLoading = false;
   }
+
+  @action
+  void addMessage(ChatHistory message) {
+    messages.add(message);
+  }
 }

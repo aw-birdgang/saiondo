@@ -1,21 +1,16 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
-
 import '../../../../core/data/network/dio/dio_client.dart';
 import '../../../../domain/entry/chat/chat_list.dart';
 import '../../constants/endpoints.dart';
-import '../../model/chat_response.dart';
+import '../../dto/chat_history_request.dart';
+import '../../dto/chat_history_response.dart';
 import '../../rest_client.dart';
 
 class ChatApi {
-  // dio instance
   final DioClient _dioClient;
-
-  // rest-client instance
   final RestClient _restClient;
 
-  // injecting dio instance
   ChatApi(this._dioClient, this._restClient);
 
   Future<ChatList> getChats() async {
@@ -28,20 +23,16 @@ class ChatApi {
     }
   }
 
-  Future<ChatResponse> sendMessage(String message) async {
-    try {
-      final Response response = await _dioClient.dio.post(
-        '/chat',
-        data: {'message': message},
-      );
-      if (response.data is Map<String, dynamic>) {
-        return ChatResponse.fromJson(response.data as Map<String, dynamic>);
-      } else {
-        throw Exception('Invalid response format');
-      }
-    } catch (e) {
-      throw Exception('API Error: ${e.toString()}');
-    }
+  Future<ChatHistoryResponse> sendMessage(ChatHistoryRequest req) async {
+    final response = await _dioClient.dio.post(Endpoints.chat, data: req.toJson());
+    return ChatHistoryResponse.fromJson(response.data);
+  }
+
+  Future<List<ChatHistoryResponse>> fetchChatHistories(String roomId) async {
+    final response = await _dioClient.dio.get(Endpoints.chatHistories, queryParameters: {'roomId': roomId});
+    return (response.data as List)
+        .map((e) => ChatHistoryResponse.fromJson(e))
+        .toList();
   }
 
 }

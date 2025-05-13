@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../model/room.dart';
+import '../dto/room_request.dart';
 
 class RoomApi {
   final Dio dio;

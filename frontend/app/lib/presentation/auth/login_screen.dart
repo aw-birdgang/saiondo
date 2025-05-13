@@ -21,6 +21,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
   bool _navigated = false;
 
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _emailController.text = "kim@example.com";
+      _passwordController.text = "password123";
+    });
+  }
+
   @override
   void dispose() {
     _emailController.dispose();

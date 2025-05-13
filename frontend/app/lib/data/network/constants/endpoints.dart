@@ -1,8 +1,18 @@
+import 'dart:io';
+
 class Endpoints {
   Endpoints._();
 
   // base url
-  static const String baseUrl = "http://localhost:3000";
+  static String get baseUrl {
+    if (Platform.isAndroid) {
+      // Android 에뮬레이터에서 호스트 PC로 접근
+      return 'http://10.0.2.2:3000';
+    } else {
+      // iOS 시뮬레이터, 웹, 데스크탑 등
+      return 'http://localhost:3000';
+    }
+  }
 
   // receiveTimeout
   static const int receiveTimeout = 15000;
@@ -11,8 +21,8 @@ class Endpoints {
   static const int connectionTimeout = 30000;
 
   //
-  static const String authRegister = baseUrl + "/auth/register";
-  static const String authLogin = baseUrl + "/auth/login";
+  static String authRegister = baseUrl + "/auth/register";
+  static String authLogin = baseUrl + "/auth/login";
 
   //
   static const String users = '/users';
@@ -20,10 +30,10 @@ class Endpoints {
   static String userRooms(String id) => '/users/$id/rooms';
 
   //
-  static const String getFaqs = baseUrl + "/faq/list?pageRows=10&pageNumber=1&languageType=EN";
-  static const String getChats = baseUrl + "/chat/list?pageRows=10&pageNumber=1&languageType=EN";
+  static String getFaqs = baseUrl + "/faq/list?pageRows=10&pageNumber=1&languageType=EN";
+  static String getChats = baseUrl + "/chat/list?pageRows=10&pageNumber=1&languageType=EN";
 
-  static const String chatHistories = baseUrl + "/chat-histories";
-
+  static String chatHistories = baseUrl + "/chat-histories";
+  static String chat = baseUrl + "/chat";
 
 }

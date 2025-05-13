@@ -1,8 +1,8 @@
-import 'package:app/data/network/model/user.dart';
 import 'package:app/domain/repository/user/user_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../domain/entry/user/user.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
 import '../../../domain/usecase/auth/register_usecase.dart';

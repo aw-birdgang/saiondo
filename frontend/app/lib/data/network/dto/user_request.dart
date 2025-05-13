@@ -1,22 +1,24 @@
-class User {
+class UserRequest {
   final String id;
   final String name;
   final String email;
   final String gender;
-  // 필요시 room 정보 등 추가
+  final String? roomId;
 
-  User({
+  UserRequest({
     required this.id,
     required this.name,
     required this.email,
     required this.gender,
+    this.roomId,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory UserRequest.fromJson(Map<String, dynamic> json) => UserRequest(
         id: json['id'],
         name: json['name'],
         email: json['email'],
         gender: json['gender'],
+        roomId: json['roomId'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -24,5 +26,6 @@ class User {
         'name': name,
         'email': email,
         'gender': gender,
+        'roomId': roomId,
       };
 }

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import '../../domain/entry/user/user.dart';
 import '../../domain/repository/user/user_repository.dart';
-import '../sharedpref/shared_preference_helper.dart';
+import '../adapter/user_adapter.dart';
 import '../network/apis/user_api.dart';
-import '../network/model/user.dart';
+import '../network/dto/user_request.dart';
+import '../sharedpref/shared_preference_helper.dart';
 
 class UserRepositoryImpl implements UserRepository {
 
@@ -13,10 +15,16 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this._userApi, this._prefs);
 
   @override
-  Future<List<User>> fetchUsers() => _userApi.fetchUsers();
+  Future<List<User>> fetchUsers() async {
+    final responseList = await _userApi.fetchUsers();
+    return responseList.map((res) => UserAdapter.fromResponse(res)).toList();
+  }
 
   @override
-  Future<User> fetchUserById(String id) => _userApi.fetchUserById(id);
+  Future<User> fetchUserById(String id) async {
+    final res = await _userApi.fetchUserById(id);
+    return UserAdapter.fromResponse(res);
+  }
 
   @override
   Future<List<dynamic>> fetchUserRooms(String id) => _userApi.fetchUserRooms(id);
@@ -30,7 +38,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<User?> getUser() async {
     final jsonString = await _prefs.getUserInfo();
     if (jsonString == null) return null;
-    return User.fromJson(jsonDecode(jsonString));
+    return UserAdapter.fromResponse(jsonDecode(jsonString));
   }
 
   @override
@@ -40,9 +48,18 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<User> updateUser(User user) async {
-    // 서버에 PATCH/PUT 요청 후, 결과를 로컬에도 반영
-    final updated = await _userApi.updateUser(user);
-    await saveUser(updated);
-    return updated;
+    // User → UserRequest 변환
+    final req = UserRequest(
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      gender: user.gender,
+      roomId: user.roomId,
+    );
+    // 서버에 업데이트 요청
+    final updatedRes = await _userApi.updateUser(req); // UserResponse 반환
+    final updatedUser = UserAdapter.fromResponse(updatedRes); // User로 변환
+    await _prefs.saveUserInfo(jsonEncode(updatedUser.toJson())); // 실제 User 저장
+    return updatedUser;
   }
 }
