@@ -6,8 +6,12 @@ import 'package:logger/logger.dart';
 
 import '../../di/service_locator.dart';
 import '../../utils/routes/routes.dart';
+import 'home_tab.dart';
+import 'my_page_tab.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -20,8 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    Center(child: Text('홈')),
-    Center(child: Text('마이페이지')),
+    const HomeTabScreen(),
+    MyPageScreen(),
   ];
 
   @override
@@ -38,8 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final myUserId = _authStore.userId;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -64,28 +66,21 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Observer(
-        builder: (_) {
-          if (myUserId == null) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return _screens[_selectedIndex];
-        },
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           var roomId = _authStore.roomId;
+          var userId = _authStore.userId;
           if (roomId == null) {
             return;
           }
 
-          print('userId :: $myUserId, roomId :: $roomId');
+          print('userId :: $userId, roomId :: $roomId');
 
           Navigator.pushNamed(
             context,
             Routes.chat,
             arguments: {
-              'userId': myUserId,
+              'userId': userId,
               'roomId': roomId,
             },
           );
@@ -93,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.chat),
         tooltip: 'Start Chat',
       ),
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,

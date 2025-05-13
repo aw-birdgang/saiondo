@@ -12,10 +12,16 @@ abstract class UserRepository {
   // 로컬에 유저 정보 저장/조회/삭제
   Future<void> saveUser(User user);
   Future<User?> getUser();
+  Future<String?> getUserId();
+
   Future<void> removeUser();
 
   // (선택) 유저 정보 업데이트
   Future<User> updateUser(User user);
 
   Future<PersonaProfile?> fetchPersonaProfile(String userId);
+
+  Future<List<PersonaProfile>?> fetchPersonaProfiles(String userId);
+  Future<PersonaProfile> createPersonaProfile(String userId, PersonaProfile profile);
+  Future<PersonaProfile> updatePersonaProfile(String userId, PersonaProfile profile);
 }

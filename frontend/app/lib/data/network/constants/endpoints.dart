@@ -29,7 +29,10 @@ class Endpoints {
   static String userById(String id) => '/users/$id';
   static String userRooms(String id) => '/users/$id/rooms';
 
-  static String personaProfile(String userId) => '/persona-profile/$userId';
+  static String personaProfile(String userId) => '/persona-profiles/$userId';
+  static String personaProfiles(String userId) => '/persona-profiles/user/$userId';
+  static String createPersonaProfile(String userId) => '/persona-profiles/$userId';
+  static String updatePersonaProfile(String userId, String categoryCodeId) => '/persona-profiles/$userId/$categoryCodeId';
 
   //
   static String getFaqs = baseUrl + "/faq/list?pageRows=10&pageNumber=1&languageType=EN";

@@ -20,4 +20,12 @@ class UserResponse {
     gender: json['gender'],
     roomId: json['roomId'],
   );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'email': email,
+    'gender': gender,
+    'roomId': roomId,
+  };
 }

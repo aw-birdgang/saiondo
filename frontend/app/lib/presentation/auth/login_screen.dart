@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
-import '../../utils/routes/routes.dart';
+import '../user/store/user_store.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -14,13 +14,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final AuthStore _authStore = getIt<AuthStore>();
+  final UserStore userStore = getIt<UserStore>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
   bool _navigated = false;
-
+  String? _error;
 
   @override
   void initState() {
@@ -42,17 +43,19 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      await _authStore.login(
+      final success = await _authStore.login(
         _emailController.text.trim(),
         _passwordController.text,
       );
       if (!mounted) return;
       setState(() => _isLoading = false);
-      if (_authStore.accessToken != null && !_navigated) {
+      if (success) {
         _navigated = true;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushReplacementNamed(context, '/home');
         });
+      } else {
+        setState(() => _error = '로그인 실패');
       }
     } catch (e) {
       if (!mounted) return;
@@ -75,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(24.0),
               child: Observer(
                 builder: (_) {
-                  final error = _authStore.error;
+                  final error = _error;
                   final token = _authStore.accessToken;
 
                   if (token != null && !_isLoading && !_navigated) {

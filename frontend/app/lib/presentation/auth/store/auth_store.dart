@@ -39,8 +39,11 @@ abstract class _AuthStore with Store {
   @observable
   String? error;
 
+  @observable
+  bool isLoggedIn = false;
+
   @action
-  Future<void> login(String email, String password) async {
+  Future<bool> login(String email, String password) async {
     try {
       final result = await _loginUseCase(email, password);
       logger.i('로그인 응답: $result');
@@ -55,11 +58,14 @@ abstract class _AuthStore with Store {
           roomId = userRooms.first['id'];
         }
         await _userRepository.saveUser(User.fromJson(user!));
+        isLoggedIn = true;
+        return true;
       }
     } catch (e) {
       error = e.toString();
       logger.e('로그인 에러: $e');
     }
+    return false;
   }
 
   @action
@@ -95,5 +101,6 @@ abstract class _AuthStore with Store {
     userId = null;
     user = null;
     error = null;
+    isLoggedIn = false;
   }
 }

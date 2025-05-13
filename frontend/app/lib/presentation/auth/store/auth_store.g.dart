@@ -101,11 +101,27 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
+  late final _$isLoggedInAtom =
+      Atom(name: '_AuthStore.isLoggedIn', context: context);
+
+  @override
+  bool get isLoggedIn {
+    _$isLoggedInAtom.reportRead();
+    return super.isLoggedIn;
+  }
+
+  @override
+  set isLoggedIn(bool value) {
+    _$isLoggedInAtom.reportWrite(value, super.isLoggedIn, () {
+      super.isLoggedIn = value;
+    });
+  }
+
   late final _$loginAsyncAction =
       AsyncAction('_AuthStore.login', context: context);
 
   @override
-  Future<void> login(String email, String password) {
+  Future<bool> login(String email, String password) {
     return _$loginAsyncAction.run(() => super.login(email, password));
   }
 
@@ -143,7 +159,8 @@ userId: ${userId},
 user: ${user},
 userRooms: ${userRooms},
 roomId: ${roomId},
-error: ${error}
+error: ${error},
+isLoggedIn: ${isLoggedIn}
     ''';
   }
 }

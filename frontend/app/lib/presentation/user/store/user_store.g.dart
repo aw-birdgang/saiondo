@@ -72,6 +72,30 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
+  late final _$isLoadingAtom =
+      Atom(name: '_UserStore.isLoading', context: context);
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
+  late final _$initUserAsyncAction =
+      AsyncAction('_UserStore.initUser', context: context);
+
+  @override
+  Future<void> initUser() {
+    return _$initUserAsyncAction.run(() => super.initUser());
+  }
+
   late final _$loadUsersAsyncAction =
       AsyncAction('_UserStore.loadUsers', context: context);
 
@@ -105,13 +129,22 @@ mixin _$UserStore on _UserStore, Store {
         .run(() => super.loadPersonaProfile(userId));
   }
 
+  late final _$removeUserAsyncAction =
+      AsyncAction('_UserStore.removeUser', context: context);
+
+  @override
+  Future<void> removeUser() {
+    return _$removeUserAsyncAction.run(() => super.removeUser());
+  }
+
   @override
   String toString() {
     return '''
 users: ${users},
 selectedUser: ${selectedUser},
 userRooms: ${userRooms},
-personaProfile: ${personaProfile}
+personaProfile: ${personaProfile},
+isLoading: ${isLoading}
     ''';
   }
 }

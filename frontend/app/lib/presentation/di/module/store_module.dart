@@ -18,6 +18,8 @@ import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../auth/store/auth_store.dart';
 import '../../chat/store/chat_store.dart';
 import '../../home/store/language_store/language_store.dart';
+import '../../persona_profile/store/persona_profile_store.dart';
+import '../../user/store/user_store.dart';
 
 class StoreModule {
   static Future<void> configureStoreModuleInjection() async {
@@ -50,13 +52,24 @@ class StoreModule {
       ),
     );
 
+    getIt.registerSingleton<UserStore>(
+      UserStore(
+        getIt<UserRepository>(),
+      ),
+    );
+
+    getIt.registerSingleton<PersonaProfileStore>(
+      PersonaProfileStore(
+        getIt<UserRepository>(),
+      ),
+    );
+
     getIt.registerSingleton<ChatStore>(
       ChatStore(
         getIt<FetchChatHistoriesUseCase>(),
         getIt<SendMessageUseCase>(),
       ),
     );
-
 
     getIt.registerSingleton<ThemeStore>(
       ThemeStore(

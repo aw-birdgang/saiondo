@@ -25,6 +25,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<User> fetchUserById(String id) async {
     final res = await _userApi.fetchUserById(id);
+    print('[UserRepositoryImpl] fetchUserById: res = ${res.toJson()}');
     return UserAdapter.fromResponse(res);
   }
 
@@ -34,6 +35,11 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> saveUser(User user) async {
     await _prefs.saveUserInfo(jsonEncode(user.toJson()));
+  }
+
+  @override
+  Future<String?> getUserId() async {
+    return await _prefs.getUserId();
   }
 
   @override
@@ -69,6 +75,29 @@ class UserRepositoryImpl implements UserRepository {
   Future<PersonaProfile?> fetchPersonaProfile(String userId) async {
     final response = await _userApi.fetchPersonaProfile(userId);
     return PersonaProfileAdapter.fromResponse(response);
+  }
+
+  @override
+  Future<List<PersonaProfile>?> fetchPersonaProfiles(String userId) async {
+    final responseList = await _userApi.fetchPersonaProfiles(userId);
+    return responseList
+        .map((res) => PersonaProfileAdapter.fromResponse(res))
+        .whereType<PersonaProfile>()
+        .toList();
+  }
+
+  @override
+  Future<PersonaProfile> createPersonaProfile(String userId, PersonaProfile profile) async {
+    final requestDto = PersonaProfileAdapter.toRequest(profile);
+    final response = await _userApi.createPersonaProfile(userId, requestDto);
+    return PersonaProfileAdapter.fromResponse(response)!;
+  }
+
+  @override
+  Future<PersonaProfile> updatePersonaProfile(String userId, PersonaProfile profile) async {
+    final requestDto = PersonaProfileAdapter.toRequest(profile);
+    final response = await _userApi.updatePersonaProfile(userId, profile.categoryCodeId, requestDto);
+    return PersonaProfileAdapter.fromResponse(response)!;
   }
 
 }
