@@ -1,5 +1,6 @@
 import '../../../core/data/network/dio/dio_client.dart';
 import '../constants/endpoints.dart';
+import '../dto/persona_profile_response.dart';
 import '../dto/user_request.dart';
 import '../rest_client.dart';
 import '../dto/user_response.dart';
@@ -30,6 +31,11 @@ class UserApi {
       data: user.toJson(),
     );
     return UserResponse.fromJson(response.data);
+  }
+
+  Future<PersonaProfileResponse> fetchPersonaProfile(String userId) async {
+    final response = await _dioClient.dio.get(Endpoints.personaProfile(userId));
+    return PersonaProfileResponse.fromJson(response.data);
   }
 
 }

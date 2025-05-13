@@ -29,6 +29,8 @@ class Endpoints {
   static String userById(String id) => '/users/$id';
   static String userRooms(String id) => '/users/$id/rooms';
 
+  static String personaProfile(String userId) => '/persona-profile/$userId';
+
   //
   static String getFaqs = baseUrl + "/faq/list?pageRows=10&pageNumber=1&languageType=EN";
   static String getChats = baseUrl + "/chat/list?pageRows=10&pageNumber=1&languageType=EN";

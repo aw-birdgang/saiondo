@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import '../../domain/entry/user/persona_profile.dart';
 import '../../domain/entry/user/user.dart';
 import '../../domain/repository/user/user_repository.dart';
+import '../adapter/persona_profile_adapter.dart';
 import '../adapter/user_adapter.dart';
 import '../network/apis/user_api.dart';
 import '../network/dto/user_request.dart';
@@ -62,4 +64,11 @@ class UserRepositoryImpl implements UserRepository {
     await _prefs.saveUserInfo(jsonEncode(updatedUser.toJson())); // 실제 User 저장
     return updatedUser;
   }
+
+  @override
+  Future<PersonaProfile?> fetchPersonaProfile(String userId) async {
+    final response = await _userApi.fetchPersonaProfile(userId);
+    return PersonaProfileAdapter.fromResponse(response);
+  }
+
 }

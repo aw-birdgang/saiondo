@@ -1,7 +1,8 @@
 import 'package:mobx/mobx.dart';
+
+import '../../../domain/entry/user/persona_profile.dart';
 import '../../../domain/entry/user/user.dart';
 import '../../../domain/repository/user/user_repository.dart';
-import '../../../data/network/dto/user_request.dart';
 
 part 'user_store.g.dart';
 
@@ -21,9 +22,13 @@ abstract class _UserStore with Store {
   @observable
   List<dynamic> userRooms = [];
 
+  @observable
+  PersonaProfile? personaProfile;
+
   @action
   Future<void> loadUsers() async {
-    users = ObservableList.of(await _userRepository.fetchUsers());
+    final fetchedUsers = await _userRepository.fetchUsers();
+    users = ObservableList.of(fetchedUsers);
   }
 
   @action
@@ -34,5 +39,10 @@ abstract class _UserStore with Store {
   @action
   Future<void> loadUserRooms(String id) async {
     userRooms = await _userRepository.fetchUserRooms(id);
+  }
+
+  @action
+  Future<void> loadPersonaProfile(String userId) async {
+    personaProfile = await _userRepository.fetchPersonaProfile(userId);
   }
 }

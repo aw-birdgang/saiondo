@@ -1,3 +1,4 @@
+import '../../entry/user/persona_profile.dart';
 import '../../entry/user/user.dart';
 
 abstract class UserRepository {
@@ -15,4 +16,6 @@ abstract class UserRepository {
 
   // (선택) 유저 정보 업데이트
   Future<User> updateUser(User user);
+
+  Future<PersonaProfile?> fetchPersonaProfile(String userId);
 }
