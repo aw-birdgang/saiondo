@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, HttpException, HttpStatus, Param } from '@nestjs/common';
 import { UserService } from './user.services';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import {CreateUserDto} from "@modules/user/dto/user.dto";
 
 @ApiTags('User')
@@ -33,5 +33,18 @@ export class UserController {
     @ApiResponse({ status: 200, description: 'Room 목록 반환' })
     async getRoomsByUserId(@Param('id') userId: string) {
         return this.userService.getRoomsByUserId(userId);
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: 'userId로 유저 단건 조회' })
+    @ApiParam({ name: 'id', description: '유저 ID' })
+    @ApiResponse({ status: 200, description: '유저 정보 반환', type: CreateUserDto })
+    @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
+    async findById(@Param('id') userId: string) {
+        const user = await this.userService.findById(userId);
+        if (!user) {
+            throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+        }
+        return user;
     }
 }

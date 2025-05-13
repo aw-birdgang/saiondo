@@ -75,4 +75,11 @@ export class PersonaProfileService {
       },
     });
   }
+
+  async findByUserId(userId: string) {
+    return this.prisma.personaProfile.findMany({
+      where: { userId },
+      include: { categoryCode: true }, // 필요시 카테고리 정보도 함께 반환
+    });
+  }
 }

@@ -42,4 +42,10 @@ export class UserService {
             .filter(r => r.room)
             .map(r => r.room);
     }
+
+    async findById(userId: string) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+    }
 }

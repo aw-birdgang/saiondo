@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { PersonaProfileService } from './persona-profile.service';
 import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('PersonaProfile')
 @Controller('persona-profiles')
@@ -26,5 +26,13 @@ export class PersonaProfileController {
   @Post('analyze/:userId')
   async analyzePersona(@Param('userId') userId: string) {
     return this.service.analyzeAndSavePersona(userId);
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'userId로 페르소나 프로필 목록 조회' })
+  @ApiParam({ name: 'userId', description: '유저 ID' })
+  @ApiResponse({ status: 200, description: '해당 유저의 페르소나 프로필 목록 반환' })
+  async findByUserId(@Param('userId') userId: string) {
+    return this.service.findByUserId(userId);
   }
 }
