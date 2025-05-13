@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/chat/chat_history.dart';
+import 'chat_message_bubble.dart';
 import 'chat_websocket.dart';
 import 'store/chat_store.dart';
 
@@ -32,31 +31,39 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    print('ChatScreen!!!!!!!!! initState!!!!!!!!!!!');
+    _initChat();
+  }
 
-    _chatStore.loadMessages(widget.roomId).then((_) => _scrollToBottom());
+  Future<void> _initChat() async {
+    await _chatStore.loadMessages(widget.roomId);
+    _scrollToBottom();
     chatWebSocket.connect(
-      onConnect: () {
-        print('[Socket.IO] onConnect');
-      },
-      onReceiveMessage: (msg) {
-        // msg는 서버에서 온 Map<String, dynamic>
-        // userChat, aiChat 모두 있을 수 있음
-        // if (msg['userChat'] != null) {
-        //   _chatStore.addMessage(ChatHistory.fromJson(msg['userChat']));
-        // }
-        if (msg['aiChat'] != null) {
-          _chatStore.addMessage(ChatHistory.fromJson(msg['aiChat']));
-        }
-        _scrollToBottom();
-      },
-      onError: (error) {
-        print('[Socket.IO] Error: $error');
-      },
-      onDisconnect: () {
-        print('[Socket.IO] Connection closed');
-      },
+      onConnect: _onSocketConnect,
+      onReceiveMessage: _onSocketReceiveMessage,
+      onError: _onSocketError,
+      onDisconnect: _onSocketDisconnect,
     );
+  }
+
+  void _onSocketConnect() {
+    print('[Socket.IO] onConnect');
+  }
+
+  void _onSocketReceiveMessage(dynamic msg) {
+    print('[Socket.IO] Received: $msg');
+    final aiChat = msg['aiChat'];
+    if (aiChat != null) {
+      _chatStore.addMessage(ChatHistory.fromJson(aiChat));
+      _scrollToBottom();
+    }
+  }
+
+  void _onSocketError(dynamic error) {
+    print('[Socket.IO] Error: $error');
+  }
+
+  void _onSocketDisconnect() {
+    print('[Socket.IO] Connection closed');
   }
 
   void _scrollToBottom() {
@@ -64,26 +71,29 @@ class _ChatScreenState extends State<ChatScreen> {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
     });
   }
 
-  void onSendPressed(String text) {
+  void _onSendPressed(String text) {
+    print('[Chat] Send pressed: $text');
     if (text.trim().isEmpty) return;
-    _chatStore.addMessage(ChatHistory(
+    final message = ChatHistory(
       id: '',
       userId: widget.userId,
       message: text,
       sender: 'USER',
       timestamp: DateTime.now(),
       roomId: widget.roomId,
-    ));
+    );
+    _chatStore.addMessage(message);
     chatWebSocket.sendMessage(widget.userId, widget.roomId, text);
     _textController.clear();
     _scrollToBottom();
+    print('[Chat] Message sent: $message');
   }
 
   @override
@@ -96,68 +106,52 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) {
-        final messages = _chatStore.messages.toList();
-        if (messages.isEmpty) {
-          return Center(child: Text('메시지가 없습니다.'));
-        }
-        return Scaffold(
-          backgroundColor: const Color(0xFFF6F8FC),
-          appBar: AppBar(
-            backgroundColor: const Color(0xFFF6F8FC),
-            elevation: 0,
-            title: Text(
-              '사이온도 채팅',
-              style: GoogleFonts.nunito(
-                color: Color(0xFF22223B),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            iconTheme: IconThemeData(color: Color(0xFF22223B)),
-          ),
-          body: Column(
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F8FC),
+      appBar: _buildAppBar(),
+      body: Observer(
+        builder: (_) {
+          final messages = _chatStore.messages.toList();
+          if (messages.isEmpty) {
+            return const Center(child: Text('메시지가 없습니다.'));
+          }
+          return Column(
             children: [
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: messages.length,
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  reverse: false,
-                  itemBuilder: (context, index) {
-                    final message = messages[index];
-                    final isMe = (message.sender ?? '').toUpperCase() == 'USER';
-                    return Align(
-                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: isMe ? Colors.blue[100] : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              message.message,
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              DateFormat('HH:mm').format(message.timestamp),
-                              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              Expanded(child: _buildMessageList(messages)),
               _buildMessageInput(),
             ],
-          ),
+          );
+        },
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: const Color(0xFFF6F8FC),
+      elevation: 0,
+      title: Text(
+        '사이온도 채팅',
+        style: GoogleFonts.nunito(
+          color: const Color(0xFF22223B),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      iconTheme: const IconThemeData(color: Color(0xFF22223B)),
+    );
+  }
+
+  Widget _buildMessageList(List<ChatHistory> messages) {
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: messages.length,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemBuilder: (context, index) {
+        final message = messages[index];
+        return ChatMessageBubble(
+          message: message.message,
+          sender: message.sender ?? '',
+          timestamp: message.timestamp,
         );
       },
     );
@@ -166,11 +160,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildMessageInput() {
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
-          color: Color(0xFFF6F8FC),
+          color: const Color(0xFFF6F8FC),
           borderRadius: BorderRadius.circular(24),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black12,
               blurRadius: 8,
@@ -178,7 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         child: Row(
           children: [
             Expanded(
@@ -189,16 +183,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   hintText: '메시지 입력...',
                   hintStyle: GoogleFonts.nunito(color: Colors.grey[500]),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 ),
-                onSubmitted: onSendPressed,
+                onSubmitted: _onSendPressed,
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Observer(
               builder: (_) => IconButton(
-                icon: Icon(Icons.send, color: Color(0xFF7EC8E3)),
-                onPressed: _chatStore.isLoading ? null : () => onSendPressed(_textController.text.trim()),
+                icon: const Icon(Icons.send, color: Color(0xFF7EC8E3)),
+                onPressed: _chatStore.isLoading
+                    ? null
+                    : () => _onSendPressed(_textController.text.trim()),
               ),
             ),
           ],
