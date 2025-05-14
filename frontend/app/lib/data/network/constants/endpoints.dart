@@ -35,10 +35,14 @@ class Endpoints {
   static String updatePersonaProfile(String userId, String categoryCodeId) => '/persona-profiles/$userId/$categoryCodeId';
 
   //
-  static String getFaqs = baseUrl + "/faq/list?pageRows=10&pageNumber=1&languageType=EN";
-  static String getChats = baseUrl + "/chat/list?pageRows=10&pageNumber=1&languageType=EN";
+  static String getFaqs = baseUrl + '/faq/list?pageRows=10&pageNumber=1&languageType=EN';
+  static String getChats = baseUrl + '/chat/list?pageRows=10&pageNumber=1&languageType=EN';
 
   static String chatHistories = baseUrl + "/chat-histories";
   static String chat = baseUrl + "/chat";
+
+  //
+  static String getCategoryCodes = baseUrl + '/category-codes';
+
 
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../presentation/auth/login_screen.dart';
 import '../../presentation/auth/register_screen.dart';
+import '../../presentation/category/category_code_guide.dart';
 import '../../presentation/chat/chat.dart';
 import '../../presentation/home/home.dart';
 
@@ -12,6 +13,7 @@ class Routes {
   static const String register = '/register';
   static const String home = '/home';
   static const String chat = '/chat';
+  static const String categoryGuide = '/category_guide';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
@@ -24,5 +26,7 @@ class Routes {
     },
     login: (BuildContext context) => LoginScreen(),
     register: (BuildContext context) => RegisterScreen(),
+    categoryGuide: (BuildContext context)=> CategoryCodeGuideScreen(),
   };
+
 }

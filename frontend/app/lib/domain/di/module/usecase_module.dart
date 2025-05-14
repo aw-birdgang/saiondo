@@ -4,10 +4,12 @@ import 'package:app/di/service_locator.dart';
 import 'package:app/domain/usecase/home/get_menu_items_usecase.dart';
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
 
+import '../../../data/network/apis/category_code_api.dart';
 import '../../../data/repository/chat_history_repository_impl.dart';
 import '../../repository/auth/auth_repository.dart';
 import '../../usecase/auth/login_usecase.dart';
 import '../../usecase/auth/register_usecase.dart';
+import '../../usecase/category/fetch_category_codes_usecase.dart';
 import '../../usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../usecase/chat/send_message_usecase.dart';
 
@@ -33,7 +35,9 @@ class UseCaseModule {
     getIt.registerLazySingleton<RegisterUseCase>(
             () => RegisterUseCase(getIt<AuthRepository>()));
 
-    // user:--------------------------------------------------------------------
+    // category code:--------------------------------------------------------------------
+    getIt.registerLazySingleton<FetchCategoryCodesUseCase>(
+            () => FetchCategoryCodesUseCase(getIt<CategoryCodeApi>()));
 
   }
 }

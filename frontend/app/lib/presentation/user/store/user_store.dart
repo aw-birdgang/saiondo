@@ -62,17 +62,6 @@ abstract class _UserStore with Store {
   }
 
   @action
-  Future<void> loadUsers() async {
-    isLoading = true;
-    try {
-      final fetchedUsers = await _userRepository.fetchUsers();
-      users = ObservableList.of(fetchedUsers);
-    } finally {
-      isLoading = false;
-    }
-  }
-
-  @action
   Future<void> loadUserById(String id) async {
     isLoading = true;
     try {

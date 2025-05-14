@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
 
 import '../../di/service_locator.dart';
-import '../../utils/routes/routes.dart';
 import 'home_tab.dart';
 import 'my_page_tab.dart';
 
@@ -66,28 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     var roomId = _authStore.roomId;
-      //     var userId = _authStore.userId;
-      //     if (roomId == null) {
-      //       return;
-      //     }
-      //
-      //     print('userId :: $userId, roomId :: $roomId');
-      //
-      //     Navigator.pushNamed(
-      //       context,
-      //       Routes.chat,
-      //       arguments: {
-      //         'userId': userId,
-      //         'roomId': roomId,
-      //       },
-      //     );
-      //   },
-      //   child: Icon(Icons.chat),
-      //   tooltip: 'Start Chat',
-      // ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

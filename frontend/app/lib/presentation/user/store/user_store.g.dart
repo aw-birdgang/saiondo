@@ -126,14 +126,6 @@ mixin _$UserStore on _UserStore, Store {
     return _$initUserAsyncAction.run(() => super.initUser());
   }
 
-  late final _$loadUsersAsyncAction =
-      AsyncAction('_UserStore.loadUsers', context: context);
-
-  @override
-  Future<void> loadUsers() {
-    return _$loadUsersAsyncAction.run(() => super.loadUsers());
-  }
-
   late final _$loadUserByIdAsyncAction =
       AsyncAction('_UserStore.loadUserById', context: context);
 

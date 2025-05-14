@@ -56,5 +56,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> logout() async {
     await _sharedPrefsHelper.removeAccessToken();
     await _sharedPrefsHelper.removeUserId();
+    await _sharedPrefsHelper.removeUserInfo();
   }
 }

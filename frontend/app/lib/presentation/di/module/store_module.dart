@@ -4,6 +4,7 @@ import 'package:app/core/stores/form/form_store.dart';
 import 'package:app/domain/repository/user/user_repository.dart';
 import 'package:app/domain/usecase/auth/login_usecase.dart';
 import 'package:app/domain/usecase/auth/register_usecase.dart';
+import 'package:app/domain/usecase/category/fetch_category_codes_usecase.dart';
 import 'package:app/domain/usecase/chat/send_message_usecase.dart';
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
 import 'package:app/presentation/home/store/home/home_store.dart';
@@ -16,6 +17,7 @@ import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/setting/setting_repository.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../auth/store/auth_store.dart';
+import '../../category/store/category_code_store.dart';
 import '../../chat/store/chat_store.dart';
 import '../../home/store/language_store/language_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
@@ -36,7 +38,6 @@ class StoreModule {
         getIt<ErrorStore>(),
       ),
     );
-
     getIt.registerSingleton<AuthStore>(
       AuthStore(
         getIt<LoginUseCase>(),
@@ -45,26 +46,29 @@ class StoreModule {
         getIt<UserRepository>(),
       ),
     );
-
     getIt.registerSingleton<UserStore>(
       UserStore(
         getIt<UserRepository>(),
       ),
     );
-
     getIt.registerSingleton<PersonaProfileStore>(
       PersonaProfileStore(
         getIt<UserRepository>(),
       ),
     );
-
     getIt.registerSingleton<ChatStore>(
       ChatStore(
         getIt<FetchChatHistoriesUseCase>(),
         getIt<SendMessageUseCase>(),
       ),
     );
+    getIt.registerSingleton<CategoryCodeStore>(
+      CategoryCodeStore(
+        getIt<FetchCategoryCodesUseCase>(),
+      ),
+    );
 
+    // stores::setting ------------------------------------------------------------------
     getIt.registerSingleton<ThemeStore>(
       ThemeStore(
         getIt<SettingRepository>(),

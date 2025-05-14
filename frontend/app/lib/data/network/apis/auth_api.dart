@@ -12,6 +12,7 @@ class AuthApi {
   AuthApi(this._dioClient, this._restClient);
 
   Future<Map<String, dynamic>> login(String email, String password) async {
+    print('[AuthApi] login 요청 email: $email, password: $password');
     try {
       final response = await _dioClient.dio.post(
         Endpoints.authLogin,
@@ -26,7 +27,6 @@ class AuthApi {
       // Dio는 이미 JSON 파싱된 Map을 반환
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      // 서버에서 에러 메시지를 내려주면 그대로 전달
       final message = e.response?.data?['message'] ?? e.message ?? '로그인 실패';
       throw Exception('로그인 실패: $message');
     }

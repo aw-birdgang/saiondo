@@ -23,6 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _navigated = false;
   String? _error;
 
+  // 테스트용 계정 정보
+  static const _maleTestEmail = "kim@example.com";
+  static const _femaleTestEmail = "lee@example.com";
+  static const _testPassword = "password123";
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,13 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = false);
       // 에러 처리
     }
+  }
+
+  // 테스트용 빠른 로그인
+  Future<void> _quickLogin(String email) async {
+    _emailController.text = email;
+    _passwordController.text = _testPassword;
+    await _onLogin();
   }
 
   @override
@@ -141,22 +153,32 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _isLoading ? null : _onLogin,
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                icon: Icon(Icons.male, color: Colors.blue),
+                                label: Text('남자 빠른 로그인', style: TextStyle(color: Colors.blue)),
+                                onPressed: _isLoading ? null : () => _quickLogin(_maleTestEmail),
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.blue),
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
                             ),
-                            child: _isLoading
-                                ? SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                  )
-                                : Text('로그인', style: TextStyle(fontSize: 18)),
-                          ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                icon: Icon(Icons.female, color: Colors.pink),
+                                label: Text('여자 빠른 로그인', style: TextStyle(color: Colors.pink)),
+                                onPressed: _isLoading ? null : () => _quickLogin(_femaleTestEmail),
+                                style: OutlinedButton.styleFrom(
+                                  side: BorderSide(color: Colors.pink),
+                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 8),
                         TextButton(

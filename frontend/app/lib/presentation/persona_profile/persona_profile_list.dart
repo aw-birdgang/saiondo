@@ -1,14 +1,18 @@
+import 'package:app/presentation/category/store/category_code_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/user/persona_profile.dart';
+import '../category/category_code_guide.dart';
 import 'persona_profile_edit.dart';
 import 'store/persona_profile_store.dart';
 
 class PersonaProfileListScreen extends StatelessWidget {
   final String userId;
-  final PersonaProfileStore store = getIt<PersonaProfileStore>();
+
+  final PersonaProfileStore _personaProfileStore = getIt<PersonaProfileStore>();
+  final CategoryCodeStore _categoryCodeStore = getIt<CategoryCodeStore>();
 
   PersonaProfileListScreen({required this.userId, super.key});
 
@@ -23,7 +27,7 @@ class PersonaProfileListScreen extends StatelessWidget {
       ),
     );
     if (context.mounted && updated != null) {
-      await store.updateProfile(userId, updated);
+      await _personaProfileStore.updateProfile(userId, updated);
     }
   }
 
@@ -35,20 +39,34 @@ class PersonaProfileListScreen extends StatelessWidget {
       ),
     );
     if (context.mounted && newProfile != null) {
-      await store.addProfile(userId, newProfile);
+      await _personaProfileStore.addProfile(userId, newProfile);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('성향 프로필 목록')),
+      appBar: AppBar(
+        title: const Text('성향 프로필 목록'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: '카테고리 코드 안내',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => CategoryCodeGuideScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Observer(
         builder: (_) {
-          if (store.isLoading) {
+          if (_personaProfileStore.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (store.profiles.isEmpty) {
+          if (_personaProfileStore.profiles.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -64,12 +82,21 @@ class PersonaProfileListScreen extends StatelessWidget {
               ),
             );
           }
+          // 카테고리 코드 맵을 미리 만들어둠 (id → code/desc)
+          final categoryMap = {
+            for (final c in _categoryCodeStore.codes) c.id: c
+          };
+
           return ListView.separated(
             padding: const EdgeInsets.all(16),
-            itemCount: store.profiles.length,
+            itemCount: _personaProfileStore.profiles.length,
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, idx) {
-              final profile = store.profiles[idx];
+              final profile = _personaProfileStore.profiles[idx];
+              final category = categoryMap[profile.categoryCodeId];
+              final categoryCode = category?.code ?? '알 수 없음';
+              final categoryDesc = category?.description ?? '';
+
               return Card(
                 elevation: 3,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -86,7 +113,8 @@ class PersonaProfileListScreen extends StatelessWidget {
                   subtitle: Padding(
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
-                      '카테고리: ${profile.categoryCodeId}  •  신뢰도: ${(profile.confidenceScore * 100).toStringAsFixed(1)}%',
+                      '카테고리: $categoryCode'
+                      '${categoryDesc.isNotEmpty ? " ($categoryDesc)" : ""}  •  신뢰도: ${(profile.confidenceScore * 100).toStringAsFixed(1)}%',
                       style: const TextStyle(fontSize: 13),
                     ),
                   ),
