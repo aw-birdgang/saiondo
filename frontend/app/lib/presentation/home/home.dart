@@ -31,11 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _authStore.loadAuthFromPrefs();
+    logger.i('[HomeScreen] initState - Auth loaded');
   }
 
   void _onTabTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      logger.i('[HomeScreen] Tab changed: $_selectedIndex');
     });
   }
 
@@ -57,9 +59,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             tooltip: '로그아웃',
             onPressed: () async {
+              logger.i('[HomeScreen] 로그아웃 시도');
               await _authStore.logout();
             },
           ),

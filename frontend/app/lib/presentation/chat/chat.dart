@@ -111,13 +111,12 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: _buildAppBar(),
       body: Observer(
         builder: (_) {
-          final messages = _chatStore.messages.toList();
-          if (messages.isEmpty) {
-            return const Center(child: Text('메시지가 없습니다.'));
+          if (_chatStore.isLoading) {
+            return const Center(child: CircularProgressIndicator());
           }
           return Column(
             children: [
-              Expanded(child: _buildMessageList(messages)),
+              Expanded(child: _buildMessageList(_chatStore.messages.toList())),
               _buildMessageInput(),
             ],
           );
@@ -199,6 +198,33 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ChatInputBar extends StatelessWidget {
+  final void Function(String) onSend;
+  const ChatInputBar({super.key, required this.onSend});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = TextEditingController();
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(child: TextField(controller: controller)),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () {
+              if (controller.text.trim().isNotEmpty) {
+                onSend(controller.text.trim());
+                controller.clear();
+              }
+            },
+          ),
+        ],
       ),
     );
   }
