@@ -24,18 +24,21 @@ class _PersonaProfileEditScreenState extends State<PersonaProfileEditScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _contentController;
   late final TextEditingController _confidenceController;
-  String? _selectedCategoryCode;
+  String? _selectedCategoryId;
+  bool _isStatic = false;
 
   final _categoryCodeStore = getIt<CategoryCodeStore>();
 
   @override
   void initState() {
     super.initState();
-    _selectedCategoryCode = widget.profile?.categoryCodeId;
+    _categoryCodeStore.loadCodes();
+    _selectedCategoryId = widget.profile?.categoryCodeId;
     _contentController = TextEditingController(text: widget.profile?.content ?? '');
     _confidenceController = TextEditingController(
       text: widget.profile?.confidenceScore.toString() ?? '0.9',
     );
+    _isStatic = widget.profile?.isStatic ?? false;
   }
 
   @override
@@ -46,14 +49,20 @@ class _PersonaProfileEditScreenState extends State<PersonaProfileEditScreen> {
   }
 
   void _onSave() {
-    if (_formKey.currentState?.validate() ?? false) {
-      final profile = PersonaProfile(
-        categoryCodeId: _selectedCategoryCode!,
-        content: _contentController.text.trim(),
-        confidenceScore: double.tryParse(_confidenceController.text.trim()) ?? 0.9,
-      );
-      Navigator.pop(context, profile);
-    }
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final profile = PersonaProfile(
+      userId: widget.userId,
+      categoryCodeId: _selectedCategoryId!,
+      content: _contentController.text.trim(),
+      isStatic: _isStatic,
+      source: 'USER_INPUT',
+      confidenceScore: double.tryParse(_confidenceController.text.trim()) ?? 0.9,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) Navigator.pop(context, profile);
+    });
   }
 
   @override
@@ -85,17 +94,16 @@ class _PersonaProfileEditScreenState extends State<PersonaProfileEditScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               child: Observer(
                 builder: (_) {
+                  final codes = _categoryCodeStore.codes;
                   if (_categoryCodeStore.isLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (_categoryCodeStore.error != null) {
                     return Center(child: Text('에러: ${_categoryCodeStore.error}'));
                   }
-                  final codes = _categoryCodeStore.codes;
-                  // value가 없거나 리스트에 없으면 null
-                  if (_selectedCategoryCode == null ||
-                      !codes.any((c) => c.code == _selectedCategoryCode)) {
-                    _selectedCategoryCode = codes.isNotEmpty ? codes.first.code : null;
+                  if (_selectedCategoryId == null ||
+                      !codes.any((c) => c.id == _selectedCategoryId)) {
+                    _selectedCategoryId = codes.isNotEmpty ? codes.first.id : null;
                   }
                   return Form(
                     key: _formKey,
@@ -108,14 +116,14 @@ class _PersonaProfileEditScreenState extends State<PersonaProfileEditScreen> {
                         ),
                         const SizedBox(height: 28),
                         DropdownButtonFormField<String>(
-                          value: _selectedCategoryCode,
+                          value: _selectedCategoryId,
                           items: codes
                               .map((c) => DropdownMenuItem(
-                                    value: c.code,
-                                    child: Text('${c.code}'),
+                                    value: c.id,
+                                    child: Text('${c.code} (${c.description ?? ""})'),
                                   ))
                               .toList(),
-                          onChanged: (val) => setState(() => _selectedCategoryCode = val),
+                          onChanged: (val) => setState(() => _selectedCategoryId = val),
                           decoration: const InputDecoration(
                             labelText: '카테고리',
                             prefixIcon: Icon(Icons.category),
@@ -152,6 +160,12 @@ class _PersonaProfileEditScreenState extends State<PersonaProfileEditScreen> {
                             if (d == null || d < 0 || d > 1) return '0~1 사이의 값을 입력하세요';
                             return null;
                           },
+                        ),
+                        const SizedBox(height: 18),
+                        SwitchListTile(
+                          value: _isStatic,
+                          onChanged: (val) => setState(() => _isStatic = val),
+                          title: const Text('고정 프로필로 저장'),
                         ),
                         const SizedBox(height: 32),
                         SizedBox(

@@ -86,22 +86,6 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
-  late final _$personaProfileAtom =
-      Atom(name: '_UserStore.personaProfile', context: context);
-
-  @override
-  PersonaProfile? get personaProfile {
-    _$personaProfileAtom.reportRead();
-    return super.personaProfile;
-  }
-
-  @override
-  set personaProfile(PersonaProfile? value) {
-    _$personaProfileAtom.reportWrite(value, super.personaProfile, () {
-      super.personaProfile = value;
-    });
-  }
-
   late final _$isLoadingAtom =
       Atom(name: '_UserStore.isLoading', context: context);
 
@@ -142,15 +126,6 @@ mixin _$UserStore on _UserStore, Store {
     return _$loadUserRoomsAsyncAction.run(() => super.loadUserRooms(id));
   }
 
-  late final _$loadPersonaProfileAsyncAction =
-      AsyncAction('_UserStore.loadPersonaProfile', context: context);
-
-  @override
-  Future<void> loadPersonaProfile(String userId) {
-    return _$loadPersonaProfileAsyncAction
-        .run(() => super.loadPersonaProfile(userId));
-  }
-
   late final _$removeUserAsyncAction =
       AsyncAction('_UserStore.removeUser', context: context);
 
@@ -167,7 +142,6 @@ selectedUser: ${selectedUser},
 userId: ${userId},
 roomId: ${roomId},
 userRooms: ${userRooms},
-personaProfile: ${personaProfile},
 isLoading: ${isLoading}
     ''';
   }

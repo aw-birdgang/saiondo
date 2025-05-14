@@ -32,9 +32,6 @@ abstract class _UserStore with Store {
   List<dynamic> userRooms = [];
 
   @observable
-  PersonaProfile? personaProfile;
-
-  @observable
   bool isLoading = false;
 
   @action
@@ -84,16 +81,6 @@ abstract class _UserStore with Store {
     }
   }
 
-  @action
-  Future<void> loadPersonaProfile(String userId) async {
-    isLoading = true;
-    try {
-      personaProfile = await _userRepository.fetchPersonaProfile(userId);
-    } finally {
-      isLoading = false;
-    }
-  }
-
   // 현재 유저 id 반환 (selectedUser 우선, 없으면 users 첫번째)
   String? get currentUserId => selectedUser?.id ?? (users.isNotEmpty ? users.first.id : null);
 
@@ -102,7 +89,6 @@ abstract class _UserStore with Store {
   Future<void> removeUser() async {
     selectedUser = null;
     users.clear();
-    personaProfile = null;
     userRooms = [];
   }
 }

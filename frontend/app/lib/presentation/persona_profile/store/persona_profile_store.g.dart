@@ -41,6 +41,22 @@ mixin _$PersonaProfileStore on _PersonaProfileStore, Store {
     });
   }
 
+  late final _$errorAtom =
+      Atom(name: '_PersonaProfileStore.error', context: context);
+
+  @override
+  String? get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(String? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
   late final _$loadProfilesAsyncAction =
       AsyncAction('_PersonaProfileStore.loadProfiles', context: context);
 
@@ -66,11 +82,21 @@ mixin _$PersonaProfileStore on _PersonaProfileStore, Store {
         .run(() => super.updateProfile(userId, profile));
   }
 
+  late final _$deleteProfileAsyncAction =
+      AsyncAction('_PersonaProfileStore.deleteProfile', context: context);
+
+  @override
+  Future<void> deleteProfile(String userId, String categoryCodeId) {
+    return _$deleteProfileAsyncAction
+        .run(() => super.deleteProfile(userId, categoryCodeId));
+  }
+
   @override
   String toString() {
     return '''
 profiles: ${profiles},
-isLoading: ${isLoading}
+isLoading: ${isLoading},
+error: ${error}
     ''';
   }
 }

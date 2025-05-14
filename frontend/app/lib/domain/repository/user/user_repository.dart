@@ -8,10 +8,10 @@ abstract class UserRepository {
   // 서버에서 유저의 room 목록 조회
   Future<List<dynamic>> fetchUserRooms(String id);
   //
-  Future<PersonaProfile?> fetchPersonaProfile(String userId);
-  Future<List<PersonaProfile>?> fetchPersonaProfiles(String userId);
+  Future<List<PersonaProfile>> fetchPersonaProfiles(String userId);
   Future<PersonaProfile> createPersonaProfile(String userId, PersonaProfile profile);
   Future<PersonaProfile> updatePersonaProfile(String userId, PersonaProfile profile);
+  Future<void> deletePersonaProfile(String userId, String categoryCodeId);
   //
   Future<User> updateUser(User user);
 

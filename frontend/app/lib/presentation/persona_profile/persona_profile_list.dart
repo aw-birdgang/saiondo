@@ -43,6 +43,34 @@ class PersonaProfileListScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _deleteProfile(BuildContext context, PersonaProfile profile) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('성향 프로필 삭제'),
+        content: const Text('정말로 이 성향 프로필을 삭제하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('삭제', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      await _personaProfileStore.deleteProfile(userId, profile.categoryCodeId);
+      if (_personaProfileStore.error != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('삭제 실패: ${_personaProfileStore.error}')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,10 +146,20 @@ class PersonaProfileListScreen extends StatelessWidget {
                       style: const TextStyle(fontSize: 13),
                     ),
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blueAccent),
-                    tooltip: '수정',
-                    onPressed: () => _editProfile(context, profile),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                        tooltip: '수정',
+                        onPressed: () => _editProfile(context, profile),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.redAccent),
+                        tooltip: '삭제',
+                        onPressed: () => _deleteProfile(context, profile),
+                      ),
+                    ],
                   ),
                 ),
               );

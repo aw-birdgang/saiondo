@@ -17,14 +17,19 @@ abstract class _PersonaProfileStore with Store {
   @observable
   bool isLoading = false;
 
+  @observable
+  String? error;
+
   @action
   Future<void> loadProfiles(String userId) async {
     print('[PersonaProfileStore] loadProfiles: userId=$userId');
     isLoading = true;
+    error = null;
     try {
-      // 예시: 여러 프로필을 가져오는 API가 있다고 가정
       final result = await _userRepository.fetchPersonaProfiles(userId);
       profiles = ObservableList.of(result ?? []);
+    } catch (e) {
+      error = e.toString();
     } finally {
       isLoading = false;
     }
@@ -33,9 +38,12 @@ abstract class _PersonaProfileStore with Store {
   @action
   Future<void> addProfile(String userId, PersonaProfile profile) async {
     isLoading = true;
+    error = null;
     try {
       final newProfile = await _userRepository.createPersonaProfile(userId, profile);
       profiles.add(newProfile);
+    } catch (e) {
+      error = e.toString();
     } finally {
       isLoading = false;
     }
@@ -44,10 +52,27 @@ abstract class _PersonaProfileStore with Store {
   @action
   Future<void> updateProfile(String userId, PersonaProfile profile) async {
     isLoading = true;
+    error = null;
     try {
       final updated = await _userRepository.updatePersonaProfile(userId, profile);
-      final idx = profiles.indexWhere((p) => p.categoryCodeId == profile.categoryCodeId);
+      final idx = profiles.indexWhere((p) => p.categoryCodeId == updated.categoryCodeId);
       if (idx != -1) profiles[idx] = updated;
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  @action
+  Future<void> deleteProfile(String userId, String categoryCodeId) async {
+    isLoading = true;
+    error = null;
+    try {
+      await _userRepository.deletePersonaProfile(userId, categoryCodeId);
+      profiles.removeWhere((p) => p.categoryCodeId == categoryCodeId);
+    } catch (e) {
+      error = e.toString();
     } finally {
       isLoading = false;
     }

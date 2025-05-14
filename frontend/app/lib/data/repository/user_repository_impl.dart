@@ -72,13 +72,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<PersonaProfile?> fetchPersonaProfile(String userId) async {
-    final response = await _userApi.fetchPersonaProfile(userId);
-    return PersonaProfileAdapter.fromResponse(response);
-  }
-
-  @override
-  Future<List<PersonaProfile>?> fetchPersonaProfiles(String userId) async {
+  Future<List<PersonaProfile>> fetchPersonaProfiles(String userId) async {
     final responseList = await _userApi.fetchPersonaProfiles(userId);
     return responseList
         .map((res) => PersonaProfileAdapter.fromResponse(res))
@@ -98,6 +92,11 @@ class UserRepositoryImpl implements UserRepository {
     final requestDto = PersonaProfileAdapter.toRequest(profile);
     final response = await _userApi.updatePersonaProfile(userId, profile.categoryCodeId, requestDto);
     return PersonaProfileAdapter.fromResponse(response)!;
+  }
+
+  @override
+  Future<void> deletePersonaProfile(String userId, String categoryCodeId) async {
+    await _userApi.deletePersonaProfile(userId, categoryCodeId);
   }
 
 }

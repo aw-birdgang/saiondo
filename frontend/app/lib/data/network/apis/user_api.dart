@@ -1,10 +1,10 @@
 import '../../../core/data/network/dio/dio_client.dart';
 import '../constants/endpoints.dart';
+import '../dto/persona_profile_request.dart';
 import '../dto/persona_profile_response.dart';
 import '../dto/user_request.dart';
-import '../rest_client.dart';
 import '../dto/user_response.dart';
-import '../dto/persona_profile_request.dart';
+import '../rest_client.dart';
 
 class UserApi {
   final DioClient _dioClient;
@@ -35,11 +35,6 @@ class UserApi {
     return UserResponse.fromJson(response.data);
   }
 
-  Future<PersonaProfileResponse> fetchPersonaProfile(String userId) async {
-    final response = await _dioClient.dio.get(Endpoints.personaProfile(userId));
-    return PersonaProfileResponse.fromJson(response.data);
-  }
-
   Future<List<PersonaProfileResponse>> fetchPersonaProfiles(String userId) async {
     final url = Endpoints.personaProfiles(userId);
     print('[UserApi] fetchPersonaProfiles 요청 URL: $url');
@@ -63,5 +58,9 @@ class UserApi {
       data: req.toJson(),
     );
     return PersonaProfileResponse.fromJson(response.data);
+  }
+
+  Future<void> deletePersonaProfile(String userId, String categoryCodeId) async {
+    await _dioClient.dio.delete(Endpoints.deletePersonaProfile(userId, categoryCodeId),);
   }
 }
