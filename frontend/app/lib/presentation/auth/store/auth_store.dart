@@ -2,7 +2,6 @@ import 'package:app/domain/repository/user/user_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../domain/entry/user/user.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
 import '../../../domain/usecase/auth/register_usecase.dart';
@@ -31,12 +30,6 @@ abstract class _AuthStore with Store {
   Map<String, dynamic>? user;
 
   @observable
-  List<dynamic> userRooms = [];
-
-  @observable
-  String? roomId;
-
-  @observable
   String? error;
 
   @observable
@@ -51,16 +44,8 @@ abstract class _AuthStore with Store {
       user = result['user'];
       userId = user?['id'];
       error = null;
-      
-      if (userId != null) {
-        userRooms = await _userRepository.fetchUserRooms(userId!);
-        if (userRooms.isNotEmpty) {
-          roomId = userRooms.first['id'];
-        }
-        await _userRepository.saveUser(User.fromJson(user!));
-        isLoggedIn = true;
-        return true;
-      }
+      isLoggedIn = true;
+      return true;
     } catch (e) {
       error = e.toString();
       logger.e('로그인 에러: $e');

@@ -1,9 +1,9 @@
 import 'package:app/core/stores/error/error_store.dart';
+import 'package:app/presentation/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../../data/network/dto/room_request.dart';
-import '../../../ticket/ticket.dart';
 
 part 'home_store.g.dart';
 
@@ -33,7 +33,7 @@ abstract class _HomeStore with Store {
   String title = "Home";
 
   @observable
-  Widget currentScreen = AuthorList();
+  Widget currentScreen = HomeScreen();
 
   @observable
   ObservableList<Room> rooms = ObservableList<Room>();

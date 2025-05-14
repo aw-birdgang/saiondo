@@ -31,12 +31,6 @@ class StoreModule {
     );
 
     // stores:------------------------------------------------------------------
-    getIt.registerSingleton<NavigationStore>(
-      NavigationStore(
-        getIt<NavigationScreenUseCase>()
-      ),
-    );
-
     getIt.registerSingleton<HomeStore>(
       HomeStore(
         getIt<ErrorStore>(),

@@ -23,6 +23,12 @@ abstract class _UserStore with Store {
   User? selectedUser;
 
   @observable
+  String? userId;
+
+  @observable
+  String? roomId;
+
+  @observable
   List<dynamic> userRooms = [];
 
   @observable
@@ -35,14 +41,19 @@ abstract class _UserStore with Store {
   Future<void> initUser() async {
     isLoading = true;
     try {
-      final userId = await _userRepository.getUserId();
+      userId = await _userRepository.getUserIdInPreference();
       print('[UserStore] initUser: userId=$userId');
-      if (userId == null || userId.isEmpty) {
+      if (userId == null || userId!.isEmpty) {
         print('[UserStore] userId가 null 또는 빈값입니다.');
         return;
       }
-      selectedUser = await _userRepository.fetchUserById(userId);
+      selectedUser = await _userRepository.fetchUserById(userId!);
       print('[UserStore] selectedUser: ${selectedUser != null ? selectedUser!.toJson() : "null"}');
+
+      userRooms = await _userRepository.fetchUserRooms(userId!);
+      if (userRooms.isNotEmpty) {
+        roomId = userRooms.first['id'];
+      }
     } catch (e) {
       print('[UserStore] 유저 정보 로딩 실패: $e');
     } finally {

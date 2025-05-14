@@ -1,8 +1,7 @@
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
+import 'package:app/presentation/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-
-import '../../ticket/ticket.dart';
 
 part 'navigation_store.g.dart';
 
@@ -23,7 +22,7 @@ abstract class _NavigationStore with Store {
   int selectedIndex = 0;
 
   @observable
-  Widget currentScreen = AuthorList();
+  Widget currentScreen = HomeScreen();
 
   @action
   void updateIndex(int index) {

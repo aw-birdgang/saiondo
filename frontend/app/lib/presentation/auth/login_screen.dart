@@ -52,6 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success) {
         _navigated = true;
         WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
           Navigator.pushReplacementNamed(context, '/home');
         });
       } else {

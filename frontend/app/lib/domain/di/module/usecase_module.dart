@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:app/di/service_locator.dart';
 import 'package:app/domain/usecase/home/get_menu_items_usecase.dart';
-import 'package:app/domain/usecase/home/navigate_to_screen_usecase.dart';
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
 
-import '../../../data/network/apis/auth_api.dart';
 import '../../../data/repository/chat_history_repository_impl.dart';
 import '../../repository/auth/auth_repository.dart';
 import '../../usecase/auth/login_usecase.dart';
@@ -20,7 +18,6 @@ class UseCaseModule {
     getIt.registerLazySingleton(() => NavigationScreenUseCase());
     
     // home:--------------------------------------------------------------------
-    getIt.registerLazySingleton(() => NavigateToScreenUseCase());
     getIt.registerLazySingleton(() => GetMenuItemsUseCase());
 
     // chat:--------------------------------------------------------------------

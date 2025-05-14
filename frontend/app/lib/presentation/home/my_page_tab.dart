@@ -13,16 +13,34 @@ class MyPageScreen extends StatelessWidget {
   final personaProfileStore = getIt<PersonaProfileStore>();
 
   void _goToLogin(BuildContext context) {
-    // 이미 로그인 화면이면 중복 이동 방지
     if (ModalRoute.of(context)?.settings.name != '/login') {
       Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
+  Future<void> _openPersonaProfile(BuildContext context, String userId) async {
+    try {
+      await personaProfileStore.loadProfiles(userId);
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PersonaProfileListScreen(userId: userId),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('성향 프로필을 불러오지 못했습니다.')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('마이 페이지')),
       body: Observer(
         builder: (_) {
           if (userStore.isLoading) {
@@ -33,58 +51,78 @@ class MyPageScreen extends StatelessWidget {
           final userId = user?.id;
 
           if (user == null || userId == null || userId.isEmpty) {
-            // 유저 정보가 없거나 userId가 잘못된 경우
-            print('[MyPageScreen] 유저 정보 없음 또는 userId가 잘못됨. 로그인 화면으로 이동');
-            //Future.microtask(() => _goToLogin(context));
-            return const Center(child: Text('로그인 정보가 없습니다. 다시 로그인 해주세요.'));
+            Future.microtask(() => _goToLogin(context));
+            return const Center(
+              child: Text(
+                '로그인 정보가 없습니다.\n다시 로그인 해주세요.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            );
           }
 
-          return ListView(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.account_circle),
-                title: Text(user.name),
-                subtitle: Text(user.email),
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.person_search),
-                title: const Text('내 성향 관리'),
-                subtitle: const Text('나의 성향(퍼소나) 프로필을 추가/수정/삭제할 수 있습니다.'),
-                onTap: () async {
-                  print('[MyPageScreen] 프로필 목록 로딩 시도: userId=$userId');
-                  try {
-                    await personaProfileStore.loadProfiles(userId);
-                    if (context.mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PersonaProfileListScreen(
-                            userId: userId,
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                // 프로필 카드
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 32,
+                          child: Icon(Icons.account_circle, size: 48, color: Colors.white),
+                          backgroundColor: Colors.blueAccent,
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.name,
+                                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                user.email,
+                                style: const TextStyle(fontSize: 16, color: Colors.grey),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }
-                  } catch (e) {
-                    print('[MyPageScreen] 프로필 목록 로딩 실패: $e');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('성향 프로필을 불러오지 못했습니다.')),
-                    );
-                  }
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('로그아웃'),
-                onTap: () async {
-                  await userStore.removeUser();
-                  if (context.mounted) {
-                    _goToLogin(context);
-                  }
-                },
-              ),
-            ],
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                // 섹션: 프로필 관리
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '내 정보 관리',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey[700]),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(Icons.person_search, color: Colors.blueAccent),
+                  title: const Text('내 성향 관리', style: TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: const Text('나의 성향(퍼소나) 프로필을 추가/수정/삭제할 수 있습니다.'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.blueAccent),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  onTap: () => _openPersonaProfile(context, userId),
+                  tileColor: Colors.blue[50],
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                // 추가 섹션/메뉴는 여기에...
+                const Spacer(),
+              ],
+            ),
           );
         },
       ),

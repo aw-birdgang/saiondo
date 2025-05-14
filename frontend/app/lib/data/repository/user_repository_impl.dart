@@ -33,12 +33,12 @@ class UserRepositoryImpl implements UserRepository {
   Future<List<dynamic>> fetchUserRooms(String id) => _userApi.fetchUserRooms(id);
 
   @override
-  Future<void> saveUser(User user) async {
+  Future<void> saveUserPreference(User user) async {
     await _prefs.saveUserInfo(jsonEncode(user.toJson()));
   }
 
   @override
-  Future<String?> getUserId() async {
+  Future<String?> getUserIdInPreference() async {
     return await _prefs.getUserId();
   }
 

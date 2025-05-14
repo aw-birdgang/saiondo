@@ -55,37 +55,6 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
-  late final _$userRoomsAtom =
-      Atom(name: '_AuthStore.userRooms', context: context);
-
-  @override
-  List<dynamic> get userRooms {
-    _$userRoomsAtom.reportRead();
-    return super.userRooms;
-  }
-
-  @override
-  set userRooms(List<dynamic> value) {
-    _$userRoomsAtom.reportWrite(value, super.userRooms, () {
-      super.userRooms = value;
-    });
-  }
-
-  late final _$roomIdAtom = Atom(name: '_AuthStore.roomId', context: context);
-
-  @override
-  String? get roomId {
-    _$roomIdAtom.reportRead();
-    return super.roomId;
-  }
-
-  @override
-  set roomId(String? value) {
-    _$roomIdAtom.reportWrite(value, super.roomId, () {
-      super.roomId = value;
-    });
-  }
-
   late final _$errorAtom = Atom(name: '_AuthStore.error', context: context);
 
   @override
@@ -157,8 +126,6 @@ mixin _$AuthStore on _AuthStore, Store {
 accessToken: ${accessToken},
 userId: ${userId},
 user: ${user},
-userRooms: ${userRooms},
-roomId: ${roomId},
 error: ${error},
 isLoggedIn: ${isLoggedIn}
     ''';

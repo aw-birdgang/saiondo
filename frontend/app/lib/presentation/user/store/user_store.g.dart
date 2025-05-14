@@ -40,6 +40,36 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
+  late final _$userIdAtom = Atom(name: '_UserStore.userId', context: context);
+
+  @override
+  String? get userId {
+    _$userIdAtom.reportRead();
+    return super.userId;
+  }
+
+  @override
+  set userId(String? value) {
+    _$userIdAtom.reportWrite(value, super.userId, () {
+      super.userId = value;
+    });
+  }
+
+  late final _$roomIdAtom = Atom(name: '_UserStore.roomId', context: context);
+
+  @override
+  String? get roomId {
+    _$roomIdAtom.reportRead();
+    return super.roomId;
+  }
+
+  @override
+  set roomId(String? value) {
+    _$roomIdAtom.reportWrite(value, super.roomId, () {
+      super.roomId = value;
+    });
+  }
+
   late final _$userRoomsAtom =
       Atom(name: '_UserStore.userRooms', context: context);
 
@@ -142,6 +172,8 @@ mixin _$UserStore on _UserStore, Store {
     return '''
 users: ${users},
 selectedUser: ${selectedUser},
+userId: ${userId},
+roomId: ${roomId},
 userRooms: ${userRooms},
 personaProfile: ${personaProfile},
 isLoading: ${isLoading}
