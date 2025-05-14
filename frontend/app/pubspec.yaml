@@ -20,6 +20,7 @@ dependencies:
   # C
   cupertino_icons: ^1.0.6
   curved_navigation_bar: ^1.0.6
+  collection: ^1.17.0
   #D
   dio: ^5.7.0
   #E

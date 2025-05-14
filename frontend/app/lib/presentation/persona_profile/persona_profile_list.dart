@@ -1,6 +1,7 @@
 import 'package:app/presentation/category/store/category_code_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:collection/collection.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/user/persona_profile.dart';
@@ -110,10 +111,6 @@ class PersonaProfileListScreen extends StatelessWidget {
               ),
             );
           }
-          // 카테고리 코드 맵을 미리 만들어둠 (id → code/desc)
-          final categoryMap = {
-            for (final c in _categoryCodeStore.codes) c.id: c
-          };
 
           return ListView.separated(
             padding: const EdgeInsets.all(16),
@@ -121,7 +118,8 @@ class PersonaProfileListScreen extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, idx) {
               final profile = _personaProfileStore.profiles[idx];
-              final category = categoryMap[profile.categoryCodeId];
+              final category = _categoryCodeStore.codes
+                  .firstWhereOrNull((c) => c.id == profile.categoryCodeId);
               final categoryCode = category?.code ?? '알 수 없음';
               final categoryDesc = category?.description ?? '';
 
