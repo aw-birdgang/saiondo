@@ -3,6 +3,7 @@ import {PrismaService} from '@common/prisma/prisma.service';
 import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
 import {ProfileSource} from '@prisma/client';
 import {LlmService} from "@modules/llm/llm.service";
+import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
 
 @Injectable()
 export class PersonaProfileService {
@@ -80,6 +81,33 @@ export class PersonaProfileService {
     return this.prisma.personaProfile.findMany({
       where: { userId },
       include: { categoryCode: true }, // 필요시 카테고리 정보도 함께 반환
+    });
+  }
+
+  // [신규] userId+categoryCodeId로 수정
+  async update(
+    userId: string,
+    categoryCodeId: string,
+    data: UpdatePersonaProfileDto
+  ) {
+    const existing = await this.prisma.personaProfile.findFirst({
+      where: { userId, categoryCodeId },
+    });
+    if (!existing) throw new Error('PersonaProfile not found');
+
+    return this.prisma.personaProfile.updateMany({
+      where: { userId, categoryCodeId },
+      data: {
+        ...data,
+        updatedAt: new Date(),
+      },
+    });
+  }
+
+  // [신규] userId+categoryCodeId로 삭제
+  async delete(userId: string, categoryCodeId: string) {
+    return this.prisma.personaProfile.deleteMany({
+      where: { userId, categoryCodeId },
     });
   }
 }

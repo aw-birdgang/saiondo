@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { PersonaProfileService } from './persona-profile.service';
 import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
 
 @ApiTags('PersonaProfile')
 @Controller('persona-profiles')
@@ -15,7 +16,7 @@ export class PersonaProfileController {
     return this.service.findAll();
   }
 
-  @Post()
+  @Post('user/:userId')
   @ApiOperation({ summary: '페르소나 프로필 생성' })
   @ApiBody({ type: CreatePersonaProfileDto })
   @ApiResponse({ status: 201, description: '생성된 페르소나 프로필 반환' })
@@ -34,5 +35,28 @@ export class PersonaProfileController {
   @ApiResponse({ status: 200, description: '해당 유저의 페르소나 프로필 목록 반환' })
   async findByUserId(@Param('userId') userId: string) {
     return this.service.findByUserId(userId);
+  }
+
+
+  @Put('user/:userId/category/:categoryCodeId')
+  @ApiOperation({ summary: 'userId+categoryCodeId로 페르소나 프로필 수정' })
+  @ApiBody({ type: UpdatePersonaProfileDto })
+  @ApiResponse({ status: 200, description: '수정된 페르소나 프로필 반환' })
+  async updateForUser(
+    @Param('userId') userId: string,
+    @Param('categoryCodeId') categoryCodeId: string,
+    @Body() body: UpdatePersonaProfileDto
+  ) {
+    return this.service.update(userId, categoryCodeId, body);
+  }
+
+  @Delete('user/:userId/category/:categoryCodeId')
+  @ApiOperation({ summary: 'userId+categoryCodeId로 페르소나 프로필 삭제' })
+  @ApiResponse({ status: 204, description: '삭제 성공' })
+  async deleteForUser(
+    @Param('userId') userId: string,
+    @Param('categoryCodeId') categoryCodeId: string,
+  ) {
+    return this.service.delete(userId, categoryCodeId);
   }
 }
