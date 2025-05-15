@@ -1,14 +1,20 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable, Logger} from '@nestjs/common';
 import {PrismaService} from '../../common/prisma/prisma.service';
 import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
-import {MessageSender, ChatHistory} from '@prisma/client';
+import {MessageSender, ChatHistory, PersonaProfile, User} from '@prisma/client';
 import {LlmService} from "@modules/llm/llm.service";
+import {RoomService} from "@modules/room/room.service";
+import {PersonaProfileService} from "@modules/persona-profile/persona-profile.service";
 
 @Injectable()
 export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly llmService: LlmService,
+    private readonly roomService: RoomService,
+    private readonly personaProfileService: PersonaProfileService,
   ) {}
 
   /**
@@ -71,5 +77,51 @@ export class ChatService {
 
     // 5. 결과 반환
     return {userChat, aiChat};
+  }
+
+  async processUserMessage(userId: string, roomId: string, message: string) {
+    // 1. 룸 참여자 조회
+    const participants = await this.roomService.getRoomParticipants(roomId);
+    if (!participants || participants.length !== 2) {
+      throw new Error('채팅방 참여자 정보를 찾을 수 없습니다.');
+    }
+    const questioner = participants.find(u => u.id === userId);
+    const partner = participants.find(u => u.id !== userId);
+    if (!questioner || !partner) {
+      throw new Error('질문자 또는 상대방 정보를 찾을 수 없습니다.');
+    }
+
+    // 2. 상대방 특징 조회
+    const partnerPersona: PersonaProfile[] = await this.personaProfileService.getPersonaByUserId(partner.id);
+    let personaSummary = partnerPersona.length > 0
+      ? partnerPersona.map(p => `${p.categoryCodeId}: ${p.content}`).join(', ')
+      : '정보없음';
+
+    // 3. LLM 프롬프트에 상대방 정보 포함
+    const prompt = `
+질문자: ${questioner.gender}
+상대방: ${partner.gender}
+상대방 특징: ${personaSummary}
+질문: ${message}
+`;
+
+    this.logger.log(`[ChatService] LLM Prompt: ${prompt}`);
+
+    // 4. LLM 피드백 및 DB 저장
+    const { userChat, aiChat } = await this.sendToLLM(
+      message,
+      roomId,
+      userId,
+      prompt,
+    );
+
+    // 5. 결과 반환
+    return {
+      userId,
+      roomId,
+      message,
+      userChat,
+      aiChat,
+    };
   }
 }
