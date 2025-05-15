@@ -18,14 +18,6 @@ class SocketIoService {
     required Function(bool) onStatus,
   }) {
     print('[Socket.io] connect() called');
-    // _socket = IO.io(
-    //   url,
-    //   IO.OptionBuilder()
-    //     .setTransports(['websocket'])
-    //     .setPath(path)
-    //     .disableAutoConnect()
-    //     .build(),
-    // );
     _socket = IO.io(
       'http://10.0.2.2:3000',
       IO.OptionBuilder().setTransports(['websocket']).build(),
@@ -41,6 +33,7 @@ class SocketIoService {
       onStatus(false);
     });
 
+    _socket.off('receive_message');
     _socket.on('receive_message', (data) {
       print('[Socket.io] Received: $data');
       onMessage(data);

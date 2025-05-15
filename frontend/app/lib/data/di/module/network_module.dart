@@ -15,7 +15,6 @@ import '../../network/constants/endpoints.dart';
 import '../../network/interceptors/error_interceptor.dart';
 import '../../network/rest_client.dart';
 import '../../network/socket_io/socket_io_service.dart';
-import '../../network/websocket/chat_websocket_service.dart';
 
 class NetworkModule {
   static Future<void> configureNetworkModuleInjection() async {
@@ -48,10 +47,6 @@ class NetworkModule {
     );
 
     // service's:-------------------------------------------------------------------
-    // getIt.registerLazySingleton<ChatWebSocketService>(
-    //   // () => ChatWebSocketService('ws://localhost:3000/ws'),//wss://your.websocket.server/ws
-    //   () => ChatWebSocketService('ws://10.0.2.2:3000/ws'),
-    // );
     getIt.registerLazySingleton<SocketIoService>(
           () => SocketIoService(url: 'http://10.0.2.2:3000'),
     );
