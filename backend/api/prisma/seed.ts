@@ -1,4 +1,4 @@
-import { PrismaClient, ProfileSource, QuestionType, RelationshipStatus, MessageSender } from '@prisma/client';
+import {MessageSender, PrismaClient, ProfileSource, QuestionType, RelationshipStatus} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -13,6 +13,30 @@ async function main() {
     });
     const categoryValue = await prisma.categoryCode.create({
         data: { code: 'VALUE', description: '가치관' },
+    });
+    const categoryStatus = await prisma.categoryCode.create({
+        data: { code: 'STATUS', description: '상태' },
+    });
+    const categoryCharacter = await prisma.categoryCode.create({
+        data: { code: 'CHARACTER', description: '성격' },
+    });
+    const categoryLoveStyle = await prisma.categoryCode.create({
+        data: { code: 'LOVE_STYLE', description: '연애스타일' },
+    });
+    const categoryIdealType = await prisma.categoryCode.create({
+        data: { code: 'IDEAL_TYPE', description: '이상형' },
+    });
+    const categoryFamily = await prisma.categoryCode.create({
+        data: { code: 'FAMILY', description: '가족관계' },
+    });
+    const categoryLifestyle = await prisma.categoryCode.create({
+        data: { code: 'LIFESTYLE', description: '라이프스타일' },
+    });
+    const categoryReligion = await prisma.categoryCode.create({
+        data: { code: 'RELIGION', description: '종교' },
+    });
+    const categoryCareer = await prisma.categoryCode.create({
+        data: { code: 'CAREER', description: '직업/학업' },
     });
 
     // 2. 질문 템플릿 생성
@@ -107,26 +131,6 @@ async function main() {
                 analyzedByLlm: false,
                 timestamp: new Date(),
             },
-            {
-                roomId: room.id,
-                userId: user2.id,
-                message: '좋아! 어떤 영화 볼까?',
-                sender: MessageSender.USER,
-                isQuestionResponse: true,
-                isUserInitiated: false,
-                analyzedByLlm: false,
-                timestamp: new Date(),
-            },
-            {
-                roomId: room.id,
-                userId: user1.id,
-                message: '로맨틱 코미디 어때?',
-                sender: MessageSender.USER,
-                isQuestionResponse: false,
-                isUserInitiated: true,
-                analyzedByLlm: false,
-                timestamp: new Date(),
-            },
         ],
     });
 
@@ -140,8 +144,6 @@ async function main() {
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.95,
-                persona: '외향적',
-                status: '피곤함',
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -152,8 +154,6 @@ async function main() {
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.92,
-                persona: '외향적',
-                status: '피곤함',
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -164,8 +164,6 @@ async function main() {
                 isStatic: false,
                 source: ProfileSource.AI_ANALYSIS,
                 confidenceScore: 0.8,
-                persona: '외향적',
-                status: '피곤함',
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -176,8 +174,146 @@ async function main() {
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.9,
-                persona: '외향적',
-                status: '피곤함',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryCharacter.id,
+                content: '차분함',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.88,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryCharacter.id,
+                content: '활발함',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.9,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryLoveStyle.id,
+                content: '표현 많은',
+                isStatic: false,
+                source: ProfileSource.AI_ANALYSIS,
+                confidenceScore: 0.75,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryLoveStyle.id,
+                content: '신중한',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.85,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryIdealType.id,
+                content: '유머러스한 사람',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.93,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryIdealType.id,
+                content: '책임감 있는 사람',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.91,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryFamily.id,
+                content: '2남 1녀 중 장남',
+                isStatic: false,
+                source: ProfileSource.AI_ANALYSIS,
+                confidenceScore: 0.7,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryFamily.id,
+                content: '외동',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.95,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryLifestyle.id,
+                content: '아침형 인간',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.85,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryLifestyle.id,
+                content: '저녁형 인간',
+                isStatic: false,
+                source: ProfileSource.AI_ANALYSIS,
+                confidenceScore: 0.8,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryReligion.id,
+                content: '무교',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.99,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryReligion.id,
+                content: '기독교',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.97,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryCareer.id,
+                content: '개발자',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.95,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryCareer.id,
+                content: '디자이너',
+                isStatic: false,
+                source: ProfileSource.AI_ANALYSIS,
+                confidenceScore: 0.82,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },

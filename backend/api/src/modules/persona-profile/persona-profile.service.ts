@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
 import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
-import {ProfileSource} from '@prisma/client';
+import {ProfileSource, PersonaProfile} from '@prisma/client';
 import {LlmService} from "@modules/llm/llm.service";
 import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
 
@@ -29,8 +29,6 @@ export class PersonaProfileService {
       data: {
         ...data,
         source: data.source as ProfileSource,
-        persona: "외향적",
-        status: "피곤함",
       },
     });
   }
@@ -50,8 +48,6 @@ export class PersonaProfileService {
         isStatic: false,
         source,
         confidenceScore,
-        persona: "외향적",
-        status: "피곤함",
       },
     });
   }
@@ -77,8 +73,6 @@ export class PersonaProfileService {
         content: analysis.content,
         confidenceScore: analysis.confidenceScore,
         source: 'AI_ANALYSIS',
-        persona: "외향적",
-        status: "피곤함",
       },
     });
   }
@@ -117,12 +111,29 @@ export class PersonaProfileService {
     });
   }
 
-  async getPersonaByUserId(userId: string) {
-    // userId가 unique가 아니면 findMany 사용
-    const personas = await this.prisma.personaProfile.findMany({
+  async getPersonaByUserId(userId: string): Promise<PersonaProfile[]> {
+    return this.prisma.personaProfile.findMany({
       where: { userId },
     });
-    // 대표 persona만 필요하다면 첫 번째 반환
-    return personas[0] ?? null;
+  }
+
+  async createPersonaProfile(data: {
+    userId: string;
+    categoryCodeId: string;
+    content: string;
+    isStatic: boolean;
+    source: ProfileSource;
+    confidenceScore: number;
+  }) {
+    return this.prisma.personaProfile.create({
+      data: {
+        userId: data.userId,
+        categoryCodeId: data.categoryCodeId,
+        content: data.content,
+        isStatic: data.isStatic,
+        source: data.source,
+        confidenceScore: data.confidenceScore,
+      },
+    });
   }
 }

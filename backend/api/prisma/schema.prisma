@@ -125,8 +125,6 @@ model PersonaProfile {
   confidenceScore Float        @map("confidence_score")
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @updatedAt @map("updated_at")
-  persona         String
-  status          String
 
   user            User         @relation(fields: [userId], references: [id])
   categoryCode    CategoryCode @relation(fields: [categoryCodeId], references: [id])

@@ -12,6 +12,7 @@ import {Server, Socket} from 'socket.io';
 import {ChatService} from './chat.service';
 import {RoomService} from '../room/room.service';
 import {PersonaProfileService} from '../persona-profile/persona-profile.service';
+import { PersonaProfile } from '@prisma/client';
 
 interface SendMessagePayload {
   userId: string;
@@ -83,15 +84,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       return;
     }
 
-    // 2. 상대방 페르소나/상태 조회
-    const partnerPersona = await this.personaProfileService.getPersonaByUserId(partner.id);
+    // 2. 상대방 특징 조회
+    const partnerPersona: PersonaProfile[] = await this.personaProfileService.getPersonaByUserId(partner.id);
+    console.log('partnerPersona:', JSON.stringify(partnerPersona, null, 2));
+
+    let personaSummary = partnerPersona.length > 0
+        ? partnerPersona.map(p => `${p.categoryCodeId}: ${p.content}`).join(', ')
+        : '정보없음';
 
     // 3. LLM 프롬프트에 상대방 정보 포함
     const prompt = `
 질문자: ${questioner.gender}
 상대방: ${partner.gender}
-상대방 페르소나: ${partnerPersona?.persona ?? '정보없음'}
-상대방 상태: ${partnerPersona?.status ?? '정보없음'}
+상대방 특징: ${personaSummary}
 질문: ${message}
 `;
 
@@ -101,9 +106,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     try {
       // LLM 피드백 및 DB 저장
       const { userChat, aiChat } = await this.chatService.sendToLLM(
-        prompt,
+        message,
         roomId,
         userId,
+        prompt,
       );
 
       // 클라이언트에 보낼 응답 구조

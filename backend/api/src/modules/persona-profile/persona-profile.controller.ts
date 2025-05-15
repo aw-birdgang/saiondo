@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
-import { PersonaProfileService } from './persona-profile.service';
-import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
+import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
+import {PersonaProfileService} from './persona-profile.service';
+import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {UpdatePersonaProfileDto} from './dto/update-persona-profile.dto';
+import {PersonaProfileDto} from './dto/persona-profile.dto';
 
 @ApiTags('PersonaProfile')
 @Controller('persona-profiles')
@@ -16,15 +16,12 @@ export class PersonaProfileController {
     return this.service.findAll();
   }
 
-  @Post('user/:userId')
+  @Post()
   @ApiOperation({ summary: '페르소나 프로필 생성' })
-  @ApiBody({ type: CreatePersonaProfileDto })
+  @ApiBody({ type: PersonaProfileDto })
   @ApiResponse({ status: 201, description: '생성된 페르소나 프로필 반환' })
-  async create(
-    @Param('userId') userId: string,
-    @Body() body: CreatePersonaProfileDto
-  ) {
-    return this.service.create({ ...body, userId });
+  async create(@Body() dto: PersonaProfileDto) {
+    return this.service.createPersonaProfile(dto);
   }
 
   @Post('analyze/:userId')

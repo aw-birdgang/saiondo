@@ -16,7 +16,7 @@ export class ChatService {
    */
   async chatWithFeedback(dto: ChatWithFeedbackDto): Promise<{ userChat: ChatHistory; aiChat: ChatHistory }> {
     const {userId, roomId, message} = dto;
-    return this.sendToLLM(message, roomId, userId);
+    return this.sendToLLM(message, roomId, userId, "");
   }
 
   /**
@@ -55,6 +55,7 @@ export class ChatService {
     message: string,
     roomId: string,
     userId: string,
+    prompt: string,
   ): Promise<{ userChat: ChatHistory; aiChat: ChatHistory }> {
     // 1. 사용자 검증
     await this.validateUser(userId);
@@ -63,7 +64,7 @@ export class ChatService {
     const userChat = await this.saveChatMessage(userId, roomId, message, MessageSender.USER);
 
     // 3. LLM 피드백 생성
-    const llmResponse = await this.llmService.getFeedback(message, roomId);
+    const llmResponse = await this.llmService.getFeedback(prompt, roomId);
 
     // 4. LLM 피드백 메시지 저장
     const aiChat = await this.saveChatMessage(userId, roomId, llmResponse, MessageSender.AI);
