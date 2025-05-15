@@ -19,6 +19,7 @@ export class RelationshipService {
         user1Id: dto.user1Id,
         user2Id: dto.user2Id,
         status: RelationshipStatus.PENDING,
+        startedAt: new Date(),
       },
     });
   }
@@ -29,6 +30,7 @@ export class RelationshipService {
         user1Id: dto.user1Id,
         user2Id: dto.user2Id,
         status: 'PENDING',
+        startedAt: new Date(),
       },
     });
   }

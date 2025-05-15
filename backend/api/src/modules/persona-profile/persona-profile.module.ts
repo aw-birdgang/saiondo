@@ -5,7 +5,7 @@ import { LlmModule } from '../llm/llm.module';
 import {PrismaService} from "@common/prisma/prisma.service";
 
 @Module({
-  imports: [LlmModule],
+  imports: [LlmModule,],
   controllers: [PersonaProfileController],
   providers: [PersonaProfileService, PrismaService],
   exports: [PersonaProfileService],

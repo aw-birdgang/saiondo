@@ -10,6 +10,8 @@ import {
 } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
 import {ChatService} from './chat.service';
+import {RoomService} from '../room/room.service';
+import {PersonaProfileService} from '../persona-profile/persona-profile.service';
 
 interface SendMessagePayload {
   userId: string;
@@ -19,7 +21,11 @@ interface SendMessagePayload {
 
 @WebSocketGateway({ cors: { origin: '*' }, namespace: '/' })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly roomService: RoomService,
+    private readonly personaProfileService: PersonaProfileService
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -59,14 +65,45 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @ConnectedSocket() client: Socket,
     @MessageBody() data: SendMessagePayload
   ) {
+    const { userId, roomId, message } = data;
+
+    // 1. 룸 참여자 조회
+    const participants = await this.roomService.getRoomParticipants(roomId);
+    if (!participants || participants.length !== 2) {
+      this.log(`[API][WebSocket] Room participants not found or not a couple: roomId=${roomId}`);
+      client.emit('error', { message: '채팅방 참여자 정보를 찾을 수 없습니다.' });
+      return;
+    }
+    const questioner = participants.find(u => u.id === userId);
+    const partner = participants.find(u => u.id !== userId);
+
+    if (!questioner || !partner) {
+      this.log(`[API][WebSocket] Questioner or partner not found: userId=${userId}, roomId=${roomId}`);
+      client.emit('error', { message: '질문자 또는 상대방 정보를 찾을 수 없습니다.' });
+      return;
+    }
+
+    // 2. 상대방 페르소나/상태 조회
+    const partnerPersona = await this.personaProfileService.getPersonaByUserId(partner.id);
+
+    // 3. LLM 프롬프트에 상대방 정보 포함
+    const prompt = `
+질문자: ${questioner.gender}
+상대방: ${partner.gender}
+상대방 페르소나: ${partnerPersona?.persona ?? '정보없음'}
+상대방 상태: ${partnerPersona?.status ?? '정보없음'}
+질문: ${message}
+`;
+
     this.log(`[API][WebSocket] Received from client ${client.id}:`, data);
+    this.log(`[API][WebSocket] LLM Prompt:`, prompt);
 
     try {
       // LLM 피드백 및 DB 저장
       const { userChat, aiChat } = await this.chatService.sendToLLM(
-        data.message,
-        data.roomId,
-        data.userId,
+        prompt,
+        roomId,
+        userId,
       );
 
       // 클라이언트에 보낼 응답 구조

@@ -29,6 +29,8 @@ export class PersonaProfileService {
       data: {
         ...data,
         source: data.source as ProfileSource,
+        persona: "외향적",
+        status: "피곤함",
       },
     });
   }
@@ -48,6 +50,8 @@ export class PersonaProfileService {
         isStatic: false,
         source,
         confidenceScore,
+        persona: "외향적",
+        status: "피곤함",
       },
     });
   }
@@ -73,6 +77,8 @@ export class PersonaProfileService {
         content: analysis.content,
         confidenceScore: analysis.confidenceScore,
         source: 'AI_ANALYSIS',
+        persona: "외향적",
+        status: "피곤함",
       },
     });
   }
@@ -109,5 +115,14 @@ export class PersonaProfileService {
     return this.prisma.personaProfile.deleteMany({
       where: { userId, categoryCodeId },
     });
+  }
+
+  async getPersonaByUserId(userId: string) {
+    // userId가 unique가 아니면 findMany 사용
+    const personas = await this.prisma.personaProfile.findMany({
+      where: { userId },
+    });
+    // 대표 persona만 필요하다면 첫 번째 반환
+    return personas[0] ?? null;
   }
 }

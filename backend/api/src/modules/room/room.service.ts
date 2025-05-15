@@ -47,4 +47,21 @@ export class RoomService {
   async remove(id: string) {
     return this.prisma.room.delete({ where: { id } });
   }
+
+  async getRoomParticipants(roomId: string) {
+    const room = await this.prisma.room.findUnique({
+      where: { id: roomId },
+      include: {
+        relationship: {
+          include: {
+            user1: true,
+            user2: true,
+          },
+        },
+      },
+    });
+    if (!room || !room.relationship) return [];
+    const { user1, user2 } = room.relationship;
+    return [user1, user2];
+  }
 }
