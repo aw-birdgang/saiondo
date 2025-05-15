@@ -25,19 +25,19 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
-  late final _$isLoadingAtom =
-      Atom(name: '_ChatStore.isLoading', context: context);
+  late final _$isConnectedAtom =
+      Atom(name: '_ChatStore.isConnected', context: context);
 
   @override
-  bool get isLoading {
-    _$isLoadingAtom.reportRead();
-    return super.isLoading;
+  bool get isConnected {
+    _$isConnectedAtom.reportRead();
+    return super.isConnected;
   }
 
   @override
-  set isLoading(bool value) {
-    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
-      super.isLoading = value;
+  set isConnected(bool value) {
+    _$isConnectedAtom.reportWrite(value, super.isConnected, () {
+      super.isConnected = value;
     });
   }
 
@@ -49,24 +49,37 @@ mixin _$ChatStore on _ChatStore, Store {
     return _$loadMessagesAsyncAction.run(() => super.loadMessages(roomId));
   }
 
-  late final _$sendMessageAsyncAction =
-      AsyncAction('_ChatStore.sendMessage', context: context);
-
-  @override
-  Future<void> sendMessage(String userId, String roomId, String message) {
-    return _$sendMessageAsyncAction
-        .run(() => super.sendMessage(userId, roomId, message));
-  }
-
   late final _$_ChatStoreActionController =
       ActionController(name: '_ChatStore', context: context);
 
   @override
-  void addMessage(ChatHistory message) {
-    final _$actionInfo =
-        _$_ChatStoreActionController.startAction(name: '_ChatStore.addMessage');
+  void sendMessage(String message) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore.sendMessage');
     try {
-      return super.addMessage(message);
+      return super.sendMessage(message);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void _onMessageReceived(dynamic data) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore._onMessageReceived');
+    try {
+      return super._onMessageReceived(data);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void _onStatusChanged(bool connected) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore._onStatusChanged');
+    try {
+      return super._onStatusChanged(connected);
     } finally {
       _$_ChatStoreActionController.endAction(_$actionInfo);
     }
@@ -76,7 +89,7 @@ mixin _$ChatStore on _ChatStore, Store {
   String toString() {
     return '''
 messages: ${messages},
-isLoading: ${isLoading}
+isConnected: ${isConnected}
     ''';
   }
 }

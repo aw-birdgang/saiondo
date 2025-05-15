@@ -3,92 +3,79 @@ import 'package:intl/intl.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   final String message;
+  final bool isMine;
   final String sender;
   final DateTime timestamp;
 
   const ChatMessageBubble({
+    super.key,
     required this.message,
+    required this.isMine,
     required this.sender,
     required this.timestamp,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isMe = sender.toUpperCase() == 'USER';
-    final bubbleColor = isMe ? const Color(0xFF7EC8E3) : const Color(0xFFF1F0F6);
-    final textColor = isMe ? Colors.white : Colors.black87;
+    final bubbleColor = isMine ? Colors.blue[200] : Colors.grey[300];
+    final align = isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final radius = isMine
+        ? const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(16),
+          )
+        : const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          );
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (!isMe) ...[
-            _buildBubbleTail(isMe),
-            SizedBox(width: 2),
-          ],
-          Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.7,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: bubbleColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                  bottomLeft: Radius.circular(isMe ? 16 : 0),
-                  bottomRight: Radius.circular(isMe ? 0 : 16),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.07),
-                    blurRadius: 6,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: textColor,
-                      height: 1.4,
-                    ),
-                  ),
-                  SizedBox(height: 6),
-                  Text(
-                    DateFormat('HH:mm').format(timestamp),
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: isMe ? Colors.white70 : Colors.grey[600],
-                    ),
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: align,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            left: isMine ? 40 : 8,
+            right: isMine ? 8 : 40,
+            top: 4,
+            bottom: 2,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: bubbleColor,
+              borderRadius: radius,
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+            child: Text(
+              message,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 16,
               ),
             ),
           ),
-          if (isMe) ...[
-            SizedBox(width: 2),
-            _buildBubbleTail(isMe),
-          ],
-        ],
-      ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            left: isMine ? 40 : 12,
+            right: isMine ? 12 : 40,
+            bottom: 8,
+          ),
+          child: Text(
+            '${isMine ? "나" : sender} · ${_formatTime(timestamp)}',
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  // 말풍선 꼬리
-  Widget _buildBubbleTail(bool isMe) {
-    return CustomPaint(
-      painter: _BubbleTailPainter(isMe: isMe, color: isMe ? const Color(0xFF7EC8E3) : const Color(0xFFF1F0F6)),
-      size: Size(8, 12),
-    );
+  String _formatTime(DateTime time) {
+    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
   }
 }
 

@@ -1,6 +1,8 @@
-
 import '../../../../core/data/network/dio/dio_client.dart';
 import '../../../domain/entry/chat/chat_history.dart';
+import '../constants/endpoints.dart';
+import '../dto/chat_history_request.dart';
+import '../dto/chat_history_response.dart';
 import '../rest_client.dart';
 
 class ChatHistoryApi {
@@ -13,24 +15,18 @@ class ChatHistoryApi {
   // injecting dio instance
   ChatHistoryApi(this._dioClient, this._restClient);
 
-
-  Future<List<ChatHistory>> fetchChatHistories(String roomId) async {
-    final response = await _dioClient.dio.get('/chat-histories', queryParameters: {'roomId': roomId});
-    return (response.data as List).map((e) => ChatHistory.fromJson(e)).toList();
+  Future<ChatHistoryResponse> sendMessage(ChatHistoryRequest req) async {
+    final response = await _dioClient.dio.post(Endpoints.chat, data: req.toJson());
+    return ChatHistoryResponse.fromJson(response.data);
   }
 
-  Future<ChatHistory> sendMessage({
-    required String userId,
-    required String roomId,
-    required String message,
-  }) async {
-    final response = await _dioClient.dio.post('/chat', data: {
-      'userId': userId,
-      'roomId': roomId,
-      'message': message,
-    });
-    return ChatHistory.fromJson(response.data['userChat']);
+  Future<List<ChatHistoryResponse>> fetchChatHistories(String roomId) async {
+    final response = await _dioClient.dio.get(
+      Endpoints.chatHistories,
+      queryParameters: {'roomId': roomId},
+    );
+    return (response.data as List)
+        .map((e) => ChatHistoryResponse.fromJson(e))
+        .toList();
   }
-
-
 }
