@@ -1,8 +1,7 @@
-// src/modules/question-template/question-template.controller.ts
-import { Controller, Post, Get, Body } from '@nestjs/common';
-import { QuestionTemplateService } from './question-template.service';
-import { CreateQuestionTemplateDto } from './dto/create-question-template.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {Body, Controller, Get, Post} from '@nestjs/common';
+import {QuestionTemplateService} from './question-template.service';
+import {CreateQuestionTemplateDto} from './dto/create-question-template.dto';
+import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 
 @ApiTags('QuestionTemplate')
 @Controller('question-templates')
