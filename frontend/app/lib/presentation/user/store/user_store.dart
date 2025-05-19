@@ -1,9 +1,8 @@
 import 'package:mobx/mobx.dart';
 
-import '../../../domain/entry/user/persona_profile.dart';
+import '../../../domain/entry/assistant/assistant.dart';
 import '../../../domain/entry/user/user.dart';
 import '../../../domain/repository/user/user_repository.dart';
-import '../../auth/store/auth_store.dart';
 
 part 'user_store.g.dart';
 
@@ -26,10 +25,10 @@ abstract class _UserStore with Store {
   String? userId;
 
   @observable
-  String? roomId;
+  String? assistantId;
 
   @observable
-  List<dynamic> userRooms = [];
+  String? channelId;
 
   @observable
   bool isLoading = false;
@@ -47,9 +46,10 @@ abstract class _UserStore with Store {
       selectedUser = await _userRepository.fetchUserById(userId!);
       print('[UserStore] selectedUser: ${selectedUser != null ? selectedUser!.toJson() : "null"}');
 
-      userRooms = await _userRepository.fetchUserRooms(userId!);
-      if (userRooms.isNotEmpty) {
-        roomId = userRooms.first['id'];
+      List<Assistant> userAssistants = await _userRepository.fetchUserAssistants(userId!);
+      if (userAssistants.isNotEmpty) {
+        assistantId = userAssistants.first.id;
+        channelId = userAssistants.first.channelId;
       }
     } catch (e) {
       print('[UserStore] 유저 정보 로딩 실패: $e');
@@ -71,16 +71,6 @@ abstract class _UserStore with Store {
     }
   }
 
-  @action
-  Future<void> loadUserRooms(String id) async {
-    isLoading = true;
-    try {
-      userRooms = await _userRepository.fetchUserRooms(id);
-    } finally {
-      isLoading = false;
-    }
-  }
-
   // 현재 유저 id 반환 (selectedUser 우선, 없으면 users 첫번째)
   String? get currentUserId => selectedUser?.id ?? (users.isNotEmpty ? users.first.id : null);
 
@@ -89,6 +79,5 @@ abstract class _UserStore with Store {
   Future<void> removeUser() async {
     selectedUser = null;
     users.clear();
-    userRooms = [];
   }
 }

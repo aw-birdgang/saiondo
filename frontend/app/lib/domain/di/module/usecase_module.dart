@@ -6,7 +6,9 @@ import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
 
 import '../../../data/network/apis/category_code_api.dart';
 import '../../../data/repository/chat_history_repository_impl.dart';
+import '../../repository/assistant/assitant_repository.dart';
 import '../../repository/auth/auth_repository.dart';
+import '../../usecase/assistant/fetch_assistants_usecase.dart';
 import '../../usecase/auth/login_usecase.dart';
 import '../../usecase/auth/register_usecase.dart';
 import '../../usecase/category/fetch_category_codes_usecase.dart';
@@ -38,6 +40,12 @@ class UseCaseModule {
     // category code:--------------------------------------------------------------------
     getIt.registerLazySingleton<FetchCategoryCodesUseCase>(
             () => FetchCategoryCodesUseCase(getIt<CategoryCodeApi>()));
+
+    // assistant:--------------------------------------------------------------------
+    getIt.registerLazySingleton<FetchAssistantsUseCase>(
+            () => FetchAssistantsUseCase(getIt<AssistantRepository>()));
+
+
 
   }
 }

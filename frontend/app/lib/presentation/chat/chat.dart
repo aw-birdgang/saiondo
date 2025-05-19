@@ -7,12 +7,14 @@ import 'chat_message_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   final String userId;
-  final String roomId;
+  final String assistantId;
+  final String channelId;
 
   const ChatScreen({
     super.key,
     required this.userId,
-    required this.roomId,
+    required this.assistantId,
+    required this.channelId,
   });
 
   @override
@@ -26,8 +28,8 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _chatStore.connect(widget.userId, widget.roomId);
-    _chatStore.loadMessages(widget.roomId);
+    _chatStore.connect(widget.userId, widget.assistantId, widget.channelId,);
+    _chatStore.loadMessages(widget.assistantId);
   }
 
   @override

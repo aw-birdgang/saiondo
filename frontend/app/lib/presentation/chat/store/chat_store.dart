@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'dart:convert';
 
 import '../../../data/network/socket_io/socket_io_service.dart';
 import '../../../domain/entry/chat/chat_history.dart';
@@ -16,7 +17,11 @@ abstract class _ChatStore with Store {
   final SendMessageUseCase sendMessageUseCase;
   final SocketIoService _socketService;
 
-  _ChatStore(this.fetchChatHistoriesUseCase, this.sendMessageUseCase, this._socketService);
+  _ChatStore(
+    this.fetchChatHistoriesUseCase,
+    this.sendMessageUseCase,
+    this._socketService,
+  );
 
   @observable
   ObservableList<ChatHistory> messages = ObservableList<ChatHistory>();
@@ -24,47 +29,58 @@ abstract class _ChatStore with Store {
   @observable
   bool isConnected = false;
 
-  late String _userId;
-  late String _roomId;
+  String? _userId;
+  String? _assistantId;
+  String? _channelId;
 
   @action
-  Future<void> loadMessages(String roomId) async {
+  Future<void> loadMessages(String assistantId) async {
     try {
-      final result = await fetchChatHistoriesUseCase(roomId);
+      final result = await fetchChatHistoriesUseCase(assistantId);
       messages = ObservableList.of(result ?? []);
+      print('[ChatStore] 메시지 로딩 성공: ${messages.length}개');
     } catch (e) {
       print('[ChatStore] 메시지 로딩 실패: $e');
       messages = ObservableList.of([]);
     }
   }
 
-  void connect(String userId, String roomId) {
+  void connect(String userId, String assistantId, String channelId) {
     _userId = userId;
-    _roomId = roomId;
+    _assistantId = assistantId;
+    _channelId = channelId;
     _socketService.connect(
       onMessage: _onMessageReceived,
-      onStatus: (connected) {
-        isConnected = connected;
-      },
+      onStatus: _onStatusChanged,
     );
+    print('[ChatStore] 소켓 연결 시도: userId=$_userId, assistantId=$_assistantId, channelId=$_channelId');
   }
 
   @action
   void sendMessage(String message) {
+    if (_userId == null || _assistantId == null || _channelId == null) {
+      print('[ChatStore] sendMessage 호출 전 connect 필요');
+      return;
+    }
     final userChat = ChatHistory(
       id: UniqueKey().toString(),
-      userId: _userId,
-      roomId: _roomId,
+      userId: _userId!,
+      assistantId: _assistantId!,
+      channelId: _channelId!,
       message: message,
       sender: 'USER',
-      timestamp: DateTime.now(),
+      createdAt: DateTime.now(),
     );
     messages.add(userChat);
-    _socketService.sendMessage(_userId, _roomId, message);
+    print('[ChatStore] 사용자 메시지 전송: $message');
+    _socketService.sendMessage(_userId!, _assistantId!, _channelId!, message);
   }
 
   void disconnect() {
-    _socketService.disconnect();
+    if (isConnected) {
+      _socketService.disconnect();
+      print('[ChatStore] 소켓 연결 해제');
+    }
   }
 
   @action
@@ -74,6 +90,7 @@ abstract class _ChatStore with Store {
       if (map['aiChat'] != null) {
         final aiChat = ChatHistory.fromJson(map['aiChat']);
         messages.add(aiChat);
+        print('[ChatStore] AI 메시지 수신: ${aiChat.message}');
       }
     } catch (e) {
       print('[ChatStore] 메시지 파싱 실패: $e, data: $data');
@@ -87,6 +104,6 @@ abstract class _ChatStore with Store {
   }
 
   void dispose() {
-    _socketService.disconnect();
+    disconnect();
   }
 }

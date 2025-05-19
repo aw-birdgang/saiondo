@@ -5,6 +5,7 @@ class FetchChatHistoriesUseCase {
   final ChatHistoryRepository repository;
   FetchChatHistoriesUseCase(this.repository);
 
-  Future<List<ChatHistory>> call(String roomId) =>
-      repository.fetchChatHistories(roomId);
+  Future<List<ChatHistory>> call(String assistantId) async {
+    return await repository.fetchChatHistories(assistantId);
+  }
 }

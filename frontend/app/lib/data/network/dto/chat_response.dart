@@ -1,17 +1,17 @@
 class ChatMessageResponse {
   final String sender;
   final String message;
-  final DateTime timestamp;
+  final DateTime createdAt;
 
   ChatMessageResponse({
     required this.sender,
     required this.message,
-    required this.timestamp,
+    required this.createdAt,
   });
 
   factory ChatMessageResponse.fromJson(Map<String, dynamic> json) => ChatMessageResponse(
     sender: json['sender'],
     message: json['message'],
-    timestamp: DateTime.parse(json['timestamp']),
+    createdAt: DateTime.parse(json['createdAt']),
   );
 }

@@ -55,34 +55,35 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
-  late final _$roomIdAtom = Atom(name: '_UserStore.roomId', context: context);
+  late final _$assistantIdAtom =
+      Atom(name: '_UserStore.assistantId', context: context);
 
   @override
-  String? get roomId {
-    _$roomIdAtom.reportRead();
-    return super.roomId;
+  String? get assistantId {
+    _$assistantIdAtom.reportRead();
+    return super.assistantId;
   }
 
   @override
-  set roomId(String? value) {
-    _$roomIdAtom.reportWrite(value, super.roomId, () {
-      super.roomId = value;
+  set assistantId(String? value) {
+    _$assistantIdAtom.reportWrite(value, super.assistantId, () {
+      super.assistantId = value;
     });
   }
 
-  late final _$userRoomsAtom =
-      Atom(name: '_UserStore.userRooms', context: context);
+  late final _$channelIdAtom =
+      Atom(name: '_UserStore.channelId', context: context);
 
   @override
-  List<dynamic> get userRooms {
-    _$userRoomsAtom.reportRead();
-    return super.userRooms;
+  String? get channelId {
+    _$channelIdAtom.reportRead();
+    return super.channelId;
   }
 
   @override
-  set userRooms(List<dynamic> value) {
-    _$userRoomsAtom.reportWrite(value, super.userRooms, () {
-      super.userRooms = value;
+  set channelId(String? value) {
+    _$channelIdAtom.reportWrite(value, super.channelId, () {
+      super.channelId = value;
     });
   }
 
@@ -118,14 +119,6 @@ mixin _$UserStore on _UserStore, Store {
     return _$loadUserByIdAsyncAction.run(() => super.loadUserById(id));
   }
 
-  late final _$loadUserRoomsAsyncAction =
-      AsyncAction('_UserStore.loadUserRooms', context: context);
-
-  @override
-  Future<void> loadUserRooms(String id) {
-    return _$loadUserRoomsAsyncAction.run(() => super.loadUserRooms(id));
-  }
-
   late final _$removeUserAsyncAction =
       AsyncAction('_UserStore.removeUser', context: context);
 
@@ -140,8 +133,8 @@ mixin _$UserStore on _UserStore, Store {
 users: ${users},
 selectedUser: ${selectedUser},
 userId: ${userId},
-roomId: ${roomId},
-userRooms: ${userRooms},
+assistantId: ${assistantId},
+channelId: ${channelId},
 isLoading: ${isLoading}
     ''';
   }

@@ -5,6 +5,6 @@ class SendMessageUseCase {
   final ChatHistoryRepository repository;
   SendMessageUseCase(this.repository);
 
-  Future<ChatHistory> call(String userId, String roomId, String message) =>
-      repository.sendMessage(userId, roomId, message);
+  Future<ChatHistory> call(String userId, String assistantId, String message) =>
+      repository.sendMessage(userId, assistantId, message);
 }

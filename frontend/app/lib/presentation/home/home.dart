@@ -17,8 +17,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeStore _homeStore = getIt<HomeStore>();
-  final logger = getIt<Logger>();
   final AuthStore _authStore = getIt<AuthStore>();
+  final logger = getIt<Logger>();
 
   int _selectedIndex = 0;
 

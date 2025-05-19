@@ -51,11 +51,12 @@ class SocketIoService {
     _socket.connect();
   }
 
-  void sendMessage(String userId, String roomId, String message) {
-    print('[Socket.io] sendMessage: $userId, $roomId, $message');
+  void sendMessage(String userId, String assistantId, String channelId, String message) {
+    print('[Socket.io] sendMessage: $userId, $assistantId, $message');
     _socket.emit('send_message', {
       'userId': userId,
-      'roomId': roomId,
+      'assistantId': assistantId,
+      'channelId': channelId,
       'message': message,
     });
   }

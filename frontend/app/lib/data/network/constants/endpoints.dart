@@ -27,16 +27,30 @@ class Endpoints {
   //
   static const String users = '/users';
   static String userById(String id) => '/users/$id';
-  static String userRooms(String id) => '/users/$id/rooms';
+  static String userAssistants(String id) => '/users/$id/assistants';
 
   static String personaProfiles(String userId) => '/persona-profiles/user/$userId';
   static String createPersonaProfile(String userId) => '/persona-profiles/user/$userId';
   static String updatePersonaProfile(String userId, String categoryCodeId) => '/persona-profiles/user/$userId/category/$categoryCodeId';
   static String deletePersonaProfile(String userId, String categoryCodeId) => '/persona-profiles/user/$userId/category/$categoryCodeId';
 
+  // Channel (커플 단위)
+  static String get channels => '$baseUrl/channels';
+  static String channelById(String channelId) => '$baseUrl/channels/$channelId';
 
-  //
-  static String getFaqs = baseUrl + '/faq/list?pageRows=10&pageNumber=1&languageType=EN';
+  // Assistant (채널 하위, 유저별 1:1)
+  static String get assistants => '$baseUrl/assistants';
+  static String assistantById(String assistantId) => '$baseUrl/assistants/$assistantId';
+  static String assistantsByUser(String userId) => '$baseUrl/assistants/user/$userId';
+
+  // 채팅 내역 조회 (내 방 기준)
+  static String chatHistory(String channelId, String userId) =>
+      '$baseUrl/chat/$channelId/$userId/history';
+
+  // 메시지 전송 (내 방 기준)
+  static String sendMessage(String channelId, String userId) =>
+      '$baseUrl/chat/$channelId/$userId/message';
+
   static String getChats = baseUrl + '/chat/list?pageRows=10&pageNumber=1&languageType=EN';
 
   static String chatHistories = baseUrl + "/chat-histories";
@@ -44,6 +58,4 @@ class Endpoints {
 
   //
   static String getCategoryCodes = baseUrl + '/category-codes';
-
-
 }

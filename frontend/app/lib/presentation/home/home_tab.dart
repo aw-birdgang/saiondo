@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+
 import '../../di/service_locator.dart';
 import '../../domain/entry/user/user.dart';
 import '../../utils/routes/routes.dart';
@@ -34,7 +35,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         }
         return HomeTabContent(
           user: user,
-          roomId: _userStore.roomId,
+          assistantId: _userStore.assistantId,
+          channelId: _userStore.channelId,
           userId: _userStore.userId,
         );
       },
@@ -44,13 +46,15 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
 class HomeTabContent extends StatelessWidget {
   final User user;
-  final String? roomId;
+  final String? assistantId;
+  final String? channelId;
   final String? userId;
 
   const HomeTabContent({
     super.key,
     required this.user,
-    required this.roomId,
+    required this.assistantId,
+    required this.channelId,
     required this.userId,
   });
 
@@ -79,16 +83,17 @@ class HomeTabContent extends StatelessWidget {
             child: ElevatedButton.icon(
               icon: const Icon(Icons.chat),
               label: const Text('채팅 시작', style: TextStyle(fontSize: 18)),
-              onPressed: (userId == null || roomId == null)
+              onPressed: (userId == null || assistantId == null || channelId == null)
                   ? null
                   : () {
-                      print('채팅 버튼 클릭: userId=$userId, roomId=$roomId');
+                      print('채팅 버튼 클릭: userId=$userId, assistantId=$assistantId, channelId=$channelId');
                       Navigator.pushNamed(
                         context,
                         Routes.chat,
                         arguments: {
                           'userId': userId,
-                          'roomId': roomId,
+                          'assistantId': assistantId,
+                          'channelId': channelId,
                         },
                       );
                     },

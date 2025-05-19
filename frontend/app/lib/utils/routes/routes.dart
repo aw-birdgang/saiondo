@@ -21,7 +21,8 @@ class Routes {
       final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
       return ChatScreen(
         userId: args['userId'] as String,
-        roomId: args['roomId'] as String,
+        assistantId: args['assistantId'] as String,
+        channelId: args['channelId'] as String,
       );
     },
     login: (BuildContext context) => LoginScreen(),

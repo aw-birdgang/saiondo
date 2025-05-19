@@ -3,14 +3,14 @@ class UserResponse {
   final String name;
   final String email;
   final String gender;
-  final String? roomId;
+  final String? assistantId;
 
   UserResponse({
     required this.id,
     required this.name,
     required this.email,
     required this.gender,
-    this.roomId,
+    this.assistantId,
   });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) => UserResponse(
@@ -18,7 +18,7 @@ class UserResponse {
     name: json['name'],
     email: json['email'],
     gender: json['gender'],
-    roomId: json['roomId'],
+    assistantId: json['assistantId'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -26,6 +26,6 @@ class UserResponse {
     'name': name,
     'email': email,
     'gender': gender,
-    'roomId': roomId,
+    'assistantId': assistantId,
   };
 }

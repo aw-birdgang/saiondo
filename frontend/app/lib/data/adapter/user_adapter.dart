@@ -7,6 +7,6 @@ class UserAdapter {
     name: res.name,
     email: res.email,
     gender: res.gender,
-    roomId: res.roomId,
+    assistantId: res.assistantId,
   );
 }

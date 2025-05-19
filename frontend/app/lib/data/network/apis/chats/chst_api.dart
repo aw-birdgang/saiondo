@@ -17,8 +17,8 @@ class ChatApi {
     return ChatHistoryResponse.fromJson(response.data);
   }
 
-  Future<List<ChatHistoryResponse>> fetchChatHistories(String roomId) async {
-    final response = await _dioClient.dio.get(Endpoints.chatHistories, queryParameters: {'roomId': roomId});
+  Future<List<ChatHistoryResponse>> fetchChatHistories(String assistantId) async {
+    final response = await _dioClient.dio.get(Endpoints.chatHistories, queryParameters: {'assistantId': assistantId});
     return (response.data as List)
         .map((e) => ChatHistoryResponse.fromJson(e))
         .toList();

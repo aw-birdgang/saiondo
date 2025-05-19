@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:app/domain/entry/assistant/assistant.dart';
+
 import '../../domain/entry/user/persona_profile.dart';
 import '../../domain/entry/user/user.dart';
 import '../../domain/repository/user/user_repository.dart';
@@ -30,7 +32,7 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List<dynamic>> fetchUserRooms(String id) => _userApi.fetchUserRooms(id);
+  Future<List<Assistant>> fetchUserAssistants(String userId) => _userApi.fetchUserAssistants(userId);
 
   @override
   Future<void> saveUserPreference(User user) async {
@@ -62,7 +64,7 @@ class UserRepositoryImpl implements UserRepository {
       name: user.name,
       email: user.email,
       gender: user.gender,
-      roomId: user.roomId,
+      assistantId: user.assistantId,
     );
     // 서버에 업데이트 요청
     final updatedRes = await _userApi.updateUser(req); // UserResponse 반환

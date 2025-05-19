@@ -8,13 +8,14 @@ class ChatHistoryAdapter {
     userId: res.userId,
     message: res.message,
     sender: res.sender,
-    timestamp: res.timestamp,
-    roomId: res.roomId,
+    createdAt: res.createdAt,
+    assistantId: res.assistantId,
+    channelId: res.channelId,
   );
 
   static ChatHistoryRequest toRequest(ChatHistory entity) => ChatHistoryRequest(
     userId: entity.userId,
-    roomId: entity.roomId,
+    assistantId: entity.assistantId,
     message: entity.message,
   );
 }

@@ -10,16 +10,17 @@ class ChatHistoryRepositoryImpl implements ChatHistoryRepository {
   ChatHistoryRepositoryImpl(this.api);
 
   @override
-  Future<List<ChatHistory>> fetchChatHistories(String roomId) async {
-    final responseList = await api.fetchChatHistories(roomId); // List<ChatHistoryResponse>
+  Future<List<ChatHistory>> fetchChatHistories(String assistantId) async {
+    print('[ChatHistoryRepositoryImpl] fetchChatHistories = ${assistantId}');
+    final responseList = await api.fetchChatHistories(assistantId);
     return responseList.map(ChatHistoryAdapter.fromResponse).toList();
   }
 
   @override
-  Future<ChatHistory> sendMessage(String userId, String roomId, String message) async {
+  Future<ChatHistory> sendMessage(String userId, String assistantId, String message) async {
     final req = ChatHistoryRequest(
       userId: userId,
-      roomId: roomId,
+      assistantId: assistantId,
       message: message,
     );
     final res = await api.sendMessage(req);

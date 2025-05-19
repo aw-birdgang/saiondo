@@ -55,18 +55,19 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
-  late final _$roomsAtom = Atom(name: '_HomeStore.rooms', context: context);
+  late final _$assistantsAtom =
+      Atom(name: '_HomeStore.assistants', context: context);
 
   @override
-  ObservableList<Room> get rooms {
-    _$roomsAtom.reportRead();
-    return super.rooms;
+  ObservableList<Assistant> get assistants {
+    _$assistantsAtom.reportRead();
+    return super.assistants;
   }
 
   @override
-  set rooms(ObservableList<Room> value) {
-    _$roomsAtom.reportWrite(value, super.rooms, () {
-      super.rooms = value;
+  set assistants(ObservableList<Assistant> value) {
+    _$assistantsAtom.reportWrite(value, super.assistants, () {
+      super.assistants = value;
     });
   }
 
@@ -86,28 +87,28 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
-  late final _$selectedRoomIdAtom =
-      Atom(name: '_HomeStore.selectedRoomId', context: context);
+  late final _$selectedAssistantIdAtom =
+      Atom(name: '_HomeStore.selectedAssistantId', context: context);
 
   @override
-  String? get selectedRoomId {
-    _$selectedRoomIdAtom.reportRead();
-    return super.selectedRoomId;
+  String? get selectedAssistantId {
+    _$selectedAssistantIdAtom.reportRead();
+    return super.selectedAssistantId;
   }
 
   @override
-  set selectedRoomId(String? value) {
-    _$selectedRoomIdAtom.reportWrite(value, super.selectedRoomId, () {
-      super.selectedRoomId = value;
+  set selectedAssistantId(String? value) {
+    _$selectedAssistantIdAtom.reportWrite(value, super.selectedAssistantId, () {
+      super.selectedAssistantId = value;
     });
   }
 
-  late final _$loadRoomsAsyncAction =
-      AsyncAction('_HomeStore.loadRooms', context: context);
+  late final _$loadAssistantsAsyncAction =
+      AsyncAction('_HomeStore.loadAssistants', context: context);
 
   @override
-  Future<void> loadRooms(String userId) {
-    return _$loadRoomsAsyncAction.run(() => super.loadRooms(userId));
+  Future<void> loadAssistants(String userId) {
+    return _$loadAssistantsAsyncAction.run(() => super.loadAssistants(userId));
   }
 
   late final _$_HomeStoreActionController =
@@ -136,11 +137,11 @@ mixin _$HomeStore on _HomeStore, Store {
   }
 
   @override
-  void selectRoom(String roomId) {
-    final _$actionInfo =
-        _$_HomeStoreActionController.startAction(name: '_HomeStore.selectRoom');
+  void selectAssistant(String assistantId) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+        name: '_HomeStore.selectAssistant');
     try {
-      return super.selectRoom(roomId);
+      return super.selectAssistant(assistantId);
     } finally {
       _$_HomeStoreActionController.endAction(_$actionInfo);
     }
@@ -152,9 +153,9 @@ mixin _$HomeStore on _HomeStore, Store {
 success: ${success},
 title: ${title},
 currentScreen: ${currentScreen},
-rooms: ${rooms},
+assistants: ${assistants},
 isLoading: ${isLoading},
-selectedRoomId: ${selectedRoomId}
+selectedAssistantId: ${selectedAssistantId}
     ''';
   }
 }

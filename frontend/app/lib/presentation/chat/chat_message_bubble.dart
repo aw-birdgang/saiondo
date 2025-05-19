@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   final String message;
   final bool isMine;
   final String sender;
-  final DateTime timestamp;
+  final DateTime createdAt;
 
   const ChatMessageBubble({
     super.key,
     required this.message,
     required this.isMine,
     required this.sender,
-    required this.timestamp,
+    required this.createdAt,
   });
 
   @override
@@ -63,7 +62,7 @@ class ChatMessageBubble extends StatelessWidget {
             bottom: 8,
           ),
           child: Text(
-            '${isMine ? "나" : sender} · ${_formatTime(timestamp)}',
+            '${isMine ? "나" : sender} · ${_formatTime(createdAt)}',
             style: TextStyle(
               color: Colors.grey[500],
               fontSize: 12,

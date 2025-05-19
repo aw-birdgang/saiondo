@@ -19,7 +19,7 @@ class ChatMessageWidget extends StatelessWidget {
         message: chat.message,
         isMine: isMine,
         sender: chat.sender,
-        timestamp: chat.timestamp,
+        createdAt: chat.createdAt,
       ),
     );
   }

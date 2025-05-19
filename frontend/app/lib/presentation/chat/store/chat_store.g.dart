@@ -45,8 +45,8 @@ mixin _$ChatStore on _ChatStore, Store {
       AsyncAction('_ChatStore.loadMessages', context: context);
 
   @override
-  Future<void> loadMessages(String roomId) {
-    return _$loadMessagesAsyncAction.run(() => super.loadMessages(roomId));
+  Future<void> loadMessages(String assistantId) {
+    return _$loadMessagesAsyncAction.run(() => super.loadMessages(assistantId));
   }
 
   late final _$_ChatStoreActionController =

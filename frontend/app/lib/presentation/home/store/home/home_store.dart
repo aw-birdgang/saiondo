@@ -1,9 +1,11 @@
 import 'package:app/core/stores/error/error_store.dart';
+import 'package:app/domain/entry/assistant/assistant.dart';
+import 'package:app/domain/usecase/assistant/fetch_assistants_usecase.dart';
 import 'package:app/presentation/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../../data/network/dto/room_request.dart';
+import '../../../../data/network/apis/assistant_api.dart';
 
 part 'home_store.g.dart';
 
@@ -12,8 +14,9 @@ class HomeStore = _HomeStore with _$HomeStore;
 abstract class _HomeStore with Store {
   final String TAG = "_HomeStore";
   final ErrorStore errorStore;
+  final FetchAssistantsUseCase fetchAssistantsUseCase;
 
-  _HomeStore(this.errorStore) {
+  _HomeStore(this.fetchAssistantsUseCase, this.errorStore, ) {
     _setupDisposers();
   }
 
@@ -36,13 +39,13 @@ abstract class _HomeStore with Store {
   Widget currentScreen = HomeScreen();
 
   @observable
-  ObservableList<Room> rooms = ObservableList<Room>();
+  ObservableList<Assistant> assistants = ObservableList<Assistant>();
 
   @observable
   bool isLoading = false;
 
   @observable
-  String? selectedRoomId;
+  String? selectedAssistantId;
 
   @action
   void setTitle(String newTitle) {
@@ -55,22 +58,22 @@ abstract class _HomeStore with Store {
   }
 
   @action
-  Future<void> loadRooms(String userId) async {
+  Future<void> loadAssistants(String userId) async {
     isLoading = true;
     try {
-      // 실제 RoomApi 등에서 방 목록 불러오기
-      rooms = ObservableList.of([
-        Room(id: 'room1', relationshipId: 'rel1', createdAt: DateTime.now()),
-        Room(id: 'room2', relationshipId: 'rel2', createdAt: DateTime.now()),
-      ]);
+      final result = await fetchAssistantsUseCase(userId);
+      assistants = ObservableList.of(result);
+      success = true;
+    } catch (e) {
+      errorStore.errorMessage = e.toString();
     } finally {
       isLoading = false;
     }
   }
 
   @action
-  void selectRoom(String roomId) {
-    selectedRoomId = roomId;
+  void selectAssistant(String assistantId) {
+    selectedAssistantId = assistantId;
   }
 
   // dispose method

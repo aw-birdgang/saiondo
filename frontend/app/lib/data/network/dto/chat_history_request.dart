@@ -1,17 +1,17 @@
 class ChatHistoryRequest {
   final String userId;
-  final String roomId;
+  final String assistantId;
   final String message;
 
   ChatHistoryRequest({
     required this.userId,
-    required this.roomId,
+    required this.assistantId,
     required this.message,
   });
 
   Map<String, dynamic> toJson() => {
     'userId': userId,
-    'roomId': roomId,
+    'assistantId': assistantId,
     'message': message,
   };
 }

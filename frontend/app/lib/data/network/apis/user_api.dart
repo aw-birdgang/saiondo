@@ -1,4 +1,5 @@
 import '../../../core/data/network/dio/dio_client.dart';
+import '../../../domain/entry/assistant/assistant.dart';
 import '../constants/endpoints.dart';
 import '../dto/persona_profile_request.dart';
 import '../dto/persona_profile_response.dart';
@@ -22,9 +23,13 @@ class UserApi {
     return UserResponse.fromJson(response.data);
   }
 
-  Future<List<dynamic>> fetchUserRooms(String id) async {
-    final response = await _dioClient.dio.get(Endpoints.userRooms(id));
-    return response.data as List;
+  Future<List<Assistant>> fetchUserAssistants(String userId) async {
+    print('[UserApi] fetchUserAssistants 요청: $userId');
+    final response = await _dioClient.dio.get(Endpoints.userAssistants(userId));
+    final assistants = (response.data['assistants'] as List)
+        .map((e) => Assistant.fromJson(e))
+        .toList();
+    return assistants;
   }
 
   Future<UserResponse> updateUser(UserRequest user) async {

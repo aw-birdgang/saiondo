@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app/core/stores/form/form_store.dart';
 import 'package:app/domain/repository/user/user_repository.dart';
+import 'package:app/domain/usecase/assistant/fetch_assistants_usecase.dart';
 import 'package:app/domain/usecase/auth/login_usecase.dart';
 import 'package:app/domain/usecase/auth/register_usecase.dart';
 import 'package:app/domain/usecase/category/fetch_category_codes_usecase.dart';
@@ -34,6 +35,7 @@ class StoreModule {
     // stores:------------------------------------------------------------------
     getIt.registerSingleton<HomeStore>(
       HomeStore(
+        getIt<FetchAssistantsUseCase>(),
         getIt<ErrorStore>(),
       ),
     );

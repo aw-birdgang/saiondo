@@ -23,7 +23,6 @@ class AuthRepositoryImpl implements AuthRepository {
     if (userId != null) {
       await _sharedPrefsHelper.saveUserId(userId);
     }
-    // 필요하다면 user 전체를 jsonEncode해서 저장도 가능
     return result;
   }
 
