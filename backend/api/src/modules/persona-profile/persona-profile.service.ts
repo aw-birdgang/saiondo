@@ -56,7 +56,7 @@ export class PersonaProfileService {
     // ChatHistory에서 최근 N개 메시지 조회
     return this.prisma.chatHistory.findMany({
       where: { userId },
-      orderBy: { timestamp: 'desc' },
+      orderBy: { createdAt: 'desc' },
       take: 30,
     });
   }

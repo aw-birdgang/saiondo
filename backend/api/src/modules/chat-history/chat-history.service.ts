@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { CreateChatHistoryDto } from './dto/create-chat-history.dto';
-import { MessageSender } from '@prisma/client';
+import {Injectable} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {CreateChatHistoryDto} from './dto/create-chat-history.dto';
 
 @Injectable()
 export class ChatHistoryService {
@@ -15,17 +14,18 @@ export class ChatHistoryService {
     return this.prisma.chatHistory.create({
       data: {
         userId: dto.userId,
-        message: dto.message,
+        assistantId: dto.assistantId,
+        channelId: dto.channelId,
         sender: dto.sender,
-        roomId: dto.roomId,
+        message: dto.message,
+        createdAt: new Date(),
       },
     });
   }
 
-  async findByRoom(roomId: string) {
+  async findByRoom(assistantId: string) {
     return this.prisma.chatHistory.findMany({
-      where: { roomId },
-      orderBy: { timestamp: 'asc' },
+      where: { assistantId },
     });
   }
 }

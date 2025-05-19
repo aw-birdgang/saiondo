@@ -8,24 +8,24 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import {Server, Socket} from 'socket.io';
-import {ChatService} from './chat.service';
-import {RoomService} from '../room/room.service';
-import {PersonaProfileService} from '../persona-profile/persona-profile.service';
-import { PersonaProfile } from '@prisma/client';
+import { Server, Socket } from 'socket.io';
+import { ChatService } from './chat.service';
+import { AssistantService } from "@modules/assistant/assistant.service";
+import { PersonaProfileService } from '../persona-profile/persona-profile.service';
 
 interface SendMessagePayload {
   userId: string;
-  roomId: string;
+  assistantId: string;
+  channelId: string;
   message: string;
 }
 
 @WebSocketGateway({ cors: { origin: '*' }, namespace: '/' })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-    private readonly chatService: ChatService,
-    private readonly roomService: RoomService,
-    private readonly personaProfileService: PersonaProfileService
+      private readonly chatService: ChatService,
+      private readonly assistantService: AssistantService,
+      private readonly personaProfileService: PersonaProfileService
   ) {}
 
   @WebSocketServer()
@@ -48,9 +48,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       count = this.server.engine.clientsCount.toString();
     }
 
-    if (this.connectedClients.has(client.id)) {
-      return;
-    }
+    if (this.connectedClients.has(client.id)) return;
     this.connectedClients.add(client.id);
 
     this.log(`[API][WebSocket] Client connected: ${client.id}, transport: ${transport}, address: ${address}, total clients: ${count}, time: ${now}`);
@@ -63,23 +61,25 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('send_message')
   async handleMessage(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: SendMessagePayload
+      @ConnectedSocket() client: Socket,
+      @MessageBody() data: SendMessagePayload
   ) {
-    const { userId, roomId, message } = data;
+    const { userId, assistantId, channelId, message } = data;
+    this.log(`[API][WebSocket] handleMessage called`, { userId, assistantId, channelId, message });
 
     try {
-      const response = await this.chatService.processUserMessage(userId, roomId, message);
+      const response = await this.chatService.processUserMessage(userId, assistantId, channelId, message);
+      this.log(`[API][WebSocket] processUserMessage response`, response);
+
       this.server.emit('receive_message', response);
       this.log(`[API][WebSocket] Sent feedback to all clients:`, response);
     } catch (error) {
       this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
-      client.emit('error', { message: error.message });
+      client.emit('error', { message: error?.message ?? 'Unknown error' });
     }
   }
 
   private log(...args: any[]) {
-    // 추후 winston 등으로 교체 가능
     console.log(...args);
   }
 }

@@ -22,14 +22,15 @@ export class LlmController {
     @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
     async chat(@Body() body: ChatRequestDto): Promise<ChatResponseDto> {
         try {
-            if (!body.roomId) {
-                throw new HttpException('roomId is required', HttpStatus.BAD_REQUEST);
+            if (!body.assistantId) {
+                throw new HttpException('assistantId is required', HttpStatus.BAD_REQUEST);
             }
             const result = await this.llmService.forwardToLLM(body.prompt, body.model);
 
             // 1. 사용자 프롬프트 저장
             await this.chatHistoryService.create({
-                roomId: body.roomId,
+                assistantId: body.assistantId,
+                channelId: body.channelId,
                 userId: body.userId,
                 message: body.prompt,
                 sender: 'USER',
@@ -39,7 +40,8 @@ export class LlmController {
 
             // 2. LLM 응답 저장
             await this.chatHistoryService.create({
-                roomId: body.roomId,
+                assistantId: body.assistantId,
+                channelId: body.channelId,
                 userId: body.userId,
                 message: result,
                 sender: 'AI',

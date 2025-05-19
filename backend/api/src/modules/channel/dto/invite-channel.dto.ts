@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class InviteRelationshipDto {
+export class InviteChannelDto {
   @ApiProperty({ example: 'user1-uuid' })
   user1Id: string;
 

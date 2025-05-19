@@ -6,16 +6,16 @@ import {UserModule} from "@modules/user/user.module";
 import {AdviceReportModule} from "@modules/advice-report/advice-report.module";
 import {ChatHistoryModule} from "@modules/chat-history/chat-history.module";
 import {PersonaProfileModule} from "@modules/persona-profile/persona-profile.module";
-import {RelationshipModule} from "@modules/relationship/relationship.module";
 import {CategoryCodeModule} from './modules/category-code/category-code.module';
 import {QuestionTemplateModule} from "@modules/question-template/question-template.module";
 import {PushScheduleModule} from "@modules/push-schedule/push-schedule.module";
 import {UserAnswerModule} from "@modules/user-answer/user-answer.module";
-import {RoomModule} from './modules/room/room.module';
 import {ChatModule} from "@modules/chat/chat.module";
 import {AuthModule} from "./modules/auth/auth.module";
 import commonConfig from "./config/common.config";
 import authConfig from "./config/auth.config";
+import {ChannelModule} from './modules/channel/channel.module';
+import {AssistantModule} from "@modules/assistant/assistant.module";
 
 @Module({
   imports: [
@@ -28,16 +28,17 @@ import authConfig from "./config/auth.config";
       envFilePath: ['.env'],
     }),
     PrismaModule,
-    LlmModule,
+    ChannelModule,
+
     AuthModule,
     UserModule,
-    RoomModule,
-    ChatModule,
-    AdviceReportModule,
-    ChatHistoryModule,
     PersonaProfileModule,
-    RelationshipModule,
+    AssistantModule,
+    ChatModule,
+    ChatHistoryModule,
+    LlmModule,
     CategoryCodeModule,
+    AdviceReportModule,
     QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,

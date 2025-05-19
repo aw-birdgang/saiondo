@@ -1,7 +1,7 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
-import { ChatHistoryService } from './chat-history.service';
-import { CreateChatHistoryDto } from './dto/create-chat-history.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {Body, Controller, Get, Post, Query} from '@nestjs/common';
+import {ChatHistoryService} from './chat-history.service';
+import {CreateChatHistoryDto} from './dto/create-chat-history.dto';
+import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 
 @ApiTags('ChatHistory')
 @Controller('chat-histories')
@@ -17,8 +17,8 @@ export class ChatHistoryController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Room별 채팅 목록 조회' })
-  async findByRoom(@Query('roomId') roomId: string) {
-    return this.service.findByRoom(roomId);
+  @ApiOperation({ summary: 'Assistant 별 채팅 목록 조회' })
+  async findByRoom(@Query('assistantId') assistantId: string) {
+    return this.service.findByRoom(assistantId);
   }
 }

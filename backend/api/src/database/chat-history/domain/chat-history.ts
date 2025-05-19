@@ -8,5 +8,5 @@ export class ChatHistory {
     isQuestionResponse: boolean;
     isUserInitiated: boolean;
     analyzedByLlm: boolean;
-    timestamp: Date;
+    createAt: Date;
 }

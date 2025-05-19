@@ -102,34 +102,57 @@ async function main() {
         },
     });
 
-    // 4. 관계 및 방 생성
-    const relationship = await prisma.relationship.create({
+    // 4. 채널 및 Assistant 생성
+    const channel = await prisma.channel.create({
         data: {
             user1Id: user1.id,
             user2Id: user2.id,
-            status: RelationshipStatus.ACTIVE,
+            status: 'ACTIVE',
             startedAt: new Date(),
+            assistants: {
+                create: [
+                    { userId: user1.id },
+                    { userId: user2.id },
+                ],
+            },
         },
+        include: { assistants: true },
     });
 
-    const room = await prisma.room.create({
-        data: {
-            relationshipId: relationship.id,
-        },
-    });
-
-    // 5. 채팅 기록 생성
+    // 5. 채팅 기록 생성 (각각의 Assistant에 저장, channelId도 함께 저장)
     await prisma.chatHistory.createMany({
         data: [
             {
-                roomId: room.id,
+                assistantId: channel.assistants[0].id,
+                channelId: channel.id,
                 userId: user1.id,
+                sender: 'USER',
                 message: '안녕! 오늘 영화 볼래?',
-                sender: MessageSender.USER,
-                isQuestionResponse: false,
-                isUserInitiated: true,
-                analyzedByLlm: false,
-                timestamp: new Date(),
+                createdAt: new Date(),
+            },
+            {
+                assistantId: channel.assistants[0].id,
+                channelId: channel.id,
+                userId: user1.id,
+                sender: 'AI',
+                message: '안녕하세요, 무엇을 도와드릴까요? (from AI to user1)',
+                createdAt: new Date(),
+            },
+            {
+                assistantId: channel.assistants[1].id,
+                channelId: channel.id,
+                userId: user2.id,
+                sender: 'USER',
+                message: '좋아! 몇 시에 볼까?',
+                createdAt: new Date(),
+            },
+            {
+                assistantId: channel.assistants[1].id,
+                channelId: channel.id,
+                userId: user2.id,
+                sender: 'AI',
+                message: '안녕하세요, 무엇을 도와드릴까요? (from AI to user2)',
+                createdAt: new Date(),
             },
         ],
     });

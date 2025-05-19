@@ -1,11 +1,14 @@
-// src/llm/dto/chat.dto.ts
-import { IsString, IsIn } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import {IsIn, IsString} from 'class-validator';
+import {ApiProperty} from '@nestjs/swagger';
 
 export class ChatRequestDto {
-    @ApiProperty({ example: 'room-uuid', description: '채팅이 속한 룸 ID' })
+    @ApiProperty({ example: 'assistant-uuid', description: '채팅이 속한 assistant ID' })
     @IsString()
-    roomId: string;
+    assistantId: string;
+
+    @ApiProperty({ example: 'channel-uuid', description: '채팅이 속한 channel ID' })
+    @IsString()
+    channelId: string;
 
     @ApiProperty({ example: 'user-uuid', description: '유저 ID' })
     @IsString()

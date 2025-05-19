@@ -11,7 +11,7 @@ export class ChatHistoryMapper {
     domainEntity.isQuestionResponse = raw.isQuestionResponse;
     domainEntity.isUserInitiated = raw.isUserInitiated;
     domainEntity.analyzedByLlm = raw.analyzedByLlm;
-    domainEntity.timestamp = raw.timestamp;
+    domainEntity.createAt = raw.createAt;
     return domainEntity;
   }
 
@@ -24,7 +24,7 @@ export class ChatHistoryMapper {
     persistenceEntity.isQuestionResponse = domainEntity.isQuestionResponse;
     persistenceEntity.isUserInitiated = domainEntity.isUserInitiated;
     persistenceEntity.analyzedByLlm = domainEntity.analyzedByLlm;
-    persistenceEntity.timestamp = domainEntity.timestamp;
+    persistenceEntity.createAt = domainEntity.createAt;
     return persistenceEntity;
   }
 }

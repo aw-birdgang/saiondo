@@ -4,8 +4,9 @@ import {ChatService} from './chat.service';
 import {PrismaModule} from '../../common/prisma/prisma.module';
 import {LlmModule} from "@modules/llm/llm.module";
 import {ChatGateway} from './chat.gateway';
-import {RoomService} from '../room/room.service';
 import {PersonaProfileService} from '../persona-profile/persona-profile.service';
+import {ChannelService} from "@modules/channel/channel.service";
+import {AssistantService} from "@modules/assistant/assistant.service";
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import {PersonaProfileService} from '../persona-profile/persona-profile.service'
   providers: [
     ChatService,
     ChatGateway,
-    RoomService,
+    AssistantService,
+    ChannelService,
     PersonaProfileService,
   ],
   exports: [ChatService],

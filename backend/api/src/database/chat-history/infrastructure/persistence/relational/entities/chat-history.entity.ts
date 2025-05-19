@@ -9,7 +9,7 @@ export class ChatHistoryEntity {
   isQuestionResponse: boolean;
   isUserInitiated: boolean;
   analyzedByLlm: boolean;
-  timestamp: Date;
+  createAt: Date;
 
   // 관계
   user?: UserEntity;

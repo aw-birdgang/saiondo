@@ -5,6 +5,9 @@ export class CreateAdviceReportDto {
   relationshipId: string;
 
   @ApiProperty()
+  channelId: string;
+
+  @ApiProperty()
   generatedById: string;
 
   @ApiProperty()

@@ -28,13 +28,6 @@ export class UserController {
         }
     }
 
-    @Get(':id/rooms')
-    @ApiOperation({ summary: '유저가 속한 Room 목록 조회' })
-    @ApiResponse({ status: 200, description: 'Room 목록 반환' })
-    async getRoomsByUserId(@Param('id') userId: string) {
-        return this.userService.getRoomsByUserId(userId);
-    }
-
     @Get(':id')
     @ApiOperation({ summary: 'userId로 유저 단건 조회' })
     @ApiParam({ name: 'id', description: '유저 ID' })
@@ -46,5 +39,14 @@ export class UserController {
             throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
         }
         return user;
+    }
+
+    @Get(':id/assistants')
+    @ApiOperation({ summary: 'userId로 해당 유저의 Assistant 목록 조회' })
+    @ApiParam({ name: 'id', description: '유저 ID' })
+    @ApiResponse({ status: 200, description: 'Assistant 목록 반환', type: Object /* 실제 AssistantDto로 교체 가능 */ })
+    async findAssistantsByUserId(@Param('id') userId: string) {
+        const assistants = await this.userService.findAssistantsByUserId(userId);
+        return assistants;
     }
 }

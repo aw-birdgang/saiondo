@@ -52,54 +52,56 @@ model User {
   name      String
   email     String   @unique
   password  String
-  birthDate DateTime @map("birth_date")
+  birthDate DateTime
   gender    Gender
   mbti      String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // 관계 정의
-  chatHistories    ChatHistory[]
-  personaProfiles  PersonaProfile[]
-  pushSchedules    PushSchedule[]
+  assistants      Assistant[]
+  chatHistories   ChatHistory[]
+  personaProfiles PersonaProfile[]
+  pushSchedules   PushSchedule[]
   generatedReports AdviceReport[]    @relation("GeneratedBy")
-  relationshipsAsUser1 Relationship[] @relation("User1")
-  relationshipsAsUser2 Relationship[] @relation("User2")
-
-  @@map("users")
 }
 
-model Relationship {
+model Channel {
   id        String   @id @default(uuid())
   user1Id   String
   user2Id   String
   status    String
   startedAt DateTime
   endedAt   DateTime?
-  user1     User     @relation("User1", fields: [user1Id], references: [id])
-  user2     User     @relation("User2", fields: [user2Id], references: [id])
-  room      Room?    @relation("RelationshipRoom")
-
-  // 관계 정의
+  assistants Assistant[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   adviceReports AdviceReport[]
+  chatHistories ChatHistory[]
+}
 
-  @@map("relationships")
+model Assistant {
+  id        String   @id @default(uuid())
+  userId    String
+  channelId String
+  user      User     @relation(fields: [userId], references: [id])
+  channel   Channel  @relation(fields: [channelId], references: [id])
+  chatHistories ChatHistory[]
+  createdAt DateTime @default(now())
+
+  @@map("assistants")
 }
 
 model ChatHistory {
-  id                 String       @id @default(uuid())
-  userId             String      @map("user_id")
-  message            String      @db.Text
-  sender             MessageSender
-  isQuestionResponse Boolean     @default(false) @map("is_question_response")
-  isUserInitiated    Boolean     @default(true) @map("is_user_initiated")
-  analyzedByLlm      Boolean     @default(false) @map("analyzed_by_llm")
-  timestamp          DateTime    @default(now())
-  roomId             String
-  room               Room          @relation(fields: [roomId], references: [id])
-  user               User          @relation(fields: [userId], references: [id])
-
-  @@map("chat_histories")
+  id          String    @id @default(uuid())
+  assistantId String    @map("assistant_id")
+  channelId   String    @map("channel_id")
+  userId      String
+  sender      String
+  message     String
+  createdAt   DateTime  @default(now())
+  assistant   Assistant @relation(fields: [assistantId], references: [id])
+  channel     Channel   @relation(fields: [channelId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
 }
 
 model CategoryCode {
@@ -134,15 +136,14 @@ model PersonaProfile {
 
 model AdviceReport {
   id             String      @id @default(uuid())
-  relationshipId String      @map("relationship_id")
-  generatedById  String      @map("generated_by")
-  reportDate     DateTime    @map("report_date")
+  channelId      String
+  generatedById  String
+  reportDate     DateTime
   summary        String      @db.Text
-  adviceForUser1 String      @map("advice_for_user1") @db.Text
-  adviceForUser2 String      @map("advice_for_user2") @db.Text
+  adviceForUser1 String      @db.Text
+  adviceForUser2 String      @db.Text
 
-  // 관계 정의
-  relationship   Relationship @relation(fields: [relationshipId], references: [id])
+  channel        Channel     @relation(fields: [channelId], references: [id])
   generatedBy    User        @relation("GeneratedBy", fields: [generatedById], references: [id])
 
   @@map("advice_reports")
@@ -175,15 +176,6 @@ model PushSchedule {
   userAnswer   UserAnswer?
 
   @@map("push_schedules")
-}
-
-model Room {
-  id             String         @id @default(uuid())
-  relationshipId String         @unique
-  relationship   Relationship   @relation("RelationshipRoom", fields: [relationshipId], references: [id])
-  chatHistories  ChatHistory[]
-
-  @@map("rooms")
 }
 
 model UserAnswer {

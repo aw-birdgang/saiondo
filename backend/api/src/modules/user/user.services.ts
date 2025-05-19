@@ -1,5 +1,5 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
+import {BadRequestException, Injectable} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
 import {CreateUserDto} from "@modules/user/dto/user.dto";
 
 @Injectable()
@@ -25,27 +25,17 @@ export class UserService {
         });
     }
 
-    async getRoomsByUserId(userId: string) {
-        // user가 user1 또는 user2인 모든 relationship 조회
-        const relationships = await this.prisma.relationship.findMany({
-            where: {
-                OR: [
-                    { user1Id: userId },
-                    { user2Id: userId }
-                ]
-            },
-            include: { room: true }
-        });
-
-        // room이 연결된 relationship만 필터링
-        return relationships
-            .filter(r => r.room)
-            .map(r => r.room);
-    }
-
     async findById(userId: string) {
         return this.prisma.user.findUnique({
             where: { id: userId },
+        });
+    }
+
+    // 또는 user와 assistants를 함께 조회하고 싶다면:
+    async findAssistantsByUserId(userId: string) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { assistants: true },
         });
     }
 }
