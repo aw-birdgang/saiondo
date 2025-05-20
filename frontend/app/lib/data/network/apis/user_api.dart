@@ -68,4 +68,12 @@ class UserApi {
   Future<void> deletePersonaProfile(String userId, String categoryCodeId) async {
     await _dioClient.dio.delete(Endpoints.deletePersonaProfile(userId, categoryCodeId),);
   }
+
+  Future<void> updateFcmToken(String userId, String fcmToken) async {
+    await _dioClient.dio.patch(
+      Endpoints.userFcmToken(userId),
+      data: {'fcmToken': fcmToken},
+    );
+  }
+
 }

@@ -11,9 +11,22 @@ class UserStore = _UserStore with _$UserStore;
 abstract class _UserStore with Store {
   final UserRepository _userRepository;
 
-  _UserStore(this._userRepository) {
+  _UserStore(this._userRepository,) {
+    _setupDisposers();
     initUser();
   }
+
+  // disposers:-----------------------------------------------------------------
+  late List<ReactionDisposer> _disposers;
+
+  void _setupDisposers() {
+    _disposers = [
+      reaction((_) => success, (_) => success = false, delay: 200),
+    ];
+  }
+
+  @observable
+  bool success = false;
 
   @observable
   ObservableList<User> users = ObservableList<User>();

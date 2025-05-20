@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:app/di/service_locator.dart';
 import 'package:app/domain/usecase/home/get_menu_items_usecase.dart';
 import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
+import 'package:app/domain/usecase/user/update_fcm_token_usecase.dart';
 
 import '../../../data/network/apis/category_code_api.dart';
+import '../../../data/network/apis/user_api.dart';
 import '../../../data/repository/chat_history_repository_impl.dart';
 import '../../repository/assistant/assitant_repository.dart';
 import '../../repository/auth/auth_repository.dart';
@@ -36,6 +38,10 @@ class UseCaseModule {
             () => LoginUseCase(getIt<AuthRepository>()));
     getIt.registerLazySingleton<RegisterUseCase>(
             () => RegisterUseCase(getIt<AuthRepository>()));
+
+    // auth:--------------------------------------------------------------------
+    getIt.registerLazySingleton<UpdateFcmTokenUseCase>(
+            () => UpdateFcmTokenUseCase(getIt<UserApi>()));
 
     // category code:--------------------------------------------------------------------
     getIt.registerLazySingleton<FetchCategoryCodesUseCase>(

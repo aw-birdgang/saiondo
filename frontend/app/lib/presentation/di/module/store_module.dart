@@ -16,6 +16,7 @@ import '../../../di/service_locator.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/setting/setting_repository.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
+import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
 import '../../auth/store/auth_store.dart';
 import '../../category/store/category_code_store.dart';
 import '../../chat/store/chat_store.dart';
@@ -45,6 +46,7 @@ class StoreModule {
         getIt<RegisterUseCase>(),
         getIt<AuthRepository>(),
         getIt<UserRepository>(),
+        getIt<UpdateFcmTokenUseCase>(),
       ),
     );
     getIt.registerSingleton<UserStore>(

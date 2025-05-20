@@ -28,6 +28,7 @@ class Endpoints {
   static const String users = '/users';
   static String userById(String id) => '/users/$id';
   static String userAssistants(String id) => '/users/$id/assistants';
+  static String userFcmToken(String id) => '/users/$id/fcm-token';
 
   static String personaProfiles(String userId) => '/persona-profiles/user/$userId';
   static String createPersonaProfile(String userId) => '/persona-profiles/user/$userId';

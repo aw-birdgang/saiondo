@@ -13,12 +13,21 @@ import 'auth/store/auth_store.dart';
 import 'home/home.dart';
 import 'home/store/language_store/language_store.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final ThemeStore _themeStore = getIt<ThemeStore>();
   final LanguageStore _languageStore = getIt<LanguageStore>();
   final AuthStore _authStore = getIt<AuthStore>();
 
-  MyApp();
+  @override
+  void initState() {
+    super.initState();
+    _authStore.loadAuthFromPrefs();
+  }
 
   @override
   Widget build(BuildContext context) {

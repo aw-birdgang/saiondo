@@ -5,8 +5,6 @@ import 'package:app/presentation/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../../data/network/apis/assistant_api.dart';
-
 part 'home_store.g.dart';
 
 class HomeStore = _HomeStore with _$HomeStore;
@@ -46,6 +44,7 @@ abstract class _HomeStore with Store {
 
   @observable
   String? selectedAssistantId;
+
 
   @action
   void setTitle(String newTitle) {
