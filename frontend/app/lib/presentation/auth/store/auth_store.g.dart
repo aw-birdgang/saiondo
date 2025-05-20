@@ -9,6 +9,21 @@ part of 'auth_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AuthStore on _AuthStore, Store {
+  late final _$successAtom = Atom(name: '_AuthStore.success', context: context);
+
+  @override
+  bool get success {
+    _$successAtom.reportRead();
+    return super.success;
+  }
+
+  @override
+  set success(bool value) {
+    _$successAtom.reportWrite(value, super.success, () {
+      super.success = value;
+    });
+  }
+
   late final _$accessTokenAtom =
       Atom(name: '_AuthStore.accessToken', context: context);
 
@@ -37,6 +52,38 @@ mixin _$AuthStore on _AuthStore, Store {
   set userId(String? value) {
     _$userIdAtom.reportWrite(value, super.userId, () {
       super.userId = value;
+    });
+  }
+
+  late final _$fcmTokenAtom =
+      Atom(name: '_AuthStore.fcmToken', context: context);
+
+  @override
+  String? get fcmToken {
+    _$fcmTokenAtom.reportRead();
+    return super.fcmToken;
+  }
+
+  @override
+  set fcmToken(String? value) {
+    _$fcmTokenAtom.reportWrite(value, super.fcmToken, () {
+      super.fcmToken = value;
+    });
+  }
+
+  late final _$fcmRegisteredAtom =
+      Atom(name: '_AuthStore.fcmRegistered', context: context);
+
+  @override
+  bool get fcmRegistered {
+    _$fcmRegisteredAtom.reportRead();
+    return super.fcmRegistered;
+  }
+
+  @override
+  set fcmRegistered(bool value) {
+    _$fcmRegisteredAtom.reportWrite(value, super.fcmRegistered, () {
+      super.fcmRegistered = value;
     });
   }
 
@@ -86,6 +133,70 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
+  late final _$unreadPushCountAtom =
+      Atom(name: '_AuthStore.unreadPushCount', context: context);
+
+  @override
+  int get unreadPushCount {
+    _$unreadPushCountAtom.reportRead();
+    return super.unreadPushCount;
+  }
+
+  @override
+  set unreadPushCount(int value) {
+    _$unreadPushCountAtom.reportWrite(value, super.unreadPushCount, () {
+      super.unreadPushCount = value;
+    });
+  }
+
+  late final _$pushMessagesAtom =
+      Atom(name: '_AuthStore.pushMessages', context: context);
+
+  @override
+  ObservableList<String> get pushMessages {
+    _$pushMessagesAtom.reportRead();
+    return super.pushMessages;
+  }
+
+  @override
+  set pushMessages(ObservableList<String> value) {
+    _$pushMessagesAtom.reportWrite(value, super.pushMessages, () {
+      super.pushMessages = value;
+    });
+  }
+
+  late final _$lastPushMessageAtom =
+      Atom(name: '_AuthStore.lastPushMessage', context: context);
+
+  @override
+  String? get lastPushMessage {
+    _$lastPushMessageAtom.reportRead();
+    return super.lastPushMessage;
+  }
+
+  @override
+  set lastPushMessage(String? value) {
+    _$lastPushMessageAtom.reportWrite(value, super.lastPushMessage, () {
+      super.lastPushMessage = value;
+    });
+  }
+
+  late final _$currentUserAtom =
+      Atom(name: '_AuthStore.currentUser', context: context);
+
+  @override
+  User? get currentUser {
+    _$currentUserAtom.reportRead();
+    return super.currentUser;
+  }
+
+  @override
+  set currentUser(User? value) {
+    _$currentUserAtom.reportWrite(value, super.currentUser, () {
+      super.currentUser = value;
+    });
+  }
+
   late final _$loginAsyncAction =
       AsyncAction('_AuthStore.login', context: context);
 
@@ -112,6 +223,14 @@ mixin _$AuthStore on _AuthStore, Store {
     return _$loadAuthFromPrefsAsyncAction.run(() => super.loadAuthFromPrefs());
   }
 
+  late final _$registerFcmTokenAsyncAction =
+      AsyncAction('_AuthStore.registerFcmToken', context: context);
+
+  @override
+  Future<void> registerFcmToken() {
+    return _$registerFcmTokenAsyncAction.run(() => super.registerFcmToken());
+  }
+
   late final _$logoutAsyncAction =
       AsyncAction('_AuthStore.logout', context: context);
 
@@ -120,14 +239,65 @@ mixin _$AuthStore on _AuthStore, Store {
     return _$logoutAsyncAction.run(() => super.logout());
   }
 
+  late final _$clearUserCacheAsyncAction =
+      AsyncAction('_AuthStore.clearUserCache', context: context);
+
+  @override
+  Future<void> clearUserCache() {
+    return _$clearUserCacheAsyncAction.run(() => super.clearUserCache());
+  }
+
+  late final _$_AuthStoreActionController =
+      ActionController(name: '_AuthStore', context: context);
+
+  @override
+  void incrementUnreadPush([String? message]) {
+    final _$actionInfo = _$_AuthStoreActionController.startAction(
+        name: '_AuthStore.incrementUnreadPush');
+    try {
+      return super.incrementUnreadPush(message);
+    } finally {
+      _$_AuthStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearUnreadPush() {
+    final _$actionInfo = _$_AuthStoreActionController.startAction(
+        name: '_AuthStore.clearUnreadPush');
+    try {
+      return super.clearUnreadPush();
+    } finally {
+      _$_AuthStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearAllPushMessages() {
+    final _$actionInfo = _$_AuthStoreActionController.startAction(
+        name: '_AuthStore.clearAllPushMessages');
+    try {
+      return super.clearAllPushMessages();
+    } finally {
+      _$_AuthStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
+success: ${success},
 accessToken: ${accessToken},
 userId: ${userId},
+fcmToken: ${fcmToken},
+fcmRegistered: ${fcmRegistered},
 user: ${user},
 error: ${error},
-isLoggedIn: ${isLoggedIn}
+isLoggedIn: ${isLoggedIn},
+unreadPushCount: ${unreadPushCount},
+pushMessages: ${pushMessages},
+lastPushMessage: ${lastPushMessage},
+currentUser: ${currentUser}
     ''';
   }
 }

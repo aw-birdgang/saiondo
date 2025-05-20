@@ -9,6 +9,7 @@ import '../../../di/service_locator.dart';
 import '../../network/apis/assistant_api.dart';
 import '../../network/apis/auth_api.dart';
 import '../../network/apis/category_code_api.dart';
+import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
 import '../../network/apis/user_api.dart';
 import '../../network/constants/endpoints.dart';
@@ -55,6 +56,7 @@ class NetworkModule {
     getIt.registerSingleton(UserApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(AuthApi(getIt<DioClient>(), getIt<RestClient>()));
 
+    getIt.registerSingleton(ChannelApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(AssistantApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(ChatApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(ChatHistoryApi(getIt<DioClient>(), getIt<RestClient>()));

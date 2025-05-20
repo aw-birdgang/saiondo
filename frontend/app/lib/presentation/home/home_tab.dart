@@ -1,4 +1,6 @@
+import 'package:app/presentation/home/store/invite_code_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
@@ -50,7 +52,9 @@ class HomeTabContent extends StatelessWidget {
   final String? channelId;
   final String? userId;
 
-  const HomeTabContent({
+  final InviteCodeStore _inviteCodeStore = getIt<InviteCodeStore>();
+
+  HomeTabContent({
     super.key,
     required this.user,
     required this.assistantId,
@@ -71,6 +75,44 @@ class HomeTabContent extends StatelessWidget {
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 24),
+            Observer(
+              builder: (_) => ElevatedButton.icon(
+                icon: Icon(Icons.vpn_key),
+                label: Text('초대코드 생성'),
+                onPressed: _inviteCodeStore.isLoading
+                    ? null
+                    : () async {
+                        await _inviteCodeStore.generateInviteCode(channelId!);
+                        if (_inviteCodeStore.inviteCode != null) {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text('초대코드'),
+                              content: SelectableText(_inviteCodeStore.inviteCode!),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Clipboard.setData(ClipboardData(text: _inviteCodeStore.inviteCode!));
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('복사'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text('닫기'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+              ),
+            ),
+            Observer(
+              builder: (_) => _inviteCodeStore.isLoading
+                  ? CircularProgressIndicator()
+                  : SizedBox.shrink(),
+            ),
           ],
         ),
       ),

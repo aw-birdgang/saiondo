@@ -1,13 +1,17 @@
 import 'package:app/domain/repository/user/user_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
 import '../../../domain/usecase/auth/register_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
+import '../../../data/repository/user_repository_impl.dart';
+import '../../../domain/entry/user/user.dart';
 
 part 'auth_store.g.dart';
 
@@ -86,6 +90,9 @@ abstract class _AuthStore with Store {
     _rootContext = context;
   }
 
+  @observable
+  User? currentUser;
+
   @action
   Future<bool> login(String email, String password) async {
     try {
@@ -96,8 +103,15 @@ abstract class _AuthStore with Store {
       userId = user?['id'];
       error = null;
       isLoggedIn = true;
+      currentUser = User.fromJson(user!);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userId', userId!);
       return true;
-    } catch (e) {
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        await clearUserCache();
+        currentUser = null;
+      }
       error = e.toString();
       logger.e('로그인 에러: $e');
       isLoggedIn = false;
@@ -211,5 +225,18 @@ abstract class _AuthStore with Store {
         },
       );
     }
+  }
+
+  @action
+  Future<void> clearUserCache() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId');
+    accessToken = null;
+    userId = null;
+    user = null;
+    error = null;
+    isLoggedIn = false;
+    fcmToken = null;
+    fcmRegistered = false;
   }
 }

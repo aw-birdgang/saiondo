@@ -7,14 +7,17 @@ import 'package:app/domain/repository/setting/setting_repository.dart';
 
 import '../../../domain/repository/assistant/assitant_repository.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
+import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/chat_history/chat_history_repository.dart';
 import '../../../domain/repository/user/user_repository.dart';
 import '../../network/apis/assistant_api.dart';
 import '../../network/apis/auth_api.dart';
+import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
 import '../../network/apis/user_api.dart';
 import '../../repository/assistant_repository_impl.dart';
 import '../../repository/auth_repository_impl.dart';
+import '../../repository/channel_repository_impl.dart';
 import '../../repository/chat_history_repository_impl.dart';
 import '../../repository/user_repository_impl.dart';
 
@@ -40,6 +43,10 @@ class RepositoryModule {
     getIt.registerSingleton<UserRepository>(UserRepositoryImpl(
       getIt<UserApi>(),
       getIt<SharedPreferenceHelper>()
+    ));
+
+    getIt.registerSingleton<ChannelRepository>(ChannelRepositoryImpl(
+        getIt<ChannelApi>(),
     ));
 
     getIt.registerSingleton<AssistantRepository>(AssistantRepositoryImpl(
