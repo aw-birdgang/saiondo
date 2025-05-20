@@ -20,12 +20,31 @@ class Routes {
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
     chat: (BuildContext context) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-      return ChatScreen(
-        userId: args['userId'] as String,
-        assistantId: args['assistantId'] as String,
-        channelId: args['channelId'] as String,
-      );
+      print('[Routes] Attempting to build ChatScreen');
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      
+      if (args == null) {
+        print('[Routes] Error: No arguments provided');
+        return const SizedBox.shrink(); // 또는 에러 화면
+      }
+
+      try {
+        final userId = args['userId'] as String;
+        final channelId = args['channelId'] as String;
+        final assistantId = args['assistantId'] as String;
+        
+        print('[Routes] Building ChatScreen with:');
+        print('userId: $userId, channelId: $channelId, assistantId: $assistantId');
+        
+        return ChatScreen(
+          userId: userId,
+          assistantId: assistantId,
+          channelId: channelId,
+        );
+      } catch (e) {
+        print('[Routes] Error building ChatScreen: $e');
+        return const SizedBox.shrink(); // 또는 에러 화면
+      }
     },
     login: (BuildContext context) => LoginScreen(),
     register: (BuildContext context) => RegisterScreen(),

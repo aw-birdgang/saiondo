@@ -5,6 +5,7 @@ import 'store/chat_store.dart';
 import '../../../domain/entry/chat/chat_history.dart';
 import 'chat_message_widget.dart';
 
+
 class ChatScreen extends StatefulWidget {
   final String userId;
   final String assistantId;
@@ -28,7 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _chatStore.connect(widget.userId, widget.assistantId, widget.channelId,);
+    _chatStore.connect(widget.userId, widget.assistantId, widget.channelId);
     _chatStore.loadMessages(widget.assistantId);
   }
 

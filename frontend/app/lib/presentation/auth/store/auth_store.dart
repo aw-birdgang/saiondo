@@ -2,6 +2,7 @@ import 'package:app/domain/repository/user/user_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logger/logger.dart';
 import 'package:mobx/mobx.dart';
+import 'package:flutter/material.dart';
 
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
@@ -78,6 +79,12 @@ abstract class _AuthStore with Store {
 
   @observable
   String? lastPushMessage;
+
+  BuildContext? _rootContext;
+
+  void setRootContext(BuildContext context) {
+    _rootContext = context;
+  }
 
   @action
   Future<bool> login(String email, String password) async {
@@ -187,8 +194,22 @@ abstract class _AuthStore with Store {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('📥 [Background] 클릭으로 앱 열림: ${message.notification?.title}');
-      // TODO: 특정 화면으로 이동
+      _handlePushNavigation(message);
     });
+  }
+
+  void _handlePushNavigation(RemoteMessage message) {
+    final data = message.data;
+    final channelId = data['channelId'];
+    final assistantId = data['assistantId'];
+    if (channelId != null && _rootContext != null) {
+      Navigator.of(_rootContext!).pushNamed(
+        '/chat',
+        arguments: {
+          'channelId': channelId,
+          'assistantId': assistantId,
+        },
+      );
+    }
   }
 }
