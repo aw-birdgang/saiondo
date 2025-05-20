@@ -4,8 +4,10 @@ import { PushScheduleController } from './push-schedule.controller';
 import { PushService } from './push.service';
 import { FirebaseService } from '@common/firebase/firebase.service';
 import { PushController } from '@modules/push-schedule/push.controller';
+import { ChatHistoryModule } from '@modules/chat-history/chat-history.module';
 
 @Module({
+  imports: [ChatHistoryModule],
   controllers: [PushController, PushScheduleController],
   providers: [PushScheduleService, PushService, FirebaseService],
   exports: [PushScheduleService, PushService],

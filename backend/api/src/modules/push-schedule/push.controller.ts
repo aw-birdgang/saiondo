@@ -16,7 +16,7 @@ export class PushController {
     return this.pushService.sendPush(dto.token, dto.title, dto.body, dto.data);
   }
 
-  @Post('user/:userId/send-push')
+  @Post('send/user/:userId/message')
   @ApiOperation({ summary: '특정 유저에게 FCM 푸시 발송' })
   @ApiBody({ type: SendPushToUserDto })
   async sendPushToUser(@Param('userId') userId: string, @Body() dto: SendPushToUserDto) {

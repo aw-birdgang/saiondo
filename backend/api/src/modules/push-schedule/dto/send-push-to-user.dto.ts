@@ -11,7 +11,7 @@ export class SendPushToUserDto {
   body: string;
 
   @ApiPropertyOptional({
-    example: { customKey1: 'value1', customKey2: 'value2' },
+    example: { channelId: 'value1', assistantId: 'value2' },
     description: '추가 데이터 (선택)',
     type: 'object',
   })
