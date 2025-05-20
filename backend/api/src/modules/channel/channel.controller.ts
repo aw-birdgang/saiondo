@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ChannelService } from './channel.service';
-import { InviteChannelDto } from '@modules/channel/dto/invite-channel.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-import { JoinByInviteDto } from './dto/join-by-invite.dto';
+import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {ChannelService} from './channel.service';
+import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
+import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {JoinByInviteDto} from './dto/join-by-invite.dto';
 
 @ApiTags('Channel')
 @Controller('channels')
@@ -43,12 +43,12 @@ export class ChannelController {
     return this.channelService.createChannel(body.user1Id, body.user2Id);
   }
 
-  @Post('invite')
-  @ApiOperation({ summary: '채널 초대' })
-  @ApiBody({ type: InviteChannelDto })
-  @ApiResponse({ status: 201, description: '채널 초대 성공' })
-  async invite(@Body() dto: InviteChannelDto) {
-    return this.channelService.invite(dto);
+  @Post(':id/inviteCode')
+  @ApiOperation({ summary: '채널 초대 코드 생성' })
+  @ApiBody({ type: InviteCodeChannelDto })
+  @ApiResponse({ status: 201, description: '채널 초대 코드 성공' })
+  async inviteCode(@Body() dto: InviteCodeChannelDto) {
+    return this.channelService.inviteCode(dto);
   }
 
   @Post(':id/accept')
@@ -75,7 +75,7 @@ export class ChannelController {
     return this.channelService.remove(id);
   }
 
-  @Post('join-by-invite')
+  @Post(':id/join-by-invite')
   @ApiOperation({ summary: '초대코드로 채널 매칭(가입)' })
   @ApiBody({ type: JoinByInviteDto })
   @ApiResponse({ status: 200, description: '채널 매칭 성공' })

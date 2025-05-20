@@ -1,6 +1,6 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {Injectable, Logger, NotFoundException} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
-import {InviteChannelDto} from '@modules/channel/dto/invite-channel.dto';
+import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
 import {generateInviteCode} from "@common/utils/invite-code.util";
 
 @Injectable()
@@ -66,17 +66,16 @@ export class ChannelService {
     }
   }
 
-  // 초대(커플 생성, 상태는 PENDING)
-  async invite(dto: InviteChannelDto) {
-    const user1Id = dto.user1Id;
-    const user2Id = dto.user2Id;
-    return this.prisma.channel.create({
-      data: {
-        user1Id,
-        user2Id,
-        status: 'PENDING',
-        startedAt: new Date(),
-      },
+  async inviteCode(dto: InviteCodeChannelDto) {
+    const channelId = dto.channelId;
+    const inviteCode = generateInviteCode();
+    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel) {
+      throw new NotFoundException('채널을 찾을 수 없습니다.');
+    }
+    return this.prisma.channel.update({
+      where: { id: channelId },
+      data: { inviteCode },
     });
   }
 
