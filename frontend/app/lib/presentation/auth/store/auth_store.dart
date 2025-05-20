@@ -27,6 +27,7 @@ abstract class _AuthStore with Store {
       this.updateFcmTokenUseCase,
   ) {
     _setupDisposers();
+    _initFcm();
   }
 
   final logger = Logger();
@@ -68,6 +69,15 @@ abstract class _AuthStore with Store {
 
   @observable
   bool isLoggedIn = false;
+
+  @observable
+  int unreadPushCount = 0;
+
+  @observable
+  ObservableList<String> pushMessages = ObservableList<String>();
+
+  @observable
+  String? lastPushMessage;
 
   @action
   Future<bool> login(String email, String password) async {
@@ -132,16 +142,6 @@ abstract class _AuthStore with Store {
       } else {
         fcmRegistered = false;
       }
-      // 포그라운드 메시지 수신
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        logger.i('Received a message in foreground: ${message.notification?.title}');
-        // TODO: 알림 UI 처리
-      });
-      // 앱이 백그라운드/종료 상태에서 푸시 클릭 시
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        logger.i('Message clicked!');
-        // TODO: 라우팅 등 처리
-      });
     } catch (e) {
       logger.e('FCM 등록 실패: $e');
       fcmRegistered = false;
@@ -158,5 +158,37 @@ abstract class _AuthStore with Store {
     isLoggedIn = false;
     fcmToken = null;
     fcmRegistered = false;
+  }
+
+  @action
+  void incrementUnreadPush([String? message]) {
+    unreadPushCount++;
+    if (message != null) {
+      pushMessages.insert(0, message);
+    }
+  }
+
+  @action
+  void clearUnreadPush() {
+    unreadPushCount = 0;
+  }
+
+  @action
+  void clearAllPushMessages() {
+    pushMessages.clear();
+    unreadPushCount = 0;
+  }
+
+  void _initFcm() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final title = message.notification?.title ?? '';
+      final body = message.notification?.body ?? '';
+      incrementUnreadPush('$title\n$body');
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('📥 [Background] 클릭으로 앱 열림: ${message.notification?.title}');
+      // TODO: 특정 화면으로 이동
+    });
   }
 }

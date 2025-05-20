@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
 
 import '../../di/service_locator.dart';
+import '../../utils/routes/routes.dart';
 import 'home_tab.dart';
 import 'my_page_tab.dart';
 
@@ -64,6 +65,46 @@ class _HomeScreenState extends State<HomeScreen> {
               logger.i('[HomeScreen] 로그아웃 시도');
               await _authStore.logout();
             },
+          ),
+          Observer(
+            builder: (_) => Stack(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.notifications),
+                  onPressed: () {
+                    _authStore.clearUnreadPush();
+                    Navigator.pushNamed(
+                      context,
+                      Routes.notification,
+                    );
+                  },
+                ),
+                if (_authStore.unreadPushCount > 0)
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: Text(
+                        '${_authStore.unreadPushCount}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
