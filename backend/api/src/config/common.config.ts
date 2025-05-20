@@ -1,7 +1,15 @@
-import {registerAs} from "@nestjs/config";
-import {IsEnum, IsInt, IsOptional, IsString, IsUrl, Max, Min} from "class-validator";
-import validateConfig from "../common/utils/validate-config";
-import {CommonConfig} from "./common-config.type";
+import { registerAs } from '@nestjs/config';
+import {
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  Min,
+} from 'class-validator';
+import validateConfig from '../common/utils/validate-config';
+import { CommonConfig } from './common-config.type';
 
 enum Environment {
   Development = 'development',
@@ -69,6 +77,6 @@ export default registerAs<CommonConfig>('common', () => {
     fallbackLanguage: process.env.APP_FALLBACK_LANGUAGE || 'en',
     headerLanguage: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
     llmApiUrl: process.env.LLM_API_URL || 'http://localhost:8000',
-    wsPort:process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10): 3000,
+    wsPort: process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10) : 3000,
   };
 });

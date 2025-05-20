@@ -1,4 +1,4 @@
-import {ProfileSource} from "@prisma/client";
+import { ProfileSource } from '@prisma/client';
 
 export class PersonaProfileDto {
   id: string;

@@ -1,6 +1,6 @@
-import {Injectable, Logger} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {InviteChannelDto} from '@modules/channel/dto/invite-channel.dto';
+import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { InviteChannelDto } from '@modules/channel/dto/invite-channel.dto';
 
 @Injectable()
 export class ChannelService {
@@ -17,10 +17,7 @@ export class ChannelService {
         status: 'ACTIVE',
         startedAt: new Date(),
         assistants: {
-          create: [
-            { userId: user1Id },
-            { userId: user2Id },
-          ],
+          create: [{ userId: user1Id }, { userId: user2Id }],
         },
       },
       include: { assistants: true },
@@ -51,7 +48,10 @@ export class ChannelService {
     return this.prisma.channel.delete({ where: { id } });
   }
 
-  async getChannelParticipants(channelId: string, userId: string): Promise<string | null> {
+  async getChannelParticipants(
+    channelId: string,
+    userId: string,
+  ): Promise<string | null> {
     const channel = await this.prisma.channel.findUnique({
       where: { id: channelId },
     });
@@ -103,5 +103,4 @@ export class ChannelService {
       data: { status },
     });
   }
-
 }

@@ -1,8 +1,8 @@
-import {Injectable} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
-import {ProfileSource, PersonaProfile} from '@prisma/client';
-import {LlmService} from "@modules/llm/llm.service";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
+import { ProfileSource, PersonaProfile } from '@prisma/client';
+import { LlmService } from '@modules/llm/llm.service';
 import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class PersonaProfileService {
     return this.prisma.personaProfile.create({
       data: {
         ...data,
-        source: data.source as ProfileSource,
+        source: data.source,
       },
     });
   }
@@ -88,7 +88,7 @@ export class PersonaProfileService {
   async update(
     userId: string,
     categoryCodeId: string,
-    data: UpdatePersonaProfileDto
+    data: UpdatePersonaProfileDto,
   ) {
     const existing = await this.prisma.personaProfile.findFirst({
       where: { userId, categoryCodeId },

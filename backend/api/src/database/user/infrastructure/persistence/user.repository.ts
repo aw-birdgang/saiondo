@@ -1,8 +1,8 @@
-import {NullableType} from "../../../../common/utils/types/nullable.type";
-import {DeepPartial, FindOptionsWhere} from "typeorm";
-import {User} from "../../domain/user";
-import {FilterUserDto, SortUserDto} from "../../dto/query-user.dto";
-import {UserEntity} from "./relational/entities/user.entity";
+import { NullableType } from '../../../../common/utils/types/nullable.type';
+import { DeepPartial, FindOptionsWhere } from 'typeorm';
+import { User } from '../../domain/user';
+import { FilterUserDto, SortUserDto } from '../../dto/query-user.dto';
+import { UserEntity } from './relational/entities/user.entity';
 
 export abstract class UserRepository {
   abstract create(
@@ -13,7 +13,6 @@ export abstract class UserRepository {
    * *****************************************************************/
 
   abstract findById(id: User['id']): Promise<NullableType<User>>;
-
 
   abstract findWithWhere({
     whereConditions,

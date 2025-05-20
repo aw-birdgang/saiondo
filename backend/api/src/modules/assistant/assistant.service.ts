@@ -1,6 +1,6 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {CreateAssistantDto} from "@modules/assistant/dto/create-assistant.dto";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { CreateAssistantDto } from '@modules/assistant/dto/create-assistant.dto';
 
 @Injectable()
 export class AssistantService {
@@ -40,5 +40,4 @@ export class AssistantService {
       include: { channel: true },
     });
   }
-
 }

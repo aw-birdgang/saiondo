@@ -2,15 +2,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateQuestionTemplateDto {
-    @ApiProperty()
-    categoryCodeId: string;
+  @ApiProperty()
+  categoryCodeId: string;
 
-    @ApiProperty()
-    questionText: string;
+  @ApiProperty()
+  questionText: string;
 
-    @ApiProperty()
-    tier: number;
+  @ApiProperty()
+  tier: number;
 
-    @ApiProperty({ enum: ['PERSONALITY', 'RELATIONSHIP', 'DAILY', 'MBTI'] })
-    type: string;
+  @ApiProperty({ enum: ['PERSONALITY', 'RELATIONSHIP', 'DAILY', 'MBTI'] })
+  type: string;
 }

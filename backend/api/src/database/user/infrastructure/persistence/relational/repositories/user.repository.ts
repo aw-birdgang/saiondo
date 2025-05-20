@@ -1,13 +1,13 @@
-import {Injectable, Logger} from "@nestjs/common";
-import {InjectRepository} from "@nestjs/typeorm";
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import {FindOptionsWhere, Repository} from "typeorm";
-import {NullableType} from "../../../../../../common/utils/types/nullable.type";
-import {UserEntity} from "../entities/user.entity";
-import {UserRepository} from "../../user.repository";
-import {User} from "../../../../domain/user";
-import {UserMapper} from "../mappers/user.mapper";
-import {FilterUserDto, SortUserDto} from "../../../../dto/query-user.dto";
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { NullableType } from '../../../../../../common/utils/types/nullable.type';
+import { UserEntity } from '../entities/user.entity';
+import { UserRepository } from '../../user.repository';
+import { User } from '../../../../domain/user';
+import { UserMapper } from '../mappers/user.mapper';
+import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
 
 @Injectable()
 export class UserRelationalRepository implements UserRepository {
@@ -20,7 +20,9 @@ export class UserRelationalRepository implements UserRepository {
 
   async create(data: User): Promise<User> {
     const persistenceModel = UserMapper.toPersistence(data);
-    this.logger.log(`create>> persistenceModel.toString ::${persistenceModel.toString()}`)
+    this.logger.log(
+      `create>> persistenceModel.toString ::${persistenceModel.toString()}`,
+    );
     const newEntity = await this.userRepository.save(
       this.userRepository.create(persistenceModel),
     );
@@ -37,13 +39,12 @@ export class UserRelationalRepository implements UserRepository {
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
-
   async findWithWhere({
-     whereConditions,
-     filterOptions,
-     sortOptions,
-     relations = [],
-   }: {
+    whereConditions,
+    filterOptions,
+    sortOptions,
+    relations = [],
+  }: {
     whereConditions?: FindOptionsWhere<UserEntity>;
     filterOptions?: FilterUserDto | null;
     sortOptions?: SortUserDto[] | null;
@@ -51,13 +52,14 @@ export class UserRelationalRepository implements UserRepository {
   }): Promise<User[]> {
     const where: FindOptionsWhere<UserEntity> = whereConditions || {};
     this.logger.log(`findWithWhere >> where: ${JSON.stringify(where)}`);
-    const order = sortOptions?.reduce(
-      (accumulator, sort) => ({
-        ...accumulator,
-        [sort.orderBy]: sort.order,
-      }),
-      {},
-    ) || {};
+    const order =
+      sortOptions?.reduce(
+        (accumulator, sort) => ({
+          ...accumulator,
+          [sort.orderBy]: sort.order,
+        }),
+        {},
+      ) || {};
     const entities = await this.userRepository.find({
       where,
       order,
@@ -78,7 +80,7 @@ export class UserRelationalRepository implements UserRepository {
     }
     const updatedEntity = await this.userRepository.save(
       this.userRepository.create(
-          UserMapper.toPersistence({
+        UserMapper.toPersistence({
           ...UserMapper.toDomain(entity),
           ...payload,
         }),

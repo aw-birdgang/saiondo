@@ -1,13 +1,16 @@
-import {Injectable, Logger} from "@nestjs/common";
-import {InjectRepository} from "@nestjs/typeorm";
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import {FindOptionsWhere, Repository} from "typeorm";
-import {NullableType} from "../../../../../../common/utils/types/nullable.type";
-import {ChatHistoryRepository} from "../../chat-history.repository";
-import {ChatHistoryEntity} from "../entities/chat-history.entity";
-import {ChatHistory} from "../../../../domain/chat-history";
-import {ChatHistoryMapper} from "../mappers/chat-history.mapper";
-import {FilterChatHistoryDto, SortChatHistoryDto} from "../../../../dto/query-chat-history.dto";
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { NullableType } from '../../../../../../common/utils/types/nullable.type';
+import { ChatHistoryRepository } from '../../chat-history.repository';
+import { ChatHistoryEntity } from '../entities/chat-history.entity';
+import { ChatHistory } from '../../../../domain/chat-history';
+import { ChatHistoryMapper } from '../mappers/chat-history.mapper';
+import {
+  FilterChatHistoryDto,
+  SortChatHistoryDto,
+} from '../../../../dto/query-chat-history.dto';
 
 @Injectable()
 export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
@@ -20,7 +23,9 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
 
   async create(data: ChatHistory): Promise<ChatHistory> {
     const persistenceModel = ChatHistoryMapper.toPersistence(data);
-    this.logger.log(`create>> persistenceModel.toString ::${persistenceModel.toString()}`)
+    this.logger.log(
+      `create>> persistenceModel.toString ::${persistenceModel.toString()}`,
+    );
     const newEntity = await this.chatHistoryRepository.save(
       this.chatHistoryRepository.create(persistenceModel),
     );
@@ -38,11 +43,11 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
   }
 
   async findWithWhere({
-     whereConditions,
-     filterOptions,
-     sortOptions,
-     relations = [],
-   }: {
+    whereConditions,
+    filterOptions,
+    sortOptions,
+    relations = [],
+  }: {
     whereConditions?: FindOptionsWhere<ChatHistoryEntity>;
     filterOptions?: FilterChatHistoryDto | null;
     sortOptions?: SortChatHistoryDto[] | null;
@@ -50,13 +55,14 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
   }): Promise<ChatHistory[]> {
     const where: FindOptionsWhere<ChatHistoryEntity> = whereConditions || {};
     this.logger.log(`findWithWhere >> where: ${JSON.stringify(where)}`);
-    const order = sortOptions?.reduce(
-      (accumulator, sort) => ({
-        ...accumulator,
-        [sort.orderBy]: sort.order,
-      }),
-      {},
-    ) || {};
+    const order =
+      sortOptions?.reduce(
+        (accumulator, sort) => ({
+          ...accumulator,
+          [sort.orderBy]: sort.order,
+        }),
+        {},
+      ) || {};
     const entities = await this.chatHistoryRepository.find({
       where,
       order,
@@ -68,7 +74,10 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
   /******************************************************************
    * *****************************************************************/
 
-  async update(id: ChatHistory['id'], payload: Partial<ChatHistory>): Promise<ChatHistory> {
+  async update(
+    id: ChatHistory['id'],
+    payload: Partial<ChatHistory>,
+  ): Promise<ChatHistory> {
     const entity = await this.chatHistoryRepository.findOne({
       where: { id: id },
     });
@@ -77,7 +86,7 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
     }
     const updatedEntity = await this.chatHistoryRepository.save(
       this.chatHistoryRepository.create(
-          ChatHistoryMapper.toPersistence({
+        ChatHistoryMapper.toPersistence({
           ...ChatHistoryMapper.toDomain(entity),
           ...payload,
         }),

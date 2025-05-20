@@ -10,7 +10,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { AssistantService } from "@modules/assistant/assistant.service";
+import { AssistantService } from '@modules/assistant/assistant.service';
 import { PersonaProfileService } from '../persona-profile/persona-profile.service';
 
 interface SendMessagePayload {
@@ -21,11 +21,13 @@ interface SendMessagePayload {
 }
 
 @WebSocketGateway({ cors: { origin: '*' }, namespace: '/' })
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   constructor(
-      private readonly chatService: ChatService,
-      private readonly assistantService: AssistantService,
-      private readonly personaProfileService: PersonaProfileService
+    private readonly chatService: ChatService,
+    private readonly assistantService: AssistantService,
+    private readonly personaProfileService: PersonaProfileService,
   ) {}
 
   @WebSocketServer()
@@ -51,30 +53,47 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (this.connectedClients.has(client.id)) return;
     this.connectedClients.add(client.id);
 
-    this.log(`[API][WebSocket] Client connected: ${client.id}, transport: ${transport}, address: ${address}, total clients: ${count}, time: ${now}`);
+    this.log(
+      `[API][WebSocket] Client connected: ${client.id}, transport: ${transport}, address: ${address}, total clients: ${count}, time: ${now}`,
+    );
   }
 
   handleDisconnect(client: Socket) {
     this.connectedClients.delete(client.id);
-    this.log(`[API][WebSocket] Client disconnected: ${client.id}, time: ${new Date().toISOString()}`);
+    this.log(
+      `[API][WebSocket] Client disconnected: ${client.id}, time: ${new Date().toISOString()}`,
+    );
   }
 
   @SubscribeMessage('send_message')
   async handleMessage(
-      @ConnectedSocket() client: Socket,
-      @MessageBody() data: SendMessagePayload
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: SendMessagePayload,
   ) {
     const { userId, assistantId, channelId, message } = data;
-    this.log(`[API][WebSocket] handleMessage called`, { userId, assistantId, channelId, message });
+    this.log(`[API][WebSocket] handleMessage called`, {
+      userId,
+      assistantId,
+      channelId,
+      message,
+    });
 
     try {
-      const response = await this.chatService.processUserMessage(userId, assistantId, channelId, message);
+      const response = await this.chatService.processUserMessage(
+        userId,
+        assistantId,
+        channelId,
+        message,
+      );
       this.log(`[API][WebSocket] processUserMessage response`, response);
 
       this.server.emit('receive_message', response);
       this.log(`[API][WebSocket] Sent feedback to all clients:`, response);
     } catch (error) {
-      this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
+      this.log(
+        `[API][WebSocket] Error processing message from client ${client.id}:`,
+        error,
+      );
       client.emit('error', { message: error?.message ?? 'Unknown error' });
     }
   }

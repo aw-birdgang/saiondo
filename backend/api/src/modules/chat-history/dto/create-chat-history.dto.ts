@@ -1,5 +1,5 @@
-import {ApiProperty} from '@nestjs/swagger';
-import {MessageSender} from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
+import { MessageSender } from '@prisma/client';
 
 export class CreateChatHistoryDto {
   @ApiProperty({ example: 'user-uuid' })

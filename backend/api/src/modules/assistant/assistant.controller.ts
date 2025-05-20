@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
-import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {AssistantService} from "@modules/assistant/assistant.service";
-import {CreateAssistantDto} from "@modules/assistant/dto/create-assistant.dto";
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AssistantService } from '@modules/assistant/assistant.service';
+import { CreateAssistantDto } from '@modules/assistant/dto/create-assistant.dto';
 
 @ApiTags('Assistant')
 @Controller('assistant')

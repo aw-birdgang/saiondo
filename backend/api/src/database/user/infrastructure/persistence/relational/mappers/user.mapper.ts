@@ -1,6 +1,6 @@
-import {User} from "../../../../domain/user";
-import {UserEntity} from "../entities/user.entity";
-import {Gender} from "@prisma/client";
+import { User } from '../../../../domain/user';
+import { UserEntity } from '../entities/user.entity';
+import { Gender } from '@prisma/client';
 
 export class UserMapper {
   /**
@@ -11,7 +11,7 @@ export class UserMapper {
     domainEntity.id = raw.id;
     domainEntity.name = raw.name;
     domainEntity.birthDate = raw.birthDate;
-    domainEntity.gender = raw.gender as Gender;
+    domainEntity.gender = raw.gender;
     domainEntity.mbti = raw.mbti;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -43,13 +43,13 @@ export class UserMapper {
    * 도메인 엔티티 배열을 영속성 엔티티 배열로 변환
    */
   static toPersistenceList(domainEntities: User[]): UserEntity[] {
-    return domainEntities.map(entity => this.toPersistence(entity));
+    return domainEntities.map((entity) => this.toPersistence(entity));
   }
 
   /**
    * 영속성 엔티티 배열을 도메인 엔티티 배열로 변환
    */
   static toDomainList(persistenceEntities: UserEntity[]): User[] {
-    return persistenceEntities.map(entity => this.toDomain(entity));
+    return persistenceEntities.map((entity) => this.toDomain(entity));
   }
 }

@@ -1,5 +1,5 @@
-import {ChatHistory} from "../../../../domain/chat-history";
-import {ChatHistoryEntity} from "../entities/chat-history.entity";
+import { ChatHistory } from '../../../../domain/chat-history';
+import { ChatHistoryEntity } from '../entities/chat-history.entity';
 
 export class ChatHistoryMapper {
   static toDomain(raw: ChatHistoryEntity): ChatHistory {

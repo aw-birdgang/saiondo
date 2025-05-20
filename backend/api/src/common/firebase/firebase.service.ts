@@ -4,15 +4,17 @@ import serviceAccount from '../../config/firebase-service-account.json';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
-    onModuleInit() {
-        if (admin.apps.length === 0) {
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-            });
-        }
+  onModuleInit() {
+    if (admin.apps.length === 0) {
+      admin.initializeApp({
+        credential: admin.credential.cert(
+          serviceAccount as admin.ServiceAccount,
+        ),
+      });
     }
+  }
 
-    get messaging() {
-        return admin.messaging();
-    }
+  get messaging() {
+    return admin.messaging();
+  }
 }

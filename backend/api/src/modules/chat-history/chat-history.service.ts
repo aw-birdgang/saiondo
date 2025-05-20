@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {CreateChatHistoryDto} from './dto/create-chat-history.dto';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { CreateChatHistoryDto } from './dto/create-chat-history.dto';
 
 @Injectable()
 export class ChatHistoryService {
