@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, HttpException, HttpStatus, Param } from '@nestjs/common';
-import { UserService } from './user.services';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
-import {CreateUserDto} from "@modules/user/dto/user.dto";
+import {Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post} from '@nestjs/common';
+import {UserService} from './user.services';
+import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {CreateUserDto,} from "@modules/user/dto/user.dto";
+import {UpdateFcmTokenDto} from "@modules/user/dto/update-fcm-token.dto";
 
 @ApiTags('User')
 @Controller('users')
@@ -48,5 +49,17 @@ export class UserController {
     async findAssistantsByUserId(@Param('id') userId: string) {
         const assistants = await this.userService.findAssistantsByUserId(userId);
         return assistants;
+    }
+
+    @Patch(':id/fcm-token')
+    @ApiOperation({ summary: '유저의 FCM 토큰 업데이트' })
+    @ApiParam({ name: 'id', description: '유저 ID' })
+    @ApiBody({ type: UpdateFcmTokenDto })
+    @ApiResponse({ status: 200, description: '업데이트된 유저 정보 반환' })
+    async updateFcmToken(
+        @Param('id') userId: string,
+        @Body() body: UpdateFcmTokenDto,
+    ) {
+        return this.userService.updateFcmToken(userId, body.fcmToken);
     }
 }

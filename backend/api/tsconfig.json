@@ -23,8 +23,14 @@
       "@core/prisma/*": ["../prisma/*"]
     },
     "lib": [
-      "es2023"
-    ]
+      "es2023",
+      "dom",
+      "es2015.promise",
+      "es2015.iterable",
+      "es2015.symbol.wellknown"
+    ],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*",

@@ -29,7 +29,6 @@ import {AssistantModule} from "@modules/assistant/assistant.module";
     }),
     PrismaModule,
     ChannelModule,
-
     AuthModule,
     UserModule,
     PersonaProfileModule,

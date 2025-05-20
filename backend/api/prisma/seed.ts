@@ -89,6 +89,7 @@ async function main() {
             birthDate: new Date('1990-01-01'),
             email: 'kim@example.com',
             password: hash,
+            fcmToken: 'test_token_1',
         },
     });
 
@@ -99,6 +100,7 @@ async function main() {
             birthDate: new Date('1992-02-02'),
             email: 'lee@example.com',
             password: hash,
+            fcmToken: 'test_token_2',
         },
     });
 

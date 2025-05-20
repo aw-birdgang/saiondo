@@ -4,6 +4,7 @@ import {SwaggerModuleConfig} from "./modules/swagger/swagger.module";
 import {ConfigService} from "@nestjs/config";
 import {AllConfigType} from "./config/config.type";
 import {useContainer} from "class-validator";
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,7 @@ async function bootstrap() {
   });
   SwaggerModuleConfig.setupSwagger(app);
   // app.useWebSocketAdapter(new WsAdapter(app));
+  app.useGlobalInterceptors(new LoggingInterceptor());
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
