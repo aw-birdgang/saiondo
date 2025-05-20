@@ -73,6 +73,7 @@ model Channel {
   status    String
   startedAt DateTime
   endedAt   DateTime?
+  inviteCode String? @unique
   assistants Assistant[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

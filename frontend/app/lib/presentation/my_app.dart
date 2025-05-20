@@ -1,17 +1,15 @@
 import 'package:app/constants/app_theme.dart';
 import 'package:app/presentation/home/store/theme/theme_store.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../constants/strings.dart';
 import '../di/service_locator.dart';
 import '../utils/locale/app_localization.dart';
 import '../utils/routes/routes.dart';
-import 'auth/login_screen.dart';
 import 'auth/store/auth_store.dart';
-import 'home/home.dart';
 import 'home/store/language_store/language_store.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

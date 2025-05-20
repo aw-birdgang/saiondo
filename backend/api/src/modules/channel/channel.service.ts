@@ -1,6 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { InviteChannelDto } from '@modules/channel/dto/invite-channel.dto';
+import {Injectable, Logger} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {InviteChannelDto} from '@modules/channel/dto/invite-channel.dto';
+import {generateInviteCode} from "@common/utils/invite-code.util";
 
 @Injectable()
 export class ChannelService {
@@ -10,12 +11,14 @@ export class ChannelService {
 
   // 커플(채널) 생성 + 하위 Assistant 생성
   async createChannel(user1Id: string, user2Id: string) {
+    const inviteCode = generateInviteCode();
     return this.prisma.channel.create({
       data: {
         user1Id,
         user2Id,
         status: 'ACTIVE',
         startedAt: new Date(),
+        inviteCode,
         assistants: {
           create: [{ userId: user1Id }, { userId: user2Id }],
         },
@@ -100,4 +103,23 @@ export class ChannelService {
       data: { status },
     });
   }
+
+  async joinByInviteCode(inviteCode: string, userId: string) {
+    // 초대코드로 채널 찾기
+    const channel = await this.prisma.channel.findUnique({ where: { inviteCode } });
+    if (!channel) throw new Error('Invalid invite code');
+    if (channel.user2Id) throw new Error('Already matched');
+
+    // user2Id 할당 및 상태 변경
+    return this.prisma.channel.update({
+      where: { id: channel.id },
+      data: {
+        user2Id: userId,
+        status: 'ACTIVE',
+        assistants: { create: { userId } },
+      },
+      include: { assistants: true },
+    });
+  }
+
 }

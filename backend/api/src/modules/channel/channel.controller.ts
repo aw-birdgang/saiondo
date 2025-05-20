@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { InviteChannelDto } from '@modules/channel/dto/invite-channel.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { JoinByInviteDto } from './dto/join-by-invite.dto';
 
 @ApiTags('Channel')
 @Controller('channels')
@@ -72,5 +73,13 @@ export class ChannelController {
   @ApiResponse({ status: 200, description: '채널 삭제 성공' })
   async remove(@Param('id') id: string) {
     return this.channelService.remove(id);
+  }
+
+  @Post('join-by-invite')
+  @ApiOperation({ summary: '초대코드로 채널 매칭(가입)' })
+  @ApiBody({ type: JoinByInviteDto })
+  @ApiResponse({ status: 200, description: '채널 매칭 성공' })
+  async joinByInvite(@Body() dto: JoinByInviteDto) {
+    return this.channelService.joinByInviteCode(dto.inviteCode, dto.userId);
   }
 }
