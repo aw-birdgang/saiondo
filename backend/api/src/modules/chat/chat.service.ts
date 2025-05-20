@@ -1,12 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma/prisma.service';
 import { ChatWithFeedbackDto } from './dto/chat-with-feedback.dto';
-import {
-  ChatHistory,
-  MessageSender,
-  PersonaProfile,
-  User,
-} from '@prisma/client';
+import { ChatHistory, MessageSender, PersonaProfile, User } from '@prisma/client';
 import { LlmService } from '@modules/llm/llm.service';
 import { PersonaProfileService } from '@modules/persona-profile/persona-profile.service';
 import { ChannelService } from '@modules/channel/channel.service';
@@ -75,17 +70,9 @@ export class ChatService {
   }
 
   // chatService
-  private async getPartnerUser(
-    channelId: string,
-    userId: string,
-  ): Promise<User | null> {
-    this.logger.log(
-      `[ChatService] getPartnerUser channelId: ${channelId}, userId: ${userId}`,
-    );
-    const partnerId = await this.channelService.getChannelParticipants(
-      channelId,
-      userId,
-    );
+  private async getPartnerUser(channelId: string, userId: string): Promise<User | null> {
+    this.logger.log(`[ChatService] getPartnerUser channelId: ${channelId}, userId: ${userId}`);
+    const partnerId = await this.channelService.getChannelParticipants(channelId, userId);
     if (!partnerId) return null;
     return this.prisma.user.findUnique({ where: { id: partnerId } });
   }
@@ -94,9 +81,7 @@ export class ChatService {
     const personaList: PersonaProfile[] =
       await this.personaProfileService.getPersonaByUserId(userId);
     if (!personaList || personaList.length === 0) return '정보없음';
-    return personaList
-      .map((p) => `${p.categoryCodeId}: ${p.content}`)
-      .join(', ');
+    return personaList.map((p) => `${p.categoryCodeId}: ${p.content}`).join(', ');
   }
 
   private async getUserById(userId: string): Promise<User | null> {
@@ -128,12 +113,7 @@ export class ChatService {
 
     const personaSummary = await this.getPersonaSummary(partner.id);
     const questioner = await this.getUserById(userId);
-    const prompt = this.buildPrompt(
-      questioner,
-      partner,
-      personaSummary,
-      message,
-    );
+    const prompt = this.buildPrompt(questioner, partner, personaSummary, message);
 
     this.logger.log(`[ChatService] LLM Prompt: ${prompt}`);
 

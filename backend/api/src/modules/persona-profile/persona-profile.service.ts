@@ -85,11 +85,7 @@ export class PersonaProfileService {
   }
 
   // [신규] userId+categoryCodeId로 수정
-  async update(
-    userId: string,
-    categoryCodeId: string,
-    data: UpdatePersonaProfileDto,
-  ) {
+  async update(userId: string, categoryCodeId: string, data: UpdatePersonaProfileDto) {
     const existing = await this.prisma.personaProfile.findFirst({
       where: { userId, categoryCodeId },
     });

@@ -1,13 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { InviteChannelDto } from '@modules/channel/dto/invite-channel.dto';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBody,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Channel')
 @Controller('channels')

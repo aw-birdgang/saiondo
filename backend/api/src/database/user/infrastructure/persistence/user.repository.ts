@@ -5,9 +5,7 @@ import { FilterUserDto, SortUserDto } from '../../dto/query-user.dto';
 import { UserEntity } from './relational/entities/user.entity';
 
 export abstract class UserRepository {
-  abstract create(
-    data: Omit<User, 'id' | 'createdAt' | 'deletedAt' | 'updatedAt'>,
-  ): Promise<User>;
+  abstract create(data: Omit<User, 'id' | 'createdAt' | 'deletedAt' | 'updatedAt'>): Promise<User>;
 
   /******************************************************************
    * *****************************************************************/
@@ -29,10 +27,7 @@ export abstract class UserRepository {
   /******************************************************************
    * *****************************************************************/
 
-  abstract update(
-    id: User['id'],
-    payload: DeepPartial<User>,
-  ): Promise<User | null>;
+  abstract update(id: User['id'], payload: DeepPartial<User>): Promise<User | null>;
 
   /******************************************************************
    * *****************************************************************/

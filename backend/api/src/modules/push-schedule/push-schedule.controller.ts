@@ -18,10 +18,6 @@ export class PushScheduleController {
   @ApiBody({ type: ScheduleQuestionDto })
   @ApiResponse({ status: 201, description: '생성된 푸시 스케줄 반환' })
   schedule(@Body() dto: ScheduleQuestionDto) {
-    return this.service.scheduleQuestion(
-      dto.userId,
-      dto.questionId,
-      dto.scheduledAt,
-    );
+    return this.service.scheduleQuestion(dto.userId, dto.questionId, dto.scheduledAt);
   }
 }

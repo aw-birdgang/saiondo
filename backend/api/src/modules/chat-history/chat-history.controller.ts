@@ -1,13 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ChatHistoryService } from './chat-history.service';
 import { CreateChatHistoryDto } from './dto/create-chat-history.dto';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('ChatHistory')
 @Controller('chat-histories')

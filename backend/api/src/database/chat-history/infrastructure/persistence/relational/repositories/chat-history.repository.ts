@@ -7,10 +7,7 @@ import { ChatHistoryRepository } from '../../chat-history.repository';
 import { ChatHistoryEntity } from '../entities/chat-history.entity';
 import { ChatHistory } from '../../../../domain/chat-history';
 import { ChatHistoryMapper } from '../mappers/chat-history.mapper';
-import {
-  FilterChatHistoryDto,
-  SortChatHistoryDto,
-} from '../../../../dto/query-chat-history.dto';
+import { FilterChatHistoryDto, SortChatHistoryDto } from '../../../../dto/query-chat-history.dto';
 
 @Injectable()
 export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
@@ -23,9 +20,7 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
 
   async create(data: ChatHistory): Promise<ChatHistory> {
     const persistenceModel = ChatHistoryMapper.toPersistence(data);
-    this.logger.log(
-      `create>> persistenceModel.toString ::${persistenceModel.toString()}`,
-    );
+    this.logger.log(`create>> persistenceModel.toString ::${persistenceModel.toString()}`);
     const newEntity = await this.chatHistoryRepository.save(
       this.chatHistoryRepository.create(persistenceModel),
     );
@@ -74,10 +69,7 @@ export class ChatHistoryRelationalRepository implements ChatHistoryRepository {
   /******************************************************************
    * *****************************************************************/
 
-  async update(
-    id: ChatHistory['id'],
-    payload: Partial<ChatHistory>,
-  ): Promise<ChatHistory> {
+  async update(id: ChatHistory['id'], payload: Partial<ChatHistory>): Promise<ChatHistory> {
     const entity = await this.chatHistoryRepository.findOne({
       where: { id: id },
     });

@@ -11,13 +11,7 @@ import { AssistantService } from '@modules/assistant/assistant.service';
 @Module({
   imports: [PrismaModule, forwardRef(() => LlmModule)],
   controllers: [ChatController],
-  providers: [
-    ChatService,
-    ChatGateway,
-    AssistantService,
-    ChannelService,
-    PersonaProfileService,
-  ],
+  providers: [ChatService, ChatGateway, AssistantService, ChannelService, PersonaProfileService],
   exports: [ChatService],
 })
 export class ChatModule {}

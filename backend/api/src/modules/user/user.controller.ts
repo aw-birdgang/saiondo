@@ -9,13 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.services';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '@modules/user/dto/user.dto';
 import { UpdateFcmTokenDto } from '@modules/user/dto/update-fcm-token.dto';
 
@@ -48,10 +42,7 @@ export class UserController {
     try {
       return await this.userService.createUser(body);
     } catch (e) {
-      throw new HttpException(
-        e.message || '유저 생성 실패',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(e.message || '유저 생성 실패', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -90,10 +81,7 @@ export class UserController {
   @ApiParam({ name: 'id', description: '유저 ID' })
   @ApiBody({ type: UpdateFcmTokenDto })
   @ApiResponse({ status: 200, description: '업데이트된 유저 정보 반환' })
-  async updateFcmToken(
-    @Param('id') userId: string,
-    @Body() body: UpdateFcmTokenDto,
-  ) {
+  async updateFcmToken(@Param('id') userId: string, @Body() body: UpdateFcmTokenDto) {
     return this.userService.updateFcmToken(userId, body.fcmToken);
   }
 }

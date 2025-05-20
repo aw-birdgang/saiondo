@@ -11,12 +11,7 @@ export class PushService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async sendPush(
-    token: string,
-    title: string,
-    body: string,
-    data?: Record<string, string>,
-  ) {
+  async sendPush(token: string, title: string, body: string, data?: Record<string, string>) {
     try {
       const message = {
         token,
@@ -32,12 +27,7 @@ export class PushService {
     }
   }
 
-  async sendPushToUser(
-    userId: string,
-    title: string,
-    body: string,
-    data?: Record<string, string>,
-  ) {
+  async sendPushToUser(userId: string, title: string, body: string, data?: Record<string, string>) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (user?.fcmToken) {
       return this.sendPush(user.fcmToken, title, body, data);

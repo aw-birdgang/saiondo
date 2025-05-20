@@ -48,10 +48,7 @@ export class ChannelService {
     return this.prisma.channel.delete({ where: { id } });
   }
 
-  async getChannelParticipants(
-    channelId: string,
-    userId: string,
-  ): Promise<string | null> {
+  async getChannelParticipants(channelId: string, userId: string): Promise<string | null> {
     const channel = await this.prisma.channel.findUnique({
       where: { id: channelId },
     });

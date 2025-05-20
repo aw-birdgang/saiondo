@@ -28,10 +28,7 @@ export class LlmService {
    * @param prompt 사용자 입력 프롬프트
    * @param model 사용할 LLM 모델(openai, claude 등)
    */
-  async forwardToLLM(
-    prompt: string,
-    model: 'openai' | 'claude',
-  ): Promise<string> {
+  async forwardToLLM(prompt: string, model: 'openai' | 'claude'): Promise<string> {
     try {
       const response = await axios.post(`${this.llmApiUrl}/chat`, {
         prompt,

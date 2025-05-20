@@ -35,15 +35,9 @@ export class LlmController {
   async chat(@Body() body: ChatRequestDto): Promise<ChatResponseDto> {
     try {
       if (!body.assistantId) {
-        throw new HttpException(
-          'assistantId is required',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('assistantId is required', HttpStatus.BAD_REQUEST);
       }
-      const result = await this.llmService.forwardToLLM(
-        body.prompt,
-        body.model,
-      );
+      const result = await this.llmService.forwardToLLM(body.prompt, body.model);
 
       // 1. 사용자 프롬프트 저장
       await this.chatHistoryService.create({
@@ -70,10 +64,7 @@ export class LlmController {
 
       return { response: result };
     } catch (error) {
-      throw new HttpException(
-        'LLM 호출 실패',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException('LLM 호출 실패', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

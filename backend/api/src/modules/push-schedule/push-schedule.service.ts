@@ -10,11 +10,7 @@ export class PushScheduleService {
     private readonly pushService: PushService,
   ) {}
 
-  async scheduleQuestion(
-    userId: string,
-    questionId: string,
-    scheduledAt: Date,
-  ) {
+  async scheduleQuestion(userId: string, questionId: string, scheduledAt: Date) {
     return this.prisma.pushSchedule.create({
       data: {
         userId,
@@ -44,12 +40,9 @@ export class PushScheduleService {
         where: { id: schedule.userId },
       });
       if (user?.fcmToken) {
-        await this.pushService.sendPush(
-          user.fcmToken,
-          '질문 알림',
-          '새로운 질문이 도착했습니다!',
-          { questionId: schedule.questionId },
-        );
+        await this.pushService.sendPush(user.fcmToken, '질문 알림', '새로운 질문이 도착했습니다!', {
+          questionId: schedule.questionId,
+        });
         await this.markAsSent(schedule.id);
       }
     }

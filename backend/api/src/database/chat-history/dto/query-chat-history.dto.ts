@@ -1,10 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { plainToInstance, Transform, Type } from 'class-transformer';
 import { ChatHistory } from '../domain/chat-history';
 
@@ -47,9 +42,7 @@ export class QueryChatHistoryDto {
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) =>
-    value
-      ? plainToInstance(FilterChatHistoryDto, JSON.parse(value))
-      : undefined,
+    value ? plainToInstance(FilterChatHistoryDto, JSON.parse(value)) : undefined,
   )
   @ValidateNested()
   @Type(() => FilterChatHistoryDto)
@@ -58,9 +51,7 @@ export class QueryChatHistoryDto {
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) => {
-    return value
-      ? plainToInstance(SortChatHistoryDto, JSON.parse(value))
-      : undefined;
+    return value ? plainToInstance(SortChatHistoryDto, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
   @Type(() => SortChatHistoryDto)

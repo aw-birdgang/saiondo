@@ -20,12 +20,8 @@ export class UserRelationalRepository implements UserRepository {
 
   async create(data: User): Promise<User> {
     const persistenceModel = UserMapper.toPersistence(data);
-    this.logger.log(
-      `create>> persistenceModel.toString ::${persistenceModel.toString()}`,
-    );
-    const newEntity = await this.userRepository.save(
-      this.userRepository.create(persistenceModel),
-    );
+    this.logger.log(`create>> persistenceModel.toString ::${persistenceModel.toString()}`);
+    const newEntity = await this.userRepository.save(this.userRepository.create(persistenceModel));
     return UserMapper.toDomain(newEntity);
   }
 

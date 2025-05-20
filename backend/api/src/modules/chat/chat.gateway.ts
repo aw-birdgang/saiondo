@@ -21,9 +21,7 @@ interface SendMessagePayload {
 }
 
 @WebSocketGateway({ cors: { origin: '*' }, namespace: '/' })
-export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService,
     private readonly assistantService: AssistantService,
@@ -66,10 +64,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage('send_message')
-  async handleMessage(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: SendMessagePayload,
-  ) {
+  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: SendMessagePayload) {
     const { userId, assistantId, channelId, message } = data;
     this.log(`[API][WebSocket] handleMessage called`, {
       userId,
@@ -90,10 +85,7 @@ export class ChatGateway
       this.server.emit('receive_message', response);
       this.log(`[API][WebSocket] Sent feedback to all clients:`, response);
     } catch (error) {
-      this.log(
-        `[API][WebSocket] Error processing message from client ${client.id}:`,
-        error,
-      );
+      this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
       client.emit('error', { message: error?.message ?? 'Unknown error' });
     }
   }

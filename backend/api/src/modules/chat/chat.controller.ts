@@ -10,8 +10,7 @@ export class ChatController {
 
   @Post()
   @ApiOperation({
-    summary:
-      '채팅 입력 → chat-histories 저장 → LLM 피드백 → chat-histories에 피드백 저장',
+    summary: '채팅 입력 → chat-histories 저장 → LLM 피드백 → chat-histories에 피드백 저장',
   })
   @ApiBody({ type: ChatWithFeedbackDto })
   @ApiResponse({ status: 200, description: '채팅 및 피드백 처리 결과' })
