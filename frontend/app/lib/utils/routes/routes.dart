@@ -56,7 +56,6 @@ class Routes {
       final args = ModalRoute.of(context)!.settings.arguments as Map;
       return AnalysisScreen(
         channelId: args['channelId'],
-        userId: args['userId'],
       );
     },
   };

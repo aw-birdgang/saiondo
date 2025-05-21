@@ -7,12 +7,14 @@ import 'package:app/domain/usecase/auth/login_usecase.dart';
 import 'package:app/domain/usecase/auth/register_usecase.dart';
 import 'package:app/domain/usecase/category/fetch_category_codes_usecase.dart';
 import 'package:app/domain/usecase/chat/send_message_usecase.dart';
+import 'package:app/presentation/analysis/store/analysis_store.dart';
 import 'package:app/presentation/home/store/home/home_store.dart';
 import 'package:app/presentation/home/store/theme/theme_store.dart';
 
 import '../../../core/stores/error/error_store.dart';
 import '../../../data/network/socket_io/socket_io_service.dart';
 import '../../../di/service_locator.dart';
+import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/setting/setting_repository.dart';
@@ -68,6 +70,8 @@ class StoreModule {
         getIt<UserRepository>(),
       ),
     );
+
+    // :------------------------------------------------------------------
     getIt.registerSingleton<ChatStore>(
       ChatStore(
         getIt<FetchChatHistoriesUseCase>(),
@@ -75,6 +79,13 @@ class StoreModule {
         getIt<SocketIoService>(),
       ),
     );
+    getIt.registerSingleton<AnalysisStore>(
+      AnalysisStore(
+        getIt<AnalysisRepository>(),
+      ),
+    );
+
+    // :------------------------------------------------------------------
     getIt.registerSingleton<CategoryCodeStore>(
       CategoryCodeStore(
         getIt<FetchCategoryCodesUseCase>(),
