@@ -6,6 +6,7 @@ import '../../presentation/category/category_code_guide.dart';
 import '../../presentation/chat/chat.dart';
 import '../../presentation/home/home.dart';
 import '../../presentation/notifications/notifications.dart';
+import '../../presentation/analysis/analysis_screen.dart';
 
 class Routes {
   Routes._();
@@ -16,6 +17,7 @@ class Routes {
   static const String chat = '/chat';
   static const String categoryGuide = '/category_guide';
   static const String notification = '/notification';
+  static const String analysis = '/analysis';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
@@ -50,6 +52,13 @@ class Routes {
     register: (BuildContext context) => RegisterScreen(),
     categoryGuide: (BuildContext context)=> CategoryCodeGuideScreen(),
     notification: (BuildContext context)=> NotificationsScreen(),
+    analysis: (context) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map;
+      return AnalysisScreen(
+        channelId: args['channelId'],
+        userId: args['userId'],
+      );
+    },
   };
 
 }

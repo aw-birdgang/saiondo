@@ -127,55 +127,7 @@ class HomeTabContent extends StatelessWidget {
                           ),
                         ),
 
-                        // 2. 성향 분석 요약
-                        SizedBox(height: 32),
-                        Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          color: Colors.pink[100],
-                          elevation: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('성향 분석',
-                                    style: TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold)),
-                                SizedBox(height: 8),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Chip(
-                                      label: Text(mbti1),
-                                      backgroundColor: Colors.white,
-                                    ),
-                                    Icon(Icons.compare_arrows, color: Colors.pink),
-                                    Chip(
-                                      label: Text(mbti2),
-                                      backgroundColor: Colors.white,
-                                    ),
-                                    SizedBox(width: 12),
-                                    Flexible(
-                                      child: Text(
-                                        '$matchPercent% 잘 맞아요!',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.pink[700]),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Text('주요 키워드: ${keywords.join(", ")}'),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        // 3. 초대 코드/주요 액션 버튼
+                        // 초대 코드/주요 액션 버튼
                         SizedBox(height: 32),
                         Card(
                           shape: RoundedRectangleBorder(
@@ -248,7 +200,14 @@ class HomeTabContent extends StatelessWidget {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
                                   onPressed: () {
-                                    // 성향분석 화면 이동
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/analysis',
+                                      arguments: {
+                                        'channelId': channelId,
+                                        'userId': userId,
+                                      },
+                                    );
                                   },
                                 ),
                                 SizedBox(height: 12),
@@ -269,7 +228,7 @@ class HomeTabContent extends StatelessWidget {
                           ),
                         ),
 
-                        // 4. 오늘의 조언
+                        // 오늘의 조언
                         SizedBox(height: 24),
                         Card(
                           shape: RoundedRectangleBorder(
