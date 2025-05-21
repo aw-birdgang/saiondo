@@ -64,6 +64,8 @@ model User {
   personaProfiles PersonaProfile[]
   pushSchedules   PushSchedule[]
   generatedReports AdviceReport[]    @relation("GeneratedBy")
+  channelsAsUser1 Channel[] @relation("ChannelUser1")
+  channelsAsUser2 Channel[] @relation("ChannelUser2")
 }
 
 model Channel {
@@ -74,11 +76,17 @@ model Channel {
   startedAt DateTime
   endedAt   DateTime?
   inviteCode String? @unique
-  assistants Assistant[]
+  anniversary  DateTime?
+  keywords     String?   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  assistants Assistant[]
   adviceReports AdviceReport[]
   chatHistories ChatHistory[]
+  coupleAnalyses CoupleAnalysis[]
+  user1     User     @relation("ChannelUser1", fields: [user1Id], references: [id])
+  user2     User     @relation("ChannelUser2", fields: [user2Id], references: [id])
 }
 
 model Assistant {
@@ -104,6 +112,14 @@ model ChatHistory {
   assistant   Assistant @relation(fields: [assistantId], references: [id])
   channel     Channel   @relation(fields: [channelId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
+}
+
+model CoupleAnalysis {
+  id           String   @id @default(uuid())
+  channelId    String
+  rawResult    String   @db.Text
+  createdAt    DateTime @default(now())
+  channel      Channel  @relation(fields: [channelId], references: [id])
 }
 
 model CategoryCode {

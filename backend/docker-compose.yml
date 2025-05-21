@@ -19,6 +19,7 @@ services:
   llm:
     build:
       context: ./llm
+      dockerfile: Dockerfile
     env_file:
       - .env
     ports:

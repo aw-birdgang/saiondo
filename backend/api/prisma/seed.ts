@@ -111,6 +111,9 @@ async function main() {
             user2Id: user2.id,
             status: 'ACTIVE',
             startedAt: new Date(),
+            inviteCode: 'TESTCODE123',
+            anniversary: new Date('2022-05-20'),
+            keywords: JSON.stringify(['사랑', '신뢰', '소통']),
             assistants: {
                 create: [
                     { userId: user1.id },

@@ -1,18 +1,10 @@
-import {
-  Body,
-  Controller,
-  forwardRef,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Post,
-} from '@nestjs/common';
-import { LlmService } from './llm.service';
-import { ChatRequestDto, ChatResponseDto } from './dto/chat.dto';
-import { ChatHistoryService } from '../chat-history/chat-history.service';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AnalyzeRequestDto, AnalyzeResponseDto } from './dto/analyze.dto';
-import { AnalyzeAnswerDto } from '@modules/llm/dto/analyze-answer.dto';
+import {Body, Controller, forwardRef, HttpException, HttpStatus, Inject, Post,} from '@nestjs/common';
+import {LlmService} from './llm.service';
+import {ChatRequestDto, ChatResponseDto} from './dto/chat.dto';
+import {ChatHistoryService} from '../chat-history/chat-history.service';
+import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {AnalyzeRequestDto, AnalyzeResponseDto} from './dto/analyze.dto';
+import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
 
 @ApiTags('LLM')
 @Controller('llm')

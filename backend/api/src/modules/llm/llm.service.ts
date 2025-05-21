@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import axios from 'axios';
-import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from '../../config/config.type';
-import { AnalyzeRequestDto } from './dto/analyze.dto';
-import { AnalyzeAnswerDto } from '@modules/llm/dto/analyze-answer.dto';
+import {ConfigService} from '@nestjs/config';
+import {AllConfigType} from '../../config/config.type';
+import {AnalyzeRequestDto} from './dto/analyze.dto';
+import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
 
 /**
  * LlmService는 API 서버에서 LLM 서버(FastAPI)로의 모든 연동을 담당합니다.
@@ -110,6 +110,18 @@ export class LlmService {
       return response.data;
     } catch (error: any) {
       console.error('LLM 성향 분석 요청 실패:', error.message);
+      throw error;
+    }
+  }
+
+  async analyzeCouple(prompt: string): Promise<string> {
+    try {
+      const response = await axios.post(`${this.llmApiUrl}/couple-analysis`, {
+        prompt,
+      });
+      return response.data.response;
+    } catch (error: any) {
+      console.error('LLM 호출 실패:', error.message);
       throw error;
     }
   }
