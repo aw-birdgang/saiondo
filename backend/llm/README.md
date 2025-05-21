@@ -6,17 +6,28 @@ FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버입니다.
 
 llm/
 ├── src/
-│ ├── main.py # FastAPI 엔트리포인트
-│ ├── routes.py # API 라우터
-│ ├── llm.py # LLM 서비스 추상화
-│ ├── schemas.py # Pydantic 데이터 모델
-│ ├── providers/ # LLM API 연동(OpenAI, Claude 등)
-│ ├── mcp/ # 대화 context 등 도메인 로직
-│ └── graph/ # 그래프/분석 관련 로직
-├── requirements.txt # Python 의존성
+│   ├── main.py                # FastAPI 앱 진입점
+│   ├── api/                   # 모든 라우터(엔드포인트) 모듈
+│   │   ├── chat.py
+│   │   ├── feedback.py
+│   │   ├── couple_analysis.py
+│   │   └── health.py
+│   ├── services/              # 비즈니스 로직(서비스) 모듈
+│   │   ├── chat_service.py
+│   │   ├── feedback_service.py
+│   │   ├── couple_analysis_service.py
+│   │   └── llm_provider.py    # LLM 추상화/Provider
+│   ├── schemas/               # Pydantic 데이터 모델
+│   │   ├── chat.py
+│   │   ├── feedback.py
+│   │   ├── couple_analysis.py
+│   │   └── __init__.py
+│   ├── config.py              # 환경설정/DI
+│   └── __init__.py
+├── requirements.txt
 ├── Dockerfile
-├── README.md
-└── venv/ # (로컬 가상환경, git 미포함)
+└── README.md
+
 
 ## 🏗️ 아키텍처 및 개발 패턴
 

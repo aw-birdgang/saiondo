@@ -1,12 +1,18 @@
 from fastapi import FastAPI
-from src.routes import router
+from api.chat import router as chat_router
+from api.feedback import router as feedback_router
+from api.couple_analysis import router as couple_analysis_router
+from api.health import router as health_router
 from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI(
-    title="LLM Proxy API",
-    description="OpenAI + Claude 프록시 API",
-    version="1.0.0",
+    title="SAIONDO LLM Backend",
+    description="커플 분석, AI 챗, 피드백 등 다양한 LLM 기반 기능 제공",
+    version="1.0.0"
 )
 
-app.include_router(router)
+app.include_router(chat_router)
+app.include_router(feedback_router)
+app.include_router(couple_analysis_router)
+app.include_router(health_router)
