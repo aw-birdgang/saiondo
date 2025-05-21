@@ -1,11 +1,9 @@
 import 'package:app/presentation/home/store/invite_code_store.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/user/user.dart';
-import '../../utils/routes/routes.dart';
 import '../user/store/user_store.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -64,87 +62,246 @@ class HomeTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 샘플 데이터
+    final String partnerName = "지은";
+    final String userProfile = "https://randomuser.me/api/portraits/men/32.jpg";
+    final String partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg";
+    final String mbti1 = "INFP";
+    final String mbti2 = "ESTJ";
+    final int matchPercent = 72;
+    final List<String> keywords = ["사랑", "신뢰", "여행"];
+    final String todayAdvice = "오늘은 서로의 장점을 칭찬해 주세요!";
+    final String dDay = "D+123";
+    final String inviteCode = "ABCD-1234";
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '환영합니다, ${user.name}님!',
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 24),
-            Observer(
-              builder: (_) => ElevatedButton.icon(
-                icon: Icon(Icons.vpn_key),
-                label: Text('초대코드 생성'),
-                onPressed: _inviteCodeStore.isLoading
-                    ? null
-                    : () async {
-                        await _inviteCodeStore.generateInviteCode(channelId!);
-                        if (_inviteCodeStore.inviteCode != null) {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Text('초대코드'),
-                              content: SelectableText(_inviteCodeStore.inviteCode!),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Clipboard.setData(ClipboardData(text: _inviteCodeStore.inviteCode!));
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('복사'),
+      backgroundColor: Colors.pink[50],
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // 1. 커플 프로필/인사
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(userProfile),
+                              radius: 36,
+                            ),
+                            SizedBox(width: 16),
+                            Icon(Icons.favorite, color: Colors.pink, size: 36),
+                            SizedBox(width: 16),
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(partnerProfile),
+                              radius: 36,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        Center(
+                          child: Text(
+                            '${user.name} ❤️ $partnerName',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.pink[700],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Center(
+                          child: Chip(
+                            label: Text('우리의 기념일 $dDay'),
+                            backgroundColor: Colors.pink[100],
+                            labelStyle: TextStyle(color: Colors.pink[800]),
+                          ),
+                        ),
+
+                        // 2. 성향 분석 요약
+                        SizedBox(height: 32),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          color: Colors.pink[100],
+                          elevation: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('성향 분석',
+                                    style: TextStyle(
+                                        fontSize: 18, fontWeight: FontWeight.bold)),
+                                SizedBox(height: 8),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Chip(
+                                      label: Text(mbti1),
+                                      backgroundColor: Colors.white,
+                                    ),
+                                    Icon(Icons.compare_arrows, color: Colors.pink),
+                                    Chip(
+                                      label: Text(mbti2),
+                                      backgroundColor: Colors.white,
+                                    ),
+                                    SizedBox(width: 12),
+                                    Flexible(
+                                      child: Text(
+                                        '$matchPercent% 잘 맞아요!',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.pink[700]),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('닫기'),
+                                SizedBox(height: 8),
+                                Text('주요 키워드: ${keywords.join(", ")}'),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // 3. 초대 코드/주요 액션 버튼
+                        SizedBox(height: 32),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          color: Colors.white,
+                          elevation: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.vpn_key, color: Colors.pink),
+                                    SizedBox(width: 8),
+                                    Text('초대코드', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Spacer(),
+                                    Flexible(
+                                      child: SelectableText(
+                                        inviteCode,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.pink[700]),
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.copy, size: 20),
+                                      onPressed: () {
+                                        // Clipboard.setData(ClipboardData(text: inviteCode));
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('초대코드가 복사되었습니다!')),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20),
+                                // 버튼 세로 배치
+                                ElevatedButton.icon(
+                                  icon: Icon(Icons.chat),
+                                  label: Text('채팅 시작'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.pinkAccent,
+                                    minimumSize: Size(double.infinity, 48),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                  onPressed: (userId == null || assistantId == null || channelId == null)
+                                      ? null
+                                      : () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/chat',
+                                            arguments: {
+                                              'userId': userId,
+                                              'assistantId': assistantId,
+                                              'channelId': channelId,
+                                            },
+                                          );
+                                        },
+                                ),
+                                SizedBox(height: 12),
+                                ElevatedButton.icon(
+                                  icon: Icon(Icons.analytics),
+                                  label: Text('성향분석'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blueAccent,
+                                    minimumSize: Size(double.infinity, 48),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                  onPressed: () {
+                                    // 성향분석 화면 이동
+                                  },
+                                ),
+                                SizedBox(height: 12),
+                                ElevatedButton.icon(
+                                  icon: Icon(Icons.history),
+                                  label: Text('조언 히스토리'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    minimumSize: Size(double.infinity, 48),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                  onPressed: () {
+                                    // 조언 히스토리 화면 이동
+                                  },
                                 ),
                               ],
                             ),
-                          );
-                        }
-                      },
+                          ),
+                        ),
+
+                        // 4. 오늘의 조언
+                        SizedBox(height: 24),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                          color: Colors.blue[50],
+                          elevation: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Row(
+                              children: [
+                                Icon(Icons.lightbulb, color: Colors.orange, size: 32),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    todayAdvice,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // 5. 여백
+                        SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-            Observer(
-              builder: (_) => _inviteCodeStore.isLoading
-                  ? CircularProgressIndicator()
-                  : SizedBox.shrink(),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.chat),
-              label: const Text('채팅 시작', style: TextStyle(fontSize: 18)),
-              onPressed: (userId == null || assistantId == null || channelId == null)
-                  ? null
-                  : () {
-                      print('채팅 버튼 클릭: userId=$userId, assistantId=$assistantId, channelId=$channelId');
-                      Navigator.pushNamed(
-                        context,
-                        Routes.chat,
-                        arguments: {
-                          'userId': userId,
-                          'assistantId': assistantId,
-                          'channelId': channelId,
-                        },
-                      );
-                    },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 
 import '../../di/service_locator.dart';
 import '../../utils/routes/routes.dart';
+import 'ai_advice_tab.dart';
 import 'home_tab.dart';
 import 'my_page_tab.dart';
 
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     const HomeTabScreen(),
+    const AiAdviceTabScreen(),
     MyPageScreen(),
   ];
 
@@ -116,6 +118,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.psychology_alt),
+            label: 'AI조언',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
