@@ -9,8 +9,8 @@ class AdviceApi {
 
   AdviceApi(this._dioClient, this._restClient);
 
-  Future<List<AdviceResponse>> fetchAdvices(String channelId) async {
-    final response = await _dioClient.dio.get('${Endpoints.advices(channelId)}');
+  Future<List<AdviceResponse>> fetchAdviceHistory(String channelId) async {
+    final response = await _dioClient.dio.get('${Endpoints.adviceHistories(channelId)}');
     return (response.data as List)
         .map((e) => AdviceResponse.fromJson(e))
         .toList();

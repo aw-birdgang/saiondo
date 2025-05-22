@@ -21,7 +21,7 @@ abstract class _AdviceStore with Store {
   Future<void> loadAdviceHistory(String channelId) async {
     isLoading = true;
     try {
-      final result = await _repository.fetchAdvices(channelId);
+      final result = await _repository.fetchAdviceHistory(channelId);
       adviceList = ObservableList.of(result);
     } finally {
       isLoading = false;

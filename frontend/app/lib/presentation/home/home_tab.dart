@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/user/user.dart';
+import '../advice/advice.dart';
 import '../user/store/user_store.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -220,7 +221,12 @@ class HomeTabContent extends StatelessWidget {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
                                   onPressed: () {
-                                    // 조언 히스토리 화면 이동
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => AdviceHistoryScreen(channelId: channelId!),
+                                      ),
+                                    );
                                   },
                                 ),
                               ],

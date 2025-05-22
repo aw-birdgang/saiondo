@@ -2,7 +2,7 @@ class AdviceResponse {
   final String id;
   final String channelId;
   final String advice;
-  final String createdAt;
+  final DateTime createdAt;
 
   AdviceResponse({
     required this.id,
@@ -16,7 +16,7 @@ class AdviceResponse {
       id: json['id'],
       channelId: json['channelId'],
       advice: json['advice'],
-      createdAt: json['createdAt'],
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 }
