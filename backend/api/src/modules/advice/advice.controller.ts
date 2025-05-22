@@ -1,6 +1,5 @@
-import {Body, Controller, Get, Param, Post, Patch, Delete} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {AdviceService} from './advice.service';
-import {CreateAdviceDto} from './dto/create-advice.dto';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {Advice} from '@prisma/client';
 import {UpdateAdviceDto} from './dto/update-advice.dto';
@@ -27,17 +26,12 @@ export class AdviceController {
   }
 
   @Post('channel/:channelId')
-  @ApiOperation({ summary: '리포트 생성' })
-  @ApiBody({ type: CreateAdviceDto })
-  @ApiResponse({ status: 201, description: '생성된 리포트 반환' })
+  @ApiOperation({ summary: '조언 생성' })
+  @ApiResponse({ status: 201, description: '생성된 조언 반환' })
   async createAdvice(
     @Param('channelId') channelId: string,
-    @Body() createAdviceDto: CreateAdviceDto,
   ): Promise<Advice> {
-    return this.adviceService.createAdvice({
-      channelId,
-      advice: createAdviceDto.advice,
-    });
+    return this.adviceService.createAdvice(channelId);
   }
 
   @Get('channel/:channelId')

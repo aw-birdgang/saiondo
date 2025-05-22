@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from api.prompt import router as prompt_router
 from api.chat import router as chat_router
 from api.feedback import router as feedback_router
 from api.couple_analysis import router as couple_analysis_router
@@ -12,6 +13,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.include_router(prompt_router)
 app.include_router(chat_router)
 app.include_router(feedback_router)
 app.include_router(couple_analysis_router)

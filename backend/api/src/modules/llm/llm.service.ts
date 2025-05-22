@@ -125,4 +125,17 @@ export class LlmService {
       throw error;
     }
   }
+
+  async adviceCouple(prompt: string): Promise<string> {
+    try {
+      const response = await axios.post(`${this.llmApiUrl}/couple-analysis`, {
+        prompt,
+      });
+      return response.data.response;
+    } catch (error: any) {
+      console.error('LLM 호출 실패:', error.message);
+      throw error;
+    }
+  }
+
 }
