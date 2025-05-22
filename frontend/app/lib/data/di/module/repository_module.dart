@@ -5,18 +5,21 @@ import 'package:app/data/sharedpref/shared_preference_helper.dart';
 import 'package:app/di/service_locator.dart';
 import 'package:app/domain/repository/setting/setting_repository.dart';
 
+import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/assistant/assitant_repository.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/chat_history/chat_history_repository.dart';
 import '../../../domain/repository/user/user_repository.dart';
+import '../../network/apis/advice_api.dart';
 import '../../network/apis/analysis_api.dart';
 import '../../network/apis/assistant_api.dart';
 import '../../network/apis/auth_api.dart';
 import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
 import '../../network/apis/user_api.dart';
+import '../../repository/advice_repository_impl.dart';
 import '../../repository/analysis_repository_impl.dart';
 import '../../repository/assistant_repository_impl.dart';
 import '../../repository/auth_repository_impl.dart';
@@ -58,6 +61,10 @@ class RepositoryModule {
 
     getIt.registerSingleton<AnalysisRepository>(AnalysisRepositoryImpl(
       getIt<AnalysisApi>(),
+    ));
+
+    getIt.registerSingleton<AdviceRepository>(AdviceRepositoryImpl(
+      getIt<AdviceApi>(),
     ));
 
   }

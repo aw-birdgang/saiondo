@@ -14,12 +14,14 @@ import 'package:app/presentation/home/store/theme/theme_store.dart';
 import '../../../core/stores/error/error_store.dart';
 import '../../../data/network/socket_io/socket_io_service.dart';
 import '../../../di/service_locator.dart';
+import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/setting/setting_repository.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
+import '../../advice/store/advice_store.dart';
 import '../../auth/store/auth_store.dart';
 import '../../category/store/category_code_store.dart';
 import '../../chat/store/chat_store.dart';
@@ -82,6 +84,11 @@ class StoreModule {
     getIt.registerSingleton<AnalysisStore>(
       AnalysisStore(
         getIt<AnalysisRepository>(),
+      ),
+    );
+    getIt.registerSingleton<AdviceStore>(
+      AdviceStore(
+        getIt<AdviceRepository>(),
       ),
     );
 

@@ -1,4 +1,5 @@
 
+import 'package:app/data/network/apis/advice_api.dart';
 import 'package:app/data/network/apis/chats/chst_api.dart';
 import 'package:event_bus/event_bus.dart';
 
@@ -62,6 +63,7 @@ class NetworkModule {
     getIt.registerSingleton(ChatApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(ChatHistoryApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(AnalysisApi(getIt<DioClient>(), getIt<RestClient>()));
+    getIt.registerSingleton(AdviceApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(CategoryCodeApi(getIt<DioClient>(), getIt<RestClient>()));
 
   }

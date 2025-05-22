@@ -50,6 +50,9 @@ class Endpoints {
   static String coupleAnalysisByChannelIdLatest(String channelId) => '$baseUrl/couple-analysis/$channelId/latest';
   static String coupleAnalysisLlm(String channelId) => '$baseUrl/couple-analysis/$channelId/llm';
 
+  //
+  static String advices(String channelId) => '/couple-analysis/$channelId/advice-history';
+
   // 채팅 내역 조회 (내 방 기준)
   static String chatHistory(String channelId, String userId) =>
       '$baseUrl/chat/$channelId/$userId/history';
