@@ -34,7 +34,7 @@ api/
 - **Relationship**: 1:1 관계(초대→수락→room 생성)
 - **Room**: 1:1 대화 공간
 - **ChatHistory**: 대화 기록
-- **PersonaProfile, AdviceReport**: 프로필/리포트
+- **PersonaProfile, Advice**: 프로필/리포트
 - **CategoryCode, QuestionTemplate, PushSchedule, UserAnswer**: 카테고리/질문/푸시/답변 관리
 
 ## ⚙️ 기술 스택 및 주요 의존성

@@ -62,7 +62,7 @@ model User {
   chatHistories   ChatHistory[]
   personaProfiles PersonaProfile[]
   pushSchedules   PushSchedule[]
-  generatedReports AdviceReport[]    @relation("GeneratedBy")
+  generatedReports Advice[]    @relation("GeneratedBy")
   channelsAsUser1 Channel[] @relation("ChannelUser1")
   channelsAsUser2 Channel[] @relation("ChannelUser2")
 }
@@ -81,7 +81,7 @@ model Channel {
   updatedAt DateTime @updatedAt
 
   assistants Assistant[]
-  adviceReports AdviceReport[]
+  advices Advice[]
   chatHistories ChatHistory[]
   coupleAnalyses CoupleAnalysis[]
   user1     User     @relation("ChannelUser1", fields: [user1Id], references: [id])
@@ -151,19 +151,15 @@ model PersonaProfile {
   @@map("persona_profiles")
 }
 
-model AdviceReport {
-  id             String      @id @default(uuid())
-  channelId      String
-  generatedById  String
-  reportDate     DateTime
-  summary        String      @db.Text
-  adviceForUser1 String      @db.Text
-  adviceForUser2 String      @db.Text
+model Advice {
+  id         String   @id @default(uuid())
+  channelId  String
+  advice     String
+  createdAt  DateTime @default(now())
 
-  channel        Channel     @relation(fields: [channelId], references: [id])
-  generatedBy    User        @relation("GeneratedBy", fields: [generatedById], references: [id])
-
-  @@map("advice_reports")
+  generatedBy   User?    @relation("GeneratedBy", fields: [generatedById], references: [id])
+  generatedById String?
+  channel    Channel  @relation(fields: [channelId], references: [id])
 }
 
 model QuestionTemplate {

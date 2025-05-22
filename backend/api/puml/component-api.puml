@@ -6,7 +6,7 @@ package "NestJS API" {
   [RelationshipModule]
   [RoomModule]
   [ChatHistoryModule]
-  [AdviceReportModule]
+  [AdviceModule]
   [PersonaProfileModule]
   [QuestionTemplateModule]
   [PushScheduleModule]
@@ -22,7 +22,7 @@ database "PostgreSQL" as DB
 [RelationshipModule] --> DB
 [RoomModule] --> DB
 [ChatHistoryModule] --> DB
-[AdviceReportModule] --> DB
+[AdviceModule] --> DB
 [PersonaProfileModule] --> DB
 [QuestionTemplateModule] --> DB
 [PushScheduleModule] --> DB

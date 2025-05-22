@@ -351,6 +351,26 @@ async function main() {
         ],
     });
 
+    await prisma.advice.createMany({
+        data: [
+            {
+                channelId: channel.id,
+                advice: '서로의 차이를 인정하고 존중하세요.',
+                createdAt: new Date('2024-06-01T12:00:00Z'),
+            },
+            {
+                channelId: channel.id,
+                advice: '대화를 자주 나누세요.',
+                createdAt: new Date('2024-06-02T12:00:00Z'),
+            },
+            {
+                channelId: channel.id,
+                advice: '함께 취미를 만들어보세요.',
+                createdAt: new Date('2024-06-03T12:00:00Z'),
+            },
+        ],
+    });
+
     console.log('Seed completed!');
 }
 
