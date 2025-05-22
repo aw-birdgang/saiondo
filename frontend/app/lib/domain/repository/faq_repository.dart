@@ -1,7 +1,7 @@
 import 'package:either_dart/either.dart';
-import '../../../core/domain/error/failure.dart';
-import '../../entry/faq/faq.dart';
-import '../../entry/faq/faq_list.dart';
+import '../../core/domain/error/failure.dart';
+import '../entry/faq.dart';
+import '../entry/faq_list.dart';
 
 abstract class FaqRepository {
   Future<Either<Failure, FaqList>> getFaqs();

@@ -1,4 +1,4 @@
-import 'package:app/domain/entry/chat/chat_history.dart';
+import 'package:app/domain/entry/chat_history.dart';
 
 class ChatHistories {
   final List<ChatHistory>? chats;

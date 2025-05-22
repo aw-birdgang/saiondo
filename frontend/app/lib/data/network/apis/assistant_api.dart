@@ -1,7 +1,7 @@
 import 'package:app/data/network/constants/endpoints.dart';
 
 import '../../../core/data/network/dio/dio_client.dart';
-import '../../../domain/entry/assistant/assistant.dart';
+import '../../../domain/entry/assistant.dart';
 import '../dto/assistant_request.dart';
 import '../rest_client.dart';
 

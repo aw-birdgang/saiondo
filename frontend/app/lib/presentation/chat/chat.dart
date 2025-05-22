@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../di/service_locator.dart';
+import '../../domain/entry/chat_history.dart';
 import 'store/chat_store.dart';
-import '../../../domain/entry/chat/chat_history.dart';
 import 'chat_message_widget.dart';
 
 class ChatScreen extends StatefulWidget {

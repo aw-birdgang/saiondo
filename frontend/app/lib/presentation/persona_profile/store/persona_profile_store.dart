@@ -1,6 +1,6 @@
 import 'package:mobx/mobx.dart';
-import '../../../domain/entry/user/persona_profile.dart';
-import '../../../domain/repository/user/user_repository.dart';
+import '../../../domain/entry/persona_profile.dart';
+import '../../../domain/repository/user_repository.dart';
 
 part 'persona_profile_store.g.dart';
 

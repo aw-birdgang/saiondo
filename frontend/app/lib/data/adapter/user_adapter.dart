@@ -1,4 +1,4 @@
-import '../../domain/entry/user/user.dart';
+import '../../domain/entry/user.dart';
 import '../network/dto/user_response.dart';
 
 class UserAdapter {

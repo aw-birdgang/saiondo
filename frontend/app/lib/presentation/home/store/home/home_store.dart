@@ -1,5 +1,5 @@
 import 'package:app/core/stores/error/error_store.dart';
-import 'package:app/domain/entry/assistant/assistant.dart';
+import 'package:app/domain/entry/assistant.dart';
 import 'package:app/domain/usecase/assistant/fetch_assistants_usecase.dart';
 import 'package:app/presentation/home/home.dart';
 import 'package:flutter/widgets.dart';

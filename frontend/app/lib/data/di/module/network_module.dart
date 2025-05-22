@@ -1,6 +1,6 @@
 
 import 'package:app/data/network/apis/advice_api.dart';
-import 'package:app/data/network/apis/chats/chst_api.dart';
+import 'package:app/data/network/apis/chst_api.dart';
 import 'package:event_bus/event_bus.dart';
 
 import '../../../core/data/network/dio/configs/dio_configs.dart';

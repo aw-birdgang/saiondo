@@ -1,8 +1,9 @@
 import 'package:app/core/data/local/sembast/sembast_client.dart';
 import 'package:app/data/local/constants/db_constants.dart';
-import 'package:app/domain/entry/faq/faq.dart';
-import 'package:app/domain/entry/faq/faq_list.dart';
+import 'package:app/domain/entry/faq.dart';
 import 'package:sembast/sembast.dart';
+
+import '../../../domain/entry/faq_list.dart';
 
 class FaqDataSource {
   final _faqsStore = intMapStoreFactory.store(DBConstants.STORE_NAME);

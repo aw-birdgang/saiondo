@@ -1,4 +1,4 @@
-import '../../domain/entry/user/category_code.dart';
+import '../../domain/entry/category_code.dart';
 import '../network/dto/category_code_response.dart';
 
 class CategoryCodeDtoAdapter{

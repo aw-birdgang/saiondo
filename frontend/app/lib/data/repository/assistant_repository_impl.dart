@@ -1,7 +1,7 @@
-import 'package:app/domain/entry/assistant/assistant.dart';
+import 'package:app/domain/entry/assistant.dart';
 
 import '../../data/network/apis/assistant_api.dart';
-import '../../domain/repository/assistant/assitant_repository.dart';
+import '../../domain/repository/assitant_repository.dart';
 
 class AssistantRepositoryImpl implements AssistantRepository {
   final AssistantApi api;

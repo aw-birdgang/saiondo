@@ -1,5 +1,5 @@
-import '../../domain/entry/chat/chat_history.dart';
 import 'package:flutter/material.dart';
+import '../../domain/entry/chat_history.dart';
 import 'chat_message_bubble.dart';
 
 class ChatMessageWidget extends StatelessWidget {

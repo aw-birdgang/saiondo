@@ -1,6 +1,6 @@
-import 'package:app/domain/entry/assistant/assistant.dart';
+import 'package:app/domain/entry/assistant.dart';
 
-import '../../repository/assistant/assitant_repository.dart';
+import '../../repository/assitant_repository.dart';
 
 class FetchAssistantsUseCase {
   final AssistantRepository repository;

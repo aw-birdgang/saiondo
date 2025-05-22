@@ -1,17 +1,17 @@
-import 'package:app/domain/repository/user/user_repository.dart';
+import 'package:app/domain/repository/user_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:mobx/mobx.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../domain/repository/auth/auth_repository.dart';
+import '../../../data/repository/user_repository_impl.dart';
+import '../../../domain/entry/user.dart';
+import '../../../domain/repository/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
 import '../../../domain/usecase/auth/register_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
-import '../../../data/repository/user_repository_impl.dart';
-import '../../../domain/entry/user/user.dart';
 
 part 'auth_store.g.dart';
 

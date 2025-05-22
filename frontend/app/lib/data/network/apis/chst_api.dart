@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import '../../../../core/data/network/dio/dio_client.dart';
-import '../../constants/endpoints.dart';
-import '../../dto/chat_history_request.dart';
-import '../../dto/chat_history_response.dart';
-import '../../rest_client.dart';
+import '../../../core/data/network/dio/dio_client.dart';
+import '../constants/endpoints.dart';
+import '../dto/chat_history_request.dart';
+import '../dto/chat_history_response.dart';
+import '../rest_client.dart';
 
 class ChatApi {
   final DioClient _dioClient;

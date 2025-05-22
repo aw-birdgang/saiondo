@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../data/network/socket_io/socket_io_service.dart';
-import '../../../domain/entry/chat/chat_history.dart';
+import '../../../domain/entry/chat_history.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../../domain/usecase/chat/send_message_usecase.dart';
 

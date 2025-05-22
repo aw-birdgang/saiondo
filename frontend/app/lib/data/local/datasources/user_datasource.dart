@@ -1,4 +1,4 @@
-import '../../../../domain/entry/user/user.dart';
+import '../../../domain/entry/user.dart';
 
 abstract class UserDataSource {
   Future<List<User>> fetchUsers();

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
-import '../../domain/entry/user/user.dart';
+import '../../domain/entry/user.dart';
 import '../advice/advice.dart';
 import '../advice/store/advice_store.dart';
 import '../user/store/user_store.dart';

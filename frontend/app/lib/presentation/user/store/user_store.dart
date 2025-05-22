@@ -1,8 +1,8 @@
 import 'package:mobx/mobx.dart';
 
-import '../../../domain/entry/assistant/assistant.dart';
-import '../../../domain/entry/user/user.dart';
-import '../../../domain/repository/user/user_repository.dart';
+import '../../../domain/entry/assistant.dart';
+import '../../../domain/entry/user.dart';
+import '../../../domain/repository/user_repository.dart';
 
 part 'user_store.g.dart';
 

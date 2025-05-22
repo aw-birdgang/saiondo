@@ -1,9 +1,8 @@
-import '../../entry/assistant/assistant.dart';
-import '../../entry/user/persona_profile.dart';
-import '../../entry/user/user.dart';
+import '../entry/assistant.dart';
+import '../entry/persona_profile.dart';
+import '../entry/user.dart';
 
 abstract class UserRepository {
-  // 서버에서 유저 목록/단건 조회
   Future<List<User>> fetchUsers();
   Future<User> fetchUserById(String id);
   //

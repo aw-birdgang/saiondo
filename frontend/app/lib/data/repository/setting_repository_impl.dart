@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:app/data/sharedpref/shared_preference_helper.dart';
-import 'package:app/domain/repository/setting/setting_repository.dart';
+import 'package:app/domain/repository/setting_repository.dart';
 
 class SettingRepositoryImpl extends SettingRepository {
   // shared pref object

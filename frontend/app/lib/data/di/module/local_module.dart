@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:app/core/data/local/sembast/sembast_client.dart';
 import 'package:app/data/local/constants/db_constants.dart';
-import 'package:app/data/local/datasources/faq/faq_datasource.dart';
+import 'package:app/data/local/datasources/faq_datasource.dart';
 import 'package:app/data/sharedpref/shared_preference_helper.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../di/service_locator.dart';
-import '../../local/datasources/chat/chat_history_datasource.dart';
+import '../../local/datasources/chat_history_datasource.dart';
 
 class LocalModule {
   static Future<void> configureLocalModuleInjection() async {

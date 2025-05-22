@@ -1,5 +1,5 @@
 import '../../../core/data/network/dio/dio_client.dart';
-import '../../../domain/entry/user/category_code.dart';
+import '../../../domain/entry/category_code.dart';
 import '../constants/endpoints.dart';
 import '../rest_client.dart';
 

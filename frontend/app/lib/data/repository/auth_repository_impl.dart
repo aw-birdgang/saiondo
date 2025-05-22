@@ -1,4 +1,4 @@
-import '../../domain/repository/auth/auth_repository.dart';
+import '../../domain/repository/auth_repository.dart';
 import '../network/apis/auth_api.dart';
 import '../sharedpref/shared_preference_helper.dart';
 

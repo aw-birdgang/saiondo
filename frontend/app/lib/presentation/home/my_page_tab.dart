@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
-import '../../domain/entry/user/user.dart';
+import '../../domain/entry/user.dart';
 import '../persona_profile/persona_profile_list.dart';
 import '../persona_profile/store/persona_profile_store.dart';
 import '../user/store/user_store.dart';

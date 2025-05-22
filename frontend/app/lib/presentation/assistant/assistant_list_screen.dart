@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/entry/assistant/assistant.dart';
+import '../../domain/entry/assistant.dart';
 
 class AssistantListScreen extends StatelessWidget {
   final List<Assistant> assistants;

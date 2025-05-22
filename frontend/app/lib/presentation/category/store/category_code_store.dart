@@ -1,6 +1,6 @@
 import 'package:mobx/mobx.dart';
 
-import '../../../domain/entry/user/category_code.dart';
+import '../../../domain/entry/category_code.dart';
 import '../../../domain/usecase/category/fetch_category_codes_usecase.dart';
 
 part 'category_code_store.g.dart';

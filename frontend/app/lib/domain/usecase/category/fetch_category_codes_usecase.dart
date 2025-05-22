@@ -1,5 +1,5 @@
 import '../../../data/network/apis/category_code_api.dart';
-import '../../entry/user/category_code.dart';
+import '../../entry/category_code.dart';
 
 class FetchCategoryCodesUseCase {
   final CategoryCodeApi api;

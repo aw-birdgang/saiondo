@@ -1,4 +1,4 @@
-import '../../domain/entry/chat/chat_history.dart';
+import '../../domain/entry/chat_history.dart';
 import '../network/dto/chat_history_request.dart';
 import '../network/dto/chat_history_response.dart';
 

@@ -2,7 +2,7 @@ import 'package:app/core/data/local/sembast/sembast_client.dart';
 import 'package:app/data/local/constants/db_constants.dart';
 import 'package:sembast/sembast.dart';
 
-import '../../../../domain/entry/chat/chat_history.dart';
+import '../../../domain/entry/chat_history.dart';
 
 class ChatHistoryDataSource {
   final _chatHistoryStore = intMapStoreFactory.store(DBConstants.STORE_NAME);

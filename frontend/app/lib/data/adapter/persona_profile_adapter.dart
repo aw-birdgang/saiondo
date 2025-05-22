@@ -1,4 +1,4 @@
-import '../../domain/entry/user/persona_profile.dart';
+import '../../domain/entry/persona_profile.dart';
 import '../network/dto/persona_profile_request.dart';
 import '../network/dto/persona_profile_response.dart';
 

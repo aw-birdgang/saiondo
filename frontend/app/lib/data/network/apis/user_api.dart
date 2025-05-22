@@ -1,5 +1,5 @@
 import '../../../core/data/network/dio/dio_client.dart';
-import '../../../domain/entry/assistant/assistant.dart';
+import '../../../domain/entry/assistant.dart';
 import '../constants/endpoints.dart';
 import '../dto/persona_profile_request.dart';
 import '../dto/persona_profile_response.dart';

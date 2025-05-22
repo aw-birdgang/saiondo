@@ -1,4 +1,4 @@
-import '../../repository/auth/auth_repository.dart';
+import '../../repository/auth_repository.dart';
 
 class RegisterUseCase {
   final AuthRepository _authRepository;

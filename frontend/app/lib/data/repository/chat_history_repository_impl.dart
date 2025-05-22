@@ -1,6 +1,5 @@
-import 'package:app/domain/entry/chat/chat_history.dart';
-
-import '../../domain/repository/chat_history/chat_history_repository.dart';
+import '../../domain/entry/chat_history.dart';
+import '../../domain/repository/chat_history_repository.dart';
 import '../adapter/chat_history_adapter.dart';
 import '../network/apis/chat_history_api.dart';
 import '../network/dto/chat_history_request.dart';

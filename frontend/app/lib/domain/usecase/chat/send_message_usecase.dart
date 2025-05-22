@@ -1,5 +1,5 @@
-import '../../entry/chat/chat_history.dart';
-import '../../repository/chat_history/chat_history_repository.dart';
+import '../../entry/chat_history.dart';
+import '../../repository/chat_history_repository.dart';
 
 class SendMessageUseCase {
   final ChatHistoryRepository repository;

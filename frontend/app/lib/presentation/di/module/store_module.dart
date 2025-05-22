@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:app/core/stores/form/form_store.dart';
-import 'package:app/domain/repository/user/user_repository.dart';
+import 'package:app/domain/repository/user_repository.dart';
 import 'package:app/domain/usecase/assistant/fetch_assistants_usecase.dart';
 import 'package:app/domain/usecase/auth/login_usecase.dart';
 import 'package:app/domain/usecase/auth/register_usecase.dart';
@@ -16,10 +16,10 @@ import '../../../data/network/socket_io/socket_io_service.dart';
 import '../../../di/service_locator.dart';
 import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
-import '../../../domain/repository/auth/auth_repository.dart';
+import '../../../domain/repository/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/event_repository.dart';
-import '../../../domain/repository/setting/setting_repository.dart';
+import '../../../domain/repository/setting_repository.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
 import '../../advice/store/advice_store.dart';

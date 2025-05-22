@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:app/domain/entry/assistant/assistant.dart';
+import 'package:app/domain/entry/assistant.dart';
 
-import '../../domain/entry/user/persona_profile.dart';
-import '../../domain/entry/user/user.dart';
-import '../../domain/repository/user/user_repository.dart';
+import '../../domain/entry/persona_profile.dart';
+import '../../domain/entry/user.dart';
+import '../../domain/repository/user_repository.dart';
 import '../adapter/persona_profile_adapter.dart';
 import '../adapter/user_adapter.dart';
 import '../network/apis/user_api.dart';

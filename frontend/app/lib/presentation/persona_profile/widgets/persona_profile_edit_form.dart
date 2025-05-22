@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../domain/entry/user/persona_profile.dart';
+import '../../../domain/entry/persona_profile.dart';
 import '../../category/store/category_code_store.dart';
 
 class PersonaProfileEditForm extends StatefulWidget {

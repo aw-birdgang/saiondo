@@ -4,7 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:collection/collection.dart';
 
 import '../../di/service_locator.dart';
-import '../../domain/entry/user/persona_profile.dart';
+import '../../domain/entry/persona_profile.dart';
 import '../category/category_code_guide.dart';
 import 'persona_profile_edit.dart';
 import 'store/persona_profile_store.dart';
