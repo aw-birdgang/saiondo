@@ -371,6 +371,96 @@ async function main() {
         ],
     });
 
+    // 7. 이벤트(Event) 생성
+    await prisma.event.createMany({
+        data: [
+            {
+                userId: user1.id,
+                title: '커플 데이트',
+                description: '카페에서 만남',
+                startTime: new Date('2024-06-10T14:00:00Z'),
+                endTime: new Date('2024-06-10T16:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                title: '운동',
+                description: '헬스장 방문',
+                startTime: new Date('2024-06-12T18:00:00Z'),
+                endTime: new Date('2024-06-12T19:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                title: '친구 모임',
+                description: '저녁 식사',
+                startTime: new Date('2024-06-11T19:00:00Z'),
+                endTime: new Date('2024-06-11T21:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+
+            // === 2025년 5월 일정 추가 ===
+            {
+                userId: user1.id,
+                title: '2025년 5월 회의',
+                description: '중요한 프로젝트 회의',
+                startTime: new Date('2025-05-03T10:00:00Z'),
+                endTime: new Date('2025-05-03T11:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                title: '2025년 5월 데이트',
+                description: '영화관에서 데이트',
+                startTime: new Date('2025-05-05T18:00:00Z'),
+                endTime: new Date('2025-05-05T21:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                title: '2025년 5월 운동',
+                description: '헬스장 방문',
+                startTime: new Date('2025-05-10T07:00:00Z'),
+                endTime: new Date('2025-05-10T08:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                title: '2025년 5월 친구 모임',
+                description: '친구들과 저녁 식사',
+                startTime: new Date('2025-05-12T19:00:00Z'),
+                endTime: new Date('2025-05-12T22:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                title: '2025년 5월 워크샵',
+                description: '회사 워크샵',
+                startTime: new Date('2025-05-20T09:00:00Z'),
+                endTime: new Date('2025-05-20T17:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                title: '2025년 5월 여행',
+                description: '가족과 제주도 여행',
+                startTime: new Date('2025-05-25T08:00:00Z'),
+                endTime: new Date('2025-05-28T20:00:00Z'),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            // === 2025년 5월 일정 끝 ===
+        ],
+    });
+
     console.log('Seed completed!');
 }
 

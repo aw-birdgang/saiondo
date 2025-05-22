@@ -17,6 +17,7 @@ import authConfig from './config/auth.config';
 import {ChannelModule} from './modules/channel/channel.module';
 import {AssistantModule} from '@modules/assistant/assistant.module';
 import {CoupleAnalysisModule} from './modules/couple-analysis/couple-analysis.module';
+import {EventModule} from './modules/event/event.module';
 
 @Module({
   imports: [
@@ -37,9 +38,11 @@ import {CoupleAnalysisModule} from './modules/couple-analysis/couple-analysis.mo
     LlmModule,
     CategoryCodeModule,
     AdviceModule,
+    EventModule,
     QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,
+
   ],
 })
 export class AppModule {}

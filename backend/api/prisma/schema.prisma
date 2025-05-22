@@ -65,6 +65,7 @@ model User {
   generatedReports Advice[]    @relation("GeneratedBy")
   channelsAsUser1 Channel[] @relation("ChannelUser1")
   channelsAsUser2 Channel[] @relation("ChannelUser2")
+  events          Event[]
 }
 
 model Channel {
@@ -198,4 +199,19 @@ model UserAnswer {
   createdAt    DateTime    @default(now()) @map("created_at")
 
   pushSchedule PushSchedule @relation(fields: [pushScheduleId], references: [id])
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@map("events")
 }
