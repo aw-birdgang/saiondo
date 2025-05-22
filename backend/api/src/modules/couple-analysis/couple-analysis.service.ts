@@ -11,6 +11,15 @@ export class CoupleAnalysisService {
 
   private readonly logger = new Logger(CoupleAnalysisService.name);
 
+  async getAllAnalyses(channelId: string) {
+    const analyses = await this.prisma.coupleAnalysis.findMany({
+      where: { channelId },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!analyses.length) throw new NotFoundException('분석 정보가 없습니다.');
+    return analyses;
+  }
+
   // 최신 커플 분석 조회
   async getLatestAnalysis(channelId: string) {
     const analysis = await this.prisma.coupleAnalysis.findFirst({
