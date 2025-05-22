@@ -45,6 +45,11 @@ class Endpoints {
   static String assistantById(String assistantId) => '$baseUrl/assistants/$assistantId';
   static String assistantsByUser(String userId) => '$baseUrl/assistants/user/$userId';
 
+  // couple analysis
+  static String coupleAnalysisByChannelId(String channelId) => '$baseUrl/couple-analysis/$channelId';
+  static String coupleAnalysisByChannelIdLatest(String channelId) => '$baseUrl/couple-analysis/$channelId/latest';
+  static String coupleAnalysisLlm(String channelId) => '$baseUrl/couple-analysis/$channelId/llm';
+
   // 채팅 내역 조회 (내 방 기준)
   static String chatHistory(String channelId, String userId) =>
       '$baseUrl/chat/$channelId/$userId/history';

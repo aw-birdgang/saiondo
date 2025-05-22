@@ -9,8 +9,20 @@ class AnalysisApi {
 
   AnalysisApi(this._dioClient, this._restClient);
 
-  Future<AnalysisResponse> fetchAnalysis(String channelId) async {
-    final response = await _dioClient.dio.get('${Endpoints.channels}/$channelId/analysis');
+  Future<List<AnalysisResponse>> fetchAnalysisByChannelId(String channelId) async {
+    final response = await _dioClient.dio.get('${Endpoints.coupleAnalysisByChannelId(channelId)}');
+    return (response.data as List)
+        .map((e) => AnalysisResponse.fromJson(e))
+        .toList();
+  }
+
+  Future<AnalysisResponse> fetchAnalysisByChannelIdLatest(String channelId) async {
+    final response = await _dioClient.dio.get('${Endpoints.coupleAnalysisByChannelIdLatest(channelId)}');
+    return AnalysisResponse.fromJson(response.data);
+  }
+
+  Future<AnalysisResponse> createAnalysis(String channelId) async {
+    final response = await _dioClient.dio.post('${Endpoints.coupleAnalysisLlm(channelId)}');
     return AnalysisResponse.fromJson(response.data);
   }
 }

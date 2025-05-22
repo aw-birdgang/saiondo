@@ -9,19 +9,35 @@ part of 'analysis_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AnalysisStore on _AnalysisStore, Store {
-  late final _$analysisAtom =
-      Atom(name: '_AnalysisStore.analysis', context: context);
+  late final _$analysesAtom =
+      Atom(name: '_AnalysisStore.analyses', context: context);
 
   @override
-  AnalysisResponse? get analysis {
-    _$analysisAtom.reportRead();
-    return super.analysis;
+  ObservableList<CoupleAnalysis> get analyses {
+    _$analysesAtom.reportRead();
+    return super.analyses;
   }
 
   @override
-  set analysis(AnalysisResponse? value) {
-    _$analysisAtom.reportWrite(value, super.analysis, () {
-      super.analysis = value;
+  set analyses(ObservableList<CoupleAnalysis> value) {
+    _$analysesAtom.reportWrite(value, super.analyses, () {
+      super.analyses = value;
+    });
+  }
+
+  late final _$latestAnalysisAtom =
+      Atom(name: '_AnalysisStore.latestAnalysis', context: context);
+
+  @override
+  CoupleAnalysis? get latestAnalysis {
+    _$latestAnalysisAtom.reportRead();
+    return super.latestAnalysis;
+  }
+
+  @override
+  set latestAnalysis(CoupleAnalysis? value) {
+    _$latestAnalysisAtom.reportWrite(value, super.latestAnalysis, () {
+      super.latestAnalysis = value;
     });
   }
 
@@ -41,19 +57,46 @@ mixin _$AnalysisStore on _AnalysisStore, Store {
     });
   }
 
-  late final _$loadAnalysisAsyncAction =
-      AsyncAction('_AnalysisStore.loadAnalysis', context: context);
+  late final _$isCreatingAtom =
+      Atom(name: '_AnalysisStore.isCreating', context: context);
 
   @override
-  Future<void> loadAnalysis(String channelId) {
-    return _$loadAnalysisAsyncAction.run(() => super.loadAnalysis(channelId));
+  bool get isCreating {
+    _$isCreatingAtom.reportRead();
+    return super.isCreating;
+  }
+
+  @override
+  set isCreating(bool value) {
+    _$isCreatingAtom.reportWrite(value, super.isCreating, () {
+      super.isCreating = value;
+    });
+  }
+
+  late final _$loadAnalysesAsyncAction =
+      AsyncAction('_AnalysisStore.loadAnalyses', context: context);
+
+  @override
+  Future<void> loadAnalyses(String channelId) {
+    return _$loadAnalysesAsyncAction.run(() => super.loadAnalyses(channelId));
+  }
+
+  late final _$createAnalysisAsyncAction =
+      AsyncAction('_AnalysisStore.createAnalysis', context: context);
+
+  @override
+  Future<void> createAnalysis(String channelId) {
+    return _$createAnalysisAsyncAction
+        .run(() => super.createAnalysis(channelId));
   }
 
   @override
   String toString() {
     return '''
-analysis: ${analysis},
-isLoading: ${isLoading}
+analyses: ${analyses},
+latestAnalysis: ${latestAnalysis},
+isLoading: ${isLoading},
+isCreating: ${isCreating}
     ''';
   }
 }

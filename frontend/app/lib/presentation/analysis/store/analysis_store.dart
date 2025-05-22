@@ -1,6 +1,6 @@
 import 'package:mobx/mobx.dart';
 
-import '../../../data/network/dto/analysis_response.dart';
+import '../../../domain/entry/couple_analysis.dart';
 import '../../../domain/repository/analysis_repository.dart';
 
 part 'analysis_store.g.dart';
@@ -12,18 +12,38 @@ abstract class _AnalysisStore with Store {
   _AnalysisStore(this._repository);
 
   @observable
-  AnalysisResponse? analysis;
+  ObservableList<CoupleAnalysis> analyses = ObservableList<CoupleAnalysis>();
+
+  @observable
+  CoupleAnalysis? latestAnalysis;
 
   @observable
   bool isLoading = false;
 
+  @observable
+  bool isCreating = false;
+
   @action
-  Future<void> loadAnalysis(String channelId) async {
+  Future<void> loadAnalyses(String channelId) async {
     isLoading = true;
     try {
-      analysis = await _repository.fetchAnalysis(channelId);
+      final result = await _repository.fetchAnalyses(channelId);
+      analyses = ObservableList.of(result);
+      latestAnalysis = result.isNotEmpty ? result.first : null;
     } finally {
       isLoading = false;
+    }
+  }
+
+  @action
+  Future<void> createAnalysis(String channelId) async {
+    isCreating = true;
+    try {
+      final newAnalysis = await _repository.createAnalysis(channelId);
+      analyses.insert(0, newAnalysis);
+      latestAnalysis = newAnalysis;
+    } finally {
+      isCreating = false;
     }
   }
 }

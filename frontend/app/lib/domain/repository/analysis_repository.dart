@@ -1,5 +1,7 @@
-import '../../data/network/dto/analysis_response.dart';
+import '../entry/couple_analysis.dart';
 
 abstract class AnalysisRepository {
-  Future<AnalysisResponse> fetchAnalysis(String channelId);
+  Future<List<CoupleAnalysis>> fetchAnalyses(String channelId);
+  Future<CoupleAnalysis> fetchAnalysisLatest(String channelId);
+  Future<CoupleAnalysis> createAnalysis(String channelId);
 }

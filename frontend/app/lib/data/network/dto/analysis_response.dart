@@ -1,44 +1,49 @@
+import 'dart:convert';
+
 class AnalysisResponse {
-  final UserSummary user1;
-  final UserSummary user2;
-  final int matchPercent;
-  final List<String> keywords;
+  final String id;
+  final String channelId;
+  final String rawResult;
+  final DateTime createdAt;
+
+  // rawResult 파싱 결과
   final String summary;
+  final String advice;
+  final String persona1;
+  final String persona2;
+  final List<String> keywords;
 
   AnalysisResponse({
-    required this.user1,
-    required this.user2,
-    required this.matchPercent,
-    required this.keywords,
-    required this.summary,
-  });
-
-  factory AnalysisResponse.fromJson(Map<String, dynamic> json) => AnalysisResponse(
-        user1: UserSummary.fromJson(json['user1']),
-        user2: UserSummary.fromJson(json['user2']),
-        matchPercent: json['matchPercent'],
-        keywords: List<String>.from(json['keywords']),
-        summary: json['summary'],
-      );
-}
-
-class UserSummary {
-  final String id;
-  final String name;
-  final String mbti;
-  final String? profileUrl;
-
-  UserSummary({
     required this.id,
-    required this.name,
-    required this.mbti,
-    this.profileUrl,
+    required this.channelId,
+    required this.rawResult,
+    required this.createdAt,
+    required this.summary,
+    required this.advice,
+    required this.persona1,
+    required this.persona2,
+    required this.keywords,
   });
 
-  factory UserSummary.fromJson(Map<String, dynamic> json) => UserSummary(
-        id: json['id'],
-        name: json['name'],
-        mbti: json['mbti'],
-        profileUrl: json['profileUrl'],
-      );
+  factory AnalysisResponse.fromJson(Map<String, dynamic> json) {
+    // rawResult 파싱
+    Map<String, dynamic> parsed = {};
+    final rawResult = json['rawResult'] as String? ?? '';
+    try {
+      parsed = rawResult.isNotEmpty ? Map<String, dynamic>.from(jsonDecode(rawResult)) : {};
+    } catch (_) {
+      parsed = {'summary': rawResult};
+    }
+    return AnalysisResponse(
+      id: json['id'],
+      channelId: json['channelId'],
+      rawResult: rawResult,
+      createdAt: DateTime.parse(json['createdAt']),
+      summary: parsed['summary'] ?? '',
+      advice: parsed['advice'] ?? '',
+      persona1: parsed['persona1'] ?? '',
+      persona2: parsed['persona2'] ?? '',
+      keywords: List<String>.from(parsed['keywords'] ?? []),
+    );
+  }
 }
