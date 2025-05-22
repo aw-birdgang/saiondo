@@ -45,6 +45,11 @@ class Endpoints {
   static String assistantById(String assistantId) => '$baseUrl/assistants/$assistantId';
   static String assistantsByUser(String userId) => '$baseUrl/assistants/user/$userId';
 
+  // event
+  static String get events => '$baseUrl/events';
+  static String eventById(String id) => '/events/$id';
+  static String eventByUserId(String userId) => '/events/user$userId';
+
   // couple analysis
   static String coupleAnalysisByChannelId(String channelId) => '$baseUrl/couple-analysis/$channelId';
   static String coupleAnalysisByChannelIdLatest(String channelId) => '$baseUrl/couple-analysis/$channelId/latest';

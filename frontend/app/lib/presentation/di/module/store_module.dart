@@ -18,6 +18,7 @@ import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
+import '../../../domain/repository/event_repository.dart';
 import '../../../domain/repository/setting/setting_repository.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
@@ -25,6 +26,7 @@ import '../../advice/store/advice_store.dart';
 import '../../auth/store/auth_store.dart';
 import '../../category/store/category_code_store.dart';
 import '../../chat/store/chat_store.dart';
+import '../../home/store/event_store.dart';
 import '../../home/store/invite_code_store.dart';
 import '../../home/store/language_store/language_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
@@ -91,7 +93,11 @@ class StoreModule {
         getIt<AdviceRepository>(),
       ),
     );
-
+    getIt.registerSingleton<EventStore>(
+      EventStore(
+        getIt<EventRepository>(),
+      ),
+    );
     // :------------------------------------------------------------------
     getIt.registerSingleton<CategoryCodeStore>(
       CategoryCodeStore(

@@ -11,6 +11,7 @@ import '../../../domain/repository/assistant/assitant_repository.dart';
 import '../../../domain/repository/auth/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/chat_history/chat_history_repository.dart';
+import '../../../domain/repository/event_repository.dart';
 import '../../../domain/repository/user/user_repository.dart';
 import '../../network/apis/advice_api.dart';
 import '../../network/apis/analysis_api.dart';
@@ -18,6 +19,7 @@ import '../../network/apis/assistant_api.dart';
 import '../../network/apis/auth_api.dart';
 import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
+import '../../network/apis/event_api.dart';
 import '../../network/apis/user_api.dart';
 import '../../repository/advice_repository_impl.dart';
 import '../../repository/analysis_repository_impl.dart';
@@ -25,6 +27,7 @@ import '../../repository/assistant_repository_impl.dart';
 import '../../repository/auth_repository_impl.dart';
 import '../../repository/channel_repository_impl.dart';
 import '../../repository/chat_history_repository_impl.dart';
+import '../../repository/event_repository_impl.dart';
 import '../../repository/user_repository_impl.dart';
 
 class RepositoryModule {
@@ -53,6 +56,10 @@ class RepositoryModule {
 
     getIt.registerSingleton<ChannelRepository>(ChannelRepositoryImpl(
         getIt<ChannelApi>(),
+    ));
+
+    getIt.registerSingleton<EventRepository>(EventRepositoryImpl(
+      getIt<EventApi>(),
     ));
 
     getIt.registerSingleton<AssistantRepository>(AssistantRepositoryImpl(
