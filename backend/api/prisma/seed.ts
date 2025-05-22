@@ -163,18 +163,21 @@ async function main() {
     });
 
     // 6. 페르소나 프로필 생성
+    await prisma.personaProfile.create({
+        data: {
+            userId: user1.id,
+            categoryCodeId: categoryMbti.id,
+            content: 'INTJ',
+            isStatic: true,
+            source: ProfileSource.USER_INPUT,
+            confidenceScore: 0.95,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        },
+    });
+
     await prisma.personaProfile.createMany({
         data: [
-            {
-                userId: user1.id,
-                categoryCodeId: categoryMbti.id,
-                content: 'INTJ',
-                isStatic: true,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.95,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
             {
                 userId: user2.id,
                 categoryCodeId: categoryMbti.id,
