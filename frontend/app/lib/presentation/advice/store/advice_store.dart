@@ -27,4 +27,8 @@ abstract class _AdviceStore with Store {
       isLoading = false;
     }
   }
+
+  @computed
+  Advice? get latestAdvice =>
+      adviceList.isNotEmpty ? adviceList.first : null;
 }

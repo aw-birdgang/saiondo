@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../di/service_locator.dart';
 import '../../domain/entry/user/user.dart';
 import '../advice/advice.dart';
+import '../advice/store/advice_store.dart';
 import '../user/store/user_store.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -16,11 +17,15 @@ class HomeTabScreen extends StatefulWidget {
 
 class _HomeTabScreenState extends State<HomeTabScreen> {
   final _userStore = getIt<UserStore>();
+  final _adviceStore = getIt<AdviceStore>();
 
   @override
   void initState() {
     super.initState();
     _userStore.initUser?.call();
+    if (_userStore.channelId != null) {
+      _adviceStore.loadAdviceHistory(_userStore.channelId!);
+    }
   }
 
   @override
@@ -39,6 +44,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           assistantId: _userStore.assistantId,
           channelId: _userStore.channelId,
           userId: _userStore.userId,
+          adviceStore: _adviceStore,
         );
       },
     );
@@ -50,6 +56,7 @@ class HomeTabContent extends StatelessWidget {
   final String? assistantId;
   final String? channelId;
   final String? userId;
+  final AdviceStore adviceStore;
 
   final InviteCodeStore _inviteCodeStore = getIt<InviteCodeStore>();
 
@@ -59,19 +66,15 @@ class HomeTabContent extends StatelessWidget {
     required this.assistantId,
     required this.channelId,
     required this.userId,
+    required this.adviceStore,
   });
 
   @override
   Widget build(BuildContext context) {
-    // 샘플 데이터
+    // 샘플 데이터 (실제 데이터로 교체 필요)
     final String partnerName = "지은";
     final String userProfile = "https://randomuser.me/api/portraits/men/32.jpg";
     final String partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg";
-    final String mbti1 = "INFP";
-    final String mbti2 = "ESTJ";
-    final int matchPercent = 72;
-    final List<String> keywords = ["사랑", "신뢰", "여행"];
-    final String todayAdvice = "오늘은 서로의 장점을 칭찬해 주세요!";
     final String dDay = "D+123";
     final String inviteCode = "ABCD-1234";
 
@@ -220,14 +223,16 @@ class HomeTabContent extends StatelessWidget {
                                     minimumSize: Size(double.infinity, 48),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => AdviceHistoryScreen(channelId: channelId!),
-                                      ),
-                                    );
-                                  },
+                                  onPressed: channelId == null
+                                      ? null
+                                      : () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => AdviceHistoryScreen(channelId: channelId!),
+                                            ),
+                                          );
+                                        },
                                 ),
                               ],
                             ),
@@ -236,26 +241,41 @@ class HomeTabContent extends StatelessWidget {
 
                         // 오늘의 조언
                         SizedBox(height: 24),
-                        Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          color: Colors.blue[50],
-                          elevation: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Row(
-                              children: [
-                                Icon(Icons.lightbulb, color: Colors.orange, size: 32),
-                                SizedBox(width: 16),
-                                Expanded(
-                                  child: Text(
-                                    todayAdvice,
-                                    style: TextStyle(fontSize: 16),
+                        Text(
+                          '오늘의 조언',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.pink[700]),
+                        ),
+                        SizedBox(height: 12),
+                        Observer(
+                          builder: (_) {
+                            if (adviceStore.isLoading) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (adviceStore.latestAdvice == null) {
+                              return Text('아직 조언이 없습니다.', style: TextStyle(color: Colors.grey));
+                            } else {
+                              return Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.tips_and_updates, color: Colors.pink[400]),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          adviceStore.latestAdvice!.advice,
+                                          style: TextStyle(fontSize: 16, color: Colors.black87),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
+                              );
+                            }
+                          },
                         ),
 
                         // 5. 여백
