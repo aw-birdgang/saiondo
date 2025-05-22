@@ -50,6 +50,8 @@ dependencies:
   sembast: 3.6.0
   sembast_web: 2.3.0
   socket_io_client: ^2.0.3
+  #T
+  table_calendar: ^3.0.9
   #U
   uuid: ^4.0.0
   #V

@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import '../../di/service_locator.dart';
 import '../../utils/routes/routes.dart';
 import 'ai_advice_tab.dart';
+import 'calendar_tab.dart';
 import 'home_tab.dart';
 import 'my_page_tab.dart';
 
@@ -24,8 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeTabScreen(),
-    const AiAdviceTabScreen(),
+    HomeTabScreen(),
+    CalendarTab(),
+    AiAdviceTabScreen(),
     MyPageScreen(),
   ];
 
@@ -113,21 +115,28 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: _onTabTapped,
+        selectedItemColor: Colors.pink[600],
+        unselectedItemColor: Colors.grey[500],
+        backgroundColor: Colors.white,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: '홈',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: '스케줄',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.psychology_alt),
-            label: 'AI조언',
+            label: 'AI 조언',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: '마이',
           ),
         ],
+        onTap: _onTabTapped,
       ),
     );
   }
