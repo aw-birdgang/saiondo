@@ -1,0 +1,8 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo "Deploying to EC2"
+      - chmod 400 private-key.pem
+      - scp -o StrictHostKeyChecking=no -i private-key.pem docker-compose.yml ec2-user:$EC2_HOST:/home/ec2-user/
+      - ssh -o StrictHostKeyChecking=no -i private-key.pem ec2-user@$EC2_HOST 'docker-compose up -d'
