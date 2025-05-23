@@ -1,11 +1,21 @@
 from mcp.context import MCPContext
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
+from langchain.callbacks.tracers.langchain import LangChainTracer
 
 from dotenv import load_dotenv
+import os
+
 load_dotenv()
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo")
+# LangSmith 트레이서 활성화
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY", "")
+os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "default")
+
+tracer = LangChainTracer()  # 트레이서 인스턴스 생성
+
+llm = ChatOpenAI(model_name="gpt-3.5-turbo", callbacks=[tracer])  # 콜백에 트레이서 추가
 
 def trait_analysis(ctx: MCPContext) -> MCPContext:
     mbti = ctx.metadata.get("user_mbti", "알 수 없음")

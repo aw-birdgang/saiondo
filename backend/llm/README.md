@@ -134,3 +134,63 @@ llm/
 - API 서버(`api/`)에서 HTTP로 호출하여 통합 사용
 - 환경변수, API Key 등은 .env 또는 docker-compose로 관리
 - 예시 curl 명령어 및 샘플 요청/응답은 README 상단 참고
+
+## 🧑‍🔬 LangSmith 실험/트레이싱 연동 가이드
+
+LLM 호출 및 체인 실행 과정을 [LangSmith](https://smith.langchain.com/)로 추적/시각화할 수 있습니다.
+
+### 1. LangSmith 계정 및 API Key 준비
+
+- [LangSmith 가입](https://smith.langchain.com/)
+- 프로젝트 생성 후, **API Key** 발급
+
+### 2. 의존성 설치
+
+```sh
+pip install langsmith
+```
+
+> `requirements.txt`에 `langsmith` 추가 권장
+
+### 3. 환경변수 설정
+
+`.env` 파일 또는 환경에 아래 값 추가:
+```
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=your-langsmith-api-key
+LANGCHAIN_PROJECT=your-project-name
+```
+
+### 4. 코드에 LangSmith 트레이서 적용
+
+`src/providers/openai_client.py` 등 LLM 객체 생성부에 아래 코드 추가:
+
+```python
+from langchain.callbacks.tracers.langchain import LangChainTracer
+import os
+
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY", "")
+os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "default")
+
+tracer = LangChainTracer()
+
+openai_llm = ChatOpenAI(
+    temperature=0.7,
+    model_name="gpt-3.5-turbo",
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
+    callbacks=[tracer],  # LangSmith 트레이서 콜백 추가
+)
+```
+
+> **다른 LLM/체인/에이전트에도 `callbacks=[tracer]` 추가 시 자동 추적**
+
+### 5. LangSmith 대시보드에서 실험 결과 확인
+
+- [LangSmith 대시보드](https://smith.langchain.com/)에서 실험/트레이스 결과를 시각적으로 확인
+
+---
+
+**참고:**  
+- API Key 등 민감 정보는 안전하게 관리하세요.
+- 자세한 사용법은 [LangSmith 공식문서](https://docs.smith.langchain.com/) 참고
