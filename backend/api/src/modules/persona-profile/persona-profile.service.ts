@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
-import { ProfileSource, PersonaProfile } from '@prisma/client';
-import { LlmService } from '@modules/llm/llm.service';
-import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
+import {Injectable} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
+import {PersonaProfile, ProfileSource} from '@prisma/client';
+import {LlmService} from '@modules/llm/llm.service';
+import {UpdatePersonaProfileDto} from './dto/update-persona-profile.dto';
 
 @Injectable()
 export class PersonaProfileService {
@@ -12,14 +12,19 @@ export class PersonaProfileService {
     private readonly llmService: LlmService,
   ) {}
 
+  /**
+   * 모든 페르소나 프로필을 조회 (카테고리 정보 포함)
+   */
   async findAll() {
     return this.prisma.personaProfile.findMany({
       include: { categoryCode: true }, // category 정보도 함께 반환
     });
   }
 
+  /**
+   * 페르소나 프로필 생성 (categoryCodeId 유효성 검증 포함)
+   */
   async create(data: CreatePersonaProfileDto) {
-    // categoryCodeId가 실제 존재하는지 검증(선택)
     const category = await this.prisma.categoryCode.findUnique({
       where: { id: data.categoryCodeId },
     });
@@ -33,6 +38,9 @@ export class PersonaProfileService {
     });
   }
 
+  /**
+   * LLM 분석 결과로부터 페르소나 프로필 저장 (isStatic: false)
+   */
   async saveProfileFromAnalysis(
     userId: string,
     categoryCodeId: string,
@@ -52,8 +60,10 @@ export class PersonaProfileService {
     });
   }
 
+  /**
+   * 해당 유저의 최근 채팅 데이터 30개 조회 (최신순)
+   */
   async getRecentChatData(userId: string) {
-    // ChatHistory에서 최근 N개 메시지 조회
     return this.prisma.chatHistory.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
@@ -61,11 +71,12 @@ export class PersonaProfileService {
     });
   }
 
+  /**
+   * 최근 채팅 데이터를 LLM에 분석 요청 후, 페르소나 프로필로 저장
+   */
   async analyzeAndSavePersona(userId: string) {
     const chatData = await this.getRecentChatData(userId);
     const analysis = await this.llmService.analyzePersona(chatData);
-
-    // 예시: analysis = { categoryCodeId, content, confidenceScore }
     return this.prisma.personaProfile.create({
       data: {
         userId,
@@ -77,6 +88,9 @@ export class PersonaProfileService {
     });
   }
 
+  /**
+   * 특정 유저의 모든 페르소나 프로필 조회 (카테고리 정보 포함)
+   */
   async findByUserId(userId: string) {
     return this.prisma.personaProfile.findMany({
       where: { userId },
@@ -84,7 +98,9 @@ export class PersonaProfileService {
     });
   }
 
-  // [신규] userId+categoryCodeId로 수정
+  /**
+   * 특정 유저/카테고리의 페르소나 프로필 수정 (존재하지 않으면 에러)
+   */
   async update(userId: string, categoryCodeId: string, data: UpdatePersonaProfileDto) {
     const existing = await this.prisma.personaProfile.findFirst({
       where: { userId, categoryCodeId },
@@ -100,19 +116,27 @@ export class PersonaProfileService {
     });
   }
 
-  // [신규] userId+categoryCodeId로 삭제
+  /**
+   * 특정 유저/카테고리의 페르소나 프로필 삭제
+   */
   async delete(userId: string, categoryCodeId: string) {
     return this.prisma.personaProfile.deleteMany({
       where: { userId, categoryCodeId },
     });
   }
 
+  /**
+   * 특정 유저의 모든 페르소나 프로필 조회 (카테고리 정보 미포함)
+   */
   async getPersonaByUserId(userId: string): Promise<PersonaProfile[]> {
     return this.prisma.personaProfile.findMany({
       where: { userId },
     });
   }
 
+  /**
+   * 페르소나 프로필 직접 생성 (필드 직접 지정)
+   */
   async createPersonaProfile(data: {
     userId: string;
     categoryCodeId: string;

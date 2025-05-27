@@ -18,7 +18,6 @@ export class LlmService {
   private readonly llmApiUrl: string;
 
   constructor(private readonly configService: ConfigService<AllConfigType>) {
-    // 환경변수에서 LLM 서버 base URL을 읽어옴
     this.llmApiUrl = configService.getOrThrow('common', {
       infer: true,
     }).llmApiUrl;

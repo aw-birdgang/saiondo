@@ -8,10 +8,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { ChatService } from './chat.service';
-import { AssistantService } from '@modules/assistant/assistant.service';
-import { PersonaProfileService } from '../persona-profile/persona-profile.service';
+import {Server, Socket} from 'socket.io';
+import {ChatService} from './chat.service';
 
 interface SendMessagePayload {
   userId: string;
@@ -24,8 +22,6 @@ interface SendMessagePayload {
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService,
-    private readonly assistantService: AssistantService,
-    private readonly personaProfileService: PersonaProfileService,
   ) {}
 
   @WebSocketServer()
@@ -81,7 +77,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         message,
       );
       this.log(`[API][WebSocket] processUserMessage response`, response);
-
       this.server.emit('receive_message', response);
       this.log(`[API][WebSocket] Sent feedback to all clients:`, response);
     } catch (error) {

@@ -40,6 +40,16 @@ export class ChannelService {
     });
   }
 
+  async getChannelWithUserInfoById(channelId: string) {
+    return this.prisma.channel.findUnique({
+      where: { id: channelId },
+      include: {
+        user1: true,
+        user2: true,
+      },
+    });
+  }
+
   async getJustChannelInfoById(channelId: string) {
     return this.prisma.channel.findUnique({
       where: { id: channelId },

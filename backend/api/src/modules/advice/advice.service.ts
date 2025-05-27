@@ -3,26 +3,24 @@ import {PrismaService} from "@common/prisma/prisma.service";
 import {Advice} from '@prisma/client';
 import {UpdateAdviceDto} from './dto/update-advice.dto';
 import {LlmService} from "@modules/llm/llm.service";
+import {ChannelService} from "@modules/channel/channel.service";
 
 @Injectable()
 export class AdviceService {
   constructor(
       private readonly prisma: PrismaService,
       private readonly llmService: LlmService,
+      private readonly channelService: ChannelService,
   ) {}
 
   private readonly logger = new Logger(AdviceService.name);
 
-
+  /**
+   * 커플(채널) 정보 기반으로 AI 조언 생성 및 저장
+   */
   async createAdvice(channelId: string) {
-    // 1. 커플(채널) 및 유저 정보 조회
-    const channel = await this.prisma.channel.findUnique({
-      where: { id: channelId },
-      include: {
-        user1: true,
-        user2: true,
-      },
-    });
+    // 1. 커플(채널) 및 유저 정보 조회 (ChannelService 사용)
+    const channel = await this.channelService.getChannelWithUserInfoById(channelId);
     if (!channel) throw new NotFoundException('채널(커플)을 찾을 수 없습니다.');
 
     // 2. 유저별 페르소나(카테고리별 특징) 정보 취합
@@ -82,6 +80,9 @@ export class AdviceService {
     });
   }
 
+  /**
+   * 페르소나 요약 문자열 생성 (카테고리 설명 포함)
+   */
   private buildPersonaSummary(personas: any[], userLabel: string): string {
     if (!personas.length) {
       this.logger.log(`[personaSummary][${userLabel}] 없음`);
@@ -97,11 +98,17 @@ export class AdviceService {
     return summary;
   }
 
+  /**
+   * MBTI 값 추출
+   */
   private extractMbti(personas: any[]): string {
     const mbtiProfile = personas.find((p) => p.categoryCode.code === 'MBTI');
     return mbtiProfile?.content || '미입력';
   }
 
+  /**
+   * 유저 프로필 문자열 생성
+   */
   private buildUserProfile(user: any, mbti: string, personaSummary: string): string {
     return `
 이름: ${user.name}
@@ -112,6 +119,9 @@ MBTI: ${mbti}
   `.trim();
   }
 
+  /**
+   * AI 조언 프롬프트 생성
+   */
   private buildAdvicePrompt(
       user1Profile: string,
       user2Profile: string,
@@ -135,7 +145,9 @@ ${user2Profile}
   `.trim();
   }
 
-
+  /**
+   * 채널별 조언 히스토리 조회 (최신순)
+   */
   async getAdviceHistory(channelId: string): Promise<Advice[]> {
     return this.prisma.advice.findMany({
       where: { channelId },
@@ -143,6 +155,9 @@ ${user2Profile}
     });
   }
 
+  /**
+   * 채널별 최신 조언 1건 조회
+   */
   async getLatestAdvice(channelId: string): Promise<Advice | null> {
     return this.prisma.advice.findFirst({
       where: { channelId },
@@ -150,19 +165,27 @@ ${user2Profile}
     });
   }
 
+  /**
+   * 전체 조언 목록 조회 (최신순)
+   */
   async getAllAdvices(): Promise<Advice[]> {
     return this.prisma.advice.findMany({
       orderBy: { createdAt: 'desc' },
     });
   }
 
+  /**
+   * 조언 ID로 단건 조회
+   */
   async getAdviceById(adviceId: string): Promise<Advice | null> {
     return this.prisma.advice.findUnique({
       where: { id: adviceId },
     });
   }
 
-  // 채널 내에서 adviceId로 조회
+  /**
+   * 채널 내에서 adviceId로 조언 단건 조회
+   */
   async getAdviceInChannel(channelId: string, adviceId: string): Promise<Advice | null> {
     return this.prisma.advice.findFirst({
       where: {
@@ -172,7 +195,9 @@ ${user2Profile}
     });
   }
 
-  // update
+  /**
+   * 조언 수정 (채널 내에서만 허용)
+   */
   async updateAdvice(channelId: string, adviceId: string, updateAdviceDto: UpdateAdviceDto): Promise<Advice> {
     // 존재 여부 확인
     const advice = await this.getAdviceInChannel(channelId, adviceId);
@@ -185,7 +210,9 @@ ${user2Profile}
     });
   }
 
-  // delete
+  /**
+   * 조언 삭제 (채널 내에서만 허용)
+   */
   async deleteAdvice(channelId: string, adviceId: string): Promise<Advice> {
     // 존재 여부 확인
     const advice = await this.getAdviceInChannel(channelId, adviceId);

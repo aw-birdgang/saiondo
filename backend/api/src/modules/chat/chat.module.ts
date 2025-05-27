@@ -6,17 +6,16 @@ import {LlmModule} from '@modules/llm/llm.module';
 import {ChatGateway} from './chat.gateway';
 import {PersonaProfileService} from '../persona-profile/persona-profile.service';
 import {ChannelService} from '@modules/channel/channel.service';
-import {AssistantService} from '@modules/assistant/assistant.service';
 import {ChatHistoryService} from "@modules/chat-history/chat-history.service";
+import {UserModule} from '../user/user.module';
 
 @Module({
-  imports: [PrismaModule, forwardRef(() => LlmModule)],
+  imports: [PrismaModule, forwardRef(() => LlmModule), UserModule],
   controllers: [ChatController],
   providers: [
     ChatService,
     ChatHistoryService,
     ChatGateway,
-    AssistantService,
     ChannelService,
     PersonaProfileService,
   ],
