@@ -4,6 +4,7 @@ import {ConfigService} from '@nestjs/config';
 import {AllConfigType} from '../../config/config.type';
 import {AnalyzeRequestDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
+import {buildHistory, LLMMessage} from "@common/utils/chat_history.util";
 
 /**
  * LlmService는 API 서버에서 LLM 서버(FastAPI)로의 모든 연동을 담당합니다.
@@ -138,4 +139,25 @@ export class LlmService {
     }
   }
 
+  /**
+   * 메시지 히스토리 기반 LLM 호출 (ask_openai_history)
+   * @param messages 전체 메시지 배열
+   * @param model 사용할 LLM 모델
+   */
+  async forwardHistoryToLLM(
+    messages: LLMMessage[],
+    model: 'openai' | 'claude'
+  ): Promise<string> {
+    const history = buildHistory(messages, 3000);
+    try {
+      const response = await axios.post(`${this.llmApiUrl}/chat-history`, {
+        messages: history,
+        model,
+      });
+      return response.data.response;
+    } catch (error: any) {
+      console.error('LLM history 호출 실패:', error.message);
+      throw error;
+    }
+  }
 }

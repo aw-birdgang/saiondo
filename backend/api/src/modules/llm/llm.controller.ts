@@ -5,6 +5,8 @@ import {ChatHistoryService} from '../chat-history/chat-history.service';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {AnalyzeRequestDto, AnalyzeResponseDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
+import {ChatHistoryRequestDto} from "@modules/llm/dto/chat-history-request.dto";
+import {ChatHistoryResponseDto} from "@modules/llm/dto/chat-history-response.dto";
 
 @ApiTags('LLM')
 @Controller('llm')
@@ -74,5 +76,25 @@ export class LlmController {
   @ApiResponse({ status: 200, description: 'LLM 분석 결과 반환' })
   async analyzeAnswer(@Body() dto: AnalyzeAnswerDto) {
     return this.llmService.analyzeAnswer(dto);
+  }
+
+  @Post('chat-history')
+  @ApiOperation({ summary: 'LLM 대화 히스토리 기반 응답 생성' })
+  @ApiBody({ type: ChatHistoryRequestDto })
+  @ApiResponse({
+    status: 200,
+    description: 'LLM 응답 성공',
+    type: ChatHistoryResponseDto,
+    example: {
+      response: '상담을 위해 최근 다툰 구체적인 예시를 말씀해주실 수 있나요?'
+    }
+  })
+  @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
+  async chatHistory(
+    @Body() body: ChatHistoryRequestDto
+  ): Promise<ChatHistoryResponseDto> {
+    const { messages, model } = body;
+    const response = await this.llmService.forwardHistoryToLLM(messages, model);
+    return { response };
   }
 }

@@ -20,6 +20,7 @@ PostgreSQL 데이터베이스와 함께 Docker Compose로 전체 서비스를 �
    ```
 4. DB 마이그레이션/시드:  
    ```sh
+   docker compose exec api yarn prisma:reset
    docker compose exec api yarn prisma:migrate
    docker compose exec api yarn prisma:seed
    ```

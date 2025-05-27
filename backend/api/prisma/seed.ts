@@ -8,6 +8,9 @@ async function main() {
     const categoryMbti = await prisma.categoryCode.create({
         data: { code: 'MBTI', description: 'MBTI 유형' },
     });
+    const categoryBloodType = await prisma.categoryCode.create({
+        data: { code: 'BLOOD_TYPE', description: '혈액형' },
+    });
     const categoryHobby = await prisma.categoryCode.create({
         data: { code: 'HOBBY', description: '취미' },
     });
@@ -84,9 +87,9 @@ async function main() {
     const hash = await bcrypt.hash('password123', 10);
     const user1 = await prisma.user.create({
         data: {
-            name: '김철수',
+            name: '오성균',
             gender: 'MALE',
-            birthDate: new Date('1990-01-01'),
+            birthDate: new Date('1982-06-08'),
             email: 'kim@example.com',
             password: hash,
             fcmToken: 'test_token_1',
@@ -95,9 +98,9 @@ async function main() {
 
     const user2 = await prisma.user.create({
         data: {
-            name: '이영희',
+            name: '최지우',
             gender: 'FEMALE',
-            birthDate: new Date('1992-02-02'),
+            birthDate: new Date('1982-05-18'),
             email: 'lee@example.com',
             password: hash,
             fcmToken: 'test_token_2',
@@ -163,28 +166,15 @@ async function main() {
     });
 
     // 6. 페르소나 프로필 생성
-    await prisma.personaProfile.create({
-        data: {
-            userId: user1.id,
-            categoryCodeId: categoryMbti.id,
-            content: 'INTJ',
-            isStatic: true,
-            source: ProfileSource.USER_INPUT,
-            confidenceScore: 0.95,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    });
-
     await prisma.personaProfile.createMany({
         data: [
             {
-                userId: user2.id,
+                userId: user1.id,
                 categoryCodeId: categoryMbti.id,
-                content: 'ENFP',
+                content: 'ISTJ',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.92,
+                confidenceScore: 0.95,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -199,22 +189,42 @@ async function main() {
                 updatedAt: new Date(),
             },
             {
-                userId: user2.id,
-                categoryCodeId: categoryValue.id,
-                content: '정직',
-                isStatic: true,
-                source: ProfileSource.USER_INPUT,
-                confidenceScore: 0.9,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
                 userId: user1.id,
                 categoryCodeId: categoryCharacter.id,
                 content: '차분함',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.88,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryLoveStyle.id,
+                content: '신중한',
+                isStatic: false,
+                source: ProfileSource.AI_ANALYSIS,
+                confidenceScore: 0.75,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryMbti.id,
+                content: 'ESFJ',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.92,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryValue.id,
+                content: '정직',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.9,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -229,19 +239,9 @@ async function main() {
                 updatedAt: new Date(),
             },
             {
-                userId: user1.id,
-                categoryCodeId: categoryLoveStyle.id,
-                content: '표현 많은',
-                isStatic: false,
-                source: ProfileSource.AI_ANALYSIS,
-                confidenceScore: 0.75,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            {
                 userId: user2.id,
                 categoryCodeId: categoryLoveStyle.id,
-                content: '신중한',
+                content: '표현 많은',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.85,
@@ -251,7 +251,7 @@ async function main() {
             {
                 userId: user1.id,
                 categoryCodeId: categoryIdealType.id,
-                content: '유머러스한 사람',
+                content: '책임감 있는 사람',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.93,
@@ -261,7 +261,7 @@ async function main() {
             {
                 userId: user2.id,
                 categoryCodeId: categoryIdealType.id,
-                content: '책임감 있는 사람',
+                content: '행복을 추구하는 사람',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.91,
@@ -271,7 +271,7 @@ async function main() {
             {
                 userId: user1.id,
                 categoryCodeId: categoryFamily.id,
-                content: '2남 1녀 중 장남',
+                content: '외동',
                 isStatic: false,
                 source: ProfileSource.AI_ANALYSIS,
                 confidenceScore: 0.7,
@@ -281,7 +281,7 @@ async function main() {
             {
                 userId: user2.id,
                 categoryCodeId: categoryFamily.id,
-                content: '외동',
+                content: '3녀 중 막내',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.95,
@@ -291,7 +291,7 @@ async function main() {
             {
                 userId: user1.id,
                 categoryCodeId: categoryLifestyle.id,
-                content: '아침형 인간',
+                content: '저녁형 인간',
                 isStatic: true,
                 source: ProfileSource.USER_INPUT,
                 confidenceScore: 0.85,
@@ -301,7 +301,7 @@ async function main() {
             {
                 userId: user2.id,
                 categoryCodeId: categoryLifestyle.id,
-                content: '저녁형 인간',
+                content: '아침형 인간',
                 isStatic: false,
                 source: ProfileSource.AI_ANALYSIS,
                 confidenceScore: 0.8,
@@ -345,6 +345,26 @@ async function main() {
                 isStatic: false,
                 source: ProfileSource.AI_ANALYSIS,
                 confidenceScore: 0.82,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user1.id,
+                categoryCodeId: categoryBloodType.id,
+                content: 'O형',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.95,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+            {
+                userId: user2.id,
+                categoryCodeId: categoryBloodType.id,
+                content: 'A형',
+                isStatic: true,
+                source: ProfileSource.USER_INPUT,
+                confidenceScore: 0.92,
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
