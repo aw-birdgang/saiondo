@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import { ChatWithFeedbackDto } from './dto/chat-with-feedback.dto';
-import { ChatHistory, MessageSender, PersonaProfile, User, CategoryCode } from '@prisma/client';
-import { LlmService } from '@modules/llm/llm.service';
-import { PersonaProfileService } from '@modules/persona-profile/persona-profile.service';
-import { ChannelService } from '@modules/channel/channel.service';
-import { AssistantService } from '@modules/assistant/assistant.service';
-import { loadPromptTemplate } from '../../common/utils/prompt-loader.util';
-import { fillPromptTemplate } from '../../common/utils/prompt-template.util';
+import {BadRequestException, Injectable, Logger} from '@nestjs/common';
+import {PrismaService} from '../../common/prisma/prisma.service';
+import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
+import {CategoryCode, ChatHistory, MessageSender, PersonaProfile, User} from '@prisma/client';
+import {LlmService} from '@modules/llm/llm.service';
+import {PersonaProfileService} from '@modules/persona-profile/persona-profile.service';
+import {ChannelService} from '@modules/channel/channel.service';
+import {AssistantService} from '@modules/assistant/assistant.service';
+import {loadPromptTemplate} from '../../common/utils/prompt-loader.util';
+import {fillPromptTemplate} from '../../common/utils/prompt-template.util';
 
 @Injectable()
 export class ChatService {
@@ -51,24 +51,9 @@ export class ChatService {
     channelId: string,
     userId: string,
     prompt: string,
-  ): Promise<{ userChat: ChatHistory; aiChat: ChatHistory }> {
+  ): Promise<any> {
     await this.validateUser(userId);
-    const userChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      message,
-      MessageSender.USER,
-    );
-    const llmResponse = await this.llmService.getFeedback(prompt, assistantId);
-    const aiChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      llmResponse,
-      MessageSender.AI,
-    );
-    return { userChat, aiChat };
+    return await this.llmService.getFeedback(prompt, assistantId);
   }
 
   // chatService
@@ -119,21 +104,40 @@ export class ChatService {
     channelId: string,
     message: string,
   ) {
+    this.logger.log(`[ChatService] user message: ${message}`);
+    // user 메시지 저장
+    const userChat = await this.saveChatMessage(
+        userId,
+        assistantId,
+        channelId,
+        message,
+        MessageSender.USER,
+    );
+
     const partner = await this.getPartnerUser(channelId, userId);
     if (!partner) throw new Error('채팅방 참여자 정보를 찾을 수 없습니다.');
 
     const personaSummary = await this.getPersonaSummary(partner.id);
     const questioner = await this.getUserById(userId);
     const prompt = this.buildPrompt(questioner, partner, personaSummary, message);
-
     this.logger.log(`[ChatService] LLM Prompt: ${prompt}`);
 
-    const { userChat, aiChat } = await this.sendToLLM(
+    // ai 피드백 저장
+    const llmResponse = await this.sendToLLM(
       message,
       assistantId,
       channelId,
       userId,
       prompt,
+    );
+    this.logger.log(`[ChatService] LLM llmResponse: ${llmResponse}`);
+
+    const aiChat = await this.saveChatMessage(
+        userId,
+        assistantId,
+        channelId,
+        llmResponse,
+        MessageSender.AI,
     );
 
     return {
