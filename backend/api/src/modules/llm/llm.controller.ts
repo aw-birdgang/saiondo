@@ -7,6 +7,7 @@ import {AnalyzeRequestDto, AnalyzeResponseDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
 import {ChatHistoryRequestDto} from "@modules/llm/dto/chat-history-request.dto";
 import {ChatHistoryResponseDto} from "@modules/llm/dto/chat-history-response.dto";
+import {MessageSender} from "@prisma/client";
 
 @ApiTags('LLM')
 @Controller('llm')
@@ -39,9 +40,8 @@ export class LlmController {
         channelId: body.channelId,
         userId: body.userId,
         message: body.prompt,
-        sender: 'USER',
-        isUserInitiated: true,
-        timestamp: new Date(),
+        sender: MessageSender.USER,
+        createdAt: new Date(),
       });
 
       // 2. LLM 응답 저장
@@ -50,10 +50,8 @@ export class LlmController {
         channelId: body.channelId,
         userId: body.userId,
         message: result,
-        sender: 'AI',
-        isUserInitiated: false,
-        analyzedByLlm: true,
-        timestamp: new Date(),
+        sender: MessageSender.AI,
+        createdAt: new Date(),
       });
 
       return { response: result };
@@ -94,7 +92,7 @@ export class LlmController {
     @Body() body: ChatHistoryRequestDto
   ): Promise<ChatHistoryResponseDto> {
     const { messages, model } = body;
-    const response = await this.llmService.forwardHistoryToLLM(messages, model);
+    const response = await this.llmService.forwardHistoryToLLM({ messages, model });
     return { response };
   }
 }

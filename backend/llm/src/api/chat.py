@@ -11,5 +11,6 @@ def chat(request: ChatRequest):
 
 @router.post("/chat-history", response_model=ChatResponse, summary="LLM 대화 히스토리 전송")
 def chat_history(request: ChatHistoryRequest):
+    print("LLM에 전달된 messages:", request.messages)
     response = chat_service.chat_history(request.messages, request.model)
     return ChatResponse(response=response)

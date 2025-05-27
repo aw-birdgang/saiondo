@@ -43,6 +43,33 @@ export class LlmService {
   }
 
   /**
+   * 메시지 히스토리 기반 LLM 호출 (ask_openai_history)
+   * @param messages 전체 메시지 배열
+   * @param model 사용할 LLM 모델
+   */
+  async forwardHistoryToLLM({
+    messages,
+    model,
+  }: {
+    messages: LLMMessage[];
+    model: 'openai' | 'claude';
+  }): Promise<string> {
+    const history = buildHistory(messages, 3000);
+    console.log('[forwardHistoryToLLM] 최종 LLM 프롬프트 히스토리:', JSON.stringify(history, null, 2));
+
+    try {
+      const response = await axios.post(`${this.llmApiUrl}/chat-history`, {
+        messages: history,
+        model,
+      });
+      return response.data.response;
+    } catch (error: any) {
+      console.error('LLM history 호출 실패:', error.message);
+      throw error;
+    }
+  }
+
+  /**
    * 커스텀 분석 요청 (예: 성향 분석, 매칭 분석 등)
    * @param data AnalyzeRequestDto
    */
@@ -139,25 +166,4 @@ export class LlmService {
     }
   }
 
-  /**
-   * 메시지 히스토리 기반 LLM 호출 (ask_openai_history)
-   * @param messages 전체 메시지 배열
-   * @param model 사용할 LLM 모델
-   */
-  async forwardHistoryToLLM(
-    messages: LLMMessage[],
-    model: 'openai' | 'claude'
-  ): Promise<string> {
-    const history = buildHistory(messages, 3000);
-    try {
-      const response = await axios.post(`${this.llmApiUrl}/chat-history`, {
-        messages: history,
-        model,
-      });
-      return response.data.response;
-    } catch (error: any) {
-      console.error('LLM history 호출 실패:', error.message);
-      throw error;
-    }
-  }
 }

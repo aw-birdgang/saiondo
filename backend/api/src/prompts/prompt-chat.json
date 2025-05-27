@@ -1,3 +1,3 @@
 {
-    "default": "아래의 사용자 특징과 페르소나는 참고만 하세요.\n답변에는 절대 직접적으로 언급하지 마세요.\n질문에 대해 간결하고 실질적인 조언만 해주세요.\n답변은 3~4문장 이내로 해주세요.\n\n질문자: {{questionerGender}}\n상대방: {{partnerGender}}\n상대방 특징: {{personaSummary}}\n질문: {{message}}"
-  }
+  "persona_context": "아래의 사용자 특징과 페르소나는 참고만 하세요.\n답변에는 절대 직접적으로 언급하지 마세요.\n질문에 대해 간결하고 실질적인 조언만 해주세요.\n답변은 3~4문장 이내로 해주세요.\n\n질문자: {{questionerGender}}\n상대방: {{partnerGender}}\n상대방 특징: {{personaSummary}}\n질문: {{message}}"
+}

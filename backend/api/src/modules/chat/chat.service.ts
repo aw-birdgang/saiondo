@@ -8,6 +8,8 @@ import {ChannelService} from '@modules/channel/channel.service';
 import {AssistantService} from '@modules/assistant/assistant.service';
 import {loadPromptTemplate} from '../../common/utils/prompt-loader.util';
 import {fillPromptTemplate} from '../../common/utils/prompt-template.util';
+import {LLMMessageDto} from "@modules/llm/dto/llm-message.dto";
+import {ChatHistoryService} from '@modules/chat-history/chat-history.service';
 
 @Injectable()
 export class ChatService {
@@ -19,6 +21,7 @@ export class ChatService {
     private readonly assistantService: AssistantService,
     private readonly personaProfileService: PersonaProfileService,
     private readonly channelService: ChannelService,
+    private readonly chatHistoryService: ChatHistoryService,
   ) {}
 
   async chatWithFeedback(
@@ -39,9 +42,14 @@ export class ChatService {
     channelId: string,
     message: string,
     sender: MessageSender,
-  ): Promise<ChatHistory> {
-    return this.prisma.chatHistory.create({
-      data: { userId, assistantId, channelId, message, sender },
+  ) {
+    return this.chatHistoryService.create({
+      userId,
+      assistantId,
+      channelId,
+      message,
+      sender,
+      createdAt: new Date(),
     });
   }
 
@@ -98,6 +106,30 @@ export class ChatService {
     }).trim();
   }
 
+
+  private async getChatHistoryMessagesChannelAndAssistant(
+      channelId: string,
+      assistantId: string,
+      limit = 10
+  ): Promise<LLMMessageDto[]> {
+    const history = await this.chatHistoryService.findManyByChannelAndAssistant(channelId, assistantId, limit);
+    history.reverse();
+    return history.map((msg) => ({
+      role: msg.sender === 'USER' ? 'user' : 'assistant',
+      content: msg.message,
+    })) as LLMMessageDto[];
+  }
+
+  private async getChatHistoryMessages(channelId: string, limit = 10) {
+    const history = await this.chatHistoryService.findManyByChannel(channelId, limit);
+    // 시간순 정렬
+    history.reverse();
+    return history.map((msg) => ({
+      role: msg.sender === 'USER' ? 'user' : 'assistant',
+      content: msg.message,
+    })) as LLMMessageDto[];
+  }
+
   async processUserMessage(
     userId: string,
     assistantId: string,
@@ -105,39 +137,62 @@ export class ChatService {
     message: string,
   ) {
     this.logger.log(`[ChatService] user message: ${message}`);
-    // user 메시지 저장
+
+    // 대화 히스토리 수집
+    const chatHistory = await this.getChatHistoryMessagesChannelAndAssistant(channelId, assistantId, 10);
+    this.logger.log(`[ChatService] LLM chatHistory: ${JSON.stringify(chatHistory, null, 2)}`);
+
+    // 사용자 메시지 저장
     const userChat = await this.saveChatMessage(
-        userId,
-        assistantId,
-        channelId,
-        message,
-        MessageSender.USER,
+      userId,
+      assistantId,
+      channelId,
+      message,
+      MessageSender.USER,
     );
 
     const partner = await this.getPartnerUser(channelId, userId);
     if (!partner) throw new Error('채팅방 참여자 정보를 찾을 수 없습니다.');
 
+    // 과거 채팅 목록 가져오기
     const personaSummary = await this.getPersonaSummary(partner.id);
     const questioner = await this.getUserById(userId);
-    const prompt = this.buildPrompt(questioner, partner, personaSummary, message);
-    this.logger.log(`[ChatService] LLM Prompt: ${prompt}`);
 
-    // ai 피드백 저장
-    const llmResponse = await this.sendToLLM(
-      message,
+    // system 메시지(페르소나 context) 생성
+    const personaContextTemplate = loadPromptTemplate('persona_context');
+    const personaContext = fillPromptTemplate(personaContextTemplate, {
+      questionerGender: questioner?.gender ?? '정보없음',
+      partnerGender: partner.gender ?? '정보없음',
+      personaSummary,
+    });
+
+    const systemMessage: LLMMessageDto = {
+      role: 'system',
+      content: `너는 친절한 AI 비서야.\n${personaContext}`,
+    };
+
+    // 전체 메시지 배열 조합 (system + 기존 히스토리 + 이번 user 메시지)
+    const messages: LLMMessageDto[] = [
+      systemMessage,
+      ...chatHistory,
+      { role: 'user' as const, content: message },
+    ];
+    this.logger.log(`[ChatService] LLM 최종 messages: ${JSON.stringify(messages, null, 2)}`);
+
+    // LLM 서버에 히스토리 기반 응답 요청
+    const llmResponse = await this.llmService.forwardHistoryToLLM({
+      messages,
+      model: 'openai', // 또는 'claude'
+    });
+    this.logger.log(`[ChatService] LLM 응답: ${llmResponse}`);
+
+    // 7. AI 응답 저장
+    const aiChat = await this.saveChatMessage(
+      userId,
       assistantId,
       channelId,
-      userId,
-      prompt,
-    );
-    this.logger.log(`[ChatService] LLM llmResponse: ${llmResponse}`);
-
-    const aiChat = await this.saveChatMessage(
-        userId,
-        assistantId,
-        channelId,
-        llmResponse,
-        MessageSender.AI,
+      llmResponse,
+      MessageSender.AI,
     );
 
     return {
