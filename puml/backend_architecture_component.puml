@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+title Saiondo Backend Component (Improved)
+
+package "Frontend" {
+  [Flutter App]
+}
+
+package "Backend (NestJS)" {
+  [REST API\n(NestJS)] as api
+  [LLM Proxy\n(NestJS)] as llmproxy
+  [Prisma ORM] as prisma
+  [Logger/Monitoring] as logger
+  api -down-> llmproxy : 내부 모듈 호출
+  api -right-> prisma : ORM (Prisma)
+  api -down-> logger : 로깅/모니터링
+}
+
+database "PostgreSQL" as db
+
+package "LLM Server (FastAPI)" {
+  [FastAPI + LangChain] as fastapi
+  [OpenAI Provider] as openai
+  [Claude Provider] as claude
+  [Provider Base] as base
+  [Logger/Tracing] as tracing
+  fastapi -down-> base : provider 패턴
+  base -down-> openai
+  base -down-> claude
+  fastapi -down-> tracing : LangChain Tracing
+}
+
+api -down-> llmproxy : LLM 요청 위임
+llmproxy -down-> fastapi : HTTP (분석/프롬프트)
+fastapi -right-> tracing : 호출 추적
+api -right-> db
+
+@enduml
