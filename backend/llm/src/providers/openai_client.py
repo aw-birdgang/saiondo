@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage
+from langchain.schema import HumanMessage, AIMessage, SystemMessage
 from langchain.callbacks.tracers.langchain import LangChainTracer
 
 load_dotenv()
@@ -27,6 +27,23 @@ openai_llm = ChatOpenAI(
 def ask_openai(prompt: str) -> str:
     try:
         response = openai_llm([HumanMessage(content=prompt)])
+        return response.content
+    except Exception as e:
+        return f"❌ OpenAI 오류: {e}"
+
+def ask_openai_history(messages) -> str:
+    lc_messages = []
+    for m in messages:
+        role = m.role if hasattr(m, "role") else m["role"]
+        content = m.content if hasattr(m, "content") else m["content"]
+        if role == "user":
+            lc_messages.append(HumanMessage(content=content))
+        elif role == "assistant":
+            lc_messages.append(AIMessage(content=content))
+        elif role == "system":
+            lc_messages.append(SystemMessage(content=content))
+    try:
+        response = openai_llm(lc_messages)
         return response.content
     except Exception as e:
         return f"❌ OpenAI 오류: {e}"

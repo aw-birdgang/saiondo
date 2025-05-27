@@ -5,4 +5,7 @@ class FeedbackService:
         prompt = f"[Room: {room_id}] {message}"
         return llm_provider.ask(prompt, model)
 
+    def feedback_history(self, messages, model: str) -> str:
+        return llm_provider.ask_history(messages, model)
+
 feedback_service = FeedbackService()
