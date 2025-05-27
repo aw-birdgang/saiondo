@@ -8,8 +8,8 @@ import 'package:app/domain/usecase/auth/register_usecase.dart';
 import 'package:app/domain/usecase/category/fetch_category_codes_usecase.dart';
 import 'package:app/domain/usecase/chat/send_message_usecase.dart';
 import 'package:app/presentation/analysis/store/analysis_store.dart';
-import 'package:app/presentation/home/store/home/home_store.dart';
-import 'package:app/presentation/home/store/theme/theme_store.dart';
+import 'package:app/presentation/home/store/home_store.dart';
+import 'package:app/presentation/home/store/theme_store.dart';
 
 import '../../../core/stores/error/error_store.dart';
 import '../../../data/network/socket_io/socket_io_service.dart';
@@ -26,9 +26,10 @@ import '../../advice/store/advice_store.dart';
 import '../../auth/store/auth_store.dart';
 import '../../category/store/category_code_store.dart';
 import '../../chat/store/chat_store.dart';
+import '../../home/store/channel_store.dart';
 import '../../home/store/event_store.dart';
 import '../../home/store/invite_code_store.dart';
-import '../../home/store/language_store/language_store.dart';
+import '../../home/store/language_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
 import '../../user/store/user_store.dart';
 
@@ -76,6 +77,11 @@ class StoreModule {
     );
 
     // :------------------------------------------------------------------
+    getIt.registerSingleton<ChannelStore>(
+      ChannelStore(
+        getIt<ChannelRepository>(),
+      ),
+    );
     getIt.registerSingleton<ChatStore>(
       ChatStore(
         getIt<FetchChatHistoriesUseCase>(),

@@ -46,6 +46,9 @@ abstract class _UserStore with Store {
   @observable
   bool isLoading = false;
 
+  @observable
+  User? partnerUser;
+
   @action
   Future<void> initUser() async {
     isLoading = true;
@@ -92,5 +95,10 @@ abstract class _UserStore with Store {
   Future<void> removeUser() async {
     selectedUser = null;
     users.clear();
+  }
+
+  @action
+  Future<void> loadPartnerUser(String partnerUserId) async {
+    partnerUser = await _userRepository.fetchUserById(partnerUserId);
   }
 }

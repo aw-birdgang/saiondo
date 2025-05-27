@@ -6,7 +6,6 @@ import 'package:logger/logger.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../data/repository/user_repository_impl.dart';
 import '../../../domain/entry/user.dart';
 import '../../../domain/repository/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';

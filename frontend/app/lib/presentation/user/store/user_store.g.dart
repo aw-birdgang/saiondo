@@ -118,6 +118,22 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
+  late final _$partnerUserAtom =
+      Atom(name: '_UserStore.partnerUser', context: context);
+
+  @override
+  User? get partnerUser {
+    _$partnerUserAtom.reportRead();
+    return super.partnerUser;
+  }
+
+  @override
+  set partnerUser(User? value) {
+    _$partnerUserAtom.reportWrite(value, super.partnerUser, () {
+      super.partnerUser = value;
+    });
+  }
+
   late final _$initUserAsyncAction =
       AsyncAction('_UserStore.initUser', context: context);
 
@@ -142,6 +158,15 @@ mixin _$UserStore on _UserStore, Store {
     return _$removeUserAsyncAction.run(() => super.removeUser());
   }
 
+  late final _$loadPartnerUserAsyncAction =
+      AsyncAction('_UserStore.loadPartnerUser', context: context);
+
+  @override
+  Future<void> loadPartnerUser(String partnerUserId) {
+    return _$loadPartnerUserAsyncAction
+        .run(() => super.loadPartnerUser(partnerUserId));
+  }
+
   @override
   String toString() {
     return '''
@@ -151,7 +176,8 @@ selectedUser: ${selectedUser},
 userId: ${userId},
 assistantId: ${assistantId},
 channelId: ${channelId},
-isLoading: ${isLoading}
+isLoading: ${isLoading},
+partnerUser: ${partnerUser}
     ''';
   }
 }

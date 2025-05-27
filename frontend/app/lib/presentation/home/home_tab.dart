@@ -1,8 +1,11 @@
+import 'package:app/presentation/home/store/channel_store.dart';
 import 'package:app/presentation/home/store/invite_code_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../di/service_locator.dart';
+import '../../domain/entry/channel.dart';
 import '../../domain/entry/user.dart';
 import '../advice/advice.dart';
 import '../advice/store/advice_store.dart';
@@ -18,13 +21,52 @@ class HomeTabScreen extends StatefulWidget {
 class _HomeTabScreenState extends State<HomeTabScreen> {
   final _userStore = getIt<UserStore>();
   final _adviceStore = getIt<AdviceStore>();
+  final _inviteCodeStore = getIt<InviteCodeStore>();
+  final _channelStore = getIt<ChannelStore>();
+  ReactionDisposer? _channelReactionDisposer;
 
   @override
   void initState() {
     super.initState();
-    _userStore.initUser?.call();
-    if (_userStore.channelId != null) {
-      _adviceStore.loadAdviceHistory(_userStore.channelId!);
+    _userStore.initUser();
+
+    _channelReactionDisposer = reaction<String?>(
+      (_) => _userStore.channelId,
+      (channelId) {
+        if (channelId != null) {
+          _adviceStore.loadAdviceHistory(channelId);
+          _inviteCodeStore.generateInviteCode(channelId);
+          _channelStore.fetchChannel(channelId);
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _channelReactionDisposer?.call();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeTabScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _loadPartnerIfNeeded();
+  }
+
+  void _loadPartnerIfNeeded() {
+    final user = _userStore.selectedUser;
+    final channel = _channelStore.channel;
+    if (user != null && channel != null) {
+      String? partnerUserId;
+      if (channel.user1Id == user.id) {
+        partnerUserId = channel.user2Id;
+      } else if (channel.user2Id == user.id) {
+        partnerUserId = channel.user1Id;
+      }
+      if (partnerUserId != null) {
+        _userStore.loadPartnerUser(partnerUserId);
+      }
     }
   }
 
@@ -32,19 +74,26 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
-        if (_userStore.isLoading) {
+        if (_userStore.isLoading || _channelStore.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
+        if (_channelStore.errorMessage != null) {
+          return Center(child: Text('채널 정보 오류: ${_channelStore.errorMessage}'));
+        }
         final user = _userStore.selectedUser;
+        final channel = _channelStore.channel;
         if (user == null) {
           return const Center(child: Text('유저 정보를 불러올 수 없습니다.'));
         }
         return HomeTabContent(
           user: user,
+          channel: channel,
+          inviteCodeStore: _inviteCodeStore,
+          adviceStore: _adviceStore,
+          userId: _userStore.userId,
           assistantId: _userStore.assistantId,
           channelId: _userStore.channelId,
-          userId: _userStore.userId,
-          adviceStore: _adviceStore,
+          partnerName: _userStore.partnerUser?.name ?? "파트너",
         );
       },
     );
@@ -53,30 +102,32 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
 class HomeTabContent extends StatelessWidget {
   final User user;
+  final Channel? channel;
+  final InviteCodeStore inviteCodeStore;
+  final AdviceStore adviceStore;
+  final String? userId;
   final String? assistantId;
   final String? channelId;
-  final String? userId;
-  final AdviceStore adviceStore;
+  final String partnerName;
 
-  final InviteCodeStore _inviteCodeStore = getIt<InviteCodeStore>();
-
-  HomeTabContent({
+  const HomeTabContent({
     super.key,
     required this.user,
+    required this.channel,
+    required this.inviteCodeStore,
+    required this.adviceStore,
+    required this.userId,
     required this.assistantId,
     required this.channelId,
-    required this.userId,
-    required this.adviceStore,
+    required this.partnerName,
   });
 
   @override
   Widget build(BuildContext context) {
-    // 샘플 데이터 (실제 데이터로 교체 필요)
-    final String partnerName = "지은";
-    final String userProfile = "https://randomuser.me/api/portraits/men/32.jpg";
-    final String partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg";
-    final String dDay = "D+123";
-    final String inviteCode = "ABCD-1234";
+    // 실제 데이터가 없으면 기본값 처리
+    final userProfile = "https://randomuser.me/api/portraits/men/32.jpg"; // TODO: 실제 프로필 연동
+    final partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg"; // TODO: 실제 프로필 연동
+    final dDay = channel != null ? "D+123" : "-"; // TODO: 실제 기념일 연동
 
     return Scaffold(
       backgroundColor: Colors.pink[50],
@@ -85,16 +136,14 @@ class HomeTabContent extends StatelessWidget {
           builder: (context, constraints) {
             return SingleChildScrollView(
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // 1. 커플 프로필/인사
+                        // 커플 프로필/인사
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -102,16 +151,16 @@ class HomeTabContent extends StatelessWidget {
                               backgroundImage: NetworkImage(userProfile),
                               radius: 36,
                             ),
-                            SizedBox(width: 16),
-                            Icon(Icons.favorite, color: Colors.pink, size: 36),
-                            SizedBox(width: 16),
+                            const SizedBox(width: 16),
+                            const Icon(Icons.favorite, color: Colors.pink, size: 36),
+                            const SizedBox(width: 16),
                             CircleAvatar(
                               backgroundImage: NetworkImage(partnerProfile),
                               radius: 36,
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Center(
                           child: Text(
                             '${user.name} ❤️ $partnerName',
@@ -122,7 +171,7 @@ class HomeTabContent extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Center(
                           child: Chip(
                             label: Text('우리의 기념일 $dDay'),
@@ -130,12 +179,10 @@ class HomeTabContent extends StatelessWidget {
                             labelStyle: TextStyle(color: Colors.pink[800]),
                           ),
                         ),
-
+                        const SizedBox(height: 32),
                         // 초대 코드/주요 액션 버튼
-                        SizedBox(height: 32),
                         Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           color: Colors.white,
                           elevation: 2,
                           child: Padding(
@@ -145,41 +192,51 @@ class HomeTabContent extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Icon(Icons.vpn_key, color: Colors.pink),
-                                    SizedBox(width: 8),
-                                    Text('초대코드', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Spacer(),
+                                    const Icon(Icons.vpn_key, color: Colors.pink),
+                                    const SizedBox(width: 8),
+                                    const Text('초대코드', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    const Spacer(),
                                     Flexible(
-                                      child: SelectableText(
-                                        inviteCode,
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.pink[700]),
-                                        textAlign: TextAlign.right,
+                                      child: Observer(
+                                        builder: (_) {
+                                          if (inviteCodeStore.isLoading) {
+                                            return const SizedBox(
+                                              width: 18,
+                                              height: 18,
+                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                            );
+                                          }
+                                          return SelectableText(
+                                            inviteCodeStore.inviteCode ?? '코드 없음',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.pink[700],
+                                            ),
+                                            textAlign: TextAlign.right,
+                                          );
+                                        },
                                       ),
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.copy, size: 20),
-                                      onPressed: () {
-                                        // Clipboard.setData(ClipboardData(text: inviteCode));
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('초대코드가 복사되었습니다!')),
-                                        );
-                                      },
+                                      icon: const Icon(Icons.copy, size: 20),
+                                      onPressed: inviteCodeStore.inviteCode == null
+                                          ? null
+                                          : () {
+                                              // Clipboard.setData(ClipboardData(text: inviteCodeStore.inviteCode!));
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('초대코드가 복사되었습니다!')),
+                                              );
+                                            },
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                                 // 버튼 세로 배치
-                                ElevatedButton.icon(
-                                  icon: Icon(Icons.chat),
-                                  label: Text('채팅 시작'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.pinkAccent,
-                                    minimumSize: Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
+                                _ActionButton(
+                                  icon: Icons.chat,
+                                  label: '채팅 시작',
+                                  color: Colors.pinkAccent,
                                   onPressed: (userId == null || assistantId == null || channelId == null)
                                       ? null
                                       : () {
@@ -194,15 +251,11 @@ class HomeTabContent extends StatelessWidget {
                                           );
                                         },
                                 ),
-                                SizedBox(height: 12),
-                                ElevatedButton.icon(
-                                  icon: Icon(Icons.analytics),
-                                  label: Text('성향분석'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blueAccent,
-                                    minimumSize: Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
+                                const SizedBox(height: 12),
+                                _ActionButton(
+                                  icon: Icons.analytics,
+                                  label: '성향분석',
+                                  color: Colors.blueAccent,
                                   onPressed: () {
                                     Navigator.pushNamed(
                                       context,
@@ -214,15 +267,11 @@ class HomeTabContent extends StatelessWidget {
                                     );
                                   },
                                 ),
-                                SizedBox(height: 12),
-                                ElevatedButton.icon(
-                                  icon: Icon(Icons.history),
-                                  label: Text('조언 히스토리'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    minimumSize: Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                  ),
+                                const SizedBox(height: 12),
+                                _ActionButton(
+                                  icon: Icons.history,
+                                  label: '조언 히스토리',
+                                  color: Colors.green,
                                   onPressed: channelId == null
                                       ? null
                                       : () {
@@ -238,48 +287,24 @@ class HomeTabContent extends StatelessWidget {
                             ),
                           ),
                         ),
-
-                        // 오늘의 조언
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         Text(
                           '오늘의 조언',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.pink[700]),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         Observer(
                           builder: (_) {
                             if (adviceStore.isLoading) {
-                              return Center(child: CircularProgressIndicator());
-                            } else if (adviceStore.latestAdvice == null) {
-                              return Text('아직 조언이 없습니다.', style: TextStyle(color: Colors.grey));
-                            } else {
-                              return Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.tips_and_updates, color: Colors.pink[400]),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          adviceStore.latestAdvice!.advice,
-                                          style: TextStyle(fontSize: 16, color: Colors.black87),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
+                              return const Center(child: CircularProgressIndicator());
                             }
+                            return Text(
+                              adviceStore.latestAdvice?.advice ?? '아직 조언이 없습니다.',
+                              style: const TextStyle(color: Colors.black87),
+                            );
                           },
                         ),
-
-                        // 5. 여백
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
@@ -289,6 +314,35 @@ class HomeTabContent extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+// 액션 버튼 위젯 추출로 중복 제거
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback? onPressed;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        minimumSize: const Size(double.infinity, 48),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      onPressed: onPressed,
     );
   }
 }

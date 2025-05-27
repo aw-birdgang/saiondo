@@ -1,5 +1,6 @@
 import 'package:app/presentation/auth/store/auth_store.dart';
-import 'package:app/presentation/home/store/home/home_store.dart';
+import 'package:app/presentation/home/store/channel_store.dart';
+import 'package:app/presentation/home/store/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
@@ -20,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeStore _homeStore = getIt<HomeStore>();
   final AuthStore _authStore = getIt<AuthStore>();
+  final ChannelStore _channelStore = getIt<ChannelStore>();
   final logger = getIt<Logger>();
 
   int _selectedIndex = 0;
