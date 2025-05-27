@@ -6,6 +6,8 @@ import { LlmService } from '@modules/llm/llm.service';
 import { PersonaProfileService } from '@modules/persona-profile/persona-profile.service';
 import { ChannelService } from '@modules/channel/channel.service';
 import { AssistantService } from '@modules/assistant/assistant.service';
+import { loadPromptTemplate } from '../../common/utils/prompt-loader.util';
+import { fillPromptTemplate } from '../../common/utils/prompt-template.util';
 
 @Injectable()
 export class ChatService {
@@ -102,17 +104,13 @@ export class ChatService {
     personaSummary: string,
     message: string,
   ): string {
-    return `
-아래의 사용자 특징과 페르소나는 참고만 하세요. 
-답변에는 절대 직접적으로 언급하지 마세요. 
-질문에 대해 간결하고 실질적인 조언만 해주세요.
-답변은 3~4문장 이내로 해주세요.
-
-질문자: ${questioner?.gender ?? '정보없음'}
-상대방: ${partner.gender ?? '정보없음'}
-상대방 특징: ${personaSummary}
-질문: ${message}
-`.trim();
+    const template = loadPromptTemplate('default');
+    return fillPromptTemplate(template, {
+      questionerGender: questioner?.gender ?? '정보없음',
+      partnerGender: partner.gender ?? '정보없음',
+      personaSummary,
+      message,
+    }).trim();
   }
 
   async processUserMessage(
