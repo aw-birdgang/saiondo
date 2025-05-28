@@ -44,6 +44,7 @@ class MyPageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.pink[50],
       body: Observer(
         builder: (_) {
           if (userStore.isLoading) {
@@ -63,7 +64,7 @@ class MyPageScreen extends StatelessWidget {
               child: Text(
                 AppLocalizations.of(context).translate('no_login_info'),
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
             );
           }
@@ -90,36 +91,71 @@ class MyPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Column(
-        children: [
-          // 프로필 카드
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+    final local = AppLocalizations.of(context);
+    final userProfile = "https://randomuser.me/api/portraits/men/32.jpg";
+    final partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg";
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 러블리 프로필 카드
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pink[100]!, Colors.blue[50]!],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.pink.withOpacity(0.08),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 32,
-                    child: Icon(Icons.account_circle, size: 48, color: Colors.white),
-                    backgroundColor: Colors.blueAccent,
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [Colors.pinkAccent, Colors.blueAccent],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(userProfile),
+                      radius: 26,
+                    ),
                   ),
-                  const SizedBox(width: 20),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           user.name,
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD81B60),
+                            fontFamily: 'Nunito',
+                          ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         Text(
                           user.email,
-                          style: const TextStyle(fontSize: 16, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.blueGrey[400],
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -127,34 +163,75 @@ class MyPageContent extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 32),
-          // 섹션: 프로필 관리
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              AppLocalizations.of(context).translate('my_info_manage'),
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey[700]),
+            const SizedBox(height: 36),
+            // 섹션: 프로필 관리
+            Row(
+              children: [
+                Icon(Icons.favorite, color: Colors.pink[200], size: 22),
+                const SizedBox(width: 8),
+                Text(
+                  local.translate('my_info_manage'),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey[700],
+                    fontFamily: 'Nunito',
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          ListTile(
-            leading: const Icon(Icons.person_search, color: Colors.blueAccent),
-            title: Text(
-              AppLocalizations.of(context).translate('my_persona_manage'),
-              style: TextStyle(fontWeight: FontWeight.w600),
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: onPersonaProfileTap,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.pink[50],
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.pinkAccent.withOpacity(0.2)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.pink.withOpacity(0.06),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                child: Row(
+                  children: [
+                    Icon(Icons.person_search, color: Colors.blueAccent, size: 28),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            local.translate('my_persona_manage'),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Color(0xFF1976D2),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            local.translate('my_persona_manage_desc'),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.blueGrey[400],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.blueAccent),
+                  ],
+                ),
+              ),
             ),
-            subtitle: Text(
-              AppLocalizations.of(context).translate('my_persona_manage_desc'),
-            ),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.blueAccent),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            onTap: onPersonaProfileTap,
-            tileColor: Colors.blue[50],
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          ),
-          const Spacer(),
-        ],
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }

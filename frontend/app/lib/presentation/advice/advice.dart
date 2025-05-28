@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
+import '../../utils/locale/app_localization.dart';
 import 'store/advice_store.dart';
 
 class AdviceHistoryScreen extends StatefulWidget {
@@ -29,10 +30,22 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+
     return Scaffold(
+      backgroundColor: Colors.pink[50],
       appBar: AppBar(
-        title: const Text('조언 히스토리'),
-        backgroundColor: Colors.blueAccent,
+        title: Text(
+          local.translate('advice_history'),
+          style: const TextStyle(
+            fontFamily: 'Nunito',
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFD81B60),
+          ),
+        ),
+        backgroundColor: Colors.pink[100],
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFFD81B60)),
       ),
       body: Observer(
         builder: (_) {
@@ -48,17 +61,18 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.tips_and_updates, size: 64, color: Colors.grey[400]),
+                  Icon(Icons.tips_and_updates, size: 64, color: Colors.pink[200]),
                   const SizedBox(height: 16),
-                  const Text(
-                    '아직 조언 히스토리가 없습니다.',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  Text(
+                    local.translate('no_advice_history'),
+                    style: const TextStyle(fontSize: 18, color: Color(0xFFD81B60), fontFamily: 'Nunito'),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    '관계 분석을 통해 LLM의 조언을 받아보세요!',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  Text(
+                    local.translate('advice_history_guide'),
+                    style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontFamily: 'Nunito'),
                   ),
                 ],
               ),
@@ -69,11 +83,27 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
             children: [
               Container(
                 width: double.infinity,
-                color: Colors.blue[50],
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                child: const Text(
-                  '이전 분석에서 받은 조언들을 모아볼 수 있어요.\n관계 발전에 도움이 되는 피드백을 확인해보세요!',
-                  style: TextStyle(fontSize: 15, color: Colors.blueGrey),
+                decoration: BoxDecoration(
+                  color: Colors.pink[100],
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(0),
+                    topRight: Radius.circular(0),
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                child: Row(
+                  children: [
+                    const Icon(Icons.favorite, color: Color(0xFFD81B60)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        local.translate('advice_history_tip'),
+                        style: const TextStyle(fontSize: 15, color: Colors.blueGrey, fontFamily: 'Nunito'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 8),
@@ -81,39 +111,42 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: _store.adviceList.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, __) => const SizedBox(height: 14),
                   itemBuilder: (context, idx) {
                     final advice = _store.adviceList[idx];
                     return Card(
-                      elevation: 2,
+                      elevation: 3,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(18),
                       ),
+                      color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.tips_and_updates, color: Colors.pink[400]),
+                                Icon(Icons.tips_and_updates, color: Colors.pink[400], size: 22),
                                 const SizedBox(width: 8),
                                 Text(
                                   formatDate(advice.createdAt),
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.grey[600],
+                                    color: Colors.blueGrey[400],
+                                    fontFamily: 'Nunito',
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 12),
                             Text(
                               advice.advice,
                               style: const TextStyle(
                                 fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFFD81B60),
+                                fontFamily: 'Nunito',
                               ),
                             ),
                           ],

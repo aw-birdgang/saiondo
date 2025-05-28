@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../presentation/analysis/analysis_screen.dart';
+import '../../presentation/analysis/analysis.dart';
 import '../../presentation/auth/login_screen.dart';
 import '../../presentation/auth/register_screen.dart';
 import '../../presentation/category/category_code_guide.dart';

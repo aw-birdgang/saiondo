@@ -135,7 +135,7 @@ class HomeTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 실제 데이터가 없으면 기본값 처리
+    final local = AppLocalizations.of(context);
     final userProfile = "https://randomuser.me/api/portraits/men/32.jpg"; // TODO: 실제 프로필 연동
     final partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg"; // TODO: 실제 프로필 연동
     final dDay = channel != null ? "D+123" : "-"; // TODO: 실제 기념일 연동
@@ -143,212 +143,246 @@ class HomeTabContent extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.pink[50],
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // 커플 프로필/인사
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(userProfile),
-                              radius: 36,
-                            ),
-                            const SizedBox(width: 16),
-                            const Icon(Icons.favorite, color: Colors.pink, size: 36),
-                            const SizedBox(width: 16),
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(partnerProfile),
-                              radius: 36,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Center(
-                          child: Text(
-                            '${user.name} ❤️ $partnerName',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.pink[700],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Center(
-                          child: Chip(
-                            label: Text(
-                              AppLocalizations.of(context)
-                                .translate('our_anniversary')
-                                .replaceAll('{0}', dDay),
-                            ),
-                            backgroundColor: Colors.pink[100],
-                            labelStyle: TextStyle(color: Colors.pink[800]),
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        // 초대 코드/주요 액션 버튼
-                        Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          color: Colors.white,
-                          elevation: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(Icons.vpn_key, color: Colors.pink),
-                                    const SizedBox(width: 8),
-                                    Text(AppLocalizations.of(context).translate('invite_code'), style: const TextStyle(fontWeight: FontWeight.bold)),
-                                    const Spacer(),
-                                    Flexible(
-                                      child: Observer(
-                                        builder: (_) {
-                                          if (inviteCodeStore.isLoading) {
-                                            return SizedBox(
-                                              width: 18,
-                                              height: 18,
-                                              child: LoadingAnimationWidget.staggeredDotsWave(
-                                                color: Colors.pink,
-                                                size: 18,
-                                              ),
-                                            );
-                                          }
-                                          return SelectableText(
-                                            inviteCodeStore.inviteCode ?? AppLocalizations.of(context).translate('no_code'),
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.pink[700],
-                                            ),
-                                            textAlign: TextAlign.right,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.copy, size: 20),
-                                      onPressed: inviteCodeStore.inviteCode == null
-                                          ? null
-                                          : () {
-                                              // Clipboard.setData(ClipboardData(text: inviteCodeStore.inviteCode!));
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(content: Text(AppLocalizations.of(context).translate('copy_success'))),
-                                              );
-                                            },
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-                                // 버튼 세로 배치
-                                _ActionButton(
-                                  icon: Icons.chat,
-                                  label: AppLocalizations.of(context).translate('start_chat'),
-                                  color: Colors.pinkAccent,
-                                  onPressed: (userId == null || assistantId == null || channelId == null)
-                                      ? null
-                                      : () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            '/chat',
-                                            arguments: {
-                                              'userId': userId,
-                                              'assistantId': assistantId,
-                                              'channelId': channelId,
-                                            },
-                                          );
-                                        },
-                                ),
-                                const SizedBox(height: 12),
-                                _ActionButton(
-                                  icon: Icons.analytics,
-                                  label: AppLocalizations.of(context).translate('analysis'),
-                                  color: Colors.blueAccent,
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/analysis',
-                                      arguments: {
-                                        'channelId': channelId,
-                                        'userId': userId,
-                                      },
-                                    );
-                                  },
-                                ),
-                                const SizedBox(height: 12),
-                                _ActionButton(
-                                  icon: Icons.history,
-                                  label: AppLocalizations.of(context).translate('advice_history'),
-                                  color: Colors.green,
-                                  onPressed: channelId == null
-                                      ? null
-                                      : () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) => AdviceHistoryScreen(channelId: channelId!),
-                                            ),
-                                          );
-                                        },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          AppLocalizations.of(context).translate('today_advice'),
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.pink[700]),
-                        ),
-                        const SizedBox(height: 12),
-                        Observer(
-                          builder: (_) {
-                            if (adviceStore.isLoading) {
-                              return Center(
-                                child: LoadingAnimationWidget.staggeredDotsWave(
-                                  color: Colors.pink,
-                                  size: 32,
-                                ),
-                              );
-                            }
-                            return Text(
-                              adviceStore.latestAdvice?.advice ?? AppLocalizations.of(context).translate('no_advice_yet'),
-                              style: const TextStyle(color: Colors.black87),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 32),
-                      ],
-                    ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 커플 프로필/인사
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.pink[100]!, Colors.blue[50]!],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.pink.withOpacity(0.08),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _LovelyAvatar(imageUrl: userProfile),
+                    const SizedBox(width: 16),
+                    Icon(Icons.favorite, color: Colors.pink[300], size: 36),
+                    const SizedBox(width: 16),
+                    _LovelyAvatar(imageUrl: partnerProfile),
+                  ],
                 ),
               ),
-            );
-          },
+              const SizedBox(height: 16),
+              Center(
+                child: Chip(
+                  label: Text(
+                    local.translate('our_anniversary').replaceAll('{0}', dDay),
+                    style: TextStyle(
+                      color: Colors.pink[800],
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Nunito',
+                    ),
+                  ),
+                  backgroundColor: Colors.pink[100],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: Colors.pink[200]!),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // 초대 코드/주요 액션 버튼
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.pink.withOpacity(0.06),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.vpn_key, color: Colors.pink[300]),
+                        const SizedBox(width: 8),
+                        Text(
+                          local.translate('invite_code'),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
+                        ),
+                        const Spacer(),
+                        Flexible(
+                          child: Observer(
+                            builder: (_) {
+                              if (inviteCodeStore.isLoading) {
+                                return SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: LoadingAnimationWidget.staggeredDotsWave(
+                                    color: Colors.pink,
+                                    size: 18,
+                                  ),
+                                );
+                              }
+                              return SelectableText(
+                                inviteCodeStore.inviteCode ?? local.translate('no_code'),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.pink[700],
+                                  fontFamily: 'Nunito',
+                                ),
+                                textAlign: TextAlign.right,
+                              );
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.copy, size: 20, color: Color(0xFFD81B60)),
+                          onPressed: inviteCodeStore.inviteCode == null
+                              ? null
+                              : () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(local.translate('copy_success'))),
+                                  );
+                                },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _LovelyActionButton(
+                      icon: Icons.chat_bubble_rounded,
+                      label: local.translate('start_chat'),
+                      color: Colors.pinkAccent,
+                      onPressed: (userId == null || assistantId == null || channelId == null)
+                          ? null
+                          : () {
+                              Navigator.pushNamed(
+                                context,
+                                '/chat',
+                                arguments: {
+                                  'userId': userId,
+                                  'assistantId': assistantId,
+                                  'channelId': channelId,
+                                },
+                              );
+                            },
+                    ),
+                    const SizedBox(height: 12),
+                    _LovelyActionButton(
+                      icon: Icons.analytics_rounded,
+                      label: local.translate('analysis'),
+                      color: Colors.blueAccent,
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/analysis',
+                          arguments: {
+                            'channelId': channelId,
+                            'userId': userId,
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    _LovelyActionButton(
+                      icon: Icons.history_edu_rounded,
+                      label: local.translate('advice_history'),
+                      color: Colors.green,
+                      onPressed: channelId == null
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AdviceHistoryScreen(channelId: channelId!),
+                                ),
+                              );
+                            },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 28),
+              Text(
+                local.translate('today_advice'),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFD81B60),
+                  fontFamily: 'Nunito',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Observer(
+                builder: (_) {
+                  if (adviceStore.isLoading) {
+                    return Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.pink,
+                        size: 32,
+                      ),
+                    );
+                  }
+                  return Text(
+                    adviceStore.latestAdvice?.advice ?? local.translate('no_advice_yet'),
+                    style: const TextStyle(color: Colors.black87, fontSize: 16),
+                  );
+                },
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// 액션 버튼 위젯 추출로 중복 제거
-class _ActionButton extends StatelessWidget {
+// 러블리한 아바타 위젯
+class _LovelyAvatar extends StatelessWidget {
+  final String imageUrl;
+  const _LovelyAvatar({required this.imageUrl});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [Colors.pinkAccent, Colors.blueAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(imageUrl),
+        backgroundColor: Colors.transparent,
+        radius: 36,
+      ),
+    );
+  }
+}
+
+// 러블리한 액션 버튼
+class _LovelyActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
   final VoidCallback? onPressed;
 
-  const _ActionButton({
+  const _LovelyActionButton({
     required this.icon,
     required this.label,
     required this.color,
@@ -358,12 +392,25 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      icon: Icon(icon),
-      label: Text(label),
+      icon: Icon(icon, size: 22, color: Colors.white),
+      label: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2.0),
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontFamily: 'Nunito',
+            color: Colors.white,
+          ),
+        ),
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
         minimumSize: const Size(double.infinity, 48),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 4,
+        shadowColor: color.withOpacity(0.2),
       ),
       onPressed: onPressed,
     );

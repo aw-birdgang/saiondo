@@ -25,11 +25,14 @@ abstract class _AnalysisStore with Store {
 
   @action
   Future<void> loadAnalyses(String channelId) async {
-    isLoading = true;
     try {
+      print('[AnalysisStore] loadAnalyses called with channelId: $channelId');
+      isLoading = true;
       final result = await _repository.fetchAnalyses(channelId);
       analyses = ObservableList.of(result);
       latestAnalysis = result.isNotEmpty ? result.first : null;
+    } catch (e, stack) {
+      print('[AnalysisStore] 분석 로딩 에러: $e\n$stack');
     } finally {
       isLoading = false;
     }
