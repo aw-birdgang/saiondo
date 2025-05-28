@@ -1,9 +1,9 @@
-import 'package:app/presentation/auth/store/auth_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
 import '../user/store/user_store.dart';
+import 'store/auth_store.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -31,10 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _emailController.text = "kim@example.com";
-      _passwordController.text = "password123";
-    });
+    _emailController.text = _maleTestEmail;
+    _passwordController.text = _testPassword;
   }
 
   @override
@@ -46,7 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _onLogin() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
       final success = await _authStore.login(
         _emailController.text.trim(),
@@ -55,19 +56,26 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       setState(() => _isLoading = false);
       if (success) {
-        _navigated = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) return;
-          Navigator.pushReplacementNamed(context, '/home');
-        });
+        _navigateToHome();
       } else {
         setState(() => _error = '로그인 실패');
       }
     } catch (e) {
       if (!mounted) return;
-      setState(() => _isLoading = false);
-      // 에러 처리
+      setState(() {
+        _isLoading = false;
+        _error = '로그인 중 오류가 발생했습니다';
+      });
     }
+  }
+
+  void _navigateToHome() {
+    if (_navigated) return;
+    _navigated = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
+    });
   }
 
   // 테스트용 빠른 로그인
@@ -91,14 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(24.0),
               child: Observer(
                 builder: (_) {
-                  final error = _error;
                   final token = _authStore.accessToken;
 
-                  if (token != null && !_isLoading && !_navigated) {
-                    _navigated = true;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.pushReplacementNamed(context, '/home');
-                    });
+                  // 이미 로그인된 경우 홈으로 이동
+                  if (token != null && !_navigated) {
+                    _navigateToHome();
                   }
 
                   return Form(
@@ -106,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
+                        const Text(
                           '로그인',
                           style: TextStyle(
                             fontSize: 28,
@@ -114,12 +119,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.blueAccent,
                           ),
                         ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: '이메일',
-                            prefixIcon: Icon(Icons.email),
+                            prefixIcon: const Icon(Icons.email),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           keyboardType: TextInputType.emailAddress,
@@ -129,12 +134,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: '비밀번호',
-                            prefixIcon: Icon(Icons.lock),
+                            prefixIcon: const Icon(Icons.lock),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           obscureText: true,
@@ -144,51 +149,59 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        if (error != null)
+                        if (_error != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 12),
                             child: Text(
-                              error,
-                              style: TextStyle(color: Colors.red, fontSize: 14),
+                              _error!,
+                              style: const TextStyle(color: Colors.red, fontSize: 14),
                             ),
                           ),
-                        SizedBox(height: 24),
+                        const SizedBox(height: 24),
                         Row(
                           children: [
                             Expanded(
                               child: OutlinedButton.icon(
-                                icon: Icon(Icons.male, color: Colors.blue),
-                                label: Text('남자 빠른 로그인', style: TextStyle(color: Colors.blue)),
+                                icon: const Icon(Icons.male, color: Colors.blue),
+                                label: const Text('남자 빠른 로그인', style: TextStyle(color: Colors.blue)),
                                 onPressed: _isLoading ? null : () => _quickLogin(_maleTestEmail),
                                 style: OutlinedButton.styleFrom(
-                                  side: BorderSide(color: Colors.blue),
-                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  side: const BorderSide(color: Colors.blue),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                 ),
                               ),
                             ),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: OutlinedButton.icon(
-                                icon: Icon(Icons.female, color: Colors.pink),
-                                label: Text('여자 빠른 로그인', style: TextStyle(color: Colors.pink)),
+                                icon: const Icon(Icons.female, color: Colors.pink),
+                                label: const Text('여자 빠른 로그인', style: TextStyle(color: Colors.pink)),
                                 onPressed: _isLoading ? null : () => _quickLogin(_femaleTestEmail),
                                 style: OutlinedButton.styleFrom(
-                                  side: BorderSide(color: Colors.pink),
-                                  padding: EdgeInsets.symmetric(vertical: 12),
+                                  side: const BorderSide(color: Colors.pink),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 8),
-                        TextButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                                  Navigator.pushReplacementNamed(context, '/register');
-                                },
-                          child: Text('회원가입', style: TextStyle(color: Colors.blueAccent)),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () {
+                                    Navigator.pushReplacementNamed(context, '/register');
+                                  },
+                            child: const Text('회원가입', style: TextStyle(color: Colors.blueAccent)),
+                          ),
                         ),
+                        if (_isLoading)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 16),
+                            child: CircularProgressIndicator(),
+                          ),
                       ],
                     ),
                   );

@@ -1,5 +1,5 @@
 name: app
-description: "A new Flutter project."
+description: 사랑을 이어주는 커플 앱
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -74,9 +74,11 @@ dev_dependencies:
   analyzer: ^5.10.0
 
 flutter_icons:
-  image_path: "assets/icons/ic_launcher.png"
   android: true
   ios: true
+  image_path: "assets/icons/ic_launcher.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icons/ic_launcher.png"
 
 flutter:
   uses-material-design: true

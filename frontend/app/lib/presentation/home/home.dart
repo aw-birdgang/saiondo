@@ -70,6 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               logger.i('[HomeScreen] 로그아웃 시도');
               await _authStore.logout();
+              if (mounted) {
+                Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+              }
             },
           ),
           Observer(

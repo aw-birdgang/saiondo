@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
               ? AppThemeData.darkThemeData
               : AppThemeData.lightThemeData,
           routes: Routes.routes,
-          initialRoute: token == null ? Routes.login : Routes.home,
+          initialRoute: Routes.splash,
           locale: Locale(_languageStore.locale),
           supportedLocales: _languageStore.supportedLanguages
               .map((language) => Locale(language.locale, language.code))

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../../presentation/analysis/analysis_screen.dart';
 import '../../presentation/auth/login_screen.dart';
 import '../../presentation/auth/register_screen.dart';
 import '../../presentation/category/category_code_guide.dart';
 import '../../presentation/chat/chat.dart';
 import '../../presentation/home/home.dart';
 import '../../presentation/notifications/notifications.dart';
-import '../../presentation/analysis/analysis_screen.dart';
+import '../../presentation/splash/splash_screen.dart';
 
 class Routes {
   Routes._();
@@ -18,6 +19,7 @@ class Routes {
   static const String categoryGuide = '/category_guide';
   static const String notification = '/notification';
   static const String analysis = '/analysis';
+  static const String splash = '/splash';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
@@ -58,6 +60,7 @@ class Routes {
         channelId: args['channelId'],
       );
     },
+    splash: (BuildContext context) => const SplashScreen(),
   };
 
 }
