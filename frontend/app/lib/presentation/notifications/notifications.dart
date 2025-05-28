@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
+import '../../utils/locale/app_localization.dart';
 
 class NotificationsScreen extends StatelessWidget {
 
@@ -12,21 +13,21 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('알림함'),
+        title: Text(AppLocalizations.of(context).translate('notification_box')),
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
               _authStore.clearAllPushMessages();
             },
-            tooltip: '모든 알림 삭제',
+            tooltip: AppLocalizations.of(context).translate('delete_all_notifications'),
           ),
         ],
       ),
       body: Observer(
         builder: (_) {
           if (_authStore.pushMessages.isEmpty) {
-            return Center(child: Text('알림이 없습니다.'));
+            return Center(child: Text(AppLocalizations.of(context).translate('no_notifications')));
           }
           return ListView.separated(
             itemCount: _authStore.pushMessages.length,

@@ -6,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
 
 import '../../di/service_locator.dart';
+import '../../utils/locale/app_localization.dart';
 import '../../utils/routes/routes.dart';
 import 'ai_advice_tab.dart';
 import 'calendar_tab.dart';
@@ -123,22 +124,22 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: Colors.pink[600],
         unselectedItemColor: Colors.grey[500],
         backgroundColor: Colors.white,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '홈',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context).translate('home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: '스케줄',
+            icon: const Icon(Icons.calendar_month),
+            label: AppLocalizations.of(context).translate('schedule'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.psychology_alt),
-            label: 'AI 조언',
+            icon: const Icon(Icons.psychology_alt),
+            label: AppLocalizations.of(context).translate('ai_advice'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: '마이',
+            label: AppLocalizations.of(context).translate('my'),
           ),
         ],
         onTap: _onTabTapped,

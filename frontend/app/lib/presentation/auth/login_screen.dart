@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
+import '../../utils/locale/app_localization.dart';
 import '../user/store/user_store.dart';
 import 'store/auth_store.dart';
 
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success) {
         _navigateToHome();
       } else {
-        setState(() => _error = '로그인 실패');
+        setState(() => _error = AppLocalizations.of(context).translate('login_error'));
       }
     } catch (e) {
       if (!mounted) return;
@@ -112,9 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          '로그인',
-                          style: TextStyle(
+                        Text(
+                          AppLocalizations.of(context).translate('login'),
+                          style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
                             color: Colors.blueAccent,
@@ -124,14 +125,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
-                            labelText: '이메일',
+                            labelText: AppLocalizations.of(context).translate('email'),
                             prefixIcon: const Icon(Icons.email),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
-                            if (value == null || value.isEmpty) return '이메일을 입력하세요';
-                            if (!value.contains('@')) return '이메일 형식이 올바르지 않습니다';
+                            if (value == null || value.isEmpty) return AppLocalizations.of(context).translate('enter_email');
+                            if (!value.contains('@')) return AppLocalizations.of(context).translate('invalid_email_format');
                             return null;
                           },
                         ),
@@ -139,14 +140,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _passwordController,
                           decoration: InputDecoration(
-                            labelText: '비밀번호',
+                            labelText: AppLocalizations.of(context).translate('password'),
                             prefixIcon: const Icon(Icons.lock),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
                           obscureText: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) return '비밀번호를 입력하세요';
-                            if (value.length < 6) return '비밀번호는 6자 이상이어야 합니다';
+                            if (value == null || value.isEmpty) return AppLocalizations.of(context).translate('enter_password');
+                            if (value.length < 6) return AppLocalizations.of(context).translate('password_min_length');
                             return null;
                           },
                         ),
@@ -164,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(
                               child: OutlinedButton.icon(
                                 icon: const Icon(Icons.male, color: Colors.blue),
-                                label: const Text('남자 빠른 로그인', style: TextStyle(color: Colors.blue)),
+                                label: Text(AppLocalizations.of(context).translate('quick_login_male'), style: TextStyle(color: Colors.blue)),
                                 onPressed: _isLoading ? null : () => _quickLogin(_maleTestEmail),
                                 style: OutlinedButton.styleFrom(
                                   side: const BorderSide(color: Colors.blue),
@@ -176,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Expanded(
                               child: OutlinedButton.icon(
                                 icon: const Icon(Icons.female, color: Colors.pink),
-                                label: const Text('여자 빠른 로그인', style: TextStyle(color: Colors.pink)),
+                                label: Text(AppLocalizations.of(context).translate('quick_login_female'), style: TextStyle(color: Colors.pink)),
                                 onPressed: _isLoading ? null : () => _quickLogin(_femaleTestEmail),
                                 style: OutlinedButton.styleFrom(
                                   side: const BorderSide(color: Colors.pink),
@@ -195,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : () {
                                     Navigator.pushReplacementNamed(context, '/register');
                                   },
-                            child: const Text('회원가입', style: TextStyle(color: Colors.blueAccent)),
+                            child: Text(AppLocalizations.of(context).translate('register'), style: TextStyle(color: Colors.blueAccent)),
                           ),
                         ),
                         if (_isLoading)

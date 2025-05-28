@@ -8,6 +8,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../di/service_locator.dart';
 import '../../domain/entry/channel.dart';
 import '../../domain/entry/user.dart';
+import '../../utils/locale/app_localization.dart';
 import '../advice/advice.dart';
 import '../advice/store/advice_store.dart';
 import '../user/store/user_store.dart';
@@ -84,12 +85,16 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           );
         }
         if (_channelStore.errorMessage != null) {
-          return Center(child: Text('채널 정보 오류: ${_channelStore.errorMessage}'));
+          return Center(child: Text(
+            AppLocalizations.of(context)
+              .translate('channel_info_error')
+              .replaceAll('{0}', _channelStore.errorMessage ?? ''),
+          ));
         }
         final user = _userStore.selectedUser;
         final channel = _channelStore.channel;
         if (user == null) {
-          return const Center(child: Text('유저 정보를 불러올 수 없습니다.'));
+          return Center(child: Text(AppLocalizations.of(context).translate('no_user'),));
         }
         return HomeTabContent(
           user: user,
@@ -99,7 +104,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           userId: _userStore.userId,
           assistantId: _userStore.assistantId,
           channelId: _userStore.channelId,
-          partnerName: _userStore.partnerUser?.name ?? "파트너",
+          partnerName: _userStore.partnerUser?.name ?? AppLocalizations.of(context).translate('partner'),
         );
       },
     );
@@ -180,7 +185,11 @@ class HomeTabContent extends StatelessWidget {
                         const SizedBox(height: 8),
                         Center(
                           child: Chip(
-                            label: Text('우리의 기념일 $dDay'),
+                            label: Text(
+                              AppLocalizations.of(context)
+                                .translate('our_anniversary')
+                                .replaceAll('{0}', dDay),
+                            ),
                             backgroundColor: Colors.pink[100],
                             labelStyle: TextStyle(color: Colors.pink[800]),
                           ),
@@ -200,7 +209,7 @@ class HomeTabContent extends StatelessWidget {
                                   children: [
                                     const Icon(Icons.vpn_key, color: Colors.pink),
                                     const SizedBox(width: 8),
-                                    const Text('초대코드', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text(AppLocalizations.of(context).translate('invite_code'), style: const TextStyle(fontWeight: FontWeight.bold)),
                                     const Spacer(),
                                     Flexible(
                                       child: Observer(
@@ -216,7 +225,7 @@ class HomeTabContent extends StatelessWidget {
                                             );
                                           }
                                           return SelectableText(
-                                            inviteCodeStore.inviteCode ?? '코드 없음',
+                                            inviteCodeStore.inviteCode ?? AppLocalizations.of(context).translate('no_code'),
                                             style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -234,7 +243,7 @@ class HomeTabContent extends StatelessWidget {
                                           : () {
                                               // Clipboard.setData(ClipboardData(text: inviteCodeStore.inviteCode!));
                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('초대코드가 복사되었습니다!')),
+                                                SnackBar(content: Text(AppLocalizations.of(context).translate('copy_success'))),
                                               );
                                             },
                                     ),
@@ -244,7 +253,7 @@ class HomeTabContent extends StatelessWidget {
                                 // 버튼 세로 배치
                                 _ActionButton(
                                   icon: Icons.chat,
-                                  label: '채팅 시작',
+                                  label: AppLocalizations.of(context).translate('start_chat'),
                                   color: Colors.pinkAccent,
                                   onPressed: (userId == null || assistantId == null || channelId == null)
                                       ? null
@@ -263,7 +272,7 @@ class HomeTabContent extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 _ActionButton(
                                   icon: Icons.analytics,
-                                  label: '성향분석',
+                                  label: AppLocalizations.of(context).translate('analysis'),
                                   color: Colors.blueAccent,
                                   onPressed: () {
                                     Navigator.pushNamed(
@@ -279,7 +288,7 @@ class HomeTabContent extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 _ActionButton(
                                   icon: Icons.history,
-                                  label: '조언 히스토리',
+                                  label: AppLocalizations.of(context).translate('advice_history'),
                                   color: Colors.green,
                                   onPressed: channelId == null
                                       ? null
@@ -298,7 +307,7 @@ class HomeTabContent extends StatelessWidget {
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          '오늘의 조언',
+                          AppLocalizations.of(context).translate('today_advice'),
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.pink[700]),
                         ),
                         const SizedBox(height: 12),
@@ -313,7 +322,7 @@ class HomeTabContent extends StatelessWidget {
                               );
                             }
                             return Text(
-                              adviceStore.latestAdvice?.advice ?? '아직 조언이 없습니다.',
+                              adviceStore.latestAdvice?.advice ?? AppLocalizations.of(context).translate('no_advice_yet'),
                               style: const TextStyle(color: Colors.black87),
                             );
                           },

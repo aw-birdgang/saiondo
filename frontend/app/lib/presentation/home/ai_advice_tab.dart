@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../di/service_locator.dart';
+import '../../utils/locale/app_localization.dart';
 import '../../utils/routes/routes.dart';
 import '../user/store/user_store.dart';
 
@@ -34,19 +35,19 @@ class _AiAdviceTabScreenState extends State<AiAdviceTabScreen> {
                 Icon(Icons.psychology_alt, size: 64, color: Colors.blueAccent),
                 SizedBox(height: 24),
                 Text(
-                  'AI 조언 챗봇',
+                  AppLocalizations.of(context).translate('ai_advice_bot'),
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blueAccent),
                 ),
                 SizedBox(height: 12),
                 Text(
-                  'AI에게 연애 고민, 성향, 관계에 대한 조언을 받아보세요!',
+                  AppLocalizations.of(context).translate('ai_advice_description'),
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, color: Colors.black87),
                 ),
                 SizedBox(height: 32),
                 ElevatedButton.icon(
                   icon: Icon(Icons.chat_bubble_outline),
-                  label: Text('AI 조언 채팅 시작', style: TextStyle(fontSize: 18)),
+                  label: Text(AppLocalizations.of(context).translate('start_ai_advice_chat'), style: TextStyle(fontSize: 18)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),

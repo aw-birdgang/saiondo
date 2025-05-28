@@ -4,6 +4,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/user.dart';
+import '../../utils/locale/app_localization.dart';
 import '../persona_profile/persona_profile_list.dart';
 import '../persona_profile/store/persona_profile_store.dart';
 import '../user/store/user_store.dart';
@@ -34,7 +35,7 @@ class MyPageScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('성향 프로필을 불러오지 못했습니다.')),
+          SnackBar(content: Text(AppLocalizations.of(context).translate('profile_load_fail'))),
         );
       }
     }
@@ -58,9 +59,9 @@ class MyPageScreen extends StatelessWidget {
 
           if (user == null || userId == null || userId.isEmpty) {
             Future.microtask(() => _goToLogin(context));
-            return const Center(
+            return Center(
               child: Text(
-                '로그인 정보가 없습니다.\n다시 로그인 해주세요.',
+                AppLocalizations.of(context).translate('no_login_info'),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
@@ -132,15 +133,20 @@ class MyPageContent extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '내 정보 관리',
+              AppLocalizations.of(context).translate('my_info_manage'),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey[700]),
             ),
           ),
           const SizedBox(height: 12),
           ListTile(
             leading: const Icon(Icons.person_search, color: Colors.blueAccent),
-            title: const Text('내 성향 관리', style: TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: const Text('나의 성향(퍼소나) 프로필을 추가/수정/삭제할 수 있습니다.'),
+            title: Text(
+              AppLocalizations.of(context).translate('my_persona_manage'),
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              AppLocalizations.of(context).translate('my_persona_manage_desc'),
+            ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.blueAccent),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             onTap: onPersonaProfileTap,

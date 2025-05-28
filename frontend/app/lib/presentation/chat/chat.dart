@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../di/service_locator.dart';
 import '../../domain/entry/chat_history.dart';
+import '../../utils/locale/app_localization.dart';
 import 'store/chat_store.dart';
 import 'chat_message_widget.dart';
 
@@ -45,7 +46,9 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Observer(
           builder: (_) => Text(
-            _chatStore.isConnected ? '채팅 (연결됨)' : '채팅 (연결끊김)',
+            _chatStore.isConnected
+              ? AppLocalizations.of(context).translate('chat_connected')
+              : AppLocalizations.of(context).translate('chat_disconnected'),
           ),
         ),
       ),
@@ -99,8 +102,8 @@ class _ChatInputBar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: TextField(
                 controller: controller,
-                decoration: const InputDecoration(
-                  hintText: '메시지를 입력하세요',
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context).translate('enter_message'),
                 ),
                 onSubmitted: (text) {
                   if (text.trim().isNotEmpty) {
