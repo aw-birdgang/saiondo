@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../../di/service_locator.dart';
 import '../auth/store/auth_store.dart'; // 실제 AuthStore 경로에 맞게 수정
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -20,7 +21,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    // 예시: AuthStore에서 토큰을 불러오거나, SharedPreferences에서 직접 확인
     await _authStore.loadAuthFromPrefs(); // 비동기 로딩
     final isLoggedIn = _authStore.accessToken != null;
 
@@ -59,7 +59,10 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const CircularProgressIndicator(),
+            LoadingAnimationWidget.staggeredDotsWave(
+              color: Colors.pink,
+              size: 40,
+            ),
           ],
         ),
       ),

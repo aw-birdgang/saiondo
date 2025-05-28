@@ -3,6 +3,7 @@ import 'package:app/presentation/home/store/invite_code_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/channel.dart';
@@ -75,7 +76,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     return Observer(
       builder: (_) {
         if (_userStore.isLoading || _channelStore.isLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: LoadingAnimationWidget.staggeredDotsWave(
+              color: Colors.pink,
+              size: 40,
+            ),
+          );
         }
         if (_channelStore.errorMessage != null) {
           return Center(child: Text('채널 정보 오류: ${_channelStore.errorMessage}'));
@@ -200,10 +206,13 @@ class HomeTabContent extends StatelessWidget {
                                       child: Observer(
                                         builder: (_) {
                                           if (inviteCodeStore.isLoading) {
-                                            return const SizedBox(
+                                            return SizedBox(
                                               width: 18,
                                               height: 18,
-                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                              child: LoadingAnimationWidget.staggeredDotsWave(
+                                                color: Colors.pink,
+                                                size: 18,
+                                              ),
                                             );
                                           }
                                           return SelectableText(
@@ -296,7 +305,12 @@ class HomeTabContent extends StatelessWidget {
                         Observer(
                           builder: (_) {
                             if (adviceStore.isLoading) {
-                              return const Center(child: CircularProgressIndicator());
+                              return Center(
+                                child: LoadingAnimationWidget.staggeredDotsWave(
+                                  color: Colors.pink,
+                                  size: 32,
+                                ),
+                              );
                             }
                             return Text(
                               adviceStore.latestAdvice?.advice ?? '아직 조언이 없습니다.',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import '../category/category_code_guide.dart';
@@ -47,7 +48,12 @@ class PersonaProfileEditScreen extends StatelessWidget {
               child: Observer(
                 builder: (_) {
                   if (_categoryCodeStore.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.blueAccent,
+                        size: 32,
+                      ),
+                    );
                   }
                   if (_categoryCodeStore.error != null) {
                     return Center(child: Text('에러: ${_categoryCodeStore.error}'));

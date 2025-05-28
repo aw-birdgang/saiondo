@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../di/service_locator.dart';
 import 'store/category_code_store.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CategoryCodeGuideScreen extends StatelessWidget {
 
@@ -17,7 +18,12 @@ class CategoryCodeGuideScreen extends StatelessWidget {
       body: Observer(
         builder: (_) {
           if (_store.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.blueAccent,
+                size: 40,
+              ),
+            );
           }
           if (_store.error != null) {
             return Center(child: Text('에러: ${_store.error}'));

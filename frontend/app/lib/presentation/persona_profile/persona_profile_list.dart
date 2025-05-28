@@ -2,6 +2,7 @@ import 'package:app/presentation/category/store/category_code_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:collection/collection.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/persona_profile.dart';
@@ -93,7 +94,12 @@ class PersonaProfileListScreen extends StatelessWidget {
       body: Observer(
         builder: (_) {
           if (_personaProfileStore.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.blueAccent,
+                size: 40,
+              ),
+            );
           }
           if (_personaProfileStore.profiles.isEmpty) {
             return Center(

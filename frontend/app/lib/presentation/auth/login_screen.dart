@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import '../user/store/user_store.dart';
@@ -198,9 +199,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         if (_isLoading)
-                          const Padding(
-                            padding: EdgeInsets.only(top: 16),
-                            child: CircularProgressIndicator(),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: LoadingAnimationWidget.staggeredDotsWave(
+                              color: Colors.blueAccent,
+                              size: 32,
+                            ),
                           ),
                       ],
                     ),

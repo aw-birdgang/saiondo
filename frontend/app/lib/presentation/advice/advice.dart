@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import 'store/advice_store.dart';
@@ -36,7 +37,12 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
       body: Observer(
         builder: (_) {
           if (_store.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.pink,
+                size: 40,
+              ),
+            );
           }
           if (_store.adviceList.isEmpty) {
             return Center(

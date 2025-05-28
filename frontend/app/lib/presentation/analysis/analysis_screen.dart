@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import 'store/analysis_store.dart';
@@ -31,7 +32,12 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       body: Observer(
         builder: (_) {
           if (_store.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.pink,
+                size: 40,
+              ),
+            );
           }
           final analysis = _store.latestAnalysis;
           if (analysis == null) {
@@ -131,7 +137,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   await _store.createAnalysis(widget.channelId);
                 },
           child: _store.isCreating
-              ? CircularProgressIndicator(color: Colors.white)
+              ? LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.white,
+                  size: 28,
+                )
               : Icon(Icons.refresh),
           backgroundColor: Colors.pink,
         ),
