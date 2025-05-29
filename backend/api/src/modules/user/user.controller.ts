@@ -1,17 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
-import { UserService } from './user.services';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from '@modules/user/dto/user.dto';
-import { UpdateFcmTokenDto } from '@modules/user/dto/update-fcm-token.dto';
+import {Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post,} from '@nestjs/common';
+import {UserService} from './user.services';
+import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {CreateUserDto} from '@modules/user/dto/user.dto';
+import {UpdateFcmTokenDto} from '@modules/user/dto/update-fcm-token.dto';
+import {UserWithPointHistoryDto} from './dto/user-with-point-history.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -83,5 +75,21 @@ export class UserController {
   @ApiResponse({ status: 200, description: '업데이트된 유저 정보 반환' })
   async updateFcmToken(@Param('id') userId: string, @Body() body: UpdateFcmTokenDto) {
     return this.userService.updateFcmToken(userId, body.fcmToken);
+  }
+
+  @Get(':id/with-point-history')
+  @ApiOperation({ summary: '유저 정보와 포인트 이력 동시 조회' })
+  @ApiParam({ name: 'id', description: '유저 ID' })
+  @ApiResponse({
+    status: 200,
+    description: '유저 정보와 포인트 이력 반환',
+    type: UserWithPointHistoryDto,
+  })
+  async getUserWithPointHistory(@Param('id') userId: string) {
+    const user = await this.userService.findUserWithPointHistory(userId);
+    if (!user) {
+      throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 }

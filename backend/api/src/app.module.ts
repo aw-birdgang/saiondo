@@ -18,6 +18,7 @@ import {ChannelModule} from './modules/channel/channel.module';
 import {AssistantModule} from '@modules/assistant/assistant.module';
 import {CoupleAnalysisModule} from './modules/couple-analysis/couple-analysis.module';
 import {EventModule} from './modules/event/event.module';
+import {PointModule} from "@modules/point/point.module";
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import {EventModule} from './modules/event/event.module';
     ChatHistoryModule,
     LlmModule,
     CategoryCodeModule,
+    PointModule,
     AdviceModule,
     EventModule,
     QuestionTemplateModule,

@@ -47,6 +47,14 @@ enum PushStatus {
   CANCELLED   // 발송 취소
 }
 
+enum PointType {
+  MISSION_REWARD
+  PROFILE_UPDATE
+  CHAT_USE
+  ADMIN_ADJUST
+  ETC
+}
+
 // ===== MODELS =====
 
 model User {
@@ -60,6 +68,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  point     Int      @default(0)
+
   // 관계
   assistants      Assistant[]
   chatHistories   ChatHistory[]
@@ -70,6 +80,7 @@ model User {
   channelsAsUser2 Channel[]    @relation("ChannelUser2")
   events          Event[]
   suggestedFields SuggestedField[]
+  pointHistories  PointHistory[]
 }
 
 model Channel {
@@ -250,4 +261,15 @@ model SuggestedField {
   // 관계
   user            User         @relation(fields: [userId], references: [id])
   categoryCode    CategoryCode @relation(fields: [categoryCodeId], references: [id])
+}
+
+model PointHistory {
+  id          String   @id @default(uuid())
+  userId      String
+  amount      Int
+  type        PointType
+  description String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
 }

@@ -45,4 +45,15 @@ export class UserService {
       data: { fcmToken },
     });
   }
+
+  async findUserWithPointHistory(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        pointHistories: {
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+  }
 }

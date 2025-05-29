@@ -4,12 +4,15 @@ import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
 import {PersonaProfile, ProfileSource} from '@prisma/client';
 import {LlmService} from '@modules/llm/llm.service';
 import {UpdatePersonaProfileDto} from './dto/update-persona-profile.dto';
+import { PointService } from '../point/point.service';
+import { PointType } from '@prisma/client';
 
 @Injectable()
 export class PersonaProfileService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly llmService: LlmService,
+    private readonly pointService: PointService,
   ) {}
 
   /**
@@ -56,6 +59,8 @@ export class PersonaProfileService {
       where: { userId, categoryCodeId },
     });
     if (!existing) throw new Error('PersonaProfile not found');
+
+    await this.pointService.earnPoint(userId, 10, PointType.PROFILE_UPDATE, '프로필 업데이트 보상');
 
     return this.prisma.personaProfile.updateMany({
       where: { userId, categoryCodeId },
