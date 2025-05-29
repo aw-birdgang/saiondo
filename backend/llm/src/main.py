@@ -5,6 +5,7 @@ from api.feedback import router as feedback_router
 from api.couple_analysis import router as couple_analysis_router
 from api.health import router as health_router
 from dotenv import load_dotenv
+from api.chat_relationship_coach import router as chat_relationship_coach_router
 load_dotenv()
 
 app = FastAPI(
@@ -18,3 +19,4 @@ app.include_router(chat_router)
 app.include_router(feedback_router)
 app.include_router(couple_analysis_router)
 app.include_router(health_router)
+app.include_router(chat_relationship_coach_router)

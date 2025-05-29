@@ -1,10 +1,13 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import axios from 'axios';
 import {ConfigService} from '@nestjs/config';
 import {AllConfigType} from '../../config/config.type';
 import {AnalyzeRequestDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
 import {buildHistory, LLMMessage} from "@common/utils/chat_history.util";
+import {SuggestedFieldsService} from '../suggested-fields/suggested-fields.service';
+import {RelationshipCoachRequestDto} from "@modules/chat/dto/chat_relationship-coach.dto";
+import {loadPromptTemplate} from "@common/utils/prompt-loader.util";
 
 /**
  * LlmService는 API 서버에서 LLM 서버(FastAPI)로의 모든 연동을 담당합니다.
@@ -17,11 +20,16 @@ import {buildHistory, LLMMessage} from "@common/utils/chat_history.util";
 export class LlmService {
   private readonly llmApiUrl: string;
 
-  constructor(private readonly configService: ConfigService<AllConfigType>) {
+  constructor(
+    private readonly configService: ConfigService<AllConfigType>,
+    private readonly suggestedFieldsService: SuggestedFieldsService,
+  ) {
     this.llmApiUrl = configService.getOrThrow('common', {
       infer: true,
     }).llmApiUrl;
   }
+
+  private readonly logger = new Logger(LlmService.name);
 
   /**
    * 프롬프트를 LLM 서버로 전달하여 답변을 받음
@@ -30,11 +38,11 @@ export class LlmService {
    */
   async forwardToLLM(prompt: string, model: 'openai' | 'claude'): Promise<string> {
     try {
-      const response = await axios.post(`${this.llmApiUrl}/chat`, {
+      const { data } = await axios.post(`${this.llmApiUrl}/chat`, {
         prompt,
         model,
       });
-      return response.data.response;
+      return data.response;
     } catch (error: any) {
       console.error('LLM 호출 실패:', error.message);
       throw error;
@@ -57,13 +65,42 @@ export class LlmService {
     console.log('[forwardHistoryToLLM] 최종 LLM 프롬프트 히스토리:', JSON.stringify(history, null, 2));
 
     try {
-      const response = await axios.post(`${this.llmApiUrl}/chat-history`, {
+      const { data } = await axios.post(`${this.llmApiUrl}/chat-history`, {
         messages: history,
         model,
       });
-      return response.data.response;
+      return data.response;
     } catch (error: any) {
       console.error('LLM history 호출 실패:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   *
+   * @param body
+   */
+  async forwardToLLMForChatRelationshipCoach(body: RelationshipCoachRequestDto): Promise<string> {
+    let systemPrompt = loadPromptTemplate('chat_relationship_coach');
+    systemPrompt = systemPrompt
+        .replace('{{memory_schema}}', JSON.stringify(body.memory_schema, null, 2))
+        .replace('{{profile}}', JSON.stringify(body.profile, null, 2))
+        .replace('{{summary}}', body.summary);
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...body.messages,
+    ];
+    this.logger.log('[LLM][RelationshipCoach] messages:', JSON.stringify(messages, null, 2));
+    try {
+      const { data } = await axios.post(`${this.llmApiUrl}/chat-relationship-coach`, {
+        messages,
+        model: body.model,
+        response_format: { type: "json_object" }
+      });
+      this.logger.log('[LLM][RelationshipCoach] response:', JSON.stringify(data, null, 2));
+      return data.response;
+    } catch (error: any) {
+      console.error('LLM relationship coach 호출 실패:', error.message);
       throw error;
     }
   }
@@ -74,8 +111,8 @@ export class LlmService {
    */
   async analyze(data: AnalyzeRequestDto): Promise<any> {
     try {
-      const response = await axios.post(`${this.llmApiUrl}/analyze`, data);
-      return response.data;
+      const { data: res } = await axios.post(`${this.llmApiUrl}/analyze`, data);
+      return res;
     } catch (error: any) {
       console.error('LLM 분석 요청 실패:', error.message);
       throw error;
@@ -88,8 +125,8 @@ export class LlmService {
    */
   async analyzeAnswer(data: AnalyzeAnswerDto) {
     try {
-      const response = await axios.post(`${this.llmApiUrl}/analyze`, data);
-      return response.data;
+      const { data: res } = await axios.post(`${this.llmApiUrl}/analyze`, data);
+      return res;
     } catch (error: any) {
       console.error('LLM 분석 요청 실패:', error.message);
       throw error;
@@ -103,50 +140,32 @@ export class LlmService {
    */
   async getFeedback(message: string, roomId: string): Promise<string> {
     try {
-      // LLM 서버에 피드백 요청 (엔드포인트는 실제 LLM 서버에 맞게 조정)
-      const response = await axios.post(`${this.llmApiUrl}/feedback`, {
+      const { data } = await axios.post(`${this.llmApiUrl}/feedback`, {
         message,
         roomId,
       });
-      return response.data.response;
+      return data.response;
     } catch (error: any) {
-      // 만약 /feedback 엔드포인트가 없다면, /chat을 재활용하거나, 아래처럼 fallback 처리 가능
       console.error('LLM 피드백 요청 실패:', error.message);
       // fallback: /chat 엔드포인트 사용
       try {
-        const fallback = await axios.post(`${this.llmApiUrl}/chat`, {
+        const { data: fallback } = await axios.post(`${this.llmApiUrl}/chat`, {
           prompt: message,
           model: 'openai', // 기본 모델 지정
         });
-        return fallback.data.response;
+        return fallback.response;
       } catch (fallbackError: any) {
         throw fallbackError;
       }
     }
   }
 
-  /**
-   * 채팅 데이터 기반 성향 분석 요청
-   * @param chatData 채팅 데이터 배열
-   */
-  async analyzePersona(chatData: any[]): Promise<any> {
-    try {
-      const response = await axios.post(`${this.llmApiUrl}/analyze-persona`, {
-        chatData,
-      });
-      return response.data;
-    } catch (error: any) {
-      console.error('LLM 성향 분석 요청 실패:', error.message);
-      throw error;
-    }
-  }
-
   async analyzeCouple(prompt: string): Promise<string> {
     try {
-      const response = await axios.post(`${this.llmApiUrl}/couple-analysis`, {
+      const { data } = await axios.post(`${this.llmApiUrl}/couple-analysis`, {
         prompt,
       });
-      return response.data.response;
+      return data.response;
     } catch (error: any) {
       console.error('LLM 호출 실패:', error.message);
       throw error;
@@ -155,14 +174,27 @@ export class LlmService {
 
   async adviceCouple(prompt: string): Promise<string> {
     try {
-      const response = await axios.post(`${this.llmApiUrl}/couple-analysis`, {
+      const { data } = await axios.post(`${this.llmApiUrl}/couple-analysis`, {
         prompt,
       });
-      return response.data.response;
+      return data.response;
     } catch (error: any) {
       console.error('LLM 호출 실패:', error.message);
       throw error;
     }
+  }
+
+  async processLlmResponse(llmResponse, userId: string) {
+    // llmResponse: { reply, update, suggested_field }
+    if (llmResponse.suggested_field) {
+      await this.suggestedFieldsService.createSuggestedField({
+        userId,
+        ...llmResponse.suggested_field,
+        status: 'PENDING',
+      });
+    }
+    // ... 기존 로직 ...
+    return llmResponse.reply;
   }
 
 }

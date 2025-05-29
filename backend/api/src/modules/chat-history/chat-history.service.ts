@@ -42,4 +42,22 @@ export class ChatHistoryService {
       take: limit,
     });
   }
+
+  /**
+   * 특정 채널에서 특정 유저가 보낸 최근 메시지 N개 조회
+   */
+  async findManyByChannelAndUser(
+    channelId: string,
+    userId: string,
+    limit = 10
+  ) {
+    return this.prisma.chatHistory.findMany({
+      where: {
+        channelId,
+        userId,
+      },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+  }
 }

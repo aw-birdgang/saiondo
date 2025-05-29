@@ -39,56 +39,6 @@ export class PersonaProfileService {
   }
 
   /**
-   * LLM 분석 결과로부터 페르소나 프로필 저장 (isStatic: false)
-   */
-  async saveProfileFromAnalysis(
-    userId: string,
-    categoryCodeId: string,
-    content: string,
-    source: ProfileSource,
-    confidenceScore: number,
-  ) {
-    return this.prisma.personaProfile.create({
-      data: {
-        userId,
-        categoryCodeId,
-        content,
-        isStatic: false,
-        source,
-        confidenceScore,
-      },
-    });
-  }
-
-  /**
-   * 해당 유저의 최근 채팅 데이터 30개 조회 (최신순)
-   */
-  async getRecentChatData(userId: string) {
-    return this.prisma.chatHistory.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 30,
-    });
-  }
-
-  /**
-   * 최근 채팅 데이터를 LLM에 분석 요청 후, 페르소나 프로필로 저장
-   */
-  async analyzeAndSavePersona(userId: string) {
-    const chatData = await this.getRecentChatData(userId);
-    const analysis = await this.llmService.analyzePersona(chatData);
-    return this.prisma.personaProfile.create({
-      data: {
-        userId,
-        categoryCodeId: analysis.categoryCodeId,
-        content: analysis.content,
-        confidenceScore: analysis.confidenceScore,
-        source: 'AI_ANALYSIS',
-      },
-    });
-  }
-
-  /**
    * 특정 유저의 모든 페르소나 프로필 조회 (카테고리 정보 포함)
    */
   async findByUserId(userId: string) {

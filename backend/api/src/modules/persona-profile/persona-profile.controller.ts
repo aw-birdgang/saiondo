@@ -24,16 +24,6 @@ export class PersonaProfileController {
     return this.service.createPersonaProfile(dto);
   }
 
-  @Post('analyze/:userId')
-  @ApiOperation({ summary: '유저의 페르소나 자동 분석 및 저장' })
-  @ApiResponse({
-    status: 201,
-    description: '분석 및 저장된 페르소나 프로필 반환',
-  })
-  async analyzePersona(@Param('userId') userId: string) {
-    return this.service.analyzeAndSavePersona(userId);
-  }
-
   @Get('user/:userId')
   @ApiOperation({ summary: 'userId로 페르소나 프로필 목록 조회' })
   @ApiResponse({

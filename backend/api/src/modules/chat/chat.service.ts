@@ -9,6 +9,7 @@ import {fillPromptTemplate} from '../../common/utils/prompt-template.util';
 import {LLMMessageDto} from "@modules/llm/dto/llm-message.dto";
 import {ChatHistoryService} from '@modules/chat-history/chat-history.service';
 import {UserService} from "@modules/user/user.services";
+import {RelationshipCoachRequestDto} from "@modules/chat/dto/chat_relationship-coach.dto";
 
 @Injectable()
 export class ChatService {
@@ -146,10 +147,10 @@ export class ChatService {
    * 사용자 메시지 처리 및 LLM 응답 생성 전체 플로우
    */
   async processUserMessage(
-    userId: string,
-    assistantId: string,
-    channelId: string,
-    message: string,
+      userId: string,
+      assistantId: string,
+      channelId: string,
+      message: string,
   ) {
     this.logger.log(`[ChatService] user message: ${message}`);
 
@@ -159,11 +160,11 @@ export class ChatService {
 
     // 2. 사용자 메시지 저장
     const userChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      message,
-      MessageSender.USER,
+        userId,
+        assistantId,
+        channelId,
+        message,
+        MessageSender.USER,
     );
 
     // 3. 상대방 유저 정보 조회
@@ -204,6 +205,71 @@ export class ChatService {
 
     // 8. AI 응답 저장
     const aiChat = await this.saveChatMessage(
+        userId,
+        assistantId,
+        channelId,
+        llmResponse,
+        MessageSender.AI,
+    );
+
+    return {
+      userId,
+      assistantId,
+      channelId,
+      message,
+      userChat,
+      aiChat,
+    };
+  }
+
+  /**
+   * 관계 코치 LLM 상담 전체 플로우
+   */
+  async processRelationshipCoachMessage(
+    userId: string,
+    assistantId: string,
+    channelId: string,
+    message: string,
+    model: 'openai' | 'claude' = 'openai'
+  ) {
+    this.logger.log(`[ChatService] user message (relationship coach): ${message}`);
+
+    // 1. 필요한 정보 서버 내부에서 조회
+    const memory_schema = await this.getMemorySchema(channelId, userId, assistantId);
+    const profile = await this.getProfileWithPartner(userId, channelId);
+    const summary = await this.getConversationSummary(channelId, userId);
+
+    // 2. 대화 히스토리 수집
+    const chatHistory = await this.getChatHistoryMessagesChannelAndAssistant(channelId, assistantId, 10);
+    this.logger.log(`[ChatService] LLM chatHistory: ${JSON.stringify(chatHistory, null, 2)}`);
+
+    // 3. 사용자 메시지 저장
+    const userChat = await this.saveChatMessage(
+      userId,
+      assistantId,
+      channelId,
+      message,
+      MessageSender.USER,
+    );
+
+    // 4. RelationshipCoachRequestDto 조립
+    const relationshipCoachRequest: RelationshipCoachRequestDto = {
+      memory_schema,
+      profile,
+      summary,
+      messages: [
+        ...chatHistory,
+        { role: 'user', content: message }
+      ],
+      model,
+    };
+
+    // 5. LLM 서버에 관계코치 프롬프트 기반 응답 요청
+    const llmResponse = await this.llmService.forwardToLLMForChatRelationshipCoach(relationshipCoachRequest);
+    this.logger.log(`[ChatService] LLM 관계코치 응답: ${llmResponse}`);
+
+    // 6. AI 응답 저장
+    const aiChat = await this.saveChatMessage(
       userId,
       assistantId,
       channelId,
@@ -218,6 +284,69 @@ export class ChatService {
       message,
       userChat,
       aiChat,
+      llmResponse,
     };
+  }
+
+  /**
+   * 관계코치용 memory_schema 조회 (예시)
+   */
+  async getMemorySchema(channelId: string, userId: string, assistantId: string): Promise<Record<string, any>> {
+    // 실제 서비스 상황에 맞게 구현
+    // 예: 채널/유저/assistant 관련 메타 정보, 최근 대화 요약 등
+    return {
+      channelId,
+      userId,
+      assistantId,
+      // ... 기타 필요한 정보
+    };
+  }
+
+  /**
+   * 관계코치용 profile 조회 (user + partner 정보 포함)
+   */
+  async getProfileWithPartner(userId: string, channelId: string): Promise<Record<string, any>> {
+    // 본인 정보
+    const user = await this.userService.findById(userId);
+    const userPersonaSummary = await this.getPersonaSummary(userId);
+
+    // 파트너 정보
+    const partner = await this.getPartnerUser(channelId, userId);
+    let partnerPersonaSummary = '';
+    if (partner) {
+      partnerPersonaSummary = await this.getPersonaSummary(partner.id);
+    }
+
+    return {
+      user: {
+        id: user?.id,
+        name: user?.name,
+        gender: user?.gender,
+        birthDate: user?.birthDate,
+        personaSummary: userPersonaSummary,
+      },
+      partner: partner
+        ? {
+            id: partner.id,
+            name: partner.name,
+            gender: partner.gender,
+            birthDate: partner.birthDate,
+            personaSummary: partnerPersonaSummary,
+          }
+        : null,
+      channelId,
+      // 필요하다면 relationshipStatus, anniversary 등도 추가
+    };
+  }
+
+  /**
+   * 관계코치용 대화 요약 조회 (예시)
+   */
+  async getConversationSummary(channelId: string, userId: string): Promise<string> {
+    // 실제 서비스 상황에 맞게 구현
+    // 예: 최근 대화 요약, 감정 상태 등
+    // 여기서는 예시로 최근 10개 메시지를 단순 합침
+    const history = await this.chatHistoryService.findManyByChannelAndUser(channelId, userId, 10);
+    return history.map(h => h.message).join(' / ');
   }
 }

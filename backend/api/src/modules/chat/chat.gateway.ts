@@ -70,7 +70,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     });
 
     try {
-      const response = await this.chatService.processUserMessage(
+      // const response = await this.chatService.processUserMessage(
+      //   userId,
+      //   assistantId,
+      //   channelId,
+      //   message,
+      // );
+      const response = await this.chatService.processRelationshipCoachMessage(
         userId,
         assistantId,
         channelId,

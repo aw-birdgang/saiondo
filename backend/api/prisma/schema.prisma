@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" // Prisma Client for TypeScript/JavaScript
 }
 
 datasource db {
@@ -7,46 +7,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 열거형 정의
+// ===== ENUMS =====
+
 enum Gender {
-  MALE
-  FEMALE
-  OTHER
+  MALE      // 남성
+  FEMALE    // 여성
+  OTHER     // 기타/미지정
 }
 
 enum RelationshipStatus {
-  PENDING
-  ACTIVE
-  ENDED
+  PENDING   // 커플 매칭 대기
+  ACTIVE    // 커플 관계 유지중
+  ENDED     // 커플 관계 종료
 }
 
 enum MessageSender {
-  USER
-  AI
-  SYSTEM
+  USER      // 사용자
+  AI        // AI(챗봇)
+  SYSTEM    // 시스템(알림 등)
 }
 
 enum ProfileSource {
-  USER_INPUT
-  AI_ANALYSIS
-  SYSTEM
+  USER_INPUT    // 사용자가 직접 입력
+  AI_ANALYSIS   // AI가 분석/제안
+  SYSTEM        // 시스템 자동 생성
 }
 
 enum QuestionType {
-  PERSONALITY
-  RELATIONSHIP
-  DAILY
-  MBTI
+  PERSONALITY    // 성격 관련
+  RELATIONSHIP   // 연애/관계 관련
+  DAILY          // 일상/습관 관련
+  MBTI           // MBTI 등 성향 관련
 }
 
 enum PushStatus {
-  SCHEDULED
-  SENT
-  FAILED
-  CANCELLED
+  SCHEDULED   // 발송 예정
+  SENT        // 발송 완료
+  FAILED      // 발송 실패
+  CANCELLED   // 발송 취소
 }
 
-// 모델 정의
+// ===== MODELS =====
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -58,14 +60,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // 관계
   assistants      Assistant[]
   chatHistories   ChatHistory[]
   personaProfiles PersonaProfile[]
   pushSchedules   PushSchedule[]
   generatedReports Advice[]    @relation("GeneratedBy")
-  channelsAsUser1 Channel[] @relation("ChannelUser1")
-  channelsAsUser2 Channel[] @relation("ChannelUser2")
+  channelsAsUser1 Channel[]    @relation("ChannelUser1")
+  channelsAsUser2 Channel[]    @relation("ChannelUser2")
   events          Event[]
+  suggestedFields SuggestedField[]
 }
 
 model Channel {
@@ -81,22 +85,25 @@ model Channel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  assistants Assistant[]
-  advices Advice[]
-  chatHistories ChatHistory[]
-  coupleAnalyses CoupleAnalysis[]
-  user1     User     @relation("ChannelUser1", fields: [user1Id], references: [id])
-  user2     User     @relation("ChannelUser2", fields: [user2Id], references: [id])
+  // 관계
+  assistants      Assistant[]
+  advices         Advice[]
+  chatHistories   ChatHistory[]
+  coupleAnalyses  CoupleAnalysis[]
+  user1           User     @relation("ChannelUser1", fields: [user1Id], references: [id])
+  user2           User     @relation("ChannelUser2", fields: [user2Id], references: [id])
 }
 
 model Assistant {
   id        String   @id @default(uuid())
   userId    String
   channelId String
-  user      User     @relation(fields: [userId], references: [id])
-  channel   Channel  @relation(fields: [channelId], references: [id])
-  chatHistories ChatHistory[]
   createdAt DateTime @default(now())
+
+  // 관계
+  user         User     @relation(fields: [userId], references: [id])
+  channel      Channel  @relation(fields: [channelId], references: [id])
+  chatHistories ChatHistory[]
 
   @@map("assistants")
 }
@@ -109,6 +116,8 @@ model ChatHistory {
   sender      String
   message     String
   createdAt   DateTime  @default(now())
+
+  // 관계
   assistant   Assistant @relation(fields: [assistantId], references: [id])
   channel     Channel   @relation(fields: [channelId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
@@ -119,6 +128,8 @@ model CoupleAnalysis {
   channelId    String
   rawResult    String   @db.Text
   createdAt    DateTime @default(now())
+
+  // 관계
   channel      Channel  @relation(fields: [channelId], references: [id])
 }
 
@@ -129,27 +140,31 @@ model CategoryCode {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // 관계
   questionTemplates QuestionTemplate[]
   personaProfiles   PersonaProfile[]
+  suggestedFields   SuggestedField[]
 
   @@map("category_codes")
 }
 
 model PersonaProfile {
   id              String        @id @default(uuid())
-  userId          String       @map("user_id")
-  categoryCodeId  String       @map("category_code_id")
-  content         String       @db.Text
-  isStatic        Boolean      @default(false) @map("is_static")
+  userId          String        @map("user_id")
+  categoryCodeId  String        @map("category_code_id")
+  content         String        @db.Text
+  isStatic        Boolean       @default(false) @map("is_static")
   source          ProfileSource
-  confidenceScore Float        @map("confidence_score")
-  createdAt       DateTime     @default(now()) @map("created_at")
-  updatedAt       DateTime     @updatedAt @map("updated_at")
+  confidenceScore Float         @map("confidence_score")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
-  user            User         @relation(fields: [userId], references: [id])
-  categoryCode    CategoryCode @relation(fields: [categoryCodeId], references: [id])
+  // 관계
+  user            User          @relation(fields: [userId], references: [id])
+  categoryCode    CategoryCode  @relation(fields: [categoryCodeId], references: [id])
 
   @@map("persona_profiles")
+  @@unique([userId, categoryCodeId])
 }
 
 model Advice {
@@ -158,9 +173,10 @@ model Advice {
   advice     String
   createdAt  DateTime @default(now())
 
+  // 관계
   generatedBy   User?    @relation("GeneratedBy", fields: [generatedById], references: [id])
   generatedById String?
-  channel    Channel  @relation(fields: [channelId], references: [id])
+  channel       Channel  @relation(fields: [channelId], references: [id])
 }
 
 model QuestionTemplate {
@@ -171,6 +187,7 @@ model QuestionTemplate {
   type           QuestionType
   createdAt      DateTime      @default(now()) @map("created_at")
 
+  // 관계
   categoryCode   CategoryCode  @relation(fields: [categoryCodeId], references: [id])
   pushSchedules  PushSchedule[]
 
@@ -185,6 +202,7 @@ model PushSchedule {
   sentAt       DateTime?   @map("sent_at")
   status       PushStatus
 
+  // 관계
   user         User        @relation(fields: [userId], references: [id])
   question     QuestionTemplate @relation(fields: [questionId], references: [id])
   userAnswer   UserAnswer?
@@ -198,6 +216,7 @@ model UserAnswer {
   answerText   String      @db.Text
   createdAt    DateTime    @default(now()) @map("created_at")
 
+  // 관계
   pushSchedule PushSchedule @relation(fields: [pushScheduleId], references: [id])
 }
 
@@ -211,7 +230,24 @@ model Event {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // 관계
   user        User     @relation(fields: [userId], references: [id])
 
   @@map("events")
+}
+
+model SuggestedField {
+  id              String   @id @default(uuid())
+  userId          String
+  categoryCodeId  String
+  content         String   @db.Text
+  source          ProfileSource
+  confidenceScore Float
+  status          String   // 'PENDING', 'APPROVED', 'REJECTED'
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // 관계
+  user            User         @relation(fields: [userId], references: [id])
+  categoryCode    CategoryCode @relation(fields: [categoryCodeId], references: [id])
 }
