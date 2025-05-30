@@ -1,4 +1,3 @@
-
 import 'package:app/data/network/apis/advice_api.dart';
 import 'package:app/data/network/apis/chst_api.dart';
 import 'package:event_bus/event_bus.dart';
@@ -10,6 +9,7 @@ import '../../../di/service_locator.dart';
 import '../../network/apis/analysis_api.dart';
 import '../../network/apis/assistant_api.dart';
 import '../../network/apis/auth_api.dart';
+import '../../network/apis/basic_question_with_answer_api.dart';
 import '../../network/apis/category_code_api.dart';
 import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
@@ -65,6 +65,7 @@ class NetworkModule {
     getIt.registerSingleton(ChatApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(ChatHistoryApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(PointApi(getIt<DioClient>(), getIt<RestClient>()));
+    getIt.registerSingleton(BasicQuestionWithAnswerApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(EventApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(AnalysisApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(AdviceApi(getIt<DioClient>(), getIt<RestClient>()));

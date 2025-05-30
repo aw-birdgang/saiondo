@@ -7,8 +7,9 @@ import '../../domain/entry/user.dart';
 import '../../utils/locale/app_localization.dart';
 import '../persona_profile/persona_profile_list.dart';
 import '../persona_profile/store/persona_profile_store.dart';
-import '../user/store/user_store.dart';
+import '../user/basic_question_screen.dart';
 import '../user/point_history_screen.dart';
+import '../user/store/user_store.dart';
 
 class MyPageScreen extends StatelessWidget {
   MyPageScreen({super.key});
@@ -268,6 +269,18 @@ class MyPageContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const BasicQuestionAnswerScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.quiz, color: Colors.pink),
+              label: const Text('기본정보 입력'),
+            ),
           ],
         ),
       ),

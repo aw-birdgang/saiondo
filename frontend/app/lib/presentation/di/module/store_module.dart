@@ -17,6 +17,7 @@ import '../../../di/service_locator.dart';
 import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/auth_repository.dart';
+import '../../../domain/repository/basic_question_with_answer_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/event_repository.dart';
 import '../../../domain/repository/point_repository.dart';
@@ -32,6 +33,7 @@ import '../../home/store/event_store.dart';
 import '../../home/store/invite_code_store.dart';
 import '../../home/store/language_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
+import '../../user/store/basic_question_answer_store.dart';
 import '../../user/store/point_history_store.dart';
 import '../../user/store/user_store.dart';
 
@@ -80,6 +82,14 @@ class StoreModule {
     getIt.registerSingleton<PointHistoryStore>(
       PointHistoryStore(
         getIt<PointRepository>(),
+      ),
+    );
+
+    getIt.registerSingleton<BasicQuestionAnswerStore>(
+      BasicQuestionAnswerStore(
+        getIt<PointRepository>(),
+        getIt<BasicQuestionWithAnswerRepository>(),
+        getIt<UserStore>(),
       ),
     );
 

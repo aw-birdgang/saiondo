@@ -9,6 +9,7 @@ import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/assitant_repository.dart';
 import '../../../domain/repository/auth_repository.dart';
+import '../../../domain/repository/basic_question_with_answer_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/chat_history_repository.dart';
 import '../../../domain/repository/event_repository.dart';
@@ -18,6 +19,7 @@ import '../../network/apis/advice_api.dart';
 import '../../network/apis/analysis_api.dart';
 import '../../network/apis/assistant_api.dart';
 import '../../network/apis/auth_api.dart';
+import '../../network/apis/basic_question_with_answer_api.dart';
 import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
 import '../../network/apis/event_api.dart';
@@ -27,6 +29,7 @@ import '../../repository/advice_repository_impl.dart';
 import '../../repository/analysis_repository_impl.dart';
 import '../../repository/assistant_repository_impl.dart';
 import '../../repository/auth_repository_impl.dart';
+import '../../repository/basic_question_with_answer_repository_impl.dart';
 import '../../repository/channel_repository_impl.dart';
 import '../../repository/chat_history_repository_impl.dart';
 import '../../repository/event_repository_impl.dart';
@@ -63,6 +66,10 @@ class RepositoryModule {
 
     getIt.registerSingleton<PointRepository>(PointRepositoryImpl(
       getIt<PointApi>(),
+    ));
+
+    getIt.registerSingleton<BasicQuestionWithAnswerRepository>(BasicQuestionWithAnswerRepositoryImpl(
+      getIt<BasicQuestionWithAnswerApi>(),
     ));
 
     getIt.registerSingleton<EventRepository>(EventRepositoryImpl(
