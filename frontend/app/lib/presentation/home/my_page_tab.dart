@@ -8,6 +8,7 @@ import '../../utils/locale/app_localization.dart';
 import '../persona_profile/persona_profile_list.dart';
 import '../persona_profile/store/persona_profile_store.dart';
 import '../user/store/user_store.dart';
+import '../user/point_history_screen.dart';
 
 class MyPageScreen extends StatelessWidget {
   MyPageScreen({super.key});
@@ -163,7 +164,44 @@ class MyPageContent extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 36),
+            const SizedBox(height: 16),
+            // 포인트 표시 및 내역 버튼
+            Row(
+              children: [
+                Icon(Icons.stars, color: Colors.amber[700], size: 22),
+                const SizedBox(width: 8),
+                Text(
+                  '내 포인트: ',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey[700],
+                  ),
+                ),
+                Text(
+                  '${user.point}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepOrange,
+                  ),
+                ),
+                const Spacer(),
+                TextButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PointHistoryScreen(userId: user.id),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.history, size: 18, color: Colors.pink),
+                  label: const Text('포인트 내역', style: TextStyle(color: Colors.pink)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
             // 섹션: 프로필 관리
             Row(
               children: [

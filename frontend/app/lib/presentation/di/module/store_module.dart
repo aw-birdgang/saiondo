@@ -19,6 +19,7 @@ import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/auth_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/event_repository.dart';
+import '../../../domain/repository/point_repository.dart';
 import '../../../domain/repository/setting_repository.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
@@ -31,6 +32,7 @@ import '../../home/store/event_store.dart';
 import '../../home/store/invite_code_store.dart';
 import '../../home/store/language_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
+import '../../user/store/point_history_store.dart';
 import '../../user/store/user_store.dart';
 
 class StoreModule {
@@ -73,6 +75,11 @@ class StoreModule {
     getIt.registerSingleton<PersonaProfileStore>(
       PersonaProfileStore(
         getIt<UserRepository>(),
+      ),
+    );
+    getIt.registerSingleton<PointHistoryStore>(
+      PointHistoryStore(
+        getIt<PointRepository>(),
       ),
     );
 

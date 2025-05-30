@@ -50,6 +50,13 @@ class Endpoints {
   static String eventById(String id) => '/events/$id';
   static String eventByUserId(String userId) => '/events/user$userId';
 
+  // point
+  static String pointEarn(String userId) => '/point/$userId/earn';
+  static String pointUse(String userId) => '/point/$userId/use';
+  static String pointAdjust(String userId) => '/point/$userId/adjust';
+  static String pointHistory(String userId) => '/point/$userId/history';
+
+
   // couple analysis
   static String coupleAnalysisByChannelId(String channelId) => '$baseUrl/couple-analysis/$channelId';
   static String coupleAnalysisByChannelIdLatest(String channelId) => '$baseUrl/couple-analysis/$channelId/latest';

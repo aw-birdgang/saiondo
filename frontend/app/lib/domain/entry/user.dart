@@ -5,6 +5,7 @@ class User {
   final String gender;
   final String? assistantId;
   final String? fcmToken;
+  final int point;
 
   User({
     required this.id,
@@ -13,6 +14,7 @@ class User {
     required this.gender,
     this.assistantId,
     this.fcmToken,
+    required this.point,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class User {
       gender: json['gender'],
       assistantId: json['assistantId'],
       fcmToken: json['fcmToken'],
+      point: json['point'] ?? 0,
     );
   }
 
@@ -36,5 +39,6 @@ class User {
     'gender': gender,
     'assistantId': assistantId,
     'fcmToken': fcmToken,
+    'point': point,
   };
 }
