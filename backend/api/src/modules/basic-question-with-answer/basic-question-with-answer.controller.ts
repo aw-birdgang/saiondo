@@ -1,5 +1,5 @@
 import {
-  Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query,
+  Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, BadRequestException,
 } from '@nestjs/common';
 import { BasicQuestionWithAnswerService } from './basic-question-with-answer.service';
 import { CreateBasicQuestionDto } from './dto/create-basic-question.dto';
@@ -26,8 +26,11 @@ export class BasicQuestionWithAnswerController {
   @ApiBody({ type: CreateBasicAnswerDto })
   @ApiResponse({ status: 201, description: '저장된 답변 반환', type: BasicAnswerResponseDto })
   @Post('answer')
-  async createAnswer(@Body() dto: CreateBasicAnswerDto): Promise<BasicAnswerResponseDto> {
-    return this.service.createAnswer(dto);
+  async createOrUpdateAnswer(@Body() dto: CreateBasicAnswerDto): Promise<BasicAnswerResponseDto> {
+    if (!dto.userId || !dto.questionId || !dto.answer) {
+      throw new BadRequestException('필수값 누락');
+    }
+    return this.service.createOrUpdateAnswer(dto);
   }
 
   @ApiOperation({ summary: '유저의 모든 답변(질문 포함) 조회' })
@@ -69,6 +72,18 @@ export class BasicQuestionWithAnswerController {
   @Get('answers')
   async getAllAnswers(): Promise<BasicAnswerWithQuestionResponseDto[]> {
     return this.service.getAllAnswers();
+  }
+
+  @ApiOperation({ summary: '답변 삭제' })
+  @ApiParam({ name: 'answerId', description: '답변 ID', type: String, example: 'answer-uuid' })
+  @ApiResponse({
+    status: 200,
+    description: '삭제된 답변 반환',
+    type: BasicAnswerResponseDto,
+  })
+  @Delete('answer/:answerId')
+  async deleteAnswer(@Param('answerId') answerId: string): Promise<BasicAnswerResponseDto> {
+    return this.service.deleteAnswer(answerId);
   }
 
   // ===== 질문 관련 =====

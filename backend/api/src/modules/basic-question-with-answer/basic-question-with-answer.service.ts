@@ -1,14 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { CreateBasicQuestionDto } from './dto/create-basic-question.dto';
-import { UpdateBasicQuestionDto } from './dto/update-basic-question.dto';
-import { BasicQuestionResponseDto } from './dto/basic-question-response.dto';
-import { CreateBasicAnswerDto } from './dto/create-basic-answer.dto';
-import {
-  BasicAnswerResponseDto,
-  BasicAnswerWithQuestionResponseDto,
-} from './dto/basic-answer-response.dto';
-import { BasicQuestionWithAnswerDto } from './dto/basic-question-with-answer.dto';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {CreateBasicQuestionDto} from './dto/create-basic-question.dto';
+import {UpdateBasicQuestionDto} from './dto/update-basic-question.dto';
+import {BasicQuestionResponseDto} from './dto/basic-question-response.dto';
+import {CreateBasicAnswerDto} from './dto/create-basic-answer.dto';
+import {BasicAnswerResponseDto, BasicAnswerWithQuestionResponseDto,} from './dto/basic-answer-response.dto';
+import {BasicQuestionWithAnswerDto} from './dto/basic-question-with-answer.dto';
 
 @Injectable()
 export class BasicQuestionWithAnswerService {
@@ -16,9 +13,21 @@ export class BasicQuestionWithAnswerService {
 
   // ===== 답변 관련 =====
 
-  async createAnswer(dto: CreateBasicAnswerDto): Promise<BasicAnswerResponseDto> {
-    const answer = await this.prisma.basicAnswer.create({ data: dto });
-    return BasicAnswerResponseDto.fromEntity(answer);
+  async createOrUpdateAnswer(dto: CreateBasicAnswerDto): Promise<BasicAnswerResponseDto> {
+    // 이미 답변이 있으면 update, 없으면 create
+    const existing = await this.prisma.basicAnswer.findFirst({
+      where: { userId: dto.userId, questionId: dto.questionId },
+    });
+    if (existing) {
+      const updated = await this.prisma.basicAnswer.update({
+        where: { id: existing.id },
+        data: { answer: dto.answer, updatedAt: new Date() },
+      });
+      return BasicAnswerResponseDto.fromEntity(updated);
+    } else {
+      const created = await this.prisma.basicAnswer.create({ data: dto });
+      return BasicAnswerResponseDto.fromEntity(created);
+    }
   }
 
   async getAnswersByUser(userId: string): Promise<BasicAnswerWithQuestionResponseDto[]> {
@@ -43,6 +52,13 @@ export class BasicQuestionWithAnswerService {
       orderBy: { createdAt: 'asc' },
     });
     return answers.map(BasicAnswerWithQuestionResponseDto.fromEntity);
+  }
+
+  async deleteAnswer(answerId: string): Promise<BasicAnswerResponseDto> {
+    const existing = await this.prisma.basicAnswer.findUnique({ where: { id: answerId } });
+    if (!existing) throw new NotFoundException('답변을 찾을 수 없습니다.');
+    const deleted = await this.prisma.basicAnswer.delete({ where: { id: answerId } });
+    return BasicAnswerResponseDto.fromEntity(deleted);
   }
 
   // ===== 질문 관련 =====
