@@ -19,6 +19,7 @@ import {AssistantModule} from '@modules/assistant/assistant.module';
 import {CoupleAnalysisModule} from './modules/couple-analysis/couple-analysis.module';
 import {EventModule} from './modules/event/event.module';
 import {PointModule} from "@modules/point/point.module";
+import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer/basic-question-with-answer.module";
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import {PointModule} from "@modules/point/point.module";
     PointModule,
     AdviceModule,
     EventModule,
+    BasicQuestionWithAnswerModule,
     QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,

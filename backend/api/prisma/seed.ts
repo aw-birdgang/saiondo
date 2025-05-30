@@ -4,6 +4,37 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
+    // 0. BasicQuestion 시드
+    await prisma.basicQuestion.createMany({
+        data: [
+            {
+                question: '나는 외향적인 편이다.',
+                description: '성격',
+                createdAt: new Date(),
+            },
+            {
+                question: '취미가 무엇인가요?',
+                description: '취미',
+                createdAt: new Date(),
+            },
+            {
+                question: '중요하게 생각하는 가치관은?',
+                description: '가치관',
+                createdAt: new Date(),
+            },
+            {
+                question: '스트레스 해소법은?',
+                description: '라이프스타일',
+                createdAt: new Date(),
+            },
+            {
+                question: '이상적인 데이트는?',
+                description: '연애관',
+                createdAt: new Date(),
+            },
+        ],
+    });
+
     // 1. 카테고리 코드 생성
     const categoryMbti = await prisma.categoryCode.create({
         data: { code: 'MBTI', description: 'MBTI 유형' },
@@ -480,6 +511,46 @@ async function main() {
             // === 2025년 5월 일정 끝 ===
         ],
     });
+
+    // BasicAnswer 시드
+    const questions = await prisma.basicQuestion.findMany();
+    const users = await prisma.user.findMany();
+
+    if (users.length > 0 && questions.length > 0) {
+        await prisma.basicAnswer.createMany({
+            data: questions.map((q, idx) => ({
+                userId: users[0].id,
+                questionId: q.id,
+                answer: [
+                    '저는 외향적인 편입니다.',
+                    '등산과 영화 감상을 좋아해요.',
+                    '정직과 신뢰를 중요하게 생각합니다.',
+                    '스트레스는 운동으로 풀어요.',
+                    '이상적인 데이트는 함께 산책하는 것!',
+                ][idx % 5],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            })),
+        });
+    }
+
+    if (users.length > 1 && questions.length > 0) {
+        await prisma.basicAnswer.createMany({
+            data: questions.map((q, idx) => ({
+                userId: users[1].id,
+                questionId: q.id,
+                answer: [
+                    '저는 내성적인 편이에요.',
+                    '독서와 요리를 즐깁니다.',
+                    '배려와 소통을 중요하게 생각해요.',
+                    '음악을 들으며 스트레스를 풉니다.',
+                    '이상적인 데이트는 맛집 탐방!',
+                ][idx % 5],
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            })),
+        });
+    }
 
     console.log('Seed completed!');
 }

@@ -1,0 +1,61 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "Interface Layer" {
+  [UserController]
+  [PointController]
+  [ChatController]
+  [PersonaProfileController]
+}
+
+package "Application Layer" {
+  [UserUsecaseService]
+  [PointUsecaseService]
+  [ChatUsecaseService]
+  [PersonaProfileUsecaseService]
+}
+
+package "Domain Layer" {
+  [UserEntity]
+  [PointEntity]
+  [PointHistoryEntity]
+  [PersonaProfileEntity]
+  [UserDomainService]
+  [PointDomainService]
+}
+
+package "Infrastructure Layer" {
+  [PrismaService]
+  [UserRepository]
+  [PointRepository]
+  [PointHistoryRepository]
+  [PersonaProfileRepository]
+}
+
+' Interface → Application
+[UserController] --> [UserUsecaseService]
+[PointController] --> [PointUsecaseService]
+[ChatController] --> [ChatUsecaseService]
+[PersonaProfileController] --> [PersonaProfileUsecaseService]
+
+' Application → Domain
+[UserUsecaseService] --> [UserEntity]
+[UserUsecaseService] --> [UserDomainService]
+[PointUsecaseService] --> [PointEntity]
+[PointUsecaseService] --> [PointDomainService]
+[PointUsecaseService] --> [PointHistoryEntity]
+[PersonaProfileUsecaseService] --> [PersonaProfileEntity]
+
+' Application → Infrastructure (Repository 인터페이스를 통해)
+[UserUsecaseService] ..> [UserRepository] : <<interface>>
+[PointUsecaseService] ..> [PointRepository] : <<interface>>
+[PointUsecaseService] ..> [PointHistoryRepository] : <<interface>>
+[PersonaProfileUsecaseService] ..> [PersonaProfileRepository] : <<interface>>
+
+' Infrastructure 구현체
+[UserRepository] ..> [PrismaService]
+[PointRepository] ..> [PrismaService]
+[PointHistoryRepository] ..> [PrismaService]
+[PersonaProfileRepository] ..> [PrismaService]
+
+@enduml
