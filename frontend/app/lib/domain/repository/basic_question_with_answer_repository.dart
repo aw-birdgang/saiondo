@@ -5,6 +5,11 @@ import '../entry/basic_question_with_answer.dart';
 abstract class BasicQuestionWithAnswerRepository {
   Future<List<BasicQuestion>> fetchQuestions();
   Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswers(String userId);
-  Future<void> submitAnswer(BasicAnswer answer);
+  Future<BasicAnswer> submitOrUpdateAnswer({
+    required String userId,
+    required String questionId,
+    required String answer,
+    String? answerId,
+  });
   Future<List<BasicAnswer>> fetchAnswersByUser(String userId);
 }

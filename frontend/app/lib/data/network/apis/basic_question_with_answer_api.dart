@@ -31,10 +31,33 @@ class BasicQuestionWithAnswerApi {
   }
 
   Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswers(String userId) async {
-    final res = await _dioClient.dio.get('${Endpoints.baseUrl}/basic-question-with-answer/questions-with-answers', queryParameters: {'userId': userId});
+    final res = await _dioClient.dio.get(
+      '${Endpoints.baseUrl}/basic-question-with-answer/questions-with-answers',
+      queryParameters: {'userId': userId},
+    );
     return (res.data as List)
         .map((e) => BasicQuestionWithAnswer.fromJson(e))
         .toList();
   }
 
+  Future<BasicAnswer> submitOrUpdateAnswer({
+    required String userId,
+    required String questionId,
+    required String answer,
+    String? answerId, // 있으면 수정, 없으면 생성
+  }) async {
+    final data = {
+      'userId': userId,
+      'questionId': questionId,
+      'answer': answer,
+    };
+    if (answerId != null && answerId.isNotEmpty) {
+      data['id'] = answerId;
+    }
+    final res = await _dioClient.dio.post(
+      '${Endpoints.baseUrl}/basic-question-with-answer/answer',
+      data: data,
+    );
+    return BasicAnswer.fromJson(res.data);
+  }
 }

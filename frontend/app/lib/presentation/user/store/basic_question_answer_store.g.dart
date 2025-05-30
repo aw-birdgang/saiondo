@@ -9,6 +9,28 @@ part of 'basic_question_answer_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$BasicQuestionAnswerStore on _BasicQuestionAnswerStore, Store {
+  Computed<int>? _$totalQuestionsComputed;
+
+  @override
+  int get totalQuestions =>
+      (_$totalQuestionsComputed ??= Computed<int>(() => super.totalQuestions,
+              name: '_BasicQuestionAnswerStore.totalQuestions'))
+          .value;
+  Computed<int>? _$answeredCountComputed;
+
+  @override
+  int get answeredCount =>
+      (_$answeredCountComputed ??= Computed<int>(() => super.answeredCount,
+              name: '_BasicQuestionAnswerStore.answeredCount'))
+          .value;
+  Computed<double>? _$answerRatioComputed;
+
+  @override
+  double get answerRatio =>
+      (_$answerRatioComputed ??= Computed<double>(() => super.answerRatio,
+              name: '_BasicQuestionAnswerStore.answerRatio'))
+          .value;
+
   late final _$questionsAtom =
       Atom(name: '_BasicQuestionAnswerStore.questions', context: context);
 
@@ -83,6 +105,16 @@ mixin _$BasicQuestionAnswerStore on _BasicQuestionAnswerStore, Store {
         .run(() => super.loadQuestionsWithAnswers());
   }
 
+  late final _$submitSingleAnswerAsyncAction = AsyncAction(
+      '_BasicQuestionAnswerStore.submitSingleAnswer',
+      context: context);
+
+  @override
+  Future<void> submitSingleAnswer(String questionId, String answer) {
+    return _$submitSingleAnswerAsyncAction
+        .run(() => super.submitSingleAnswer(questionId, answer));
+  }
+
   late final _$submitAnswersAsyncAction =
       AsyncAction('_BasicQuestionAnswerStore.submitAnswers', context: context);
 
@@ -111,7 +143,10 @@ mixin _$BasicQuestionAnswerStore on _BasicQuestionAnswerStore, Store {
 questions: ${questions},
 answers: ${answers},
 isLoading: ${isLoading},
-isSubmitting: ${isSubmitting}
+isSubmitting: ${isSubmitting},
+totalQuestions: ${totalQuestions},
+answeredCount: ${answeredCount},
+answerRatio: ${answerRatio}
     ''';
   }
 }

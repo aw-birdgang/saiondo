@@ -12,12 +12,12 @@ class BasicQuestionAnswerStore = _BasicQuestionAnswerStore with _$BasicQuestionA
 
 abstract class _BasicQuestionAnswerStore with Store {
   final PointRepository _pointRepository;
-  final BasicQuestionWithAnswerRepository _baseQuestionWithAnswerRepository;
+  final BasicQuestionWithAnswerRepository _repository;
   final UserStore _userStore; // UserStore 주입
 
   _BasicQuestionAnswerStore(
     this._pointRepository,
-    this._baseQuestionWithAnswerRepository,
+    this._repository,
     this._userStore,
   );
 
@@ -35,15 +35,26 @@ abstract class _BasicQuestionAnswerStore with Store {
 
   String? get userId => _userStore.selectedUser?.id;
 
+  @computed
+  int get totalQuestions => questions.length;
+
+  @computed
+  int get answeredCount =>
+      questions.where((q) => (answers[q.id]?.trim().isNotEmpty ?? false)).length;
+
+  @computed
+  double get answerRatio =>
+      totalQuestions == 0 ? 0 : answeredCount / totalQuestions;
+
   @action
   Future<void> loadQuestionsWithAnswers() async {
     isLoading = true;
     try {
-      final userId = _userStore.selectedUser?.id;
-      if (userId == null) throw Exception('로그인 정보가 없습니다.');
-      final result = await _baseQuestionWithAnswerRepository.fetchQuestionsWithAnswers(userId);
+      final uid = userId;
+      if (uid == null) throw Exception('로그인 정보가 없습니다.');
+      final result = await _repository.fetchQuestionsWithAnswers(uid);
       questions = ObservableList.of(result);
-      // 기존 답변을 answers 맵에 미리 채워넣기
+      answers.clear();
       for (final q in result) {
         if (q.answer != null) {
           answers[q.id] = q.answer!.answer;
@@ -55,6 +66,23 @@ abstract class _BasicQuestionAnswerStore with Store {
   }
 
   @action
+  Future<void> submitSingleAnswer(String questionId, String answer) async {
+    final uid = userId;
+    if (uid == null) throw Exception('로그인 정보가 없습니다.');
+    final q = questions.firstWhere((e) => e.id == questionId);
+    final answerId = q.answer?.id;
+    final saved = await _repository.submitOrUpdateAnswer(
+      userId: uid,
+      questionId: questionId,
+      answer: answer,
+      answerId: answerId,
+    );
+    answers[questionId] = saved.answer;
+    // 질문 리스트도 갱신
+    await loadQuestionsWithAnswers();
+  }
+
+  @action
   void setAnswer(String questionId, String answer) {
     answers[questionId] = answer;
   }
@@ -63,26 +91,10 @@ abstract class _BasicQuestionAnswerStore with Store {
   Future<void> submitAnswers() async {
     isSubmitting = true;
     try {
-      final uid = userId;
-      if (uid == null) {
-        // 유저 정보가 없으면 예외 처리
-        throw Exception('로그인 정보가 없습니다.');
-      }
       for (final q in questions) {
         final answer = answers[q.id];
         if (answer != null && answer.trim().isNotEmpty) {
-          await _baseQuestionWithAnswerRepository.submitAnswer(
-            BasicAnswer(
-              id: '', // 서버에서 생성
-              userId: uid,
-              questionId: q.id,
-              answer: answer.trim(),
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-            ),
-          );
-          // 포인트 지급 예시
-          // await _pointRepository.earnPoint(uid, 10, 'PROFILE_UPDATE', description: '기본질문 답변: ${q.question}');
+          await submitSingleAnswer(q.id, answer.trim());
         }
       }
     } finally {

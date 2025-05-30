@@ -44,6 +44,8 @@ dependencies:
   loading_animation_widget: ^1.2.1
   #M
   mobx: ^2.3.3+2
+  #P
+  percent_indicator: ^4.2.3
   #S
   shared_preferences: ^2.2.2
   #S

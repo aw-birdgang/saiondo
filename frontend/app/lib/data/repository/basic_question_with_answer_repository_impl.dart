@@ -18,9 +18,8 @@ class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRe
   }
 
   @override
-  Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswers(String userId) async {
-    return await _api.fetchQuestionsWithAnswers(userId);
-  }
+  Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswers(String userId) =>
+      _api.fetchQuestionsWithAnswers(userId);
 
   @override
   Future<void> submitAnswer(BasicAnswer answer) async {
@@ -37,4 +36,17 @@ class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRe
     return await _api.fetchAnswersByUser(userId);
   }
 
+  @override
+  Future<BasicAnswer> submitOrUpdateAnswer({
+    required String userId,
+    required String questionId,
+    required String answer,
+    String? answerId,
+  }) =>
+      _api.submitOrUpdateAnswer(
+        userId: userId,
+        questionId: questionId,
+        answer: answer,
+        answerId: answerId,
+      );
 }
