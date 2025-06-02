@@ -6,6 +6,7 @@ import {BasicQuestionResponseDto} from './dto/basic-question-response.dto';
 import {CreateBasicAnswerDto} from './dto/create-basic-answer.dto';
 import {BasicAnswerResponseDto, BasicAnswerWithQuestionResponseDto,} from './dto/basic-answer-response.dto';
 import {BasicQuestionWithAnswerDto} from './dto/basic-question-with-answer.dto';
+import { BasicQuestionCategoryResponseDto } from './dto/basic-question-category-response.dto';
 
 @Injectable()
 export class BasicQuestionWithAnswerService {
@@ -75,7 +76,13 @@ export class BasicQuestionWithAnswerService {
   }
 
   async createQuestion(dto: CreateBasicQuestionDto): Promise<BasicQuestionResponseDto> {
-    const entity = await this.prisma.basicQuestion.create({ data: dto });
+    const entity = await this.prisma.basicQuestion.create({
+      data: {
+        categoryId: dto.categoryId,
+        question: dto.question,
+        description: dto.description,
+      },
+    });
     return BasicQuestionResponseDto.fromEntity(entity);
   }
 
@@ -107,5 +114,40 @@ export class BasicQuestionWithAnswerService {
     });
 
     return questions.map(q => BasicQuestionWithAnswerDto.fromEntity(q, q.answers[0] ?? null));
+  }
+
+  async getCategories(): Promise<BasicQuestionCategoryResponseDto[]> {
+    const categories = await this.prisma.basicQuestionCategory.findMany({
+      orderBy: { code: 'asc' },
+    });
+    return categories.map(BasicQuestionCategoryResponseDto.fromEntity);
+  }
+
+  async getQuestionsByCategory(categoryId: string): Promise<BasicQuestionResponseDto[]> {
+    const questions = await this.prisma.basicQuestion.findMany({
+      where: { categoryId },
+      orderBy: { createdAt: 'asc' },
+    });
+    return questions.map(BasicQuestionResponseDto.fromEntity);
+  }
+
+  async getQuestionsWithAnswersOnCategory(
+    userId: string,
+    categoryId: string,
+  ): Promise<BasicQuestionWithAnswerDto[]> {
+    const questions = await this.prisma.basicQuestion.findMany({
+      where: { categoryId },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        answers: {
+          where: { userId },
+          take: 1,
+        },
+      },
+    });
+
+    return questions.map(q =>
+      BasicQuestionWithAnswerDto.fromEntity(q, q.answers[0] ?? null),
+    );
   }
 }

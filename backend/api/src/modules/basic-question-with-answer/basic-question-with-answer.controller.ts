@@ -14,6 +14,7 @@ import {
   BasicAnswerWithQuestionResponseDto,
 } from './dto/basic-answer-response.dto';
 import { BasicQuestionWithAnswerDto } from './dto/basic-question-with-answer.dto';
+import { BasicQuestionCategoryResponseDto } from './dto/basic-question-category-response.dto';
 
 @ApiTags('BasicQuestionWithAnswer')
 @Controller('basic-question-with-answer')
@@ -54,8 +55,8 @@ export class BasicQuestionWithAnswerController {
   @ApiResponse({ status: 200, description: '유저의 특정 질문 답변', type: BasicAnswerResponseDto })
   @Get('answer/user/:userId/question/:questionId')
   async getAnswerByUserAndQuestion(
-    @Query('userId') userId: string,
-    @Query('questionId') questionId: string,
+      @Query('userId') userId: string,
+      @Query('questionId') questionId: string,
   ): Promise<BasicAnswerResponseDto> {
     const entity = await this.service.getAnswerByUserAndQuestion(userId, questionId);
     if (!entity) throw new NotFoundException('답변을 찾을 수 없습니다.');
@@ -167,5 +168,49 @@ export class BasicQuestionWithAnswerController {
     @Query('userId') userId: string,
   ): Promise<BasicQuestionWithAnswerDto[]> {
     return this.service.getQuestionsWithAnswers(userId);
+  }
+
+  @ApiOperation({ summary: '질문 카테고리 전체 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '카테고리 리스트 반환',
+    type: BasicQuestionCategoryResponseDto,
+    isArray: true,
+  })
+  @Get('categories')
+  async getCategories(): Promise<BasicQuestionCategoryResponseDto[]> {
+    return this.service.getCategories();
+  }
+
+  @ApiOperation({ summary: '카테고리별 질문 목록 조회' })
+  @ApiParam({ name: 'categoryId', description: '카테고리 ID', type: String })
+  @ApiResponse({
+    status: 200,
+    description: '카테고리별 질문 리스트 반환',
+    type: BasicQuestionResponseDto,
+    isArray: true,
+  })
+  @Get('categories/:categoryId/questions')
+  async getQuestionsByCategory(
+    @Param('categoryId') categoryId: string,
+  ): Promise<BasicQuestionResponseDto[]> {
+    return this.service.getQuestionsByCategory(categoryId);
+  }
+
+  @ApiOperation({ summary: '카테고리별 질문+답변(유저별) 복합 조회' })
+  @ApiParam({ name: 'categoryId', description: '카테고리 ID', type: String })
+  @ApiQuery({ name: 'userId', description: '유저 ID', type: String })
+  @ApiResponse({
+    status: 200,
+    description: '카테고리별 질문+답변 리스트',
+    type: BasicQuestionWithAnswerDto,
+    isArray: true,
+  })
+  @Get('categories/:categoryId/questions-with-answers')
+  async getQuestionsWithAnswersOnCategory(
+    @Param('categoryId') categoryId: string,
+    @Query('userId') userId: string,
+  ): Promise<BasicQuestionWithAnswerDto[]> {
+    return this.service.getQuestionsWithAnswersOnCategory(userId, categoryId);
   }
 }

@@ -274,12 +274,21 @@ model PointHistory {
   user        User     @relation(fields: [userId], references: [id])
 }
 
+model BasicQuestionCategory {
+  id        String   @id @default(uuid())
+  name      String
+  code      String   @unique
+  questions BasicQuestion[]
+}
+
 model BasicQuestion {
-  id          String         @id @default(uuid())
+  id          String   @id @default(uuid())
   question    String
   description String?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  categoryId  String
+  category    BasicQuestionCategory @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   answers     BasicAnswer[]
 }
 
@@ -290,6 +299,5 @@ model BasicAnswer {
   answer     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
   question   BasicQuestion @relation(fields: [questionId], references: [id])
 }

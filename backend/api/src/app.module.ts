@@ -46,7 +46,6 @@ import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer
     QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,
-
   ],
 })
 export class AppModule {}

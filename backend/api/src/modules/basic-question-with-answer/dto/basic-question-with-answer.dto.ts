@@ -5,6 +5,9 @@ export class BasicQuestionWithAnswerDto {
   @ApiProperty({ example: 'question-uuid' })
   id: string;
 
+  @ApiProperty({ example: 'category-uuid' })
+  categoryId: string;
+
   @ApiProperty({ example: '나는 외향적인 편이다.' })
   question: string;
 
@@ -23,6 +26,7 @@ export class BasicQuestionWithAnswerDto {
   static fromEntity(entity: any, answer: any): BasicQuestionWithAnswerDto {
     return {
       id: entity.id,
+      categoryId: entity.categoryId,
       question: entity.question,
       description: entity.description ?? undefined,
       createdAt: entity.createdAt instanceof Date ? entity.createdAt.toISOString() : entity.createdAt,

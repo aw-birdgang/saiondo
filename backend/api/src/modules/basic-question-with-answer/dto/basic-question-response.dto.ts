@@ -1,19 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BasicQuestionResponseDto {
-  @ApiProperty({ example: 'uuid' })
+  @ApiProperty()
   id: string;
 
-  @ApiProperty({ example: '나는 외향적인 편이다.' })
+  @ApiProperty()
   question: string;
 
-  @ApiProperty({ example: '성격' })
+  @ApiProperty({ required: false })
   description?: string;
 
-  @ApiProperty({ example: '2024-06-10T12:00:00.000Z' })
+  @ApiProperty()
+  categoryId: string;
+
+  @ApiProperty()
   createdAt: string;
 
-  @ApiProperty({ example: '2024-06-10T12:00:00.000Z' })
+  @ApiProperty()
   updatedAt: string;
 
   static fromEntity(entity: any): BasicQuestionResponseDto {
@@ -21,8 +24,9 @@ export class BasicQuestionResponseDto {
       id: entity.id,
       question: entity.question,
       description: entity.description ?? undefined,
-      createdAt: entity.createdAt instanceof Date ? entity.createdAt.toISOString() : entity.createdAt,
-      updatedAt: entity.updatedAt instanceof Date ? entity.updatedAt.toISOString() : entity.updatedAt,
+      categoryId: entity.categoryId,
+      createdAt: entity.createdAt.toISOString(),
+      updatedAt: entity.updatedAt.toISOString(),
     };
   }
 }
