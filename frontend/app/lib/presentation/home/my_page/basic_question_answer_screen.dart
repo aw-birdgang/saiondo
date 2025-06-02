@@ -52,10 +52,12 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
               child: Text(
                 '카테고리별 기본정보 입력',
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Color(0xFFD81B60),
+                  fontSize: 18,
+                  color: Colors.pink[400],
+                  fontFamily: 'Nunito',
+                  letterSpacing: 1.2,
                 ),
               ),
             ),
@@ -75,27 +77,45 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+                  margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.pink[50],
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.pinkAccent.withOpacity(0.2),
-                      width: 1,
+                    gradient: LinearGradient(
+                      colors: [Colors.pink[50]!, Colors.purple[50]!],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(22),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.pink.withOpacity(0.06),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                        color: Colors.pink.withOpacity(0.10),
+                        blurRadius: 16,
+                        offset: const Offset(0, 8),
                       ),
                     ],
+                    border: Border.all(
+                      color: Colors.pinkAccent.withOpacity(0.18),
+                      width: 1.2,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                   child: Row(
                     children: [
-                      Icon(Icons.category, color: Colors.blueAccent, size: 28),
-                      const SizedBox(width: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [Colors.pinkAccent, Colors.purpleAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: const CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          radius: 22,
+                          child: Icon(Icons.category, color: Colors.white, size: 26),
+                        ),
+                      ),
+                      const SizedBox(width: 18),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,54 +123,58 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
                             Text(
                               cat.name,
                               style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: Color(0xFF1976D2),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Color(0xFFD81B60),
+                                fontFamily: 'Nunito',
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            if (cat.code.isNotEmpty)
-                              Text(
-                                cat.code,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.blueGrey[400],
-                                ),
-                              ),
                           ],
                         ),
                       ),
                       CircularPercentIndicator(
-                        radius: 28,
-                        lineWidth: 7,
+                        radius: 32,
+                        lineWidth: 5,
                         percent: progress.ratio.clamp(0, 1),
                         animation: true,
-                        animationDuration: 800,
+                        animationDuration: 900,
                         circularStrokeCap: CircularStrokeCap.round,
-                        backgroundColor: Colors.pink[50]!,
+                        backgroundColor: Colors.white,
                         progressColor: Colors.pinkAccent,
-                        center: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${progress.answered}/${progress.total}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                                color: Color(0xFFD81B60),
+                        center: Container(
+                          width: 38,
+                          height: 38,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${progress.answered}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                  color: Color(0xFFD81B60),
+                                ),
                               ),
-                            ),
-                          ],
+                              Text(
+                                '/${progress.total}',
+                                style: TextStyle(
+                                  color: Colors.pink[300],
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.blueAccent),
+                      const SizedBox(width: 10),
+                      Icon(Icons.arrow_forward_ios, size: 20, color: Colors.pink[200]),
                     ],
                   ),
                 ),
               );
             }),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
           ],
         );
       },
