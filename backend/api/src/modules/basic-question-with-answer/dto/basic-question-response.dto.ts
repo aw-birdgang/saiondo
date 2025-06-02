@@ -13,6 +13,9 @@ export class BasicQuestionResponseDto {
   @ApiProperty()
   categoryId: string;
 
+  @ApiProperty({ type: [String] })
+  options: string[];
+
   @ApiProperty()
   createdAt: string;
 
@@ -25,6 +28,7 @@ export class BasicQuestionResponseDto {
       question: entity.question,
       description: entity.description ?? undefined,
       categoryId: entity.categoryId,
+      options: entity.options ?? [],
       createdAt: entity.createdAt.toISOString(),
       updatedAt: entity.updatedAt.toISOString(),
     };

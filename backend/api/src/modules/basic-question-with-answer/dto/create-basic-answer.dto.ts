@@ -3,11 +3,11 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateBasicAnswerDto {
   @IsString()
   @IsNotEmpty()
-  questionId: string;
+  userId: string;
 
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  questionId: string;
 
   @IsString()
   @IsNotEmpty()

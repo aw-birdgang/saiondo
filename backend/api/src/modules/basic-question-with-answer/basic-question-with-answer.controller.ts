@@ -2,8 +2,7 @@ import {
   Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, BadRequestException,
 } from '@nestjs/common';
 import { BasicQuestionWithAnswerService } from './basic-question-with-answer.service';
-import { CreateBasicQuestionDto } from './dto/create-basic-question.dto';
-import { UpdateBasicQuestionDto } from './dto/update-basic-question.dto';
+import {CreateBasicQuestionDto, UpdateBasicQuestionDto} from './dto/create-basic-question.dto';
 import {
   ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags,
 } from '@nestjs/swagger';

@@ -1,7 +1,6 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
-import {CreateBasicQuestionDto} from './dto/create-basic-question.dto';
-import {UpdateBasicQuestionDto} from './dto/update-basic-question.dto';
+import {CreateBasicQuestionDto, UpdateBasicQuestionDto} from './dto/create-basic-question.dto';
 import {BasicQuestionResponseDto} from './dto/basic-question-response.dto';
 import {CreateBasicAnswerDto} from './dto/create-basic-answer.dto';
 import {BasicAnswerResponseDto, BasicAnswerWithQuestionResponseDto,} from './dto/basic-answer-response.dto';
@@ -15,6 +14,13 @@ export class BasicQuestionWithAnswerService {
   // ===== 답변 관련 =====
 
   async createOrUpdateAnswer(dto: CreateBasicAnswerDto): Promise<BasicAnswerResponseDto> {
+    // 질문의 선택지(options) 중 하나인지 검증
+    const question = await this.prisma.basicQuestion.findUnique({ where: { id: dto.questionId } });
+    if (!question) throw new NotFoundException('질문을 찾을 수 없습니다.');
+    if (!question.options.includes(dto.answer)) {
+      throw new BadRequestException('유효하지 않은 선택지입니다.');
+    }
+
     // 이미 답변이 있으면 update, 없으면 create
     const existing = await this.prisma.basicAnswer.findFirst({
       where: { userId: dto.userId, questionId: dto.questionId },
@@ -81,6 +87,7 @@ export class BasicQuestionWithAnswerService {
         categoryId: dto.categoryId,
         question: dto.question,
         description: dto.description,
+        options: dto.options,
       },
     });
     return BasicQuestionResponseDto.fromEntity(entity);
@@ -90,7 +97,10 @@ export class BasicQuestionWithAnswerService {
     await this.getQuestionById(id); // 존재 확인
     const entity = await this.prisma.basicQuestion.update({
       where: { id },
-      data: dto,
+      data: {
+        ...dto,
+        options: dto.options,
+      },
     });
     return BasicQuestionResponseDto.fromEntity(entity);
   }

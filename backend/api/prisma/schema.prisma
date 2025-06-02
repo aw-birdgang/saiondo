@@ -290,6 +290,7 @@ model BasicQuestion {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   answers     BasicAnswer[]
+  options     String[]
 }
 
 model BasicAnswer {

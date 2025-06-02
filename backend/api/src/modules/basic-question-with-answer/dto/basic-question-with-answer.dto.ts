@@ -14,6 +14,9 @@ export class BasicQuestionWithAnswerDto {
   @ApiProperty({ example: '성격' })
   description?: string;
 
+  @ApiProperty({ type: [String] })
+  options: string[];
+
   @ApiProperty({ example: '2024-06-10T12:00:00.000Z' })
   createdAt: string;
 
@@ -29,6 +32,7 @@ export class BasicQuestionWithAnswerDto {
       categoryId: entity.categoryId,
       question: entity.question,
       description: entity.description ?? undefined,
+      options: entity.options ?? [],
       createdAt: entity.createdAt instanceof Date ? entity.createdAt.toISOString() : entity.createdAt,
       updatedAt: entity.updatedAt instanceof Date ? entity.updatedAt.toISOString() : entity.updatedAt,
       answer: answer ? BasicAnswerResponseDto.fromEntity(answer) : null,
