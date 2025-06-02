@@ -9,6 +9,7 @@ class BasicQuestionWithAnswerAdapter {
       categoryId: res.categoryId,
       question: res.question,
       description: res.description,
+      options: res.options,
       createdAt: res.createdAt, // 또는 DateTime.parse(res.createdAt) (타입에 따라)
       updatedAt: res.updatedAt, // 또는 DateTime.parse(res.updatedAt)
       answer: res.answer != null

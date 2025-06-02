@@ -3,6 +3,7 @@ class BasicQuestionWithAnswerResponse {
   final String categoryId;
   final String question;
   final String? description;
+  final List<String> options;
   final DateTime createdAt;
   final DateTime updatedAt;
   final BasicAnswerResponse? answer;
@@ -12,6 +13,7 @@ class BasicQuestionWithAnswerResponse {
     required this.categoryId,
     required this.question,
     this.description,
+    required this.options,
     required this.createdAt,
     required this.updatedAt,
     this.answer,
@@ -23,6 +25,7 @@ class BasicQuestionWithAnswerResponse {
       categoryId: json['categoryId'] as String? ?? '',
       question: json['question'] as String? ?? '',
       description: json['description'] as String?,
+      options: (json['options'] as List<dynamic>?)?.cast<String>() ?? [],
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
       answer: json['answer'] != null

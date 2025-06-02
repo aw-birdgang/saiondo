@@ -91,21 +91,29 @@ abstract class _BasicQuestionAnswerStore with Store {
   }
 
   @action
-  Future<void> fetchCategoryQAndAByUserId() async {
+  Future<void> fetchCategoryQAndAByUserId({bool forceRefresh = false}) async {
     isLoadingQuestions = true;
     errorMessage = null;
     try {
       final uid = userId;
       final catId = selectedCategoryId;
-
-      print('[fetchCategoryQAndAByUserId] uid: $uid, catId: $catId');
       if (uid == null || catId == null) throw Exception('로그인 또는 카테고리 정보가 없습니다.');
+
+      if (!forceRefresh && categoryQuestionsMap.containsKey(catId)) {
+        questions = ObservableList.of(categoryQuestionsMap[catId]!);
+        answers.clear();
+        for (final q in questions) {
+          if (q.answer != null && q.answer!.answer != null) {
+            answers[q.id] = q.answer!.answer!;
+          }
+        }
+        isLoadingQuestions = false;
+        return;
+      }
+
       final result = await _repository.fetchCategoryQAndAByUserId(uid, catId);
-
-      // === result 로그 출력 ===
-      print('[fetchCategoryQAndAByUserId] result: $result');
-
       questions = ObservableList.of(result);
+      categoryQuestionsMap[catId] = result;
       answers.clear();
       for (final q in result) {
         if (q.answer != null && q.answer!.answer != null) {
@@ -140,10 +148,9 @@ abstract class _BasicQuestionAnswerStore with Store {
       answerId: answerId,
     );
     answers[questionId] = saved.answer;
-    // 질문 리스트도 갱신
-    await fetchCategoryQAndAByUserId();
-    // 전체 카테고리별 질문/답변도 갱신
-    await loadAllCategoryQAndAByUserId();
+    // 질문 리스트와 캐시 갱신
+    await fetchCategoryQAndAByUserId(forceRefresh: true);
+    await loadAllCategoryQAndAByUserId(forceRefresh: true);
   }
 
   @action
@@ -170,16 +177,17 @@ abstract class _BasicQuestionAnswerStore with Store {
   }
 
   @action
-  Future<void> loadAllCategoryQAndAByUserId() async {
+  Future<void> loadAllCategoryQAndAByUserId({bool forceRefresh = false}) async {
     isLoadingQuestions = true;
     errorMessage = null;
     try {
       final uid = userId;
       if (uid == null) throw Exception('로그인 정보가 없습니다.');
       for (final cat in categories) {
+        // 캐시가 있으면 API 호출 없이 사용
+        if (!forceRefresh && categoryQuestionsMap.containsKey(cat.id)) continue;
         final result = await _repository.fetchCategoryQAndAByUserId(uid, cat.id);
         categoryQuestionsMap[cat.id] = result;
-        // answers 맵도 전체 카테고리 기준으로 갱신
         for (final q in result) {
           if (q.answer != null && q.answer!.answer != null) {
             answers[q.id] = q.answer!.answer!;

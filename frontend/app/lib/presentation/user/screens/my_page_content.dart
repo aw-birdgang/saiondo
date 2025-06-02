@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/entry/user.dart';
 import '../../../utils/locale/app_localization.dart';
-import '../../user/point_history_screen.dart';
+import '../point_history_screen.dart';
 import 'basic_question_answer_screen.dart';
 
 class MyPageContent extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../di/service_locator.dart';
-import '../../user/store/basic_question_answer_store.dart';
+import '../store/basic_question_answer_store.dart';
 import 'category_question_list_screen.dart';
 
 class BasicQuestionAnswerSection extends StatefulWidget {

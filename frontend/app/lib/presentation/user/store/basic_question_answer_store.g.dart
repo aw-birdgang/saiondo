@@ -191,9 +191,9 @@ mixin _$BasicQuestionAnswerStore on _BasicQuestionAnswerStore, Store {
       context: context);
 
   @override
-  Future<void> fetchCategoryQAndAByUserId() {
-    return _$fetchCategoryQAndAByUserIdAsyncAction
-        .run(() => super.fetchCategoryQAndAByUserId());
+  Future<void> fetchCategoryQAndAByUserId({bool forceRefresh = false}) {
+    return _$fetchCategoryQAndAByUserIdAsyncAction.run(
+        () => super.fetchCategoryQAndAByUserId(forceRefresh: forceRefresh));
   }
 
   late final _$selectCategoryAsyncAction =
@@ -228,9 +228,9 @@ mixin _$BasicQuestionAnswerStore on _BasicQuestionAnswerStore, Store {
       context: context);
 
   @override
-  Future<void> loadAllCategoryQAndAByUserId() {
-    return _$loadAllCategoryQAndAByUserIdAsyncAction
-        .run(() => super.loadAllCategoryQAndAByUserId());
+  Future<void> loadAllCategoryQAndAByUserId({bool forceRefresh = false}) {
+    return _$loadAllCategoryQAndAByUserIdAsyncAction.run(
+        () => super.loadAllCategoryQAndAByUserId(forceRefresh: forceRefresh));
   }
 
   late final _$_BasicQuestionAnswerStoreActionController =

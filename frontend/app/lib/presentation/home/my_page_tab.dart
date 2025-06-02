@@ -7,7 +7,7 @@ import '../../utils/locale/app_localization.dart';
 import '../persona_profile/persona_profile_list.dart';
 import '../persona_profile/store/persona_profile_store.dart';
 import '../user/store/user_store.dart';
-import 'my_page/my_page_content.dart';
+import '../user/screens/my_page_content.dart';
 
 class MyPageScreen extends StatelessWidget {
   MyPageScreen({super.key});
