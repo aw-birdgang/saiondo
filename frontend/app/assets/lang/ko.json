@@ -88,5 +88,14 @@
   "category": "카테고리",
   "confidence": "신뢰도",
   "unknown": "알 수 없음",
-  "send": "전송"
+  "send": "전송",
+  "category_basic_info": "카테고리별 기본정보 입력",
+  "category_load_fail": "카테고리 목록을 불러오지 못했습니다.",
+  "no_category": "카테고리가 없습니다.",
+  "basic_info_input": "기본정보 입력",
+  "question_load_fail": "질문을 불러오지 못했습니다.",
+  "no_questions": "질문이 없습니다.",
+  "input_answer": "답변을 입력하세요",
+  "answers_saved": "답변이 저장되었습니다.",
+  "some_answers_failed": "일부 답변 저장에 실패했습니다."
 }

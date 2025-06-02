@@ -1,11 +1,12 @@
 import '../../domain/entry/basic_question.dart';
+import '../network/dto/basic_question_response.dart';
 
 class BasicQuestionAdapter {
-  static BasicQuestion fromJson(Map<String, dynamic> json) => BasicQuestion(
-    id: json['id'],
-    question: json['question'],
-    description: json['description'],
-    createdAt: DateTime.parse(json['createdAt']),
-    updatedAt: DateTime.parse(json['updatedAt']),
-  );
+  static BasicQuestion fromResponse(BasicQuestionResponse res) =>
+      BasicQuestion(
+        id: res.id,
+        question: res.question,
+        description: res.description,
+        categoryId: res.categoryId,
+      );
 }

@@ -88,5 +88,14 @@
   "analysis_summary": "Analysis Summary",
   "advice": "Advice",
   "user1_persona": "User1 Persona",
-  "user2_persona": "User2 Persona"
+  "user2_persona": "User2 Persona",
+  "category_basic_info": "Category Basic Info Input",
+  "category_load_fail": "Failed to load category list.",
+  "no_category": "No categories available.",
+  "basic_info_input": "Basic Info Input",
+  "question_load_fail": "Failed to load questions.",
+  "no_questions": "No questions available.",
+  "input_answer": "Enter your answer",
+  "answers_saved": "Answers have been saved.",
+  "some_answers_failed": "Failed to save some answers."
 }

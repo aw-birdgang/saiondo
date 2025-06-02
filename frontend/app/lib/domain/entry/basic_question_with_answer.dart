@@ -2,6 +2,7 @@ import 'basic_answer.dart';
 
 class BasicQuestionWithAnswer {
   final String id;
+  final String categoryId;
   final String question;
   final String? description;
   final DateTime createdAt;
@@ -10,6 +11,7 @@ class BasicQuestionWithAnswer {
 
   BasicQuestionWithAnswer({
     required this.id,
+    required this.categoryId,
     required this.question,
     this.description,
     required this.createdAt,
@@ -19,6 +21,7 @@ class BasicQuestionWithAnswer {
 
   factory BasicQuestionWithAnswer.fromJson(Map<String, dynamic> json) => BasicQuestionWithAnswer(
     id: json['id'],
+    categoryId: json['categoryId'],
     question: json['question'],
     description: json['description'],
     createdAt: DateTime.parse(json['createdAt']),

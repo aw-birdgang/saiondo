@@ -9,6 +9,8 @@ import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';
 import '../../../domain/repository/assitant_repository.dart';
 import '../../../domain/repository/auth_repository.dart';
+import '../../../domain/repository/basic_question_category_repository.dart';
+import '../../../domain/repository/basic_question_repository.dart';
 import '../../../domain/repository/basic_question_with_answer_repository.dart';
 import '../../../domain/repository/channel_repository.dart';
 import '../../../domain/repository/chat_history_repository.dart';
@@ -29,6 +31,8 @@ import '../../repository/advice_repository_impl.dart';
 import '../../repository/analysis_repository_impl.dart';
 import '../../repository/assistant_repository_impl.dart';
 import '../../repository/auth_repository_impl.dart';
+import '../../repository/basic_question_category_repository_impl.dart';
+import '../../repository/basic_question_repository_impl.dart';
 import '../../repository/basic_question_with_answer_repository_impl.dart';
 import '../../repository/channel_repository_impl.dart';
 import '../../repository/chat_history_repository_impl.dart';
@@ -66,6 +70,14 @@ class RepositoryModule {
 
     getIt.registerSingleton<PointRepository>(PointRepositoryImpl(
       getIt<PointApi>(),
+    ));
+
+    getIt.registerSingleton<BasicQuestionCategoryRepository>(BasicQuestionCategoryRepositoryImpl(
+      getIt<BasicQuestionWithAnswerApi>(),
+    ));
+
+    getIt.registerSingleton<BasicQuestionRepository>(BasicQuestionRepositoryImpl(
+      getIt<BasicQuestionWithAnswerApi>(),
     ));
 
     getIt.registerSingleton<BasicQuestionWithAnswerRepository>(BasicQuestionWithAnswerRepositoryImpl(

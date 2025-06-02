@@ -1,10 +1,12 @@
+import 'package:app/domain/entry/basic_question_category.dart';
 import 'package:app/domain/entry/basic_question_with_answer.dart';
 
 import '../../domain/entry/basic_answer.dart';
 import '../../domain/entry/basic_question.dart';
 import '../../domain/repository/basic_question_with_answer_repository.dart';
+import '../adapter/basic_question_category_adapter.dart';
+import '../adapter/basic_question_with_answer_adapter.dart';
 import '../network/apis/basic_question_with_answer_api.dart';
-import '../network/dto/basic_answer_request.dart';
 
 class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRepository {
   final BasicQuestionWithAnswerApi _api;
@@ -12,23 +14,26 @@ class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRe
   BasicQuestionWithAnswerRepositoryImpl(this._api);
 
   @override
-  Future<List<BasicQuestion>> fetchQuestions() async {
-    final res = await _api.fetchQuestions();
-    return res;
+  Future<List<BasicQuestionCategory>> fetchCategories() async {
+    final res = await _api.fetchCategories();
+    return res.map(BasicQuestionCategoryAdapter.fromResponse).toList();
   }
 
   @override
-  Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswers(String userId) =>
-      _api.fetchQuestionsWithAnswers(userId);
+  Future<List<BasicQuestion>> fetchQuestions() async {
+    return await _api.fetchQuestions();
+  }
 
   @override
-  Future<void> submitAnswer(BasicAnswer answer) async {
-    final req = BasicAnswerRequest(
-      userId: answer.userId,
-      questionId: answer.questionId,
-      answer: answer.answer,
-    );
-    await _api.submitAnswer(req);
+  Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswersOnCategory(String userId, String categoryId) async {
+    final res = await _api.fetchQuestionsWithAnswers(userId, categoryId);
+    return res.map(BasicQuestionWithAnswerAdapter.fromResponse).toList();
+  }
+
+  @override
+  Future<List<BasicQuestionWithAnswer>> fetchCategoryQAndAByUserId(String userId, String categoryId) async {
+    final res = await _api.fetchCategoryQAndAByUserId(userId, categoryId);
+    return res.map(BasicQuestionWithAnswerAdapter.fromResponse).toList();
   }
 
   @override
@@ -42,11 +47,12 @@ class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRe
     required String questionId,
     required String answer,
     String? answerId,
-  }) =>
-      _api.submitOrUpdateAnswer(
-        userId: userId,
-        questionId: questionId,
-        answer: answer,
-        answerId: answerId,
-      );
+  }) async {
+    return await _api.submitOrUpdateAnswer(
+      userId: userId,
+      questionId: questionId,
+      answer: answer,
+      answerId: answerId,
+    );
+  }
 }
