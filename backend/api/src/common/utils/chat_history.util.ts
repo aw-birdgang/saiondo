@@ -27,4 +27,11 @@ export function buildHistory(
 export function countTokens(text: string): number {
     // 한글/영문 혼용 기준, 1단어 ≈ 1토큰 근사치
     return text.split(/\s+/).length;
-  }
+}
+
+// 대화 내역 요약 함수 예시
+export function summarizeChatHistory(chatHistory: string): string {
+  const lines = chatHistory.split('\n').filter(line => line.trim());
+  const essential = lines.slice(-4); // 최근 2~3 round만
+  return essential.join(' ').replace(/\s+/g, ' ');
+}

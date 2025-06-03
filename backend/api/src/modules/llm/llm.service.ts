@@ -4,7 +4,7 @@ import {ConfigService} from '@nestjs/config';
 import {AllConfigType} from '../../config/config.type';
 import {AnalyzeRequestDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
-import {buildHistory, LLMMessage} from "@common/utils/chat_history.util";
+import {buildHistory, LLMMessage, summarizeChatHistory} from "@common/utils/chat_history.util";
 import {SuggestedFieldsService} from '../suggested-fields/suggested-fields.service';
 import {loadPromptTemplate} from "@common/utils/prompt-loader.util";
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
@@ -82,9 +82,8 @@ export class LlmService {
     // 프롬프트 템플릿 로드 및 변수 치환
     let systemPrompt = loadPromptTemplate('chat_qa_relationship_coach');
     systemPrompt = systemPrompt
-      .replace('{{memory_schema}}', JSON.stringify(body.memory_schema, null, 2))
-      .replace('{{profile}}', JSON.stringify(body.profile, null, 2))
-      .replace('{{chat_history}}', body.chat_history);
+      .replace('{{profile}}', JSON.stringify(body.profile))
+      .replace('{{chat_history}}', summarizeChatHistory(body.chat_history));
 
     // 메시지 배열 구성
     const messages = [

@@ -86,16 +86,17 @@ export class ChatService {
   /**
    * 유저의 페르소나 요약 문자열 생성 (카테고리 설명 포함)
    */
-  private async getPersonaSummary(userId: string): Promise<string> {
+  private async getPersonaSummary(userId: string): Promise<{ key: string; value: string }[]> {
     const personaList: (PersonaProfile & { categoryCode: CategoryCode })[] =
       await this.prisma.personaProfile.findMany({
         where: { userId },
         include: { categoryCode: true },
       });
-    if (!personaList?.length) return '정보없음';
-    return personaList
-      .map((p) => `${p.categoryCode?.description ?? p.categoryCodeId}: ${p.content}`)
-      .join(', ');
+    if (!personaList?.length) return [];
+    return personaList.map((p) => ({
+      key: p.categoryCode?.description ?? p.categoryCodeId,
+      value: p.content,
+    }));
   }
 
   private async chatHistoryToText(
@@ -201,7 +202,7 @@ export class ChatService {
     const userPersonaSummary = await this.getPersonaSummary(userId);
 
     const partner = await this.getPartnerUser(channelId, userId);
-    const partnerPersonaSummary = partner ? await this.getPersonaSummary(partner.id) : '';
+    const partnerPersonaSummary = partner ? await this.getPersonaSummary(partner.id) : [];
     const userTraitQnA = await this.analyzeTraitsForUser(userId);
     const partnerTraitQnA = partner ? await this.analyzeTraitsForUser(partner.id) : {};
 

@@ -21,14 +21,14 @@ export class ChatQARelationshipCoachRequestDto {
       이름: string;
       성별: string;
       생년월일: string;
-      특징: string;
+      특징: { key: string; value: string }[];
       trait_qna?: Record<string, { question: string; answer: string }[]>;
     };
     partner: {
       이름: string;
       성별: string;
       생년월일: string;
-      특징: string;
+      특징: { key: string; value: string }[];
       trait_qna?: Record<string, { question: string; answer: string }[]>;
     };
   };
