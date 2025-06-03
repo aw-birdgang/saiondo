@@ -112,13 +112,12 @@ export class BasicQuestionWithAnswerService {
   }
 
   async getQuestionsWithAnswers(userId: string): Promise<BasicQuestionWithAnswerDto[]> {
-    // 모든 질문을 가져오면서, 각 질문에 대해 해당 유저의 답변(있으면)도 포함
     const questions = await this.prisma.basicQuestion.findMany({
       orderBy: { createdAt: 'asc' },
       include: {
         answers: {
           where: { userId },
-          take: 1, // 한 유저의 답변이 여러 개일 경우 첫 번째만
+          take: 1,
         },
       },
     });
@@ -159,5 +158,39 @@ export class BasicQuestionWithAnswerService {
     return questions.map(q =>
       BasicQuestionWithAnswerDto.fromEntity(q, q.answers[0] ?? null),
     );
+  }
+
+  async getAnsweredQuestionsWithAnswers(userId: string): Promise<BasicQuestionWithAnswerDto[]> {
+    // 답변이 있는 항목만 join해서 가져옴
+    const answers = await this.prisma.basicAnswer.findMany({
+      where: { userId },
+      include: { question: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    // answer와 question이 모두 있는 DTO로 변환
+    return answers.map(ans =>
+      BasicQuestionWithAnswerDto.fromEntity(ans.question, ans)
+    );
+  }
+
+  /**
+   * 답변이 있는 질문+답변만 반환 (AI/챗봇 프롬프트용)
+   */
+  async getAnsweredQAPairs(userId: string): Promise<{ question: string; answer: string; categoryId: string }[]> {
+    const answers = await this.prisma.basicAnswer.findMany({
+      where: { userId },
+      include: { question: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    // answer가 null/빈문자열인 경우는 제외
+    return answers
+      .filter(ans => ans.answer && ans.answer.trim() !== '' && ans.question)
+      .map(ans => ({
+        question: ans.question.question,
+        answer: ans.answer,
+        categoryId: ans.question.categoryId,
+      }));
   }
 }

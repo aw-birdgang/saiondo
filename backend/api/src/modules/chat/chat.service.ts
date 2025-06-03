@@ -4,12 +4,10 @@ import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
 import {CategoryCode, ChatHistory, MessageSender, PersonaProfile, User} from '@prisma/client';
 import {LlmService} from '@modules/llm/llm.service';
 import {ChannelService} from '@modules/channel/channel.service';
-import {loadPromptTemplate} from '../../common/utils/prompt-loader.util';
-import {fillPromptTemplate} from '../../common/utils/prompt-template.util';
-import {LLMMessageDto} from "@modules/llm/dto/llm-message.dto";
 import {ChatHistoryService} from '@modules/chat-history/chat-history.service';
 import {UserService} from "@modules/user/user.services";
-import {RelationshipCoachRequestDto} from "@modules/chat/dto/chat_relationship-coach.dto";
+import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
+import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
 
 @Injectable()
 export class ChatService {
@@ -21,6 +19,7 @@ export class ChatService {
     private readonly channelService: ChannelService,
     private readonly chatHistoryService: ChatHistoryService,
     private readonly userService: UserService,
+    private readonly basicQnAService: BasicQuestionWithAnswerService,
   ) {}
 
   /**
@@ -81,84 +80,52 @@ export class ChatService {
   private async getPartnerUser(channelId: string, userId: string): Promise<User | null> {
     this.logger.log(`[ChatService] getPartnerUser channelId: ${channelId}, userId: ${userId}`);
     const partnerId = await this.channelService.getChannelParticipants(channelId, userId);
-    if (!partnerId) return null;
-    return this.userService.findById(partnerId);
+    return partnerId ? this.userService.findById(partnerId) : null;
   }
 
   /**
    * 유저의 페르소나 요약 문자열 생성 (카테고리 설명 포함)
    */
   private async getPersonaSummary(userId: string): Promise<string> {
-    // categoryCode도 함께 include
     const personaList: (PersonaProfile & { categoryCode: CategoryCode })[] =
       await this.prisma.personaProfile.findMany({
         where: { userId },
         include: { categoryCode: true },
       });
-    if (!personaList || personaList.length === 0) return '정보없음';
-    // [카테고리 설명]: [값] 형태로 조합
+    if (!personaList?.length) return '정보없음';
     return personaList
       .map((p) => `${p.categoryCode?.description ?? p.categoryCodeId}: ${p.content}`)
       .join(', ');
   }
 
-  /**
-   * 유저 정보 조회 (UserService 사용)
-   */
-  private async getUserById(userId: string): Promise<User | null> {
-    return this.userService.findById(userId);
-  }
-
-  /**
-   * 프롬프트 템플릿을 불러와 변수 치환
-   */
-  private buildPrompt(
-    questioner: User | null,
-    partner: User,
-    personaSummary: string,
-    message: string,
-  ): string {
-    const template = loadPromptTemplate('default');
-    return fillPromptTemplate(template, {
-      questionerGender: questioner?.gender ?? '정보없음',
-      partnerGender: partner.gender ?? '정보없음',
-      personaSummary,
-      message,
-    }).trim();
-  }
-
-  /**
-   * 특정 채널/assistant의 최근 채팅 히스토리 조회 및 LLMMessageDto 변환
-   */
-  private async getChatHistoryMessagesChannelAndAssistant(
+  private async chatHistoryToText(
       channelId: string,
       assistantId: string,
       limit = 10
-  ): Promise<LLMMessageDto[]> {
+  ): Promise<string> {
     const history = await this.chatHistoryService.findManyByChannelAndAssistant(channelId, assistantId, limit);
     history.reverse();
-    return history.map((msg) => ({
-      role: msg.sender === 'USER' ? 'user' : 'assistant',
-      content: msg.message,
-    })) as LLMMessageDto[];
+    return history
+        .map(msg => `${msg.sender === 'USER' ? '유저' : 'AI'}: ${msg.message}`)
+        .join('\n');
   }
 
+
   /**
-   * 사용자 메시지 처리 및 LLM 응답 생성 전체 플로우
+   * 실제 LLM 프롬프트로 코칭/피드백 생성
    */
-  async processUserMessage(
+  async processQARelationshipCoachMessage(
       userId: string,
       assistantId: string,
       channelId: string,
       message: string,
+      model: 'openai' | 'claude' = 'openai'
   ) {
-    this.logger.log(`[ChatService] user message: ${message}`);
+    const memory_schema = await this.getMemorySchema(channelId, userId, assistantId);
+    const profile = await this.getProfileWithPartner(userId, channelId);
+    const traitData = await this.analyzePartnerTraitsForPrompt(userId, channelId, message);
+    const chatHistoryText = await this.chatHistoryToText(channelId, assistantId, 10);
 
-    // 1. 대화 히스토리 수집
-    const chatHistory = await this.getChatHistoryMessagesChannelAndAssistant(channelId, assistantId, 10);
-    this.logger.log(`[ChatService] LLM chatHistory: ${JSON.stringify(chatHistory, null, 2)}`);
-
-    // 2. 사용자 메시지 저장
     const userChat = await this.saveChatMessage(
         userId,
         assistantId,
@@ -167,48 +134,34 @@ export class ChatService {
         MessageSender.USER,
     );
 
-    // 3. 상대방 유저 정보 조회
-    const partner = await this.getPartnerUser(channelId, userId);
-    if (!partner) throw new Error('채팅방 참여자 정보를 찾을 수 없습니다.');
-
-    // 4. 페르소나 요약 및 질문자 정보 조회
-    const personaSummary = await this.getPersonaSummary(partner.id);
-    const questioner = await this.getUserById(userId);
-
-    // 5. system 메시지(페르소나 context) 생성
-    const personaContextTemplate = loadPromptTemplate('persona_context');
-    const personaContext = fillPromptTemplate(personaContextTemplate, {
-      questionerGender: questioner?.gender ?? '정보없음',
-      partnerGender: partner.gender ?? '정보없음',
-      personaSummary,
-    });
-
-    const systemMessage: LLMMessageDto = {
-      role: 'system',
-      content: `너는 친절한 AI 비서야.\n${personaContext}`,
+    const relationshipCoachRequest: ChatQARelationshipCoachRequestDto = {
+      memory_schema,
+      profile,
+      partner_trait_questions_and_answers: traitData,
+      chat_history: chatHistoryText,
+      messages: [
+        { role: 'user', content: message }
+      ],
+      model,
     };
 
-    // 6. 전체 메시지 배열 조합 (system + 기존 히스토리 + 이번 user 메시지)
-    const messages: LLMMessageDto[] = [
-      systemMessage,
-      ...chatHistory,
-      { role: 'user' as const, content: message },
-    ];
-    this.logger.log(`[ChatService] LLM 최종 messages: ${JSON.stringify(messages, null, 2)}`);
+    const llmResponse = await this.llmService.forwardToLLMQAForChatRelationshipCoach(relationshipCoachRequest);
+    this.logger.log(`[ChatService] LLM 관계코치 응답: ${llmResponse}`);
 
-    // 7. LLM 서버에 히스토리 기반 응답 요청
-    const llmResponse = await this.llmService.forwardHistoryToLLM({
-      messages,
-      model: 'openai', // 또는 'claude'
-    });
-    this.logger.log(`[ChatService] LLM 응답: ${llmResponse}`);
+    let reply = '';
+    try {
+      const parsed = extractJsonFromCodeBlock(llmResponse);
+      reply = parsed?.reply || '';
+    } catch (e) {
+      this.logger.error('LLM 응답 파싱 실패:', e);
+      reply = '';
+    }
 
-    // 8. AI 응답 저장
     const aiChat = await this.saveChatMessage(
         userId,
         assistantId,
         channelId,
-        llmResponse,
+        reply,
         MessageSender.AI,
     );
 
@@ -219,86 +172,23 @@ export class ChatService {
       message,
       userChat,
       aiChat,
+      llmResponse,
+      reply,
     };
   }
 
-  /**
-   * 관계 코치 LLM 상담 전체 플로우
-   */
-  async processRelationshipCoachMessage(
-    userId: string,
-    assistantId: string,
-    channelId: string,
-    message: string,
-    model: 'openai' | 'claude' = 'openai'
-  ) {
-    this.logger.log(`[ChatService] user message (relationship coach): ${message}`);
-
-    // 1. 필요한 정보 서버 내부에서 조회
-    const memory_schema = await this.getMemorySchema(channelId, userId, assistantId);
-    const profile = await this.getProfileWithPartner(userId, channelId);
-    const summary = await this.getConversationSummary(channelId, userId);
-
-    // 2. 대화 히스토리 수집
-    const chatHistory = await this.getChatHistoryMessagesChannelAndAssistant(channelId, assistantId, 10);
-    this.logger.log(`[ChatService] LLM chatHistory: ${JSON.stringify(chatHistory, null, 2)}`);
-
-    // 3. 사용자 메시지 저장
-    const userChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      message,
-      MessageSender.USER,
-    );
-
-    // 4. RelationshipCoachRequestDto 조립
-    const relationshipCoachRequest: RelationshipCoachRequestDto = {
-      memory_schema,
-      profile,
-      summary,
-      messages: [
-        ...chatHistory,
-        { role: 'user', content: message }
-      ],
-      model,
-    };
-
-    // 5. LLM 서버에 관계코치 프롬프트 기반 응답 요청
-    const llmResponse = await this.llmService.forwardToLLMForChatRelationshipCoach(relationshipCoachRequest);
-    this.logger.log(`[ChatService] LLM 관계코치 응답: ${llmResponse}`);
-
-    // 6. AI 응답 저장
-    const aiChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      llmResponse,
-      MessageSender.AI,
-    );
-
-    return {
-      userId,
-      assistantId,
-      channelId,
-      message,
-      userChat,
-      aiChat,
-      llmResponse,
-    };
-  }
 
   /**
    * 관계코치용 memory_schema 조회 (예시)
    */
   async getMemorySchema(channelId: string, userId: string, assistantId: string): Promise<Record<string, any>> {
-    // 실제 서비스 상황에 맞게 구현
-    // 예: 채널/유저/assistant 관련 메타 정보, 최근 대화 요약 등
+    // 실제 서비스 상황에 맞게 필요한 정보만 포함
+    // 예: 채널명, 생성일, 유저/assistant 닉네임 등
+    const channel = await this.channelService.findById(channelId);
+    const user = await this.userService.findById(userId);
+    const assistant = await this.userService.findById(assistantId);
+
     return {
-      channelId,
-      userId,
-      assistantId,
-      // ... 기타 필요한 정보
     };
   }
 
@@ -316,37 +206,101 @@ export class ChatService {
     if (partner) {
       partnerPersonaSummary = await this.getPersonaSummary(partner.id);
     }
-
     return {
-      user: {
-        id: user?.id,
-        name: user?.name,
-        gender: user?.gender,
-        birthDate: user?.birthDate,
-        personaSummary: userPersonaSummary,
-      },
+      me: user
+        ? {
+            이름: user.name,
+            성별: user.gender,
+            생년월일: user.birthDate,
+            특징: userPersonaSummary,
+          }
+        : undefined,
       partner: partner
         ? {
-            id: partner.id,
-            name: partner.name,
-            gender: partner.gender,
-            birthDate: partner.birthDate,
-            personaSummary: partnerPersonaSummary,
+            이름: partner.name,
+            성별: partner.gender,
+            생년월일: partner.birthDate,
+            특징: partnerPersonaSummary,
           }
-        : null,
-      channelId,
-      // 필요하다면 relationshipStatus, anniversary 등도 추가
+        : undefined,
     };
   }
 
   /**
-   * 관계코치용 대화 요약 조회 (예시)
+   * 파트너의 답변이 있는 질문+답변만 가져와서, 카테고리별로 묶고 프롬프트 생성
    */
-  async getConversationSummary(channelId: string, userId: string): Promise<string> {
-    // 실제 서비스 상황에 맞게 구현
-    // 예: 최근 대화 요약, 감정 상태 등
-    // 여기서는 예시로 최근 10개 메시지를 단순 합침
-    const history = await this.chatHistoryService.findManyByChannelAndUser(channelId, userId, 10);
-    return history.map(h => h.message).join(' / ');
+  async analyzePartnerTraitsForPrompt(
+    userId: string,
+    channelId: string,
+    message: string,
+  ) {
+    // 1. 채널 정보 조회
+    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel) throw new Error('채널을 찾을 수 없습니다.');
+
+    // 2. 파트너 ID 결정
+    let partnerId: string;
+    if (channel.user1Id === userId) {
+      partnerId = channel.user2Id;
+    } else if (channel.user2Id === userId) {
+      partnerId = channel.user1Id;
+    } else {
+      throw new Error('채널에 해당 유저가 포함되어 있지 않습니다.');
+    }
+
+    // 3. 파트너의 답변이 있는 질문+답변만 가져오기
+    const partnerAnswered = await this.basicQnAService.getAnsweredQAPairs(partnerId);
+    // partnerAnswered: { question: string; answer: string; categoryId: string }[]
+
+    // 4. 모든 카테고리 정보 조회 (id → name 매핑)
+    const categories = await this.prisma.basicQuestionCategory.findMany();
+    const categoryIdToName = Object.fromEntries(categories.map(cat => [cat.id, cat.name]));
+
+    // 5. 카테고리명(한글)으로 묶기
+    const groupByCategory = (
+      answers: { question: string; answer: string; categoryId: string }[]
+    ) => {
+      const map: Record<string, { question: string; answer: string }[]> = {};
+      for (const qa of answers) {
+        const categoryName = categoryIdToName[qa.categoryId] || qa.categoryId;
+        if (!map[categoryName]) map[categoryName] = [];
+        map[categoryName].push({ question: qa.question, answer: qa.answer });
+      }
+      return map;
+    };
+
+    const partnerByCat = groupByCategory(partnerAnswered);
+    this.logger.log(`[ChatService] partnerByCat::: ${JSON.stringify(partnerByCat, null, 2)}`);
+
+    return partnerByCat;
   }
+
+}
+
+function extractJsonFromCodeBlock(text: string): any | null {
+  const match = text.match(/```json\s*([\s\S]*?)```/);
+  if (match && match[1]) {
+    try {
+      return JSON.parse(match[1]);
+    } catch {
+      const braceMatch = match[1].match(/{[\s\S]*}/);
+      if (braceMatch) {
+        try {
+          return JSON.parse(braceMatch[0]);
+        } catch {
+          return null;
+        }
+      }
+      return null;
+    }
+  }
+  const braceMatch = text.match(/{[\s\S]*}/);
+  if (braceMatch) {
+    try {
+      return JSON.parse(braceMatch[0]);
+    } catch {
+      return null;
+    }
+  }
+  return null;
 }

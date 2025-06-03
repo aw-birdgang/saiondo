@@ -40,6 +40,13 @@ export class ChannelService {
     });
   }
 
+  // 채널 단건 조회
+  async findById(channelId: string) {
+    return this.prisma.channel.findUnique({
+      where: { id: channelId },
+    });
+  }
+
   async getChannelWithUserInfoById(channelId: string) {
     return this.prisma.channel.findUnique({
       where: { id: channelId },

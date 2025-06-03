@@ -8,6 +8,7 @@ import {ChannelService} from '@modules/channel/channel.service';
 import {ChatHistoryService} from "@modules/chat-history/chat-history.service";
 import {UserModule} from '../user/user.module';
 import {PersonaProfileModule} from '../persona-profile/persona-profile.module';
+import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import {PersonaProfileModule} from '../persona-profile/persona-profile.module';
     ChatHistoryService,
     ChatGateway,
     ChannelService,
+    BasicQuestionWithAnswerService,
   ],
   exports: [ChatService],
 })

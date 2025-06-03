@@ -212,4 +212,12 @@ export class BasicQuestionWithAnswerController {
   ): Promise<BasicQuestionWithAnswerDto[]> {
     return this.service.getQuestionsWithAnswersOnCategory(userId, categoryId);
   }
+
+  /**
+   * 답변이 있는 질문+답변만 반환 (AI/챗봇 프롬프트용)
+   */
+  @Get('answered-qa/:userId')
+  async getAnsweredQAPairs(@Param('userId') userId: string) {
+    return this.service.getAnsweredQAPairs(userId);
+  }
 }

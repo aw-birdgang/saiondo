@@ -26,15 +26,15 @@ export class BasicQuestionWithAnswerDto {
   @ApiProperty({ type: () => BasicAnswerResponseDto, nullable: true })
   answer?: BasicAnswerResponseDto | null;
 
-  static fromEntity(entity: any, answer: any): BasicQuestionWithAnswerDto {
+  static fromEntity(question: any, answer: any): BasicQuestionWithAnswerDto {
     return {
-      id: entity.id,
-      categoryId: entity.categoryId,
-      question: entity.question,
-      description: entity.description ?? undefined,
-      options: entity.options ?? [],
-      createdAt: entity.createdAt instanceof Date ? entity.createdAt.toISOString() : entity.createdAt,
-      updatedAt: entity.updatedAt instanceof Date ? entity.updatedAt.toISOString() : entity.updatedAt,
+      id: question.id,
+      categoryId: question.categoryId,
+      question: question.question,
+      description: question.description ?? undefined,
+      options: question.options ?? [],
+      createdAt: question.createdAt instanceof Date ? question.createdAt.toISOString() : question.createdAt,
+      updatedAt: question.updatedAt instanceof Date ? question.updatedAt.toISOString() : question.updatedAt,
       answer: answer ? BasicAnswerResponseDto.fromEntity(answer) : null,
     };
   }

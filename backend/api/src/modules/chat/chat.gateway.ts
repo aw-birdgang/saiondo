@@ -70,13 +70,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     });
 
     try {
-      // const response = await this.chatService.processUserMessage(
-      //   userId,
-      //   assistantId,
-      //   channelId,
-      //   message,
-      // );
-      const response = await this.chatService.processRelationshipCoachMessage(
+      const response = await this.chatService.processQARelationshipCoachMessage(
         userId,
         assistantId,
         channelId,
@@ -84,7 +78,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       );
       this.log(`[API][WebSocket] processUserMessage response`, response);
       this.server.emit('receive_message', response);
-      this.log(`[API][WebSocket] Sent feedback to all clients:`, response);
+      this.log(`[API][WebSocket] Sent feedback to all clients:`, response.aiChat);
     } catch (error) {
       this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
       client.emit('error', { message: error?.message ?? 'Unknown error' });
