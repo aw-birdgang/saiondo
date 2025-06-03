@@ -93,6 +93,15 @@ abstract class _ChatStore with Store {
         print('[ChatStore] AI 메시지 수신: ${aiChat.message}');
       }
     } catch (e) {
+      messages.add(ChatHistory(
+        id: UniqueKey().toString(),
+        userId: _assistantId ?? '',
+        assistantId: _assistantId ?? '',
+        channelId: _channelId ?? '',
+        message: data.toString(),
+        sender: 'AI',
+        createdAt: DateTime.now(),
+      ));
       print('[ChatStore] 메시지 파싱 실패: $e, data: $data');
     }
   }
