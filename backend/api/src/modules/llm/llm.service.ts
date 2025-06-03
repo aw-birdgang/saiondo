@@ -6,7 +6,6 @@ import {AnalyzeRequestDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
 import {buildHistory, LLMMessage} from "@common/utils/chat_history.util";
 import {SuggestedFieldsService} from '../suggested-fields/suggested-fields.service';
-import {RelationshipCoachRequestDto} from "@modules/chat/dto/chat_relationship-coach.dto";
 import {loadPromptTemplate} from "@common/utils/prompt-loader.util";
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
 
@@ -77,35 +76,6 @@ export class LlmService {
     }
   }
 
-  /**
-   *
-   * @param body
-   */
-  async forwardToLLMForChatRelationshipCoach(body: RelationshipCoachRequestDto): Promise<string> {
-    let systemPrompt = loadPromptTemplate('chat_relationship_coach');
-    systemPrompt = systemPrompt
-        .replace('{{memory_schema}}', JSON.stringify(body.memory_schema, null, 2))
-        .replace('{{profile}}', JSON.stringify(body.profile, null, 2))
-        .replace('{{summary}}', body.summary);
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...body.messages,
-    ];
-    this.logger.log('[LLM][RelationshipCoach] messages:', JSON.stringify(messages, null, 2));
-    try {
-      const { data } = await axios.post(`${this.llmApiUrl}/chat-relationship-coach`, {
-        messages,
-        model: body.model,
-        response_format: { type: "json_object" }
-      });
-      this.logger.log('[LLM][RelationshipCoach] response:', JSON.stringify(data, null, 2));
-      return data.response;
-    } catch (error: any) {
-      console.error('LLM relationship coach 호출 실패:', error.message);
-      throw error;
-    }
-  }
-
   async forwardToLLMQAForChatRelationshipCoach(
     body: ChatQARelationshipCoachRequestDto
   ): Promise<string> {
@@ -114,7 +84,6 @@ export class LlmService {
     systemPrompt = systemPrompt
       .replace('{{memory_schema}}', JSON.stringify(body.memory_schema, null, 2))
       .replace('{{profile}}', JSON.stringify(body.profile, null, 2))
-      .replace('{{partner_trait_questions_and_answers}}', JSON.stringify(body.partner_trait_questions_and_answers, null, 2))
       .replace('{{chat_history}}', body.chat_history);
 
     // 메시지 배열 구성

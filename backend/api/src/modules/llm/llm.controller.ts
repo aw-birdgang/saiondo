@@ -8,7 +8,6 @@ import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
 import {ChatHistoryRequestDto} from "@modules/llm/dto/chat-history-request.dto";
 import {ChatHistoryResponseDto} from "@modules/llm/dto/chat-history-response.dto";
 import {MessageSender} from "@prisma/client";
-import {RelationshipCoachRequestDto, RelationshipCoachResponseDto} from "@modules/chat/dto/chat_relationship-coach.dto";
 
 @ApiTags('LLM')
 @Controller('llm')
@@ -97,14 +96,4 @@ export class LlmController {
     return { response };
   }
 
-  @Post('chat-relationship-coach')
-  @ApiOperation({ summary: '관계 코치 LLM 상담' })
-  @ApiBody({ type: RelationshipCoachRequestDto })
-  @ApiResponse({ status: 200, type: RelationshipCoachResponseDto })
-  async chatRelationshipCoach(
-    @Body() body: RelationshipCoachRequestDto
-  ): Promise<RelationshipCoachResponseDto> {
-    const response = await this.llmService.forwardToLLMForChatRelationshipCoach(body);
-    return { response };
-  }
 }

@@ -123,7 +123,6 @@ export class ChatService {
   ) {
     const memory_schema = await this.getMemorySchema(channelId, userId, assistantId);
     const profile = await this.getProfileWithPartner(userId, channelId);
-    const traitData = await this.analyzePartnerTraitsForPrompt(userId, channelId, message);
     const chatHistoryText = await this.chatHistoryToText(channelId, assistantId, 10);
 
     const userChat = await this.saveChatMessage(
@@ -134,13 +133,12 @@ export class ChatService {
         MessageSender.USER,
     );
 
-    const relationshipCoachRequest: ChatQARelationshipCoachRequestDto = {
+    const relationshipCoachRequest: ChatQARelationshipCoachRequestDto = <ChatQARelationshipCoachRequestDto>{
       memory_schema,
       profile,
-      partner_trait_questions_and_answers: traitData,
       chat_history: chatHistoryText,
       messages: [
-        { role: 'user', content: message }
+        {role: 'user', content: message}
       ],
       model,
     };
@@ -196,83 +194,49 @@ export class ChatService {
    * 관계코치용 profile 조회 (user + partner 정보 포함)
    */
   async getProfileWithPartner(userId: string, channelId: string): Promise<Record<string, any>> {
-    // 본인 정보
     const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new Error('존재하지 않는 사용자입니다.');
+    }
     const userPersonaSummary = await this.getPersonaSummary(userId);
 
-    // 파트너 정보
     const partner = await this.getPartnerUser(channelId, userId);
-    let partnerPersonaSummary = '';
-    if (partner) {
-      partnerPersonaSummary = await this.getPersonaSummary(partner.id);
-    }
+    const partnerPersonaSummary = partner ? await this.getPersonaSummary(partner.id) : '';
+    const userTraitQnA = await this.analyzeTraitsForUser(userId);
+    const partnerTraitQnA = partner ? await this.analyzeTraitsForUser(partner.id) : {};
+
     return {
-      me: user
-        ? {
-            이름: user.name,
-            성별: user.gender,
-            생년월일: user.birthDate,
-            특징: userPersonaSummary,
-          }
-        : undefined,
+      me: {
+        이름: user.name,
+        성별: user.gender,
+        생년월일: user.birthDate,
+        특징: userPersonaSummary,
+        trait_qna: userTraitQnA,
+      },
       partner: partner
         ? {
             이름: partner.name,
             성별: partner.gender,
             생년월일: partner.birthDate,
             특징: partnerPersonaSummary,
+            trait_qna: partnerTraitQnA,
           }
         : undefined,
     };
   }
 
-  /**
-   * 파트너의 답변이 있는 질문+답변만 가져와서, 카테고리별로 묶고 프롬프트 생성
-   */
-  async analyzePartnerTraitsForPrompt(
-    userId: string,
-    channelId: string,
-    message: string,
-  ) {
-    // 1. 채널 정보 조회
-    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-    if (!channel) throw new Error('채널을 찾을 수 없습니다.');
-
-    // 2. 파트너 ID 결정
-    let partnerId: string;
-    if (channel.user1Id === userId) {
-      partnerId = channel.user2Id;
-    } else if (channel.user2Id === userId) {
-      partnerId = channel.user1Id;
-    } else {
-      throw new Error('채널에 해당 유저가 포함되어 있지 않습니다.');
-    }
-
-    // 3. 파트너의 답변이 있는 질문+답변만 가져오기
-    const partnerAnswered = await this.basicQnAService.getAnsweredQAPairs(partnerId);
-    // partnerAnswered: { question: string; answer: string; categoryId: string }[]
-
-    // 4. 모든 카테고리 정보 조회 (id → name 매핑)
+  // 기존 analyzePartnerTraitsForPrompt를 아래처럼 재활용
+  async analyzeTraitsForUser(userId: string) {
+    const answered = await this.basicQnAService.getAnsweredQAPairs(userId);
     const categories = await this.prisma.basicQuestionCategory.findMany();
     const categoryIdToName = Object.fromEntries(categories.map(cat => [cat.id, cat.name]));
-
-    // 5. 카테고리명(한글)으로 묶기
-    const groupByCategory = (
-      answers: { question: string; answer: string; categoryId: string }[]
-    ) => {
-      const map: Record<string, { question: string; answer: string }[]> = {};
-      for (const qa of answers) {
-        const categoryName = categoryIdToName[qa.categoryId] || qa.categoryId;
-        if (!map[categoryName]) map[categoryName] = [];
-        map[categoryName].push({ question: qa.question, answer: qa.answer });
-      }
-      return map;
-    };
-
-    const partnerByCat = groupByCategory(partnerAnswered);
-    this.logger.log(`[ChatService] partnerByCat::: ${JSON.stringify(partnerByCat, null, 2)}`);
-
-    return partnerByCat;
+    const map: Record<string, { question: string; answer: string }[]> = {};
+    for (const qa of answered) {
+      const categoryName = categoryIdToName[qa.categoryId] || qa.categoryId;
+      if (!map[categoryName]) map[categoryName] = [];
+      map[categoryName].push({ question: qa.question, answer: qa.answer });
+    }
+    return map;
   }
 
 }

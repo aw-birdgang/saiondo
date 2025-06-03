@@ -16,22 +16,22 @@ export class ChatQARelationshipCoachRequestDto {
     type: Object,
     example: { name: "profile", value: {} }
   })
-  profile: Record<string, any>;
-
-  @ApiProperty({
-    type: Object,
-    example: {
-      "연애관": [
-        { question: "연애할 때 상대방에게 의지하는 편이에요?", answer: "네, 많이 의지해요" }
-      ],
-      "취미/일상": [
-        { question: "주말엔 주로 뭐하면서 보내요?", answer: "여행이나 외출" }
-      ]
-    },
-    description: "파트너의 성향을 파악하기 위한 질문과 답변 (카테고리명 기반)"
-  })
-  @IsObject()
-  partner_trait_questions_and_answers: Record<string, { question: string; answer: string }[]>;
+  profile: {
+    me: {
+      이름: string;
+      성별: string;
+      생년월일: string;
+      특징: string;
+      trait_qna?: Record<string, { question: string; answer: string }[]>;
+    };
+    partner: {
+      이름: string;
+      성별: string;
+      생년월일: string;
+      특징: string;
+      trait_qna?: Record<string, { question: string; answer: string }[]>;
+    };
+  };
 
   @ApiProperty({
     type: String,
