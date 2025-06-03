@@ -25,6 +25,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late final ChatStore _chatStore = getIt<ChatStore>();
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -37,7 +38,20 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     _chatStore.disconnect();
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
@@ -53,10 +67,14 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Observer(
           builder: (_) => Row(
             children: [
-              Icon(
-                _chatStore.isConnected ? Icons.favorite : Icons.favorite_border,
-                color: _chatStore.isConnected ? Colors.pinkAccent : Colors.grey,
-                size: 22,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  _chatStore.isConnected ? Icons.favorite : Icons.favorite_border,
+                  color: _chatStore.isConnected ? Colors.pinkAccent : Colors.grey,
+                  size: 22,
+                  key: ValueKey(_chatStore.isConnected),
+                ),
               ),
               const SizedBox(width: 8),
               Text(
@@ -78,26 +96,75 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: Observer(
-              builder: (_) => ListView.builder(
-                reverse: true,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                itemCount: _chatStore.messages.length,
-                itemBuilder: (context, index) {
-                  final reversedIndex = _chatStore.messages.length - 1 - index;
-                  final ChatHistory msg = _chatStore.messages[reversedIndex];
-                  return ChatMessageWidget(chat: msg);
-                },
-              ),
+              builder: (_) {
+                WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+                return ListView.builder(
+                  controller: _scrollController,
+                  reverse: true,
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                  itemCount: _chatStore.messages.length,
+                  itemBuilder: (context, index) {
+                    final reversedIndex = _chatStore.messages.length - 1 - index;
+                    final ChatHistory msg = _chatStore.messages[reversedIndex];
+                    return ChatMessageWidget(chat: msg);
+                  },
+                );
+              },
             ),
+          ),
+          Observer(
+            builder: (_) => _chatStore.isAwaitingLLM
+                ? const _LovelyLoadingIndicator()
+                : const SizedBox.shrink(),
           ),
           _LovelyChatInputBar(
             controller: _controller,
             onSend: (text) {
               _chatStore.sendMessage(text);
               _controller.clear();
+              _scrollToBottom();
             },
+            enabled: !_chatStore.isAwaitingLLM,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _LovelyLoadingIndicator extends StatelessWidget {
+  const _LovelyLoadingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 28,
+              height: 28,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'AI가 답변을 작성 중입니다...',
+              style: TextStyle(
+                color: Colors.pink[400],
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Nunito',
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Text('💗', style: TextStyle(fontSize: 18)),
+          ],
+        ),
       ),
     );
   }
@@ -106,11 +173,13 @@ class _ChatScreenState extends State<ChatScreen> {
 class _LovelyChatInputBar extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String) onSend;
+  final bool enabled;
 
   const _LovelyChatInputBar({
     super.key,
     required this.controller,
     required this.onSend,
+    this.enabled = true,
   });
 
   @override
@@ -126,7 +195,7 @@ class _LovelyChatInputBar extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: enabled ? Colors.white : Colors.grey[100],
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
@@ -138,6 +207,7 @@ class _LovelyChatInputBar extends StatelessWidget {
                 ),
                 child: TextField(
                   controller: controller,
+                  enabled: enabled,
                   minLines: 1,
                   maxLines: 4,
                   decoration: InputDecoration(
@@ -148,7 +218,7 @@ class _LovelyChatInputBar extends StatelessWidget {
                   ),
                   style: const TextStyle(fontFamily: 'Nunito'),
                   onSubmitted: (text) {
-                    if (text.trim().isNotEmpty) {
+                    if (text.trim().isNotEmpty && enabled) {
                       onSend(text.trim());
                     }
                   },
@@ -158,7 +228,7 @@ class _LovelyChatInputBar extends StatelessWidget {
             const SizedBox(width: 8),
             Container(
               decoration: BoxDecoration(
-                color: Colors.pinkAccent,
+                color: enabled ? Colors.pinkAccent : Colors.grey,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
@@ -172,11 +242,13 @@ class _LovelyChatInputBar extends StatelessWidget {
                 icon: const Icon(Icons.send_rounded, color: Colors.white),
                 iconSize: 24,
                 tooltip: local?.translate('send') ?? '전송',
-                onPressed: () {
-                  if (controller.text.trim().isNotEmpty) {
-                    onSend(controller.text.trim());
-                  }
-                },
+                onPressed: enabled
+                    ? () {
+                        if (controller.text.trim().isNotEmpty) {
+                          onSend(controller.text.trim());
+                        }
+                      }
+                    : null,
               ),
             ),
           ],

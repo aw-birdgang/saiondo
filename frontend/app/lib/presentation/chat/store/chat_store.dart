@@ -29,6 +29,9 @@ abstract class _ChatStore with Store {
   @observable
   bool isConnected = false;
 
+  @observable
+  bool isAwaitingLLM = false;
+
   String? _userId;
   String? _assistantId;
   String? _channelId;
@@ -73,6 +76,7 @@ abstract class _ChatStore with Store {
     );
     messages.add(userChat);
     print('[ChatStore] 사용자 메시지 전송: $message');
+    isAwaitingLLM = true;
     _socketService.sendMessage(_userId!, _assistantId!, _channelId!, message);
   }
 
@@ -104,6 +108,7 @@ abstract class _ChatStore with Store {
       ));
       print('[ChatStore] 메시지 파싱 실패: $e, data: $data');
     }
+    isAwaitingLLM = false;
   }
 
   @action

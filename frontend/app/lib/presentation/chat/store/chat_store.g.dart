@@ -41,6 +41,22 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$isAwaitingLLMAtom =
+      Atom(name: '_ChatStore.isAwaitingLLM', context: context);
+
+  @override
+  bool get isAwaitingLLM {
+    _$isAwaitingLLMAtom.reportRead();
+    return super.isAwaitingLLM;
+  }
+
+  @override
+  set isAwaitingLLM(bool value) {
+    _$isAwaitingLLMAtom.reportWrite(value, super.isAwaitingLLM, () {
+      super.isAwaitingLLM = value;
+    });
+  }
+
   late final _$loadMessagesAsyncAction =
       AsyncAction('_ChatStore.loadMessages', context: context);
 
@@ -89,7 +105,8 @@ mixin _$ChatStore on _ChatStore, Store {
   String toString() {
     return '''
 messages: ${messages},
-isConnected: ${isConnected}
+isConnected: ${isConnected},
+isAwaitingLLM: ${isAwaitingLLM}
     ''';
   }
 }
