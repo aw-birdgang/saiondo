@@ -1,10 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { CreateUserDto } from '@modules/user/dto/user.dto';
+import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly walletService: WalletService,
+  ) {}
 
   async findAll() {
     return this.prisma.user.findMany();
@@ -14,7 +18,8 @@ export class UserService {
     if (!data.name || !data.gender) {
       throw new BadRequestException('이름과 성별은 필수 입니다.');
     }
-    return this.prisma.user.create({
+    // 1. 유저 생성
+    const user = await this.prisma.user.create({
       data: {
         name: data.name,
         gender: data.gender,
@@ -23,6 +28,10 @@ export class UserService {
         password: data.password,
       },
     });
+    // 2. 지갑 생성 및 연결
+    await this.walletService.createWalletForUser(user.id);
+    // 3. 유저+지갑 반환
+    return this.findById(user.id);
   }
 
   async findById(userId: string) {

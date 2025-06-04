@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PointType } from '@prisma/client';
 import {PrismaService} from "@common/prisma/prisma.service";
+import { getErc20Contract } from '@common/utils/ethers.util';
+import { ethers } from 'ethers';
 
 @Injectable()
 export class PointService {
@@ -63,5 +65,29 @@ export class PointService {
       where: { userId },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  // 포인트 → ERC20 토큰 전환
+  async convertPointToToken(userId: string, pointAmount: number) {
+    // 1. 유저 포인트 차감
+    await this.usePoint(userId, pointAmount, PointType.ADMIN_ADJUST, '포인트→토큰 전환');
+    // 2. 유저 지갑 주소 조회 (user 테이블에 walletAddress 필드 필요)
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { wallet: true },
+    });
+    if (!user?.wallet?.address) throw new BadRequestException('지갑 주소 없음');
+    // 3. ERC20 토큰 전송
+    const contract = getErc20Contract();
+    const decimals = Number(process.env.ERC20_TOKEN_DECIMALS || 18);
+    const tx = await contract.transfer(user.wallet.address, ethers.parseUnits(pointAmount.toString(), decimals));
+    return { txHash: tx.hash };
+  }
+
+  // ERC20 토큰 → 포인트 전환 (예: 입금 감지 후 호출)
+  async convertTokenToPoint(userId: string, tokenAmount: number) {
+    // 1. 포인트 적립
+    await this.earnPoint(userId, tokenAmount, PointType.ADMIN_ADJUST, '토큰→포인트 전환');
+    return { success: true };
   }
 }

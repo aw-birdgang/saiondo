@@ -4,6 +4,7 @@ import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swa
 import {CreateUserDto} from '@modules/user/dto/user.dto';
 import {UpdateFcmTokenDto} from '@modules/user/dto/update-fcm-token.dto';
 import {UserWithPointHistoryDto} from './dto/user-with-point-history.dto';
+import {UserWithWalletDto} from './dto/user-with-wallet.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -44,7 +45,7 @@ export class UserController {
   @ApiResponse({
     status: 200,
     description: '유저 정보 반환',
-    type: CreateUserDto,
+    type: UserWithWalletDto,
   })
   @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
   async findById(@Param('id') userId: string) {

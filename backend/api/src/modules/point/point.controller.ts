@@ -80,4 +80,20 @@ export class PointController {
   async getHistory(@Param('userId') userId: string) {
     return this.pointService.getPointHistory(userId);
   }
+
+  @Post(':userId/convert-to-token')
+  async convertToToken(
+    @Param('userId') userId: string,
+    @Body() body: { pointAmount: number }
+  ) {
+    return this.pointService.convertPointToToken(userId, body.pointAmount);
+  }
+
+  @Post(':userId/convert-to-point')
+  async convertToPoint(
+    @Param('userId') userId: string,
+    @Body() body: { tokenAmount: number }
+  ) {
+    return this.pointService.convertTokenToPoint(userId, body.tokenAmount);
+  }
 }

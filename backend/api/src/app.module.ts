@@ -19,6 +19,7 @@ import {CoupleAnalysisModule} from './modules/couple-analysis/couple-analysis.mo
 import {EventModule} from './modules/event/event.module';
 import {PointModule} from "@modules/point/point.module";
 import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer/basic-question-with-answer.module";
+import {WalletModule} from "@modules/wallet/wallet.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer
     AuthModule,
     UserModule,
     ChannelModule,
+    WalletModule,
     CoupleAnalysisModule,
     PersonaProfileModule,
     AssistantModule,
