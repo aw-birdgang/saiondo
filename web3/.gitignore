@@ -1,0 +1,12 @@
+node_modules
+
+#Hardhat files
+cache
+artifacts
+.env
+.DS_Store
+data/vesting/*
+data/transfers/*
+
+#webstorm (jetbrains)
+.idea
