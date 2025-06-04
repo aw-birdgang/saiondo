@@ -14,9 +14,8 @@ export class PushScheduleService {
     return this.prisma.pushSchedule.create({
       data: {
         userId,
-        questionId,
-        scheduledAt,
         status: 'SCHEDULED',
+        scheduledAt,
       },
     });
   }
@@ -35,14 +34,18 @@ export class PushScheduleService {
     });
 
     for (const schedule of schedules) {
-      // 유저의 FCM 토큰을 가져오는 로직 필요 (예: user 테이블에 저장)
+      // 유저의 FCM 토큰을 가져오는 로직
       const user = await this.prisma.user.findUnique({
         where: { id: schedule.userId },
       });
       if (user?.fcmToken) {
-        await this.pushService.sendPush(user.fcmToken, '질문 알림', '새로운 질문이 도착했습니다!', {
-          questionId: schedule.questionId,
-        });
+        // questionId가 더 이상 없으므로, 데이터에서 제거
+        await this.pushService.sendPush(
+          user.fcmToken,
+          '질문 알림',
+          '새로운 질문이 도착했습니다!',
+          {} // questionId 등 추가 데이터가 필요 없다면 빈 객체 전달
+        );
         await this.markAsSent(schedule.id);
       }
     }

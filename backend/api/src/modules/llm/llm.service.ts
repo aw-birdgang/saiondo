@@ -90,7 +90,6 @@ export class LlmService {
       { role: 'system', content: systemPrompt },
       ...body.messages,
     ];
-
     this.logger.log('[LLM][RelationshipCoach] messages:', JSON.stringify(messages, null, 2));
     try {
       const { data } = await axios.post(`${this.llmApiUrl}/chat-relationship-coach`, {

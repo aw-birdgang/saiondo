@@ -7,7 +7,6 @@ import {AdviceModule} from '@modules/advice/advice.module';
 import {ChatHistoryModule} from '@modules/chat-history/chat-history.module';
 import {PersonaProfileModule} from '@modules/persona-profile/persona-profile.module';
 import {CategoryCodeModule} from './modules/category-code/category-code.module';
-import {QuestionTemplateModule} from '@modules/question-template/question-template.module';
 import {PushScheduleModule} from '@modules/push-schedule/push-schedule.module';
 import {UserAnswerModule} from '@modules/user-answer/user-answer.module';
 import {ChatModule} from '@modules/chat/chat.module';
@@ -43,7 +42,6 @@ import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer
     AdviceModule,
     EventModule,
     BasicQuestionWithAnswerModule,
-    QuestionTemplateModule,
     PushScheduleModule,
     UserAnswerModule,
   ],

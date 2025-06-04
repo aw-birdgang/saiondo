@@ -2,6 +2,19 @@ import { ApiProperty } from '@nestjs/swagger';
 import { LLMMessageDto } from "@modules/llm/dto/llm-message.dto";
 import { IsArray, IsEnum, ValidateNested, IsObject, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { SimpleProfileDto } from './simple-profile.dto';
+
+// 특징 및 trait_qna 타입 별도 선언(재사용성, 가독성 향상)
+type ProfileFeature = { key: string; value: string };
+type TraitQnA = Record<string, { question: string; answer: string }[]>;
+
+export interface SimpleProfile {
+  이름: string;
+  성별: string;
+  생년월일: Date;
+  특징: ProfileFeature[];
+  trait_qna?: TraitQnA;
+}
 
 export class ChatQARelationshipCoachRequestDto {
   @ApiProperty({
@@ -14,23 +27,40 @@ export class ChatQARelationshipCoachRequestDto {
 
   @ApiProperty({
     type: Object,
-    example: { name: "profile", value: {} }
+    example: {
+      me: {
+        이름: "오성균",
+        성별: "MALE",
+        생년월일: "1982-06-08T00:00:00.000Z",
+        특징: [
+          { key: "MBTI 유형", value: "ISTJ" }
+        ],
+        trait_qna: {
+          "애착/신뢰도": [
+            { question: "연애할 때 상대방에게 의지하는 편이에요?", answer: "거의 의지하지 않아요" }
+          ]
+        }
+      },
+      partner: {
+        이름: "최지우",
+        성별: "FEMALE",
+        생년월일: "1982-05-18T00:00:00.000Z",
+        특징: [
+          { key: "MBTI 유형", value: "ESFJ" }
+        ],
+        trait_qna: {
+          "애착/신뢰도": [
+            { question: "연애할 때 상대방에게 의지하는 편이에요?", answer: "네, 많이 의지해요" }
+          ]
+        }
+      }
+    }
   })
+  @ValidateNested()
+  @Type(() => SimpleProfileDto)
   profile: {
-    me: {
-      이름: string;
-      성별: string;
-      생년월일: string;
-      특징: { key: string; value: string }[];
-      trait_qna?: Record<string, { question: string; answer: string }[]>;
-    };
-    partner: {
-      이름: string;
-      성별: string;
-      생년월일: string;
-      특징: { key: string; value: string }[];
-      trait_qna?: Record<string, { question: string; answer: string }[]>;
-    };
+    me: SimpleProfileDto;
+    partner: SimpleProfileDto;
   };
 
   @ApiProperty({

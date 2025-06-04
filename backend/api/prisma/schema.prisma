@@ -33,13 +33,6 @@ enum ProfileSource {
   SYSTEM        // 시스템 자동 생성
 }
 
-enum QuestionType {
-  PERSONALITY    // 성격 관련
-  RELATIONSHIP   // 연애/관계 관련
-  DAILY          // 일상/습관 관련
-  MBTI           // MBTI 등 성향 관련
-}
-
 enum PushStatus {
   SCHEDULED   // 발송 예정
   SENT        // 발송 완료
@@ -152,7 +145,6 @@ model CategoryCode {
   updatedAt   DateTime @updatedAt
 
   // 관계
-  questionTemplates QuestionTemplate[]
   personaProfiles   PersonaProfile[]
   suggestedFields   SuggestedField[]
 
@@ -190,32 +182,15 @@ model Advice {
   channel       Channel  @relation(fields: [channelId], references: [id])
 }
 
-model QuestionTemplate {
-  id             String        @id @default(uuid())
-  categoryCodeId String        @map("category_code_id")
-  questionText   String        @map("question_text") @db.Text
-  tier           Int
-  type           QuestionType
-  createdAt      DateTime      @default(now()) @map("created_at")
-
-  // 관계
-  categoryCode   CategoryCode  @relation(fields: [categoryCodeId], references: [id])
-  pushSchedules  PushSchedule[]
-
-  @@map("question_templates")
-}
-
 model PushSchedule {
   id           String      @id @default(uuid())
   userId       String      @map("user_id")
-  questionId   String      @map("question_id")
   scheduledAt  DateTime    @map("scheduled_at")
   sentAt       DateTime?   @map("sent_at")
   status       PushStatus
 
   // 관계
   user         User        @relation(fields: [userId], references: [id])
-  question     QuestionTemplate @relation(fields: [questionId], references: [id])
   userAnswer   UserAnswer?
 
   @@map("push_schedules")
@@ -254,7 +229,7 @@ model SuggestedField {
   content         String   @db.Text
   source          ProfileSource
   confidenceScore Float
-  status          String   // 'PENDING', 'APPROVED', 'REJECTED'
+  status          String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
