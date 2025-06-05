@@ -1,9 +1,27 @@
 import {PrismaClient, ProfileSource} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import {createWalletWithMnemonic, encrypt} from '../src/common/utils/wallet.util';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const prisma = new PrismaClient();
+
+// === 환경변수에서 Web3 관련 정보 읽기 ===
+const rpcUrl = process.env.WEB3_RPC_URL!;
+const contractAddress = process.env.TOKEN_CONTRACT_ADDRESS!;
+const abiPath = process.env.TOKEN_CONTRACT_ABI_PATH!;
+
+// === Ethers.js 인스턴스 준비 ===
+const provider = new ethers.JsonRpcProvider(rpcUrl);
+const abi = JSON.parse(fs.readFileSync(path.resolve(abiPath), 'utf-8'));
+const tokenContract = new ethers.Contract(contractAddress, abi, provider);
+
+async function getTokenBalance(address: string): Promise<string> {
+  const decimals = await tokenContract.decimals();
+  const balance = await tokenContract.balanceOf(address);
+  return ethers.formatUnits(balance, decimals);
+}
 
 // ===== 카테고리 및 질문 데이터 =====
 const categories = [
@@ -705,19 +723,16 @@ async function createWalletsForUsers() {
   const users = await prisma.user.findMany({ where: { walletId: null } });
   for (const user of users) {
     // 1. 랜덤 지갑 생성 (ethers.js 사용)
-    const walletObj = ethers.Wallet.createRandom();
-    const address = walletObj.address;
-    const mnemonic = walletObj.mnemonic?.phrase ?? '';
-    const privateKey = walletObj.privateKey;
+    const { address, mnemonic } = createWalletWithMnemonic();
     // 2. 암호화
     const encryptedMnemonic = encrypt(mnemonic);
-    const encryptedPrivateKey = encrypt(privateKey);
     // 3. DB 저장 (Wallet 모델에 privateKey 필드가 있어야 함)
+    const tokenBalance = await getTokenBalance(address);
     const wallet = await prisma.wallet.create({
       data: {
         address,
         mnemonic: encryptedMnemonic,
-        privateKey: encryptedPrivateKey, // 암호화해서 저장
+        tokenBalance,
         user: { connect: { id: user.id } },
       },
     });

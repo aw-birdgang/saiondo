@@ -20,6 +20,7 @@ import {EventModule} from './modules/event/event.module';
 import {PointModule} from "@modules/point/point.module";
 import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer/basic-question-with-answer.module";
 import {WalletModule} from "@modules/wallet/wallet.module";
+import {Web3Module} from "@modules/web3/web3.module";
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import {WalletModule} from "@modules/wallet/wallet.module";
       envFilePath: ['.env'],
     }),
     PrismaModule,
+    Web3Module,
     AuthModule,
     UserModule,
     ChannelModule,

@@ -2,29 +2,42 @@ import {BadRequestException, ForbiddenException, Injectable, NotFoundException} 
 import {PrismaService} from '@common/prisma/prisma.service';
 import {createWalletWithMnemonic, decrypt, encrypt} from '@common/utils/wallet.util';
 import {ethers} from 'ethers';
+import {Web3Service} from "@modules/web3/web3.service";
 
 @Injectable()
 export class WalletService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly web3Service: Web3Service,
+  ) {}
 
-  // 전체 지갑 목록 조회 (관리자용)
   async getAllWallets() {
     return this.prisma.wallet.findMany({include: {user: true}});
   }
 
   // 특정 유저의 모든 지갑 조회
   async getWalletsByUser(userId: string) {
-    return this.prisma.wallet.findMany({where: {user: {id: userId}}});
+    const wallets = await this.prisma.wallet.findMany({
+      where: { user: { id: userId } },
+    });
+
+    // 각 지갑의 토큰 잔액을 병렬로 조회
+    const walletsWithBalance = await Promise.all(
+      wallets.map(async (wallet) => {
+        const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
+        return { ...wallet, tokenBalance };
+      }),
+    );
+
+    return walletsWithBalance;
   }
 
   // 단일 지갑 조회 (id 기준)
   async getWalletById(walletId: string) {
-    const wallet = await this.prisma.wallet.findUnique({
-      where: {id: walletId},
-      include: {user: true},
-    });
-    if (!wallet) throw new NotFoundException('지갑을 찾을 수 없습니다.');
-    return wallet;
+    const wallet = await this.prisma.wallet.findUnique({ where: { id: walletId } });
+    if (!wallet) return null;
+    const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
+    return { ...wallet, tokenBalance };
   }
 
   // 지갑 생성 (address, mnemonic 직접 입력)
@@ -184,5 +197,17 @@ export class WalletService {
       mnemonic: decrypt(wallet.mnemonic),
       privateKey: wallet.privateKey ? decrypt(wallet.privateKey) : undefined,
     };
+  }
+
+  // on-demand: 지갑 잔액 새로고침
+  async refreshWalletBalance(walletId: string) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { id: walletId } });
+    if (!wallet) return null;
+    const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
+    await this.prisma.wallet.update({
+      where: { id: walletId },
+      data: { tokenBalance },
+    });
+    return { ...wallet, tokenBalance };
   }
 }

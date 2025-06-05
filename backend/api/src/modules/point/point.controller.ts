@@ -1,98 +1,93 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Req, UseGuards } from '@nestjs/common';
 import { PointService } from './point.service';
 import { PointType } from '@prisma/client';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse } from '@nestjs/swagger';
+import { EarnPointDto } from './dto/earn-point.dto';
+import { UsePointDto } from './dto/use-point.dto';
+import { AdjustPointDto } from './dto/adjust-point.dto';
+import { ConvertPointDto } from './dto/convert-point.dto';
+import { ConvertTokenDto } from './dto/convert-token.dto';
 
 @ApiTags('Point')
 @Controller('point')
 export class PointController {
   constructor(private readonly pointService: PointService) {}
 
+  @Post(':userId/earn')
   @ApiOperation({ summary: '포인트 획득(미션, 프로필 등)' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        amount: { type: 'integer', example: 10, description: '획득 포인트(양수)' },
-        type: { type: 'string', enum: Object.values(PointType), example: 'MISSION_REWARD', description: '포인트 획득 타입' },
-        description: { type: 'string', example: '미션 완료 보상', description: '포인트 획득 사유' },
-      },
-      required: ['amount', 'type'],
-    },
-  })
+  @ApiBody({ type: EarnPointDto })
   @ApiResponse({ status: 201, description: '포인트 획득 성공' })
-  @Post(':userId/earn')
   async earnPoint(
     @Param('userId') userId: string,
-    @Body() body: { amount: number; type: PointType; description?: string }
+    @Body() body: EarnPointDto
   ) {
     return this.pointService.earnPoint(userId, body.amount, body.type, body.description);
   }
 
+  @Post(':userId/use')
   @ApiOperation({ summary: '포인트 사용(AI 대화 등)' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        amount: { type: 'integer', example: 5, description: '사용 포인트(양수)' },
-        type: { type: 'string', enum: Object.values(PointType), example: 'CHAT_USE', description: '포인트 사용 타입' },
-        description: { type: 'string', example: 'AI 대화 시도', description: '포인트 사용 사유' },
-      },
-      required: ['amount', 'type'],
-    },
-  })
+  @ApiBody({ type: UsePointDto })
   @ApiResponse({ status: 201, description: '포인트 사용 성공' })
-  @Post(':userId/use')
   async usePoint(
     @Param('userId') userId: string,
-    @Body() body: { amount: number; type: PointType; description?: string }
+    @Body() body: UsePointDto
   ) {
     return this.pointService.usePoint(userId, body.amount, body.type, body.description);
   }
 
+  @Post(':userId/adjust')
   @ApiOperation({ summary: '포인트 관리자 조정(플러스/마이너스)' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        amount: { type: 'integer', example: -10, description: '조정 포인트(양수/음수)' },
-        description: { type: 'string', example: '관리자 수동 조정', description: '조정 사유' },
-      },
-      required: ['amount'],
-    },
-  })
+  @ApiBody({ type: AdjustPointDto })
   @ApiResponse({ status: 201, description: '포인트 조정 성공' })
-  @Post(':userId/adjust')
   async adjustPoint(
     @Param('userId') userId: string,
-    @Body() body: { amount: number; description?: string }
+    @Body() body: AdjustPointDto
   ) {
     return this.pointService.adjustPoint(userId, body.amount, body.description);
   }
 
+  @Get(':userId/history')
   @ApiOperation({ summary: '포인트 이력 조회' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiResponse({ status: 200, description: '포인트 이력 리스트 반환' })
-  @Get(':userId/history')
   async getHistory(@Param('userId') userId: string) {
     return this.pointService.getPointHistory(userId);
   }
 
-  @Post(':userId/convert-to-token')
-  async convertToToken(
+  @Post(':userId/convert-token')
+  @ApiOperation({ summary: '포인트를 토큰으로 변환' })
+  @ApiParam({ name: 'userId', description: '유저 ID' })
+  @ApiBody({ type: ConvertPointDto })
+  @ApiResponse({ status: 200, description: '트랜잭션 해시 반환', schema: { type: 'object', properties: { txHash: { type: 'string' } } } })
+  // @UseGuards(JwtAuthGuard) // 실제 서비스에서는 인증 필요
+  async convertPointToToken(
     @Param('userId') userId: string,
-    @Body() body: { pointAmount: number }
+    @Body() dto: ConvertPointDto,
   ) {
-    return this.pointService.convertPointToToken(userId, body.pointAmount);
+    return this.pointService.convertPointToToken(userId, dto.pointAmount);
   }
 
-  @Post(':userId/convert-to-point')
+  @Post(':userId/convert-point')
+  @ApiOperation({ summary: '토큰을 포인트로 변환' })
+  @ApiParam({ name: 'userId', description: '유저 ID' })
+  @ApiBody({ type: ConvertTokenDto })
+  @ApiResponse({
+    status: 200,
+    description: '포인트 변환 결과',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean' },
+        point: { type: 'number', description: '변환 후 포인트' },
+      },
+    },
+  })
   async convertToPoint(
     @Param('userId') userId: string,
-    @Body() body: { tokenAmount: number }
+    @Body() body: ConvertTokenDto
   ) {
     return this.pointService.convertTokenToPoint(userId, body.tokenAmount);
   }

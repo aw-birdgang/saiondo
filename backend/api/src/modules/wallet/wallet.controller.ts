@@ -16,18 +16,18 @@ export class WalletController {
   }
 
   @Get('user/:userId')
-  @ApiOperation({ summary: '특정 유저의 모든 지갑 조회' })
+  @ApiOperation({ summary: '유저의 모든 지갑 + 토큰 잔액(DB값) 조회' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
-  @ApiResponse({ status: 200, description: '유저의 지갑 목록 반환' })
-  getWalletsByUser(@Param('userId') userId: string) {
+  @ApiResponse({ status: 200, type: [Object] })
+  async getWalletsByUser(@Param('userId') userId: string) {
     return this.walletService.getWalletsByUser(userId);
   }
 
   @Get(':walletId')
-  @ApiOperation({ summary: '단일 지갑 조회 (id 기준)' })
+  @ApiOperation({ summary: '단일 지갑 + 토큰 잔액(DB값) 조회' })
   @ApiParam({ name: 'walletId', description: '지갑 ID' })
-  @ApiResponse({ status: 200, description: '지갑 정보 반환' })
-  getWalletById(@Param('walletId') walletId: string) {
+  @ApiResponse({ status: 200, type: Object })
+  async getWalletById(@Param('walletId') walletId: string) {
     return this.walletService.getWalletById(walletId);
   }
 
@@ -137,5 +137,12 @@ export class WalletController {
   })
   async getDecryptedWallet(@Param('walletId') walletId: string) {
     return this.walletService.getDecryptedWallet(walletId);
+  }
+
+  @Post(':walletId/refresh-balance')
+  @ApiOperation({ summary: '지갑 토큰 잔액 새로고침(Web3에서 조회 후 DB 반영)' })
+  @ApiParam({ name: 'walletId', description: '지갑 ID' })
+  async refreshWalletBalance(@Param('walletId') walletId: string) {
+    return this.walletService.refreshWalletBalance(walletId);
   }
 }

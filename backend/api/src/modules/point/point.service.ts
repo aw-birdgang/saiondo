@@ -1,12 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PointType } from '@prisma/client';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {PointType} from '@prisma/client';
 import {PrismaService} from "@common/prisma/prisma.service";
-import { getErc20Contract } from '@common/utils/ethers.util';
-import { ethers } from 'ethers';
+import { TokenTransferService } from '../token-transfer/token-transfer.service';
+import { WalletService } from '@modules/wallet/wallet.service';
+import {Web3Service} from "@modules/web3/web3.service";
 
 @Injectable()
 export class PointService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly web3Service: Web3Service,
+    private readonly tokenTransferService: TokenTransferService,
+    private readonly walletService: WalletService,
+  ) {}
 
   // 내부 공통 로직
   private async changePoint(
@@ -67,21 +73,54 @@ export class PointService {
     });
   }
 
-  // 포인트 → ERC20 토큰 전환
+  /**
+   * 포인트를 토큰으로 변환(전송)하는 메서드
+   */
   async convertPointToToken(userId: string, pointAmount: number) {
-    // 1. 유저 포인트 차감
-    await this.usePoint(userId, pointAmount, PointType.ADMIN_ADJUST, '포인트→토큰 전환');
-    // 2. 유저 지갑 주소 조회 (user 테이블에 walletAddress 필드 필요)
+    if (pointAmount <= 0) throw new BadRequestException('포인트는 1 이상이어야 합니다.');
+
+    // 1. 유저 조회 (지갑 주소 포함)
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { wallet: true },
     });
-    if (!user?.wallet?.address) throw new BadRequestException('지갑 주소 없음');
-    // 3. ERC20 토큰 전송
-    const contract = getErc20Contract();
-    const decimals = Number(process.env.ERC20_TOKEN_DECIMALS || 18);
-    const tx = await contract.transfer(user.wallet.address, ethers.parseUnits(pointAmount.toString(), decimals));
-    return { txHash: tx.hash };
+    if (!user) throw new NotFoundException('유저 없음');
+    if (!user.wallet?.address) throw new BadRequestException('지갑 주소 없음');
+
+    // 2. 포인트 충분한지 확인
+    if (user.point < pointAmount) throw new BadRequestException('포인트 부족');
+
+    // 3. 토큰 전송
+    const txHash = await this.web3Service.transferToken(user.wallet.address, pointAmount);
+
+    // 4. 포인트 차감
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { point: { decrement: pointAmount } },
+    });
+
+    // 5. 전송 성공 시 해당 지갑 잔액 동기화
+    await this.walletService.refreshWalletBalance(user.wallet.id);
+
+    // 전송 내역 기록
+    await this.tokenTransferService.createTransferLog({
+      userId,
+      toAddress: user.wallet.address,
+      amount: pointAmount.toString(),
+      txHash,
+      status: 'SUCCESS',
+    });
+
+    // 6. 기록 저장 (선택)
+    await this.prisma.pointHistory.create({
+      data: {
+        userId,
+        type: 'CONVERT_TO_TOKEN',
+        amount: pointAmount,
+      },
+    });
+
+    return { txHash };
   }
 
   // ERC20 토큰 → 포인트 전환 (예: 입금 감지 후 호출)
