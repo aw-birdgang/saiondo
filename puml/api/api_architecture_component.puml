@@ -1,0 +1,30 @@
+@startuml
+skinparam componentStyle rectangle
+
+' 계층 선언
+package "Presentation Layer" {
+  [Controller]
+}
+
+package "Application Layer" {
+  [UseCase / Service]
+}
+
+package "Domain Layer" {
+  [Domain Model]
+}
+
+package "Infrastructure Layer" {
+  [Database Repository]
+  [External API Client]
+  [LLM Proxy]
+}
+
+' 의존성 (하위 계층 -> 상위 계층)
+[Controller] --> [UseCase / Service] : 요청 처리 위임
+[UseCase / Service] --> [Domain Model] : 도메인 규칙 사용
+[UseCase / Service] --> [Database Repository] : DB 접근
+[UseCase / Service] --> [External API Client] : 외부 API 호출
+[UseCase / Service] --> [LLM Proxy] : LLM 요청
+
+@enduml

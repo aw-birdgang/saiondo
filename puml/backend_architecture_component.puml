@@ -1,38 +1,90 @@
 @startuml
 !theme plain
-title Saiondo Backend Component (Improved)
+title Saiondo Backend Component (AWS Infra + Web3 + LLM)
 
-package "Frontend" {
-  [Flutter App]
+skinparam defaultFontSize 16
+skinparam package {
+  BackgroundColor #FFFFFF
+  BorderColor #8888AA
+  FontColor #222244
+}
+skinparam cloud {
+  BackgroundColor #F8F8FF
+  BorderColor #8888AA
+  FontColor #222244
+}
+skinparam database {
+  BackgroundColor #FFFFF0
+  BorderColor #888866
+  FontColor #222244
+}
+skinparam storage {
+  BackgroundColor #F8FFF8
+  BorderColor #66AA66
+  FontColor #222244
+}
+skinparam queue {
+  BackgroundColor #FFF8FF
+  BorderColor #AA66AA
+  FontColor #222244
+}
+skinparam node {
+  BackgroundColor #F8F8FF
+  BorderColor #8888AA
+  FontColor #222244
 }
 
-package "Backend (NestJS)" {
-  [REST API\n(NestJS)] as api
-  [LLM Proxy\n(NestJS)] as llmproxy
-  [Prisma ORM] as prisma
-  [Logger/Monitoring] as logger
-  api -down-> llmproxy : 내부 모듈 호출
-  api -right-> prisma : ORM (Prisma)
-  api -down-> logger : 로깅/모니터링
+' === Frontend ===
+package "Frontend (Flutter)" {
+  [📱 Flutter App] as flutter #LightSkyBlue
 }
 
-database "PostgreSQL" as db
+' === AWS Cloud ===
+cloud "AWS Cloud" as aws {
+  node "NestJS Backend\n(EC2/ECS)" as backend #LightYellow {
+    [REST API\n(NestJS Controller)] as api #LightYellow
+    [Domain Services] as services #LightYellow
+    [LLM Proxy] as llmproxy #LightYellow
+    [Logger/Monitoring] as logger #LightYellow
+    [Web3 Service] as web3svc #LightYellow
 
+    api -down-> services : Service 호출
+    services -down-> llmproxy : LLM 프록시
+    api -down-> logger : 로깅/모니터링
+    services -down-> web3svc : Web3 연동
+  }
+
+  database "Amazon RDS\n(PostgreSQL)" as db #LightGoldenRodYellow
+
+  backend --> db : ORM (Prisma)
+}
+
+' === LLM Server ===
 package "LLM Server (FastAPI)" {
-  [FastAPI + LangChain] as fastapi
-  [OpenAI Provider] as openai
-  [Claude Provider] as claude
-  [Provider Base] as base
-  [Logger/Tracing] as tracing
+  [FastAPI + LangChain] as fastapi #Thistle
+  [OpenAI Provider] as openai #White
+  [Claude Provider] as claude #White
+  [Provider Base] as base #White
+  [Logger/Tracing] as tracing #White
+
   fastapi -down-> base : provider 패턴
-  base -down-> openai
-  base -down-> claude
+  base -down-> openai : OpenAI 연동
+  base -down-> claude : Claude 연동
   fastapi -down-> tracing : LangChain Tracing
 }
 
+cloud "Blockchain\n(Ethereum, Klaytn 등)" as chain #MintCream
+
+' === 데이터 흐름 (실선) ===
+flutter -down-> api : REST API (HTTPS)
 api -down-> llmproxy : LLM 요청 위임
 llmproxy -down-> fastapi : HTTP (분석/프롬프트)
 fastapi -right-> tracing : 호출 추적
-api -right-> db
+
+' === Web3 연동 흐름 (실선) ===
+web3svc -down-> chain : RPC/HTTP
+
+' === (선택) Flutter App이 직접 Web3 연동하는 경우 (점선) ===
+flutter ..right..> chain : 직접 Web3 연동 (선택)
 
 @enduml
