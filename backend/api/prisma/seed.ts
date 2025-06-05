@@ -1,4 +1,4 @@
-import {PrismaClient, ProfileSource, User, Channel} from '@prisma/client';
+import {Channel, PrismaClient, ProfileSource, User} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import {createWalletFromEnvMnemonic, encrypt} from '../src/common/utils/wallet.util';
 import {ethers} from 'ethers';

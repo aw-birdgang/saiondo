@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class MnemonicResponseDto {
-  @ApiProperty({ description: '랜덤 mnemonic' })
+  @ApiProperty({ description: '복호화된 mnemonic' })
   mnemonic: string;
 }

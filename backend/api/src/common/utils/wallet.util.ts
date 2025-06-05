@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import * as crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-gcm';
@@ -44,4 +44,8 @@ export function decrypt(encrypted: string): string {
   let decrypted = decipher.update(data, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
   return decrypted;
+}
+
+export function isValidEthAddress(address: string): boolean {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
 }

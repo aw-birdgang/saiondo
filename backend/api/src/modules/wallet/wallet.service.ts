@@ -1,12 +1,8 @@
 import {BadRequestException, ForbiddenException, Injectable, NotFoundException,} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
-import {createWalletFromEnvMnemonic, decrypt, encrypt,} from '@common/utils/wallet.util';
+import {createWalletFromEnvMnemonic, decrypt, encrypt, isValidEthAddress,} from '@common/utils/wallet.util';
 import {ethers} from 'ethers';
 import {Web3Service} from '@modules/web3/web3.service';
-
-function isValidEthAddress(address: string): boolean {
-  return /^0x[a-fA-F0-9]{40}$/.test(address);
-}
 
 @Injectable()
 export class WalletService {
@@ -39,7 +35,7 @@ export class WalletService {
     return { ...wallet, tokenBalance };
   }
 
-  async createWalletForUser(userId: string, index = 0) {
+  async createWalletForUser(userId: string,) {
     // 1. 해당 유저가 가진 지갑 중 가장 큰 index 찾기
     const lastWallet = await this.prisma.wallet.findFirst({
       where: { user: { id: userId } },
@@ -164,22 +160,4 @@ export class WalletService {
     return { ...wallet, tokenBalance };
   }
 
-  async createWallet(userId: string, index = 0) {
-    return this.createWalletForUser(userId, index);
-  }
-
-  async createRandomWalletForUser(userId: string) {
-    // 랜덤 index를 구하는 로직이 필요하다면 여기에 작성
-    const index = Math.floor(Math.random() * 10000); // 예시
-    return this.createWalletForUser(userId, index);
-  }
-
-  async getWalletByUserId(userId: string) {
-    const wallet = await this.prisma.wallet.findFirst({
-      where: { user: { id: userId } },
-    });
-    if (!wallet) throw new NotFoundException('지갑 없음');
-    const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
-    return { ...wallet, tokenBalance };
-  }
 }
