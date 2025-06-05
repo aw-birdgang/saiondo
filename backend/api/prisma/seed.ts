@@ -1,21 +1,31 @@
-import {PrismaClient, ProfileSource} from '@prisma/client';
+import {PrismaClient, ProfileSource, User, Channel} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import {createWalletWithMnemonic, encrypt} from '../src/common/utils/wallet.util';
+import {createWalletFromEnvMnemonic, encrypt} from '../src/common/utils/wallet.util';
 import {ethers} from 'ethers';
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import * as path from 'path';
 
 const prisma = new PrismaClient();
 
-// === 환경변수에서 Web3 관련 정보 읽기 ===
-const rpcUrl = process.env.WEB3_RPC_URL!;
-const contractAddress = process.env.TOKEN_CONTRACT_ADDRESS!;
-const abiPath = process.env.TOKEN_CONTRACT_ABI_PATH!;
+// === 환경변수 체크 및 Web3 관련 정보 읽기 ===
+function getEnvOrThrow(key: string): string {
+  const value = process.env[key];
+  if (!value) throw new Error(`환경변수 ${key}가 설정되어 있지 않습니다.`);
+  return value;
+}
+
+const rpcUrl = getEnvOrThrow('WEB3_RPC_URL');
+const contractAddress = getEnvOrThrow('TOKEN_CONTRACT_ADDRESS');
+const abiPath = getEnvOrThrow('TOKEN_CONTRACT_ABI_PATH');
 
 // === Ethers.js 인스턴스 준비 ===
-const provider = new ethers.JsonRpcProvider(rpcUrl);
-const abi = JSON.parse(fs.readFileSync(path.resolve(abiPath), 'utf-8'));
-const tokenContract = new ethers.Contract(contractAddress, abi, provider);
+let tokenContract: ethers.Contract;
+async function setupTokenContract() {
+  const provider = new ethers.JsonRpcProvider(rpcUrl);
+  const abiRaw = await fs.readFile(path.resolve(abiPath), 'utf-8');
+  const abi = JSON.parse(abiRaw);
+  tokenContract = new ethers.Contract(contractAddress, abi, provider);
+}
 
 async function getTokenBalance(address: string): Promise<string> {
   const decimals = await tokenContract.decimals();
@@ -277,8 +287,8 @@ async function upsertCategoriesAndQuestions() {
     )
   );
 
-  for (const [catCode, questions] of Object.entries(questionsByCategory)) {
-    await Promise.all(
+  await Promise.all(
+    Object.entries(questionsByCategory).flatMap(([catCode, questions]) =>
       questions.map(q =>
         prisma.basicQuestion.create({
           data: {
@@ -288,8 +298,8 @@ async function upsertCategoriesAndQuestions() {
           },
         })
       )
-    );
-  }
+    )
+  );
   return categoryMap;
 }
 
@@ -306,9 +316,9 @@ async function createCategoryCodes() {
 }
 
 // 3. 유저 생성
-async function createUsers() {
+async function createUsers(): Promise<[User, User]> {
   const hash = await bcrypt.hash('password123', 10);
-  const [user1, user2] = await Promise.all([
+  return Promise.all([
     prisma.user.create({
       data: {
         name: '오성균',
@@ -330,11 +340,10 @@ async function createUsers() {
       },
     }),
   ]);
-  return [user1, user2];
 }
 
 // 4. 채널 및 어시스턴트 생성
-async function createChannelAndAssistants(user1, user2) {
+async function createChannelAndAssistants(user1: User, user2: User): Promise<Channel & { assistants: any[] }> {
   return prisma.channel.create({
     data: {
       user1Id: user1.id,
@@ -356,7 +365,7 @@ async function createChannelAndAssistants(user1, user2) {
 }
 
 // 5. 채팅 기록 생성
-async function createChatHistory(channel, user1, user2) {
+async function createChatHistory(channel: Channel & { assistants: any[] }, user1: User, user2: User) {
   await prisma.chatHistory.createMany({
     data: [
       {
@@ -721,18 +730,18 @@ async function createEvents(user1, user2) {
 // 9. 유저별 지갑 생성 및 연결
 async function createWalletsForUsers() {
   const users = await prisma.user.findMany({ where: { walletId: null } });
-  for (const user of users) {
-    // 1. 랜덤 지갑 생성 (ethers.js 사용)
-    const { address, mnemonic } = createWalletWithMnemonic();
-    // 2. 암호화
-    const encryptedMnemonic = encrypt(mnemonic);
-    // 3. DB 저장 (Wallet 모델에 privateKey 필드가 있어야 함)
+  await Promise.all(users.map(async (user, idx) => {
+    const { address, mnemonic, privateKey } = createWalletFromEnvMnemonic(idx);
+    const encryptedMnemonic = encrypt(mnemonic ?? '');
+    const encryptedPrivateKey = encrypt(privateKey ?? '');
     const tokenBalance = await getTokenBalance(address);
     const wallet = await prisma.wallet.create({
       data: {
         address,
         mnemonic: encryptedMnemonic,
+        privateKey: encryptedPrivateKey,
         tokenBalance,
+        derivationIndex: idx,
         user: { connect: { id: user.id } },
       },
     });
@@ -741,20 +750,25 @@ async function createWalletsForUsers() {
       data: { walletId: wallet.id },
     });
     console.log(`User ${user.email}에 지갑 연결: ${wallet.address}`);
-  }
+  }));
 }
 
 // ===== 메인 실행 함수 =====
 async function main() {
-  const categoryMap = await upsertCategoriesAndQuestions();
-  const categoryCodeMap = await createCategoryCodes();
-  const [user1, user2] = await createUsers();
+  await setupTokenContract();
+  const [categoryMap, categoryCodeMap, [user1, user2]] = await Promise.all([
+    upsertCategoriesAndQuestions(),
+    createCategoryCodes(),
+    createUsers(),
+  ]);
   const channel = await createChannelAndAssistants(user1, user2);
-  await createChatHistory(channel, user1, user2);
-  await createPersonaProfiles(categoryCodeMap, user1, user2);
-  await createAdvices(channel);
-  await createEvents(user1, user2);
-  await createWalletsForUsers();
+  await Promise.all([
+    createChatHistory(channel, user1, user2),
+    createPersonaProfiles(categoryCodeMap, user1, user2),
+    createAdvices(channel),
+    createEvents(user1, user2),
+    createWalletsForUsers(),
+  ]);
   console.log('Seed completed!');
 }
 

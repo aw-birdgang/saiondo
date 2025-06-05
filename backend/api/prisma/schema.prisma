@@ -119,14 +119,15 @@ model Assistant {
 
 
 model Wallet {
-  id           String   @id @default(uuid())
-  address      String   @unique
-  mnemonic     String
-  tokenBalance String?  // 마지막 동기화된 토큰 잔액
-  privateKey   String? // 암호화해서 저장, 가능하면 사용하지 않음
-  user         User?    @relation("UserWallet")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String   @id @default(uuid())
+  address         String   @unique
+  mnemonic        String
+  privateKey      String
+  tokenBalance    String
+  derivationIndex Int
+  user            User?    @relation("UserWallet")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 

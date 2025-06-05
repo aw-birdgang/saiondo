@@ -1,6 +1,9 @@
 import { ethers } from 'ethers';
 import * as crypto from 'crypto';
 
+const ALGORITHM = 'aes-256-gcm';
+const KEY = Buffer.from(process.env.WALLET_SECRET_KEY!, 'hex'); // 32 bytes
+
 export function createWalletWithMnemonic() {
   const wallet = ethers.Wallet.createRandom(); // 자동으로 mnemonic 생성
   return {
@@ -10,8 +13,18 @@ export function createWalletWithMnemonic() {
   };
 }
 
-const ALGORITHM = 'aes-256-gcm';
-const KEY = Buffer.from(process.env.WALLET_SECRET_KEY!, 'hex'); // 32 bytes
+export function createWalletFromEnvMnemonic(index = 0) {
+  const mnemonicPhrase = process.env.WALLET_MNEMONIC;
+  if (!mnemonicPhrase) throw new Error('WALLET_MNEMONIC env is not set!');
+  const mnemonic = ethers.Mnemonic.fromPhrase(mnemonicPhrase);
+  const path = `m/44'/60'/0'/0/${index}`;
+  const hdNode = ethers.HDNodeWallet.fromMnemonic(mnemonic, path);
+  return {
+    address: hdNode.address,
+    mnemonic: mnemonicPhrase,
+    privateKey: hdNode.privateKey,
+  };
+}
 
 export function encrypt(text: string): string {
   const iv = crypto.randomBytes(12);

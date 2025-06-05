@@ -1,8 +1,12 @@
-import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable, NotFoundException,} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
-import {createWalletWithMnemonic, decrypt, encrypt} from '@common/utils/wallet.util';
+import {createWalletFromEnvMnemonic, decrypt, encrypt,} from '@common/utils/wallet.util';
 import {ethers} from 'ethers';
-import {Web3Service} from "@modules/web3/web3.service";
+import {Web3Service} from '@modules/web3/web3.service';
+
+function isValidEthAddress(address: string): boolean {
+  return /^0x[a-fA-F0-9]{40}$/.test(address);
+}
 
 @Injectable()
 export class WalletService {
@@ -12,27 +16,22 @@ export class WalletService {
   ) {}
 
   async getAllWallets() {
-    return this.prisma.wallet.findMany({include: {user: true}});
+    return this.prisma.wallet.findMany({ include: { user: true } });
   }
 
-  // 특정 유저의 모든 지갑 조회
   async getWalletsByUser(userId: string) {
     const wallets = await this.prisma.wallet.findMany({
       where: { user: { id: userId } },
     });
 
-    // 각 지갑의 토큰 잔액을 병렬로 조회
-    const walletsWithBalance = await Promise.all(
+    return Promise.all(
       wallets.map(async (wallet) => {
         const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
         return { ...wallet, tokenBalance };
       }),
     );
-
-    return walletsWithBalance;
   }
 
-  // 단일 지갑 조회 (id 기준)
   async getWalletById(walletId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { id: walletId } });
     if (!wallet) return null;
@@ -40,98 +39,40 @@ export class WalletService {
     return { ...wallet, tokenBalance };
   }
 
-  // 지갑 생성 (address, mnemonic 직접 입력)
-  async createWallet(userId: string, address: string, mnemonic: string) {
-    if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
-      throw new BadRequestException('유효하지 않은 이더리움 주소입니다.');
-    }
-    // address 중복 체크
-    const exists = await this.prisma.wallet.findUnique({ where: { address } });
-    if (exists) throw new BadRequestException('이미 등록된 지갑 주소입니다.');
-
-    return this.prisma.wallet.create({
-      data: {
-        address,
-        mnemonic,
-        user: {connect: {id: userId}},
-      },
+  async createWalletForUser(userId: string, index = 0) {
+    // 1. 해당 유저가 가진 지갑 중 가장 큰 index 찾기
+    const lastWallet = await this.prisma.wallet.findFirst({
+      where: { user: { id: userId } },
+      orderBy: { derivationIndex: 'desc' }, // derivationIndex 필드 필요!
     });
-  }
+    const nextIndex = lastWallet ? (lastWallet.derivationIndex ?? 0) + 1 : 0;
 
-  // 랜덤 지갑 생성 (mnemonic 자동 생성)
-  async createRandomWalletForUser(userId: string) {
-    const { address, mnemonic } = createWalletWithMnemonic();
-    return this.createWallet(userId, address, mnemonic ?? '');
-  }
+    // 2. 지갑 생성
+    const { address, mnemonic, privateKey } = createWalletFromEnvMnemonic(nextIndex);
 
-  // 지갑 정보 수정 (address, mnemonic)
-  async updateWallet(walletId: string, update: {address?: string; mnemonic?: string}) {
-    // address가 변경될 경우 유효성 및 중복 체크
-    if (update.address) {
-      if (!/^0x[a-fA-F0-9]{40}$/.test(update.address)) {
-        throw new BadRequestException('유효하지 않은 이더리움 주소입니다.');
-      }
-      const exists = await this.prisma.wallet.findUnique({where: {address: update.address}});
-      if (exists && exists.id !== walletId) {
-        throw new BadRequestException('이미 등록된 지갑 주소입니다.');
-      }
-    }
-    return this.prisma.wallet.update({
-      where: {id: walletId},
-      data: {
-        ...(update.address && {address: update.address}),
-        ...(update.mnemonic && {mnemonic: update.mnemonic}),
-      },
-    });
-  }
-
-  // 지갑 삭제
-  async deleteWallet(walletId: string) {
-    const wallet = await this.prisma.wallet.findUnique({where: {id: walletId}});
-    if (!wallet) throw new NotFoundException('지갑을 찾을 수 없습니다.');
-    return this.prisma.wallet.delete({where: {id: walletId}});
-  }
-
-  // 지갑 주소로 유저 조회
-  async getUserByWalletAddress(address: string) {
-    const wallet = await this.prisma.wallet.findUnique({
-      where: {address},
-      include: {user: true},
-    });
-    return wallet?.user;
-  }
-
-  /**
-   * 유저에 랜덤 mnemonic 기반 지갑을 생성하고 연결
-   */
-  async createWalletForUser(userId: string) {
-    // 1. 랜덤 mnemonic, privateKey, address 생성
-    const { address, mnemonic, privateKey } = createWalletWithMnemonic();
-
-    // 2. address 유효성 검사
-    if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    if (!isValidEthAddress(address)) {
       throw new BadRequestException('유효하지 않은 이더리움 주소입니다.');
     }
 
-    // 3. address 중복 체크
     const exists = await this.prisma.wallet.findUnique({ where: { address } });
     if (exists) throw new BadRequestException('이미 등록된 지갑 주소입니다.');
 
-    // 4. mnemonic, privateKey 암호화
     const encryptedMnemonic = encrypt(mnemonic ?? '');
     const encryptedPrivateKey = encrypt(privateKey ?? '');
+    const tokenBalance = await this.web3Service.getTokenBalance(address);
 
-    // 5. 지갑 생성 및 유저 연결
+    // 3. derivationIndex 필드에 index 저장
     const wallet = await this.prisma.wallet.create({
       data: {
         address,
         mnemonic: encryptedMnemonic,
         privateKey: encryptedPrivateKey,
+        tokenBalance,
+        derivationIndex: nextIndex, // <--- 이 필드가 있어야 함!
         user: { connect: { id: userId } },
       },
     });
 
-    // 6. (선택) User의 walletId 필드가 있다면 연결
     await this.prisma.user.update({
       where: { id: userId },
       data: { walletId: wallet.id },
@@ -140,39 +81,55 @@ export class WalletService {
     return wallet;
   }
 
-  /**
-   * 랜덤 mnemonic만 생성해서 반환
-   */
-  generateMnemonic() {
-    const { mnemonic } = createWalletWithMnemonic();
-    return { mnemonic: mnemonic ?? '' };
+  async updateWallet(walletId: string, update: { address?: string; mnemonic?: string }) {
+    if (update.address) {
+      if (!isValidEthAddress(update.address)) {
+        throw new BadRequestException('유효하지 않은 이더리움 주소입니다.');
+      }
+      const exists = await this.prisma.wallet.findUnique({ where: { address: update.address } });
+      if (exists && exists.id !== walletId) {
+        throw new BadRequestException('이미 등록된 지갑 주소입니다.');
+      }
+    }
+    return this.prisma.wallet.update({
+      where: { id: walletId },
+      data: {
+        ...(update.address && { address: update.address }),
+        ...(update.mnemonic && { mnemonic: update.mnemonic }),
+      },
+    });
   }
 
-  /**
-   * 서버에서 유저 지갑으로 트랜잭션을 서명/전송할 때
-   */
+  async deleteWallet(walletId: string) {
+    const wallet = await this.prisma.wallet.findUnique({ where: { id: walletId } });
+    if (!wallet) throw new NotFoundException('지갑을 찾을 수 없습니다.');
+    return this.prisma.wallet.delete({ where: { id: walletId } });
+  }
+
+  async getUserByWalletAddress(address: string) {
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { address },
+      include: { user: true },
+    });
+    return wallet?.user;
+  }
+
   async sendTransaction(userId: string, to: string, amount: string) {
-    // 1. 유저의 대표 지갑 조회
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { wallet: true },
     });
     if (!user?.wallet) throw new NotFoundException('지갑 없음');
 
-    // 2. 암호화된 privateKey 복호화
     const encryptedPrivateKey = user.wallet.privateKey;
     if (!encryptedPrivateKey) throw new ForbiddenException('개인키 없음');
     const privateKey = decrypt(encryptedPrivateKey);
 
-    // 3. ethers.js로 서명 및 전송
     const wallet = new ethers.Wallet(privateKey);
     // ...provider 연결, 트랜잭션 전송 등
     // await wallet.connect(provider).sendTransaction({ to, value: ... });
   }
 
-  /**
-   * 유저가 mnemonic 복구 요청 시
-   */
   async getMnemonic(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -183,9 +140,6 @@ export class WalletService {
     return { mnemonic: decrypt(encryptedMnemonic) };
   }
 
-  /**
-   * 지갑 정보(복호화 포함) 반환
-   */
   async getDecryptedWallet(walletId: string) {
     const wallet = await this.prisma.wallet.findUnique({
       where: { id: walletId },
@@ -199,7 +153,6 @@ export class WalletService {
     };
   }
 
-  // on-demand: 지갑 잔액 새로고침
   async refreshWalletBalance(walletId: string) {
     const wallet = await this.prisma.wallet.findUnique({ where: { id: walletId } });
     if (!wallet) return null;
@@ -208,6 +161,25 @@ export class WalletService {
       where: { id: walletId },
       data: { tokenBalance },
     });
+    return { ...wallet, tokenBalance };
+  }
+
+  async createWallet(userId: string, index = 0) {
+    return this.createWalletForUser(userId, index);
+  }
+
+  async createRandomWalletForUser(userId: string) {
+    // 랜덤 index를 구하는 로직이 필요하다면 여기에 작성
+    const index = Math.floor(Math.random() * 10000); // 예시
+    return this.createWalletForUser(userId, index);
+  }
+
+  async getWalletByUserId(userId: string) {
+    const wallet = await this.prisma.wallet.findFirst({
+      where: { user: { id: userId } },
+    });
+    if (!wallet) throw new NotFoundException('지갑 없음');
+    const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
     return { ...wallet, tokenBalance };
   }
 }

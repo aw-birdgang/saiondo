@@ -31,22 +31,21 @@ export class WalletController {
     return this.walletService.getWalletById(walletId);
   }
 
-  @Post()
+  @Post('create')
   @ApiOperation({ summary: '지갑 생성 (address, mnemonic 직접 입력)' })
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
         userId: { type: 'string', description: '유저 ID' },
-        address: { type: 'string', description: '이더리움 주소' },
-        mnemonic: { type: 'string', description: 'Mnemonic' },
+        index: { type: 'number', description: '지갑 인덱스' },
       },
-      required: ['userId', 'address', 'mnemonic'],
+      required: ['userId'],
     },
   })
   @ApiResponse({ status: 201, description: '생성된 지갑 정보 반환' })
-  createWallet(@Body() body: { userId: string; address: string; mnemonic: string }) {
-    return this.walletService.createWallet(body.userId, body.address, body.mnemonic);
+  async createWallet(@Body() body: { userId: string; index?: number }) {
+    return this.walletService.createWalletForUser(body.userId, body.index ?? 0);
   }
 
   @Post('random')
@@ -62,7 +61,7 @@ export class WalletController {
   })
   @ApiResponse({ status: 201, description: '생성된 랜덤 지갑 정보 반환' })
   createRandomWallet(@Body() body: { userId: string }) {
-    return this.walletService.createRandomWalletForUser(body.userId);
+    return this.walletService.createWalletForUser(body.userId);
   }
 
   @Patch(':walletId')
@@ -93,24 +92,7 @@ export class WalletController {
     return this.walletService.deleteWallet(walletId);
   }
 
-  @Get('mnemonic/generate')
-  @ApiOperation({ summary: '랜덤 mnemonic 생성' })
-  @ApiResponse({
-    status: 200,
-    description: '랜덤 mnemonic 반환',
-    schema: {
-      type: 'object',
-      properties: {
-        mnemonic: { type: 'string', description: '랜덤 mnemonic' },
-      },
-    },
-  })
-  @ApiResponse({ status: 200, type: MnemonicResponseDto })
-  generateMnemonic() {
-    return this.walletService.generateMnemonic();
-  }
-
-  @Get(':userId/mnemonic')
+  @Get('mnemonic/:userId')
   @ApiOperation({ summary: '유저의 mnemonic 복구' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiResponse({ status: 200, description: '복호화된 mnemonic 반환' })
