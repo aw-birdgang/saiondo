@@ -163,4 +163,27 @@ export class ChannelService {
       data: { status },
     });
   }
+
+  async isMember(channelId: string, userId: string) {
+    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+    return channel && (channel.user1Id === userId || channel.user2Id === userId);
+  }
+
+  async addMember(channelId: string, userId: string) {
+    // user1Id, user2Id 중 빈 곳에 할당
+    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
+    if (!channel) throw new NotFoundException('채널 없음');
+    if (channel.user1Id === userId || channel.user2Id === userId) return channel;
+    if (!channel.user1Id) return this.prisma.channel.update({ where: { id: channelId }, data: { user1Id: userId } });
+    if (!channel.user2Id) return this.prisma.channel.update({ where: { id: channelId }, data: { user2Id: userId } });
+    throw new Error('채널이 가득 찼습니다');
+  }
+
+  async cleanupEmptyChannels() {
+    return this.prisma.channel.deleteMany({
+      where: {
+        status: 'ENDED',
+      },
+    });
+  }
 }

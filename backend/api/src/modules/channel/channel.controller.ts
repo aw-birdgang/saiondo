@@ -82,4 +82,22 @@ export class ChannelController {
   async joinByInvite(@Body() dto: JoinByInviteDto) {
     return this.channelService.joinByInviteCode(dto.inviteCode, dto.userId);
   }
+
+  @Get(':channelId/members/:userId')
+  @ApiOperation({ summary: '채널 멤버십 확인' })
+  async isMember(@Param('channelId') channelId: string, @Param('userId') userId: string) {
+    return this.channelService.isMember(channelId, userId);
+  }
+
+  @Post(':channelId/members')
+  @ApiOperation({ summary: '채널에 멤버 추가' })
+  async addMember(@Param('channelId') channelId: string, @Body() body: { userId: string }) {
+    return this.channelService.addMember(channelId, body.userId);
+  }
+
+  @Delete('cleanup')
+  @ApiOperation({ summary: '멤버 없는 채널 정리' })
+  async cleanup() {
+    return this.channelService.cleanupEmptyChannels();
+  }
 }

@@ -39,6 +39,12 @@ class Endpoints {
   static String get channels => '$baseUrl/channels';
   static String channelById(String channelId) => '$baseUrl/channels/$channelId';
   static String channelByInviteCode(String channelId) => '$baseUrl/channels/$channelId/inviteCode';
+  static String channelInviteCode(String channelId) => '$baseUrl/channels/$channelId/inviteCode';
+  static String channelMembers(String channelId) => '$baseUrl/channels/$channelId/members';
+  static String channelMemberById(String channelId, String userId) => '$baseUrl/channels/$channelId/members/$userId';
+  static String channelCleanup = '$baseUrl/channels/cleanup';
+  static String channelInvitations = '$baseUrl/channel-invitations';
+  static String channelInvitationRespond(String invitationId) => '$baseUrl/channel-invitations/$invitationId/respond';
 
   // Assistant (채널 하위, 유저별 1:1)
   static String get assistants => '$baseUrl/assistants';
@@ -81,4 +87,5 @@ class Endpoints {
 
   //
   static String getCategoryCodes = baseUrl + '/category-codes';
+
 }

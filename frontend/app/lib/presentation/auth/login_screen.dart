@@ -30,6 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
   static const _femaleTestEmail = "lee@example.com";
   static const _testPassword = "password123";
 
+  static const _mainColor = Colors.blueAccent;
+  static const _femaleColor = Colors.pinkAccent;
+  static const _maleColor = Colors.blue;
+
   @override
   void initState() {
     super.initState();
@@ -87,6 +91,130 @@ class _LoginScreenState extends State<LoginScreen> {
     await _onLogin();
   }
 
+  Widget _buildTitle(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.favorite, color: _mainColor, size: 32),
+        const SizedBox(width: 8),
+        Text(
+          AppLocalizations.of(context).translate('login'),
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: _mainColor,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Icon(Icons.favorite, color: _femaleColor, size: 32),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required String? Function(String?) validator,
+    bool obscure = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: _mainColor),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      obscureText: obscure,
+      validator: validator,
+    );
+  }
+
+  Widget _buildErrorText() {
+    if (_error == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.red, size: 18),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              _error!,
+              style: const TextStyle(color: Colors.red, fontSize: 14),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickLoginButtons(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.male, color: _maleColor),
+            label: Text(
+              AppLocalizations.of(context).translate('quick_login_male'),
+              style: const TextStyle(color: _maleColor),
+            ),
+            onPressed: _isLoading ? null : () => _quickLogin(_maleTestEmail),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: _maleColor),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: OutlinedButton.icon(
+            icon: const Icon(Icons.female, color: _femaleColor),
+            label: Text(
+              AppLocalizations.of(context).translate('quick_login_female'),
+              style: const TextStyle(color: _femaleColor),
+            ),
+            onPressed: _isLoading ? null : () => _quickLogin(_femaleTestEmail),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: _femaleColor),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRegisterButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton.icon(
+        icon: const Icon(Icons.person_add_alt_1, color: _mainColor),
+        label: Text(
+          AppLocalizations.of(context).translate('register'),
+          style: const TextStyle(color: _mainColor, fontWeight: FontWeight.w600),
+        ),
+        onPressed: _isLoading
+            ? null
+            : () => Navigator.pushReplacementNamed(context, '/register'),
+      ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    if (!_isLoading) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 16),
+      child: LoadingAnimationWidget.staggeredDotsWave(
+        color: _mainColor,
+        size: 36,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,118 +223,59 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
           child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 10,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(28.0),
               child: Observer(
                 builder: (_) {
                   final token = _authStore.accessToken;
-
-                  // 이미 로그인된 경우 홈으로 이동
                   if (token != null && !_navigated) {
                     _navigateToHome();
                   }
-
                   return Form(
                     key: _formKey,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          AppLocalizations.of(context).translate('login'),
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        TextFormField(
+                        _buildTitle(context),
+                        const SizedBox(height: 28),
+                        _buildTextField(
                           controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).translate('email'),
-                            prefixIcon: const Icon(Icons.email),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
+                          label: AppLocalizations.of(context).translate('email'),
+                          icon: Icons.email,
                           validator: (value) {
-                            if (value == null || value.isEmpty) return AppLocalizations.of(context).translate('enter_email');
-                            if (!value.contains('@')) return AppLocalizations.of(context).translate('invalid_email_format');
+                            if (value == null || value.isEmpty) {
+                              return AppLocalizations.of(context).translate('enter_email');
+                            }
+                            if (!value.contains('@')) {
+                              return AppLocalizations.of(context).translate('invalid_email_format');
+                            }
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
-                        TextFormField(
+                        const SizedBox(height: 18),
+                        _buildTextField(
                           controller: _passwordController,
-                          decoration: InputDecoration(
-                            labelText: AppLocalizations.of(context).translate('password'),
-                            prefixIcon: const Icon(Icons.lock),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          obscureText: true,
+                          label: AppLocalizations.of(context).translate('password'),
+                          icon: Icons.lock,
+                          obscure: true,
                           validator: (value) {
-                            if (value == null || value.isEmpty) return AppLocalizations.of(context).translate('enter_password');
-                            if (value.length < 6) return AppLocalizations.of(context).translate('password_min_length');
+                            if (value == null || value.isEmpty) {
+                              return AppLocalizations.of(context).translate('enter_password');
+                            }
+                            if (value.length < 6) {
+                              return AppLocalizations.of(context).translate('password_min_length');
+                            }
                             return null;
                           },
                         ),
-                        if (_error != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: Text(
-                              _error!,
-                              style: const TextStyle(color: Colors.red, fontSize: 14),
-                            ),
-                          ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                icon: const Icon(Icons.male, color: Colors.blue),
-                                label: Text(AppLocalizations.of(context).translate('quick_login_male'), style: TextStyle(color: Colors.blue)),
-                                onPressed: _isLoading ? null : () => _quickLogin(_maleTestEmail),
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.blue),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                icon: const Icon(Icons.female, color: Colors.pink),
-                                label: Text(AppLocalizations.of(context).translate('quick_login_female'), style: TextStyle(color: Colors.pink)),
-                                onPressed: _isLoading ? null : () => _quickLogin(_femaleTestEmail),
-                                style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.pink),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextButton(
-                            onPressed: _isLoading
-                                ? null
-                                : () {
-                                    Navigator.pushReplacementNamed(context, '/register');
-                                  },
-                            child: Text(AppLocalizations.of(context).translate('register'), style: TextStyle(color: Colors.blueAccent)),
-                          ),
-                        ),
-                        if (_isLoading)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: LoadingAnimationWidget.staggeredDotsWave(
-                              color: Colors.blueAccent,
-                              size: 32,
-                            ),
-                          ),
+                        _buildErrorText(),
+                        const SizedBox(height: 26),
+                        _buildQuickLoginButtons(context),
+                        const SizedBox(height: 10),
+                        _buildRegisterButton(context),
+                        _buildLoadingIndicator(),
                       ],
                     ),
                   );
