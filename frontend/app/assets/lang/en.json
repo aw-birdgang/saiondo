@@ -1,5 +1,4 @@
 {
-  "login_start": "Login related strings",
   "login": "Login",
   "logout": "Logout",
   "email": "Email",
@@ -12,10 +11,7 @@
   "login_error_invalid": "Invalid email or password",
   "login_error": "Login failed",
   "loading": "Loading...",
-  "no_user": "User information could not be loaded.",
-  "login_end": "----------------------------------------",
-
-  "home_start": "Home related strings",
+  "no_user": "No user information.",
   "home": "Home",
   "my": "My",
   "ai_advice": "AI Advice",
@@ -31,8 +27,6 @@
   "today_advice": "Today's Advice",
   "copy_success": "Invite code copied!",
   "invite_code": "Invite Code",
-  "home_end": "----------------------------------------",
-
   "channel_info_error": "Channel info error: {0}",
   "partner": "Partner",
   "our_anniversary": "Our anniversary {0}",
@@ -97,5 +91,9 @@
   "no_questions": "No questions available.",
   "input_answer": "Enter your answer",
   "answers_saved": "Answers have been saved.",
-  "some_answers_failed": "Failed to save some answers."
+  "some_answers_failed": "Failed to save some answers.",
+  "received_invitations": "Received Invitations",
+  "no_invitations": "No invitations received.",
+  "refresh": "Refresh",
+  "status": "Status"
 }

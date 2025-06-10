@@ -29,11 +29,11 @@ import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
 import '../../advice/store/advice_store.dart';
 import '../../auth/store/auth_store.dart';
 import '../../category/store/category_code_store.dart';
+import '../../channel/store/channel_store.dart';
 import '../../chat/store/chat_store.dart';
-import '../../home/store/channel_store.dart';
 import '../../home/store/event_store.dart';
-import '../../home/store/invite_code_store.dart';
 import '../../home/store/language_store.dart';
+import '../../invite/store/channel_invitation_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
 import '../../user/store/basic_question_answer_store.dart';
 import '../../user/store/basic_question_category_store.dart';
@@ -54,11 +54,6 @@ class StoreModule {
       HomeStore(
         getIt<FetchAssistantsUseCase>(),
         getIt<ErrorStore>(),
-      ),
-    );
-    getIt.registerSingleton<InviteCodeStore>(
-      InviteCodeStore(
-        getIt<ChannelRepository>(),
       ),
     );
 
@@ -114,6 +109,11 @@ class StoreModule {
         getIt<FetchChatHistoriesUseCase>(),
         getIt<SendMessageUseCase>(),
         getIt<SocketIoService>(),
+      ),
+    );
+    getIt.registerSingleton<ChannelInvitationStore>(
+      ChannelInvitationStore(
+        getIt<ChannelRepository>(),
       ),
     );
     getIt.registerSingleton<AnalysisStore>(

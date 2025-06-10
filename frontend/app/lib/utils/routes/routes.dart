@@ -6,6 +6,8 @@ import '../../presentation/auth/register_screen.dart';
 import '../../presentation/category/category_code_guide.dart';
 import '../../presentation/chat/chat.dart';
 import '../../presentation/home/home.dart';
+import '../../presentation/invite/channel_invitation_screen.dart';
+import '../../presentation/invite/invite_partner_screen.dart';
 import '../../presentation/notifications/notifications.dart';
 import '../../presentation/splash/splash_screen.dart';
 
@@ -20,6 +22,8 @@ class Routes {
   static const String notification = '/notification';
   static const String analysis = '/analysis';
   static const String splash = '/splash';
+  static const String invitePartner = '/invite_partner';
+  static const String channelInvitations = '/channel_invitations';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
@@ -61,6 +65,8 @@ class Routes {
       );
     },
     splash: (BuildContext context) => const SplashScreen(),
+    invitePartner: (BuildContext context) => InvitePartnerScreen(),
+    channelInvitations: (BuildContext context) => ChannelInvitationScreen(),
   };
 
 }

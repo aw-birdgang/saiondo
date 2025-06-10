@@ -1,16 +1,18 @@
-import 'package:app/presentation/home/store/channel_store.dart';
-import 'package:app/presentation/home/store/invite_code_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/channel.dart';
+import '../../domain/entry/channel_invitation.dart';
 import '../../domain/entry/user.dart';
 import '../../utils/locale/app_localization.dart';
 import '../advice/advice.dart';
 import '../advice/store/advice_store.dart';
+import '../channel/store/channel_store.dart';
+import '../invite/store/channel_invitation_store.dart';
 import '../user/store/user_store.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -23,9 +25,10 @@ class HomeTabScreen extends StatefulWidget {
 class _HomeTabScreenState extends State<HomeTabScreen> {
   final _userStore = getIt<UserStore>();
   final _adviceStore = getIt<AdviceStore>();
-  final _inviteCodeStore = getIt<InviteCodeStore>();
   final _channelStore = getIt<ChannelStore>();
+  final _invitationStore = getIt<ChannelInvitationStore>();
   ReactionDisposer? _channelReactionDisposer;
+  ReactionDisposer? _invitationReactionDisposer;
 
   @override
   void initState() {
@@ -33,43 +36,50 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     _userStore.initUser();
 
     _channelReactionDisposer = reaction<String?>(
-      (_) => _userStore.channelId,
-      (channelId) {
+          (_) => _userStore.channelId,
+          (channelId) {
         if (channelId != null) {
           _adviceStore.loadAdviceHistory(channelId);
-          _inviteCodeStore.generateInviteCode(channelId);
+          if (_userStore.userId != null) {
+            _invitationStore.generateInviteCode(channelId, _userStore.userId!);
+          }
           _channelStore.fetchChannel(channelId);
+
+          // 파트너 정보도 채널 변경 시마다 자동 로드
+          final user = _userStore.selectedUser;
+          final channel = _channelStore.channel;
+          if (user != null && channel != null) {
+            String? partnerUserId;
+            if (channel.user1Id == user.id) {
+              partnerUserId = channel.user2Id;
+            } else if (channel.user2Id == user.id) {
+              partnerUserId = channel.user1Id;
+            }
+            if (partnerUserId != null) {
+              _userStore.loadPartnerUser(partnerUserId);
+            }
+          }
         }
       },
+    );
+
+    // 로그인 유저의 초대장 목록 불러오기
+    _invitationReactionDisposer = reaction<String?>(
+          (_) => _userStore.userId,
+          (userId) {
+        if (userId != null) {
+          _invitationStore.fetchInvitations(userId);
+        }
+      },
+      fireImmediately: true,
     );
   }
 
   @override
   void dispose() {
     _channelReactionDisposer?.call();
+    _invitationReactionDisposer?.call();
     super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant HomeTabScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _loadPartnerIfNeeded();
-  }
-
-  void _loadPartnerIfNeeded() {
-    final user = _userStore.selectedUser;
-    final channel = _channelStore.channel;
-    if (user != null && channel != null) {
-      String? partnerUserId;
-      if (channel.user1Id == user.id) {
-        partnerUserId = channel.user2Id;
-      } else if (channel.user2Id == user.id) {
-        partnerUserId = channel.user1Id;
-      }
-      if (partnerUserId != null) {
-        _userStore.loadPartnerUser(partnerUserId);
-      }
-    }
   }
 
   @override
@@ -85,26 +95,31 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
           );
         }
         if (_channelStore.errorMessage != null) {
-          return Center(child: Text(
-            AppLocalizations.of(context)
-              .translate('channel_info_error')
-              .replaceAll('{0}', _channelStore.errorMessage ?? ''),
-          ));
+          return Center(
+            child: Text(
+              AppLocalizations.of(context)
+                  .translate('channel_info_error')
+                  .replaceAll('{0}', _channelStore.errorMessage ?? ''),
+            ),
+          );
         }
         final user = _userStore.selectedUser;
         final channel = _channelStore.channel;
         if (user == null) {
-          return Center(child: Text(AppLocalizations.of(context).translate('no_user'),));
+          return Center(
+            child: Text(AppLocalizations.of(context).translate('no_user')),
+          );
         }
         return HomeTabContent(
           user: user,
           channel: channel,
-          inviteCodeStore: _inviteCodeStore,
+          invitationStore: _invitationStore,
           adviceStore: _adviceStore,
           userId: _userStore.userId,
           assistantId: _userStore.assistantId,
           channelId: _userStore.channelId,
-          partnerName: _userStore.partnerUser?.name ?? AppLocalizations.of(context).translate('partner'),
+          partnerName: _userStore.partnerUser?.name ??
+              AppLocalizations.of(context).translate('partner'),
         );
       },
     );
@@ -114,7 +129,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 class HomeTabContent extends StatelessWidget {
   final User user;
   final Channel? channel;
-  final InviteCodeStore inviteCodeStore;
+  final ChannelInvitationStore invitationStore;
   final AdviceStore adviceStore;
   final String? userId;
   final String? assistantId;
@@ -125,7 +140,7 @@ class HomeTabContent extends StatelessWidget {
     super.key,
     required this.user,
     required this.channel,
-    required this.inviteCodeStore,
+    required this.invitationStore,
     required this.adviceStore,
     required this.userId,
     required this.assistantId,
@@ -226,7 +241,7 @@ class HomeTabContent extends StatelessWidget {
                         Flexible(
                           child: Observer(
                             builder: (_) {
-                              if (inviteCodeStore.isLoading) {
+                              if (invitationStore.isLoadingInviteCode) {
                                 return SizedBox(
                                   width: 18,
                                   height: 18,
@@ -237,7 +252,7 @@ class HomeTabContent extends StatelessWidget {
                                 );
                               }
                               return SelectableText(
-                                inviteCodeStore.inviteCode ?? local.translate('no_code'),
+                                invitationStore.inviteCode ?? local.translate('no_code'),
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -251,13 +266,14 @@ class HomeTabContent extends StatelessWidget {
                         ),
                         IconButton(
                           icon: const Icon(Icons.copy, size: 20, color: Color(0xFFD81B60)),
-                          onPressed: inviteCodeStore.inviteCode == null
+                          onPressed: invitationStore.inviteCode == null
                               ? null
                               : () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(local.translate('copy_success'))),
-                                  );
-                                },
+                            Clipboard.setData(ClipboardData(text: invitationStore.inviteCode!));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(local.translate('copy_success'))),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -269,16 +285,16 @@ class HomeTabContent extends StatelessWidget {
                       onPressed: (userId == null || assistantId == null || channelId == null)
                           ? null
                           : () {
-                              Navigator.pushNamed(
-                                context,
-                                '/chat',
-                                arguments: {
-                                  'userId': userId,
-                                  'assistantId': assistantId,
-                                  'channelId': channelId,
-                                },
-                              );
-                            },
+                        Navigator.pushNamed(
+                          context,
+                          '/chat',
+                          arguments: {
+                            'userId': userId,
+                            'assistantId': assistantId,
+                            'channelId': channelId,
+                          },
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
                     _LovelyActionButton(
@@ -304,16 +320,89 @@ class HomeTabContent extends StatelessWidget {
                       onPressed: channelId == null
                           ? null
                           : () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => AdviceHistoryScreen(channelId: channelId!),
-                                ),
-                              );
-                            },
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AdviceHistoryScreen(channelId: channelId!),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 28),
+              // 받은 초대장 목록 + 새로고침 버튼
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    local.translate('received_invitations'),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.pink[700],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.refresh, color: Colors.pink[400]),
+                    tooltip: local.translate('refresh'),
+                    onPressed: userId == null
+                        ? null
+                        : () => invitationStore.fetchInvitations(userId!),
+                  ),
+                ],
+              ),
+              Observer(
+                builder: (_) {
+                  if (invitationStore.isLoading) {
+                    return Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.pink,
+                        size: 24,
+                      ),
+                    );
+                  }
+                  if (invitationStore.invitations.isEmpty) {
+                    return Center(
+                      child: Text(local.translate('no_invitations')),
+                    );
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ...invitationStore.invitations.map((inv) => Card(
+                        child: ListTile(
+                          title: Text('${inv.inviterId} → ${inv.inviteeId}'),
+                          subtitle: Text('${local.translate('status')}: ${inv.status.name}'),
+                          trailing: inv.status == ChannelInvitationStatus.pending
+                              ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.check, color: Colors.green),
+                                onPressed: () {
+                                  if (userId != null) {
+                                    invitationStore.respondToInvitation(inv.id, true, userId!);
+                                  }
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.close, color: Colors.red),
+                                onPressed: () {
+                                  if (userId != null) {
+                                    invitationStore.respondToInvitation(inv.id, false, userId!);
+                                  }
+                                },
+                              ),
+                            ],
+                          )
+                              : null,
+                        ),
+                      )),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 28),
               Text(

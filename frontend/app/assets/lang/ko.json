@@ -1,5 +1,4 @@
 {
-  "login_start": "로그인 관련 문자열",
   "login": "로그인",
   "logout": "로그아웃",
   "email": "이메일",
@@ -12,10 +11,7 @@
   "login_error_invalid": "이메일 또는 비밀번호가 올바르지 않습니다",
   "login_error": "로그인 실패",
   "loading": "로딩 중...",
-  "no_user": "유저 정보를 불러올 수 없습니다.",
-  "login_end": "----------------------------------------",
-
-  "home_start": "홈 관련 문자열",
+  "no_user": "사용자 정보가 없습니다.",
   "home": "홈",
   "my": "마이",
   "ai_advice": "AI 조언",
@@ -31,14 +27,12 @@
   "today_advice": "오늘의 조언",
   "copy_success": "초대코드가 복사되었습니다!",
   "invite_code": "초대코드",
-  "home_end": "----------------------------------------",
-
   "channel_info_error": "채널 정보 오류: {0}",
   "partner": "파트너",
   "our_anniversary": "우리의 기념일 {0}",
   "no_code": "코드 없음",
   "start_chat": "채팅 시작",
-  "analysis": "성향분석",
+  "analysis": "분석",
   "analysis_load_fail": "분석 정보를 불러올 수 없습니다.",
   "user1": "유저1",
   "user2": "유저2",
@@ -64,7 +58,6 @@
   "enter_message": "메시지를 입력하세요",
   "profile_load_fail": "성향 프로필을 불러오지 못했습니다.",
   "no_login_info": "로그인 정보가 없습니다.\n다시 로그인 해주세요.",
-  "login_error_message": "로그인 중 오류가 발생했습니다",
   "enter_email": "이메일을 입력하세요",
   "invalid_email_format": "이메일 형식이 올바르지 않습니다",
   "enter_password": "비밀번호를 입력하세요",
@@ -97,5 +90,10 @@
   "no_questions": "질문이 없습니다.",
   "input_answer": "답변을 입력하세요",
   "answers_saved": "답변이 저장되었습니다.",
-  "some_answers_failed": "일부 답변 저장에 실패했습니다."
+  "some_answers_failed": "일부 답변 저장에 실패했습니다.",
+  "received_invitations": "받은 초대장",
+  "no_invitations": "받은 초대장이 없습니다.",
+  "no_advice_yet": "아직 조언이 없습니다.",
+  "refresh": "새로고침",
+  "status": "상태"
 }

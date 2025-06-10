@@ -1,5 +1,4 @@
 import 'package:app/presentation/auth/store/auth_store.dart';
-import 'package:app/presentation/home/store/channel_store.dart';
 import 'package:app/presentation/home/store/home_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -8,6 +7,7 @@ import 'package:logger/logger.dart';
 import '../../di/service_locator.dart';
 import '../../utils/locale/app_localization.dart';
 import '../../utils/routes/routes.dart';
+import '../channel/store/channel_store.dart';
 import 'ai_advice_tab.dart';
 import 'calendar_tab.dart';
 import 'home_tab.dart';
@@ -50,6 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isHomeTab = _selectedIndex == 0;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -118,7 +120,48 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _screens[_selectedIndex],
+      body: Column(
+        children: [
+          if (isHomeTab)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: Icon(Icons.person_add_alt_1),
+                      label: Text('파트너 초대'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.invitePartner);
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: Icon(Icons.mail),
+                      label: Text('받은 초대장'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.channelInvitations);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          Expanded(child: _screens[_selectedIndex]),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.pink[600],

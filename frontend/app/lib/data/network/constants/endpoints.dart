@@ -36,15 +36,25 @@ class Endpoints {
   static String deletePersonaProfile(String userId, String categoryCodeId) => '/persona-profiles/user/$userId/category/$categoryCodeId';
 
   // Channel (커플 단위)
-  static String get channels => '$baseUrl/channels';
-  static String channelById(String channelId) => '$baseUrl/channels/$channelId';
-  static String channelByInviteCode(String channelId) => '$baseUrl/channels/$channelId/inviteCode';
-  static String channelInviteCode(String channelId) => '$baseUrl/channels/$channelId/inviteCode';
-  static String channelMembers(String channelId) => '$baseUrl/channels/$channelId/members';
-  static String channelMemberById(String channelId, String userId) => '$baseUrl/channels/$channelId/members/$userId';
-  static String channelCleanup = '$baseUrl/channels/cleanup';
-  static String channelInvitations = '$baseUrl/channel-invitations';
-  static String channelInvitationRespond(String invitationId) => '$baseUrl/channel-invitations/$invitationId/respond';
+  static const String channels = '/channels';
+  static String channelById(String id) => '/channels/$id';
+  static String inviteCode(String id) => '/channels/$id/inviteCode';
+  static String accept(String id) => '/channels/$id/accept';
+  static String reject(String id) => '/channels/$id/reject';
+  static String joinByInvite(String inviteCode) => '/channels/$inviteCode/join-by-invite';
+  static String members(String channelId) => '/channels/$channelId/members';
+  static String memberById(String channelId, String userId) => '/channels/$channelId/members/$userId';
+  static const String cleanup = '/channels/cleanup';
+  static String deleteChannel(String id) => '/channels/$id';
+  static String invitationsForUser(String userId) => '/users/$userId/invitations';
+  static String respondInvitation(String invitationId) => '/invitations/$invitationId/respond';
+
+  // 초대장 생성 (POST)
+  static String invite(String channelId) => '/channels/$channelId/invite';
+
+  // 특정 채널에 대해 해당 유저에게 pending 초대장이 있는지 확인 (GET)
+  static String hasPendingInvitation(String channelId, String inviteeId) =>
+      '/channels/$channelId/invitations/pending/$inviteeId';
 
   // Assistant (채널 하위, 유저별 1:1)
   static String get assistants => '$baseUrl/assistants';
