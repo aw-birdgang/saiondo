@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post,} from '@nestjs/common';
+import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post,} from '@nestjs/common';
 import {UserService} from './user.services';
 import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {CreateUserDto} from '@modules/user/dto/user.dto';
@@ -92,5 +92,18 @@ export class UserController {
       throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
     }
     return user;
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: '유저 삭제' })
+  @ApiParam({ name: 'id', description: '유저 ID' })
+  @ApiResponse({ status: 200, description: '삭제 성공' })
+  @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
+  async deleteUser(@Param('id') userId: string) {
+    const deleted = await this.userService.deleteUser(userId);
+    if (!deleted) {
+      throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+    return { message: '삭제 성공', userId };
   }
 }

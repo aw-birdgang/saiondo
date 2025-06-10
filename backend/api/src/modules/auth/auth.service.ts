@@ -29,8 +29,13 @@ export class AuthService {
         birthDate: new Date(),
       },
     });
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = this.jwtService.sign(payload);
     const { password, ...userInfo } = user;
-    return userInfo;
+    return {
+      accessToken,
+      user: userInfo,
+    };
   }
 
   async login(data: LoginDto) {

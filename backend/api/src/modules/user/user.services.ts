@@ -65,4 +65,11 @@ export class UserService {
       },
     });
   }
+
+  async deleteUser(userId: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return false;
+    await this.prisma.user.delete({ where: { id: userId } });
+    return true;
+  }
 }
