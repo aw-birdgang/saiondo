@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../di/service_locator.dart';
 import '../auth/store/auth_store.dart';
 import '../channel/store/channel_store.dart';
+import '../../utils/locale/app_localization.dart';
 
 class InvitePartnerScreen extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class InvitePartnerScreen extends StatefulWidget {
 
 class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
   final ChannelStore _channelStore = getIt<ChannelStore>();
-  ChannelInvitationStore _channelInvitationStore = getIt<ChannelInvitationStore>();
+  final ChannelInvitationStore _channelInvitationStore = getIt<ChannelInvitationStore>();
   final AuthStore _authStore = getIt<AuthStore>();
   final TextEditingController _partnerEmailController = TextEditingController();
   String? _error;
@@ -21,12 +22,14 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
   Future<void> _invite() async {
     final partnerEmail = _partnerEmailController.text.trim();
     final userId = _authStore.userId;
+    final local = AppLocalizations.of(context);
+
     if (partnerEmail.isEmpty) {
-      setState(() => _error = '이메일을 입력해주세요.');
+      setState(() => _error = local?.translate('enter_email') ?? '이메일을 입력해주세요.');
       return;
     }
     if (userId == null) {
-      setState(() => _error = '로그인 정보가 없습니다.');
+      setState(() => _error = local?.translate('no_login') ?? '로그인 정보가 없습니다.');
       return;
     }
     setState(() {
@@ -36,9 +39,16 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
     try {
       await _channelStore.createOrGetChannel(userId, partnerEmail);
       setState(() => _error = null);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('초대가 발송되었습니다!')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(local?.translate('invite_sent') ?? '초대가 발송되었습니다!'),
+            backgroundColor: Colors.pink[200],
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+        );
+      }
       _partnerEmailController.clear();
     } catch (e) {
       setState(() => _error = e.toString());
@@ -49,40 +59,117 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final local = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text('파트너 초대')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _partnerEmailController,
-              decoration: InputDecoration(
-                labelText: '초대할 이메일',
-                border: OutlineInputBorder(),
-              ),
-              enabled: !_isLoading,
+      appBar: AppBar(
+        title: Text(local?.translate('invite_partner') ?? '파트너 초대'),
+        backgroundColor: Colors.pink[100],
+        elevation: 0,
+        iconTheme: IconThemeData(color: Colors.pink[700]),
+        titleTextStyle: TextStyle(
+          color: Colors.pink[700],
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Nunito',
+          fontSize: 20,
+        ),
+      ),
+      backgroundColor: Colors.pink[50],
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.pink.withOpacity(0.08),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-            if (_error != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(_error!, style: TextStyle(color: Colors.red)),
-              ),
-            SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _invite,
-                child: _isLoading
-                    ? SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : Text('초대하기'),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.favorite, color: Colors.pink[300], size: 48),
+                const SizedBox(height: 12),
+                Text(
+                  local?.translate('invite_partner_desc') ?? '연인/파트너의 이메일을 입력해 초대해보세요!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.pink[700],
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Nunito',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: _partnerEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: local?.translate('partner_email') ?? '초대할 이메일',
+                    prefixIcon: Icon(Icons.mail_outline, color: Colors.pink[300]),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Colors.pink[200]!),
+                    ),
+                    filled: true,
+                    fillColor: Colors.pink[50],
+                  ),
+                  enabled: !_isLoading,
+                  style: TextStyle(fontFamily: 'Nunito'),
+                  onSubmitted: (_) => _invite(),
+                ),
+                if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      _error!,
+                      style: TextStyle(color: Colors.red[400], fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: Icon(Icons.send, color: Colors.white),
+                    label: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: Text(
+                        local?.translate('invite') ?? '초대하기',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          fontFamily: 'Nunito',
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pinkAccent,
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 4,
+                      shadowColor: Colors.pinkAccent.withOpacity(0.2),
+                    ),
+                    onPressed: _isLoading ? null : _invite,
+                  ),
+                ),
+                if (_isLoading)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: CircularProgressIndicator(
+                      color: Colors.pinkAccent,
+                      strokeWidth: 3,
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -95,5 +95,11 @@
   "no_invitations": "받은 초대장이 없습니다.",
   "no_advice_yet": "아직 조언이 없습니다.",
   "refresh": "새로고침",
-  "status": "상태"
+  "status": "상태",
+  "invite_partner": "파트너 초대",
+  "invite_partner_desc": "연인/파트너의 이메일을 입력해 초대해보세요!",
+  "partner_email": "초대할 이메일",
+  "invite": "초대하기",
+  "invite_sent": "초대가 발송되었습니다!",
+  "no_login": "로그인 정보가 없습니다."
 }
