@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../../di/service_locator.dart';
-import '../../domain/entry/event.dart';
+import '../../../di/service_locator.dart';
+import '../../../domain/entry/event.dart';
 
 class CalendarTab extends StatefulWidget {
   const CalendarTab({Key? key}) : super(key: key);

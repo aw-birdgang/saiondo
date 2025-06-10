@@ -101,5 +101,19 @@
   "partner_email": "Partner's Email",
   "invite": "Invite",
   "invite_sent": "Invitation sent!",
-  "no_login": "No login information."
+  "no_login": "No login information.",
+  "no_partner_yet": "No partner yet. Please connect with your partner to use couple features.",
+  "no_partner_advice": "Advice is available after you connect with your partner.",
+  "our_anniversary": "Our Anniversary {0}",
+  "copy_success": "Copied!",
+  "start_chat": "Start Chat",
+  "analysis": "Analysis",
+  "advice_history": "Advice History",
+  "received_invitations": "Received Invitations",
+  "refresh": "Refresh",
+  "no_invitations": "No invitations.",
+  "status": "Status",
+  "today_advice": "Today's Advice",
+  "no_advice_yet": "No advice yet.",
+  "generate_invite_code": "Generate Invite Code"
 }

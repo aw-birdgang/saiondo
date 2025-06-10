@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import '../../di/service_locator.dart';
-import '../../utils/locale/app_localization.dart';
-import '../persona_profile/persona_profile_list.dart';
-import '../persona_profile/store/persona_profile_store.dart';
-import '../user/store/user_store.dart';
-import '../user/screens/my_page_content.dart';
+import '../../../di/service_locator.dart';
+import '../../../utils/locale/app_localization.dart';
+import '../../persona_profile/persona_profile_list.dart';
+import '../../persona_profile/store/persona_profile_store.dart';
+import '../../user/store/user_store.dart';
+import '../../user/screens/my_page_content.dart';
 
 class MyPageScreen extends StatelessWidget {
   MyPageScreen({super.key});

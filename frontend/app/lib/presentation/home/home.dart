@@ -8,10 +8,10 @@ import '../../di/service_locator.dart';
 import '../../utils/locale/app_localization.dart';
 import '../../utils/routes/routes.dart';
 import '../channel/store/channel_store.dart';
-import 'ai_advice_tab.dart';
-import 'calendar_tab.dart';
-import 'home_tab.dart';
-import 'my_page_tab.dart';
+import 'tabs/ai_advice_tab.dart';
+import 'tabs/calendar_tab.dart';
+import 'tabs/home_tab.dart';
+import 'tabs/my_page_tab.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

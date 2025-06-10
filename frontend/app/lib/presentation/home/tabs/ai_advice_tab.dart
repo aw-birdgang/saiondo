@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../di/service_locator.dart';
-import '../../utils/locale/app_localization.dart';
-import '../../utils/routes/routes.dart';
-import '../user/store/user_store.dart';
+import '../../../di/service_locator.dart';
+import '../../../utils/locale/app_localization.dart';
+import '../../../utils/routes/routes.dart';
+import '../../user/store/user_store.dart';
 
 class AiAdviceTabScreen extends StatefulWidget {
   const AiAdviceTabScreen({super.key});

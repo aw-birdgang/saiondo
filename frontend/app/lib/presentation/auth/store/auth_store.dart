@@ -122,13 +122,19 @@ abstract class _AuthStore with Store {
   Future<void> register(String email, String password, String name, String gender) async {
     try {
       final result = await _registerUseCase(email, password, name, gender);
+      logger.i('회원 가입 응답: $result');
       user = result['user'];
       accessToken = result['accessToken'];
       userId = user?['id'];
       error = null;
       isLoggedIn = true;
-    } catch (e) {
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        await clearUserCache();
+        currentUser = null;
+      }
       error = e.toString();
+      logger.e('회원 가입 에러: $e');
       isLoggedIn = false;
     }
   }

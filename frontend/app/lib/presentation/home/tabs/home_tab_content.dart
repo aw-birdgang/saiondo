@@ -2,129 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:mobx/mobx.dart';
 
-import '../../di/service_locator.dart';
-import '../../domain/entry/channel.dart';
-import '../../domain/entry/channel_invitation.dart';
-import '../../domain/entry/user.dart';
-import '../../utils/locale/app_localization.dart';
-import '../advice/advice.dart';
-import '../advice/store/advice_store.dart';
-import '../channel/store/channel_store.dart';
-import '../invite/store/channel_invitation_store.dart';
-import '../user/store/user_store.dart';
-
-class HomeTabScreen extends StatefulWidget {
-  const HomeTabScreen({super.key});
-
-  @override
-  State<HomeTabScreen> createState() => _HomeTabScreenState();
-}
-
-class _HomeTabScreenState extends State<HomeTabScreen> {
-  final _userStore = getIt<UserStore>();
-  final _adviceStore = getIt<AdviceStore>();
-  final _channelStore = getIt<ChannelStore>();
-  final _invitationStore = getIt<ChannelInvitationStore>();
-  ReactionDisposer? _channelReactionDisposer;
-  ReactionDisposer? _invitationReactionDisposer;
-
-  @override
-  void initState() {
-    super.initState();
-    _userStore.initUser();
-
-    _channelReactionDisposer = reaction<String?>(
-          (_) => _userStore.channelId,
-          (channelId) {
-        if (channelId != null) {
-          _adviceStore.loadAdviceHistory(channelId);
-          if (_userStore.userId != null) {
-            _invitationStore.generateInviteCode(channelId, _userStore.userId!);
-          }
-          _channelStore.fetchChannel(channelId);
-
-          // 파트너 정보도 채널 변경 시마다 자동 로드
-          final user = _userStore.selectedUser;
-          final channel = _channelStore.channel;
-          if (user != null && channel != null) {
-            String? partnerUserId;
-            if (channel.user1Id == user.id) {
-              partnerUserId = channel.user2Id;
-            } else if (channel.user2Id == user.id) {
-              partnerUserId = channel.user1Id;
-            }
-            if (partnerUserId != null) {
-              _userStore.loadPartnerUser(partnerUserId);
-            }
-          }
-        }
-      },
-    );
-
-    // 로그인 유저의 초대장 목록 불러오기
-    _invitationReactionDisposer = reaction<String?>(
-          (_) => _userStore.userId,
-          (userId) {
-        if (userId != null) {
-          _invitationStore.fetchInvitations(userId);
-        }
-      },
-      fireImmediately: true,
-    );
-  }
-
-  @override
-  void dispose() {
-    _channelReactionDisposer?.call();
-    _invitationReactionDisposer?.call();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Observer(
-      builder: (_) {
-        if (_userStore.isLoading || _channelStore.isLoading) {
-          return Center(
-            child: LoadingAnimationWidget.staggeredDotsWave(
-              color: Colors.pink,
-              size: 40,
-            ),
-          );
-        }
-        if (_channelStore.errorMessage != null) {
-          return Center(
-            child: Text(
-              AppLocalizations.of(context)
-                  .translate('channel_info_error')
-                  .replaceAll('{0}', _channelStore.errorMessage ?? ''),
-            ),
-          );
-        }
-        final user = _userStore.selectedUser;
-        final channel = _channelStore.channel;
-        if (user == null) {
-          return Center(
-            child: Text(AppLocalizations.of(context).translate('no_user')),
-          );
-        }
-        return HomeTabContent(
-          user: user,
-          channel: channel,
-          invitationStore: _invitationStore,
-          adviceStore: _adviceStore,
-          userId: _userStore.userId,
-          assistantId: _userStore.assistantId,
-          channelId: _userStore.channelId,
-          partnerName: _userStore.partnerUser?.name ??
-              AppLocalizations.of(context).translate('partner'),
-        );
-      },
-    );
-  }
-}
+import '../../../core/widgets/lovely_avatar.dart';
+import '../../../core/widgets/lovely_avatar_button.dart';
+import '../../../domain/entry/channel.dart';
+import '../../../domain/entry/channel_invitation.dart';
+import '../../../domain/entry/user.dart';
+import '../../../utils/locale/app_localization.dart';
+import '../../advice/advice.dart';
+import '../../advice/store/advice_store.dart';
+import '../../invite/store/channel_invitation_store.dart';
 
 class HomeTabContent extends StatelessWidget {
   final User user;
@@ -154,6 +41,7 @@ class HomeTabContent extends StatelessWidget {
     final userProfile = "https://randomuser.me/api/portraits/men/32.jpg"; // TODO: 실제 프로필 연동
     final partnerProfile = "https://randomuser.me/api/portraits/women/44.jpg"; // TODO: 실제 프로필 연동
     final dDay = channel != null ? "D+123" : "-"; // TODO: 실제 기념일 연동
+    final hasPartner = channel != null;
 
     return Scaffold(
       backgroundColor: Colors.pink[50],
@@ -184,11 +72,13 @@ class HomeTabContent extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _LovelyAvatar(imageUrl: userProfile),
+                    LovelyAvatar(imageUrl: userProfile),
                     const SizedBox(width: 16),
                     Icon(Icons.favorite, color: Colors.pink[300], size: 36),
                     const SizedBox(width: 16),
-                    _LovelyAvatar(imageUrl: partnerProfile),
+                    hasPartner
+                      ? LovelyAvatar(imageUrl: partnerProfile)
+                      : Icon(Icons.person_outline, size: 48, color: Colors.grey[400]),
                   ],
                 ),
               ),
@@ -196,7 +86,9 @@ class HomeTabContent extends StatelessWidget {
               Center(
                 child: Chip(
                   label: Text(
-                    local.translate('our_anniversary').replaceAll('{0}', dDay),
+                    hasPartner
+                      ? local.translate('our_anniversary').replaceAll('{0}', dDay)
+                      : local.translate('no_partner_yet'),
                     style: TextStyle(
                       color: Colors.pink[800],
                       fontWeight: FontWeight.w600,
@@ -275,58 +167,67 @@ class HomeTabContent extends StatelessWidget {
                             );
                           },
                         ),
+                        IconButton(
+                          icon: const Icon(Icons.refresh, size: 20, color: Colors.blue),
+                          tooltip: local.translate('generate_invite_code'),
+                          onPressed: userId == null
+                              ? null
+                              : () => invitationStore.generateInviteCode(channelId!, userId!),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    _LovelyActionButton(
+                    LovelyActionButton(
                       icon: Icons.chat_bubble_rounded,
                       label: local.translate('start_chat'),
                       color: Colors.pinkAccent,
-                      onPressed: (userId == null || assistantId == null || channelId == null)
-                          ? null
-                          : () {
-                        Navigator.pushNamed(
-                          context,
-                          '/chat',
-                          arguments: {
-                            'userId': userId,
-                            'assistantId': assistantId,
-                            'channelId': channelId,
-                          },
-                        );
-                      },
+                      onPressed: hasPartner && userId != null && assistantId != null && channelId != null
+                          ? () {
+                              Navigator.pushNamed(
+                                context,
+                                '/chat',
+                                arguments: {
+                                  'userId': userId,
+                                  'assistantId': assistantId,
+                                  'channelId': channelId,
+                                },
+                              );
+                            }
+                          : null,
                     ),
                     const SizedBox(height: 12),
-                    _LovelyActionButton(
+                    LovelyActionButton(
                       icon: Icons.analytics_rounded,
                       label: local.translate('analysis'),
                       color: Colors.blueAccent,
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/analysis',
-                          arguments: {
-                            'channelId': channelId,
-                            'userId': userId,
-                          },
-                        );
-                      },
+                      onPressed: hasPartner
+                          ? () {
+                              Navigator.pushNamed(
+                                context,
+                                '/analysis',
+                                arguments: {
+                                  'channelId': channelId,
+                                  'userId': userId,
+                                },
+                              );
+                            }
+                          : null,
                     ),
                     const SizedBox(height: 12),
-                    _LovelyActionButton(
+                    LovelyActionButton(
                       icon: Icons.history_edu_rounded,
                       label: local.translate('advice_history'),
                       color: Colors.green,
-                      onPressed: channelId == null
-                          ? null
-                          : () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => AdviceHistoryScreen(channelId: channelId!),
-                          ),
-                        );
-                      },
+                      onPressed: hasPartner && channelId != null
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AdviceHistoryScreen(channelId: channelId!),
+                                ),
+                              );
+                            }
+                          : null,
                     ),
                   ],
                 ),
@@ -425,6 +326,14 @@ class HomeTabContent extends StatelessWidget {
                       ),
                     );
                   }
+                  if (!hasPartner) {
+                    return Center(
+                      child: Text(
+                        local.translate('no_partner_advice'),
+                        style: const TextStyle(color: Colors.black54, fontSize: 16),
+                      ),
+                    );
+                  }
                   return Text(
                     adviceStore.latestAdvice?.advice ?? local.translate('no_advice_yet'),
                     style: const TextStyle(color: Colors.black87, fontSize: 16),
@@ -436,72 +345,6 @@ class HomeTabContent extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// 러블리한 아바타 위젯
-class _LovelyAvatar extends StatelessWidget {
-  final String imageUrl;
-  const _LovelyAvatar({required this.imageUrl});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Colors.pinkAccent, Colors.blueAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: CircleAvatar(
-        backgroundImage: NetworkImage(imageUrl),
-        backgroundColor: Colors.transparent,
-        radius: 36,
-      ),
-    );
-  }
-}
-
-// 러블리한 액션 버튼
-class _LovelyActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback? onPressed;
-
-  const _LovelyActionButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      icon: Icon(icon, size: 22, color: Colors.white),
-      label: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2.0),
-        child: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            fontFamily: 'Nunito',
-            color: Colors.white,
-          ),
-        ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        minimumSize: const Size(double.infinity, 48),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 4,
-        shadowColor: color.withOpacity(0.2),
-      ),
-      onPressed: onPressed,
     );
   }
 }
