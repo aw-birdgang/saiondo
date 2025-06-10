@@ -24,7 +24,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Local .env or credentials files (if any)
+# Local ..env or credentials files (if any)
 .env
 .env.*
 

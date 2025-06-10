@@ -1,0 +1,54 @@
+@startuml
+' 스타일
+skinparam package {
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
+  FontSize 15
+}
+skinparam rectangle {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+skinparam ArrowColor #336699
+skinparam ArrowFontColor #336699
+skinparam ArrowFontSize 13
+
+' 주요 패키지
+package "FastAPI App" {
+  [main.py]
+}
+
+package "API Routers" {
+  [prompt.py]
+  [chat_relationship_coach.py]
+}
+
+package "Services" {
+  [llm_provider.py]
+  [prompt_service.py]
+  [chat_relationship_coach_service.py]
+}
+
+package "Providers" {
+  [openai_client.py]
+  [claude_client.py]
+}
+
+package "Schemas" {
+  [feedback.py]
+  [couple_analysis.py]
+}
+
+package "Config" {
+  [config.py]
+}
+
+' 관계 및 설명
+[main.py] --> [API Routers] : "라우터 등록"
+[API Routers] --> [Services] : "비즈니스 로직 호출"
+[Services] --> [Providers] : "LLM API 연동"
+[API Routers] --> [Schemas] : "요청/응답 모델"
+[Services] --> [Config] : "환경설정/모델선택"
+@enduml

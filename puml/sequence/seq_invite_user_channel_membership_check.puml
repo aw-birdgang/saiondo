@@ -1,0 +1,18 @@
+@startuml
+actor Man as 남자
+participant "Client" as Client
+participant "Server" as Server
+database "DB" as DB
+actor Woman as 여자
+
+남자 -> Client: "여자 초대" 버튼 클릭
+Client -> Server: POST /channels/{id}/invite (여자ID)
+Server -> DB: ChannelMember(여자, 채널id) 존재 여부 확인
+alt 같은 채널에 이미 멤버
+    Server -> Client: 409 Conflict ("이미 채널 멤버입니다")
+else 같은 채널에 멤버 아님
+    Server -> DB: ChannelInvitation 생성
+    Server -> 여자: 초대 알림
+end
+note right: 여자가 다른 채널에 속해 있어도\n초대/생성에 영향 없음
+@enduml

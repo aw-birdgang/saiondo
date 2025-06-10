@@ -1,0 +1,34 @@
+@startuml
+actor Man as 남자
+participant "Client" as Client
+participant "Server" as Server
+database "DB" as DB
+actor Woman as 여자
+
+남자 -> Client: 회원가입 완료
+Client -> Server: POST /signup (남자 정보)
+Server -> DB: 사용자(남자) 생성
+Server -> Client: 홈/대기 화면 ("참여 중인 채널 없음")
+
+alt 초대장 수신 대기
+    여자 -> Server: 채널 생성 및 남자 초대
+    Server -> DB: 채널, ChannelMember(여자), ChannelInvitation(남자) 생성
+    Server -> Client: 초대장 알림
+    남자 -> Client: 초대장 확인 및 수락/거절
+    Client -> Server: 초대장 응답
+    alt 수락
+        Server -> DB: ChannelMember(남자) 등록, ChannelInvitation 상태 변경(accepted)
+        Server -> Client: 채널 입장
+    else 거절
+        Server -> DB: ChannelInvitation 상태 변경(declined)
+        Server -> Client: 대기 화면 유지
+    end
+else 직접 채널 생성
+    남자 -> Client: "새 채널 만들기" 선택
+    Client -> Server: 채널 생성 요청 (초대할 사용자 선택)
+    Server -> DB: 채널, ChannelMember(남자), ChannelInvitation(여자) 생성
+    Server -> Client: 채널 입장, 초대장 발송
+end
+
+note right: 남자는 채널에 속하지 않은 상태에서\n초대장 수신 또는 직접 채널 생성 가능
+@enduml

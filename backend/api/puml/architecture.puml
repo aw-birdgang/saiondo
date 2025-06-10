@@ -1,0 +1,52 @@
+@startuml
+' 스타일
+skinparam package {
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
+  FontSize 15
+}
+skinparam rectangle {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+skinparam ArrowColor #336699
+skinparam ArrowFontColor #336699
+skinparam ArrowFontSize 13
+
+' 주요 패키지
+package "NestJS App" {
+  [main.ts]
+  [app.module.ts]
+}
+
+package "Core" {
+  [PrismaModule]
+  [ConfigModule]
+  [LoggingInterceptor]
+}
+
+package "Domain Modules" {
+  [UserModule]
+  [ChannelModule]
+  [Web3Module]
+  [LlmModule]
+}
+
+package "Swagger" {
+  [SwaggerModuleConfig]
+}
+
+' 관계 및 설명
+[main.ts] --> [app.module.ts] : "앱 부트스트랩"
+[app.module.ts] --> [ConfigModule] : "환경설정/DI"
+[app.module.ts] --> [PrismaModule] : "DB(Prisma ORM)"
+[app.module.ts] --> [Domain Modules] : "도메인별 모듈 DI"
+[main.ts] --> [SwaggerModuleConfig] : "API 문서화"
+[main.ts] --> [LoggingInterceptor] : "글로벌 로깅"
+[Domain Modules] --> [PrismaModule] : "DB 접근"
+[Domain Modules] --> [ConfigModule] : "환경설정"
+[Domain Modules] --> [Web3Module] : "스마트컨트랙트 연동"
+[Domain Modules] --> [LlmModule] : "LLM 연동"
+@enduml

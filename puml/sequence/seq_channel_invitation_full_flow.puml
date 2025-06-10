@@ -1,0 +1,48 @@
+@startuml
+actor Man as 남자
+participant "Client" as Client
+participant "Server" as Server
+database "DB" as DB
+actor Woman as 여자
+
+남자 -> Client: "여자 초대" 버튼 클릭
+Client -> Server: POST /channels (invite: 여자ID)
+Server -> DB: 남자-여자 1:1 채널 존재 여부 확인
+alt 이미 1:1 채널 존재
+    Server -> DB: ChannelMember(여자) 존재 여부 확인
+    alt 이미 멤버
+        Server -> Client: 409 Conflict ("이미 채널 멤버입니다")
+    else 멤버 아님
+        Server -> DB: ChannelInvitation(여자, pending) 존재 여부 확인
+        alt 이미 초대장 있음
+            Server -> Client: 409 Conflict ("이미 초대장 발송됨")
+        else 초대장 없음
+            Server -> DB: ChannelInvitation(여자, pending) 생성
+            Server -> 여자: 초대 알림
+        end
+    end
+else 채널 없음
+    Server -> DB: 채널(Channel) 생성
+    Server -> DB: ChannelMember(남자) 등록
+    Server -> DB: ChannelInvitation(여자, pending) 생성
+    Server -> 여자: 초대 알림
+end
+
+여자 -> Client: 초대장 확인 및 수락/거절
+Client -> Server: POST /channel-invitations/{id}/respond
+Server -> DB: ChannelMember(여자) 존재 여부 확인
+alt 이미 멤버
+    Server -> Client: 409 Conflict ("이미 채널 멤버입니다")
+else 멤버 아님
+    alt 수락
+        Server -> DB: ChannelMember(여자) 등록
+        Server -> DB: ChannelInvitation 상태 변경(accepted)
+        Server -> 남자: "여자가 입장했습니다" 알림
+    else 거절
+        Server -> DB: ChannelInvitation 상태 변경(declined)
+        Server -> 남자: "여자가 거절했습니다" 알림(선택)
+    end
+end
+
+note over Server, DB: 주기적으로 멤버 없는 채널 삭제
+@enduml

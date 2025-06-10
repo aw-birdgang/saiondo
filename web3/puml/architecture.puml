@@ -1,0 +1,42 @@
+@startuml
+' 스타일
+skinparam package {
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
+  FontSize 15
+}
+skinparam rectangle {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+skinparam ArrowColor #336699
+skinparam ArrowFontColor #336699
+skinparam ArrowFontSize 13
+
+' 주요 패키지
+package "Hardhat Project" {
+  [hardhat.config.js]
+  [package.json]
+}
+
+package "Contracts" {
+  [SAIONDO.sol]
+}
+
+package "Scripts" {
+  [deploy-erc20-token.js]
+}
+
+package "Artifacts" {
+  [ABI/Bytecode]
+}
+
+' 관계 및 설명
+[hardhat.config.js] --> [Contracts] : "컴파일러/네트워크 설정"
+[hardhat.config.js] --> [Scripts] : "배포/테스트 환경 제공"
+[Contracts] --> [Artifacts] : "컴파일 결과(ABI, Bytecode)"
+[Scripts] --> [Contracts] : "컨트랙트 배포/테스트"
+[Scripts] --> [Artifacts] : "ABI 활용, 배포 결과 저장"
+@enduml
