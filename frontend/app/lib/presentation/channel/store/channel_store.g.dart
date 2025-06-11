@@ -9,35 +9,35 @@ part of 'channel_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ChannelStore on _ChannelStore, Store {
-  late final _$channelsAtom =
-      Atom(name: '_ChannelStore.channels', context: context);
+  late final _$availableChannelsAtom =
+      Atom(name: '_ChannelStore.availableChannels', context: context);
 
   @override
-  ObservableList<Channel> get channels {
-    _$channelsAtom.reportRead();
-    return super.channels;
+  ObservableList<Channel> get availableChannels {
+    _$availableChannelsAtom.reportRead();
+    return super.availableChannels;
   }
 
   @override
-  set channels(ObservableList<Channel> value) {
-    _$channelsAtom.reportWrite(value, super.channels, () {
-      super.channels = value;
+  set availableChannels(ObservableList<Channel> value) {
+    _$availableChannelsAtom.reportWrite(value, super.availableChannels, () {
+      super.availableChannels = value;
     });
   }
 
-  late final _$channelAtom =
-      Atom(name: '_ChannelStore.channel', context: context);
+  late final _$currentChannelAtom =
+      Atom(name: '_ChannelStore.currentChannel', context: context);
 
   @override
-  Channel? get channel {
-    _$channelAtom.reportRead();
-    return super.channel;
+  Channel? get currentChannel {
+    _$currentChannelAtom.reportRead();
+    return super.currentChannel;
   }
 
   @override
-  set channel(Channel? value) {
-    _$channelAtom.reportWrite(value, super.channel, () {
-      super.channel = value;
+  set currentChannel(Channel? value) {
+    _$currentChannelAtom.reportWrite(value, super.currentChannel, () {
+      super.currentChannel = value;
     });
   }
 
@@ -57,19 +57,18 @@ mixin _$ChannelStore on _ChannelStore, Store {
     });
   }
 
-  late final _$errorMessageAtom =
-      Atom(name: '_ChannelStore.errorMessage', context: context);
+  late final _$errorAtom = Atom(name: '_ChannelStore.error', context: context);
 
   @override
-  String? get errorMessage {
-    _$errorMessageAtom.reportRead();
-    return super.errorMessage;
+  String? get error {
+    _$errorAtom.reportRead();
+    return super.error;
   }
 
   @override
-  set errorMessage(String? value) {
-    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
-      super.errorMessage = value;
+  set error(String? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
     });
   }
 
@@ -105,13 +104,21 @@ mixin _$ChannelStore on _ChannelStore, Store {
     return _$fetchChannelAsyncAction.run(() => super.fetchChannel(channelId));
   }
 
-  late final _$createOrGetChannelAsyncAction =
-      AsyncAction('_ChannelStore.createOrGetChannel', context: context);
+  late final _$createChannelAsyncAction =
+      AsyncAction('_ChannelStore.createChannel', context: context);
 
   @override
-  Future<void> createOrGetChannel(String user1Id, String user2Id) {
-    return _$createOrGetChannelAsyncAction
-        .run(() => super.createOrGetChannel(user1Id, user2Id));
+  Future<Channel?> createChannel(String userId) {
+    return _$createChannelAsyncAction.run(() => super.createChannel(userId));
+  }
+
+  late final _$joinByInviteAsyncAction =
+      AsyncAction('_ChannelStore.joinByInvite', context: context);
+
+  @override
+  Future<bool> joinByInvite(String inviteCode, String userId) {
+    return _$joinByInviteAsyncAction
+        .run(() => super.joinByInvite(inviteCode, userId));
   }
 
   late final _$addMemberAsyncAction =
@@ -131,13 +138,39 @@ mixin _$ChannelStore on _ChannelStore, Store {
         .run(() => super.createInviteCode(channelId, userId));
   }
 
+  late final _$fetchAvailableChannelsAsyncAction =
+      AsyncAction('_ChannelStore.fetchAvailableChannels', context: context);
+
+  @override
+  Future<void> fetchAvailableChannels() {
+    return _$fetchAvailableChannelsAsyncAction
+        .run(() => super.fetchAvailableChannels());
+  }
+
+  late final _$fetchCurrentChannelAsyncAction =
+      AsyncAction('_ChannelStore.fetchCurrentChannel', context: context);
+
+  @override
+  Future<void> fetchCurrentChannel(String userId) {
+    return _$fetchCurrentChannelAsyncAction
+        .run(() => super.fetchCurrentChannel(userId));
+  }
+
+  late final _$leaveChannelAsyncAction =
+      AsyncAction('_ChannelStore.leaveChannel', context: context);
+
+  @override
+  Future<void> leaveChannel(String userId) {
+    return _$leaveChannelAsyncAction.run(() => super.leaveChannel(userId));
+  }
+
   @override
   String toString() {
     return '''
-channels: ${channels},
-channel: ${channel},
+availableChannels: ${availableChannels},
+currentChannel: ${currentChannel},
 isLoading: ${isLoading},
-errorMessage: ${errorMessage},
+error: ${error},
 successMessage: ${successMessage}
     ''';
   }

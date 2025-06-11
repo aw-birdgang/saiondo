@@ -1,7 +1,7 @@
 import '../../../core/data/network/dio/dio_client.dart';
+import '../../../domain/entry/channel.dart';
 import '../constants/endpoints.dart';
 import '../dto/channel_invitation_response.dart';
-import '../dto/channel_list_response.dart';
 import '../dto/channel_response.dart';
 import '../rest_client.dart';
 
@@ -11,31 +11,64 @@ class ChannelApi {
 
   ChannelApi(this._dioClient, this._restClient);
 
-  Future<ChannelListResponse> fetchAllChannels() async {
+  Future<List<Channel>> fetchAllChannels() async {
     final response = await _dioClient.dio.get(Endpoints.channels);
     if (response.statusCode == 200) {
-      return ChannelListResponse.fromJson(response.data);
+      return (response.data as List)
+          .map((e) => Channel.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
     throw Exception('채널 목록 조회 실패');
   }
 
-  Future<ChannelResponse> fetchChannelById(String channelId) async {
+  Future<Channel> fetchChannelById(String channelId) async {
     final response = await _dioClient.dio.get(Endpoints.channelById(channelId));
     if (response.statusCode == 200) {
-      return ChannelResponse.fromJson(response.data);
+      return Channel.fromJson(response.data);
     }
     throw Exception('채널 조회 실패');
   }
 
-  Future<ChannelResponse> createOrGetChannel(String user1Id, String user2Id) async {
+  Future<Channel> createChannel(String userId) async {
     final response = await _dioClient.dio.post(
       Endpoints.channels,
-      data: {'user1Id': user1Id, 'user2Id': user2Id},
+      data: {'userId': userId},
+    );
+    if (response.statusCode == 201) {
+      return Channel.fromJson(response.data);
+    }
+    throw Exception('채널 생성 실패');
+  }
+
+  Future<Channel> joinByInvite(String inviteCode, String userId) async {
+    final response = await _dioClient.dio.post(
+      Endpoints.joinByInvite,
+      data: {'inviteCode': inviteCode, 'userId': userId},
     );
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return ChannelResponse.fromJson(response.data);
+      return Channel.fromJson(response.data);
     }
-    throw Exception('채널 생성/조회 실패');
+    throw Exception('초대코드로 채널 가입 실패');
+  }
+
+  Future<void> leaveChannel(String userId) async {
+    final response = await _dioClient.dio.post(
+      Endpoints.leaveChannel,
+      data: {'userId': userId},
+    );
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('채널 나가기 실패');
+    }
+  }
+
+  Future<void> addMember(String channelId, String userId) async {
+    final response = await _dioClient.dio.post(
+      Endpoints.members(channelId),
+      data: {'userId': userId},
+    );
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('멤버 추가 실패');
+    }
   }
 
   Future<ChannelResponse> createInviteCode(String channelId, String userId) async {
@@ -49,15 +82,21 @@ class ChannelApi {
     throw Exception('초대 코드 생성 실패');
   }
 
-  Future<void> acceptInvitation(String channelId) async {
-    final response = await _dioClient.dio.post(Endpoints.accept(channelId));
+  Future<void> acceptInvitation(String channelId, String userId) async {
+    final response = await _dioClient.dio.post(
+      Endpoints.accept(channelId),
+      data: {'userId': userId},
+    );
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('초대 수락 실패');
     }
   }
 
-  Future<void> rejectInvitation(String channelId) async {
-    final response = await _dioClient.dio.post(Endpoints.reject(channelId));
+  Future<void> rejectInvitation(String channelId, String userId) async {
+    final response = await _dioClient.dio.post(
+      Endpoints.reject(channelId),
+      data: {'userId': userId},
+    );
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('초대 거절 실패');
     }
@@ -70,17 +109,6 @@ class ChannelApi {
     }
   }
 
-  Future<ChannelResponse> joinByInvite(String inviteCode, String userId) async {
-    final response = await _dioClient.dio.post(
-      Endpoints.joinByInvite(inviteCode),
-      data: {'inviteCode': inviteCode, 'userId': userId},
-    );
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return ChannelResponse.fromJson(response.data);
-    }
-    throw Exception('초대코드로 채널 가입 실패');
-  }
-
   Future<bool> isMember(String channelId, String userId) async {
     final response = await _dioClient.dio.get(
       Endpoints.memberById(channelId, userId),
@@ -89,16 +117,6 @@ class ChannelApi {
       return response.data['isMember'] as bool;
     }
     throw Exception('멤버십 확인 실패');
-  }
-
-  Future<void> addMember(String channelId, String userId) async {
-    final response = await _dioClient.dio.post(
-      Endpoints.members(channelId),
-      data: {'userId': userId},
-    );
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception('멤버 추가 실패');
-    }
   }
 
   Future<void> cleanupEmptyChannels() async {
@@ -147,14 +165,4 @@ class ChannelApi {
     }
   }
 
-  Future<ChannelResponse> createChannel(String user1Id, String user2Id) async {
-    final response = await _dioClient.dio.post(
-      Endpoints.channels,
-      data: {'user1Id': user1Id, 'user2Id': user2Id},
-    );
-    if (response.statusCode == 201) {
-      return ChannelResponse.fromJson(response.data);
-    }
-    throw Exception('채널 생성 실패');
-  }
 }

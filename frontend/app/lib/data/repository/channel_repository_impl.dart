@@ -1,10 +1,10 @@
 import '../../domain/entry/channel.dart';
 import '../../domain/entry/channel_invitation.dart';
 import '../../domain/repository/channel_repository.dart';
-import '../adapter/channel_adapter.dart';
 import '../adapter/channel_invitation_adapter.dart';
 import '../network/apis/channel_api.dart';
 import '../network/dto/channel_invitation_response.dart';
+import 'package:collection/collection.dart';
 
 class ChannelRepositoryImpl implements ChannelRepository {
   final ChannelApi _channelApi;
@@ -13,20 +13,40 @@ class ChannelRepositoryImpl implements ChannelRepository {
 
   @override
   Future<List<Channel>> fetchAllChannels() async {
-    final response = await _channelApi.fetchAllChannels();
-    return response.channels;
+    return await _channelApi.fetchAllChannels();
   }
 
   @override
   Future<Channel> fetchChannelById(String channelId) async {
-    final response = await _channelApi.fetchChannelById(channelId);
-    return ChannelAdapter.fromResponse(response);
+    return await _channelApi.fetchChannelById(channelId);
   }
 
   @override
-  Future<Channel> createOrGetChannel(String user1Id, String user2Id) async {
-    final response = await _channelApi.createOrGetChannel(user1Id, user2Id);
-    return ChannelAdapter.fromResponse(response);
+  Future<Channel> createChannel(String userId) async {
+    return await _channelApi.createChannel(userId);
+  }
+
+  @override
+  Future<Channel> joinByInvite(String inviteCode, String userId) async {
+    return await _channelApi.joinByInvite(inviteCode, userId);
+  }
+
+  @override
+  Future<void> leaveChannel(String userId) async {
+    await _channelApi.leaveChannel(userId);
+  }
+
+  @override
+  Future<void> addMember(String channelId, String userId) async {
+    await _channelApi.addMember(channelId, userId);
+  }
+
+  @override
+  Future<Channel?> getCurrentChannel(String userId) async {
+    final channels = await fetchAllChannels();
+    return channels.firstWhereOrNull(
+      (c) => c.members.any((m) => m.userId == userId),
+    );
   }
 
   @override
@@ -36,13 +56,13 @@ class ChannelRepositoryImpl implements ChannelRepository {
   }
 
   @override
-  Future<void> acceptInvitation(String channelId) {
-    return _channelApi.acceptInvitation(channelId);
+  Future<void> acceptInvitation(String channelId, String userId) {
+    return _channelApi.acceptInvitation(channelId, userId);
   }
 
   @override
-  Future<void> rejectInvitation(String channelId) {
-    return _channelApi.rejectInvitation(channelId);
+  Future<void> rejectInvitation(String channelId, String userId) {
+    return _channelApi.rejectInvitation(channelId, userId);
   }
 
   @override
@@ -51,19 +71,8 @@ class ChannelRepositoryImpl implements ChannelRepository {
   }
 
   @override
-  Future<Channel> joinByInvite(String inviteCode, String userId) async {
-    final response = await _channelApi.joinByInvite(inviteCode, userId);
-    return ChannelAdapter.fromResponse(response);
-  }
-
-  @override
   Future<bool> isMember(String channelId, String userId) {
     return _channelApi.isMember(channelId, userId);
-  }
-
-  @override
-  Future<void> addMember(String channelId, String userId) {
-    return _channelApi.addMember(channelId, userId);
   }
 
   @override
@@ -94,6 +103,14 @@ class ChannelRepositoryImpl implements ChannelRepository {
     return response
         .map((e) => ChannelInvitationAdapter.fromResponse(
             e as ChannelInvitationResponse))
+        .toList();
+  }
+
+  @override
+  Future<List<Channel>> getAvailableChannels() async {
+    final channels = await fetchAllChannels();
+    return channels
+        .where((c) => c.status == 'ACTIVE' || c.status == 'PENDING')
         .toList();
   }
 }

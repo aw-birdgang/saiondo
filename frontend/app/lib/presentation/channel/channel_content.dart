@@ -9,11 +9,11 @@ import '../../../domain/entry/channel.dart';
 import '../../../domain/entry/channel_invitation.dart';
 import '../../../domain/entry/user.dart';
 import '../../../utils/locale/app_localization.dart';
-import '../../advice/advice.dart';
-import '../../advice/store/advice_store.dart';
-import '../../invite/store/channel_invitation_store.dart';
+import '../advice/advice.dart';
+import '../advice/store/advice_store.dart';
+import '../invite/store/channel_invitation_store.dart';
 
-class HomeTabContent extends StatelessWidget {
+class ChannelContent extends StatelessWidget {
   final User user;
   final Channel? channel;
   final ChannelInvitationStore invitationStore;
@@ -21,9 +21,8 @@ class HomeTabContent extends StatelessWidget {
   final String? userId;
   final String? assistantId;
   final String? channelId;
-  final String partnerName;
 
-  const HomeTabContent({
+  const ChannelContent({
     super.key,
     required this.user,
     required this.channel,
@@ -32,7 +31,6 @@ class HomeTabContent extends StatelessWidget {
     required this.userId,
     required this.assistantId,
     required this.channelId,
-    required this.partnerName,
   });
 
   @override

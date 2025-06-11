@@ -2,13 +2,20 @@ import '../entry/channel.dart';
 import '../entry/channel_invitation.dart';
 
 abstract class ChannelRepository {
+  Future<List<Channel>> getAvailableChannels();
   Future<List<Channel>> fetchAllChannels();
+
+  Future<Channel?> getCurrentChannel(String userId);
   Future<Channel> fetchChannelById(String channelId);
-  Future<Channel> createOrGetChannel(String user1Id, String user2Id);
+
+  Future<Channel> createChannel(String userId);
   Future<String> createInviteCode(String channelId, String userId);
-  Future<void> acceptInvitation(String channelId);
-  Future<void> rejectInvitation(String channelId);
   Future<void> deleteChannel(String channelId);
+
+  Future<void> acceptInvitation(String channelId, String userId);
+  Future<void> rejectInvitation(String channelId, String userId);
+  Future<void> leaveChannel(String userId);
+
   Future<Channel> joinByInvite(String inviteCode, String userId);
   Future<bool> isMember(String channelId, String userId);
   Future<void> addMember(String channelId, String userId);

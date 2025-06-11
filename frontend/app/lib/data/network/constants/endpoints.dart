@@ -41,11 +41,12 @@ class Endpoints {
   static String inviteCode(String id) => '/channels/$id/inviteCode';
   static String accept(String id) => '/channels/$id/accept';
   static String reject(String id) => '/channels/$id/reject';
-  static String joinByInvite(String inviteCode) => '/channels/$inviteCode/join-by-invite';
   static String members(String channelId) => '/channels/$channelId/members';
   static String memberById(String channelId, String userId) => '/channels/$channelId/members/$userId';
   static const String cleanup = '/channels/cleanup';
   static String deleteChannel(String id) => '/channels/$id';
+  static const String joinByInvite = '/channels/join-by-invite';
+  static const String leaveChannel = '/channels/leave';
   static String invitationsForUser(String userId) => '/users/$userId/invitations';
   static String respondInvitation(String invitationId) => '/invitations/$invitationId/respond';
 

@@ -1,27 +1,28 @@
 import 'package:mobx/mobx.dart';
+
 import '../../../domain/entry/channel.dart';
 import '../../../domain/repository/channel_repository.dart';
-import '../../../di/service_locator.dart';
 
 part 'channel_store.g.dart';
 
 class ChannelStore = _ChannelStore with _$ChannelStore;
 
 abstract class _ChannelStore with Store {
-  final ChannelRepository _repository;
-  _ChannelStore(this._repository);
+  final ChannelRepository _channelRepository;
+
+  _ChannelStore(this._channelRepository);
 
   @observable
-  ObservableList<Channel> channels = ObservableList<Channel>();
+  ObservableList<Channel> availableChannels = ObservableList<Channel>();
 
   @observable
-  Channel? channel;
+  Channel? currentChannel;
 
   @observable
   bool isLoading = false;
 
   @observable
-  String? errorMessage;
+  String? error;
 
   @observable
   String? successMessage;
@@ -30,12 +31,12 @@ abstract class _ChannelStore with Store {
   @action
   Future<void> fetchAllChannels() async {
     isLoading = true;
-    errorMessage = null;
+    error = null;
     try {
-      final result = await _repository.fetchAllChannels();
-      channels = ObservableList.of(result);
+      final result = await _channelRepository.fetchAllChannels();
+      availableChannels = ObservableList.of(result);
     } catch (e) {
-      errorMessage = e.toString();
+      error = e.toString();
     } finally {
       isLoading = false;
     }
@@ -45,46 +46,66 @@ abstract class _ChannelStore with Store {
   @action
   Future<void> fetchChannel(String channelId) async {
     isLoading = true;
-    errorMessage = null;
+    error = null;
     successMessage = null;
     try {
-      channel = await _repository.fetchChannelById(channelId);
+      currentChannel = await _channelRepository.fetchChannelById(channelId);
     } catch (e) {
-      errorMessage = e.toString();
+      error = e.toString();
     } finally {
       isLoading = false;
     }
   }
 
-  /// 1:1 채널 생성(이미 있으면 반환)
+  /// 채널 생성
   @action
-  Future<void> createOrGetChannel(String user1Id, String user2Id) async {
+  Future<Channel?> createChannel(String userId) async {
     isLoading = true;
-    errorMessage = null;
+    error = null;
     successMessage = null;
     try {
-      channel = await _repository.createOrGetChannel(user1Id, user2Id);
+      final channel = await _channelRepository.createChannel(userId);
+      currentChannel = channel;
       successMessage = '채널이 생성되었습니다!';
+      return channel;
     } catch (e) {
-      errorMessage = e.toString();
+      error = e.toString();
+      return null;
     } finally {
       isLoading = false;
     }
   }
 
-  /// 채널 멤버 추가 (초대 수락 등)
+  /// 초대코드로 채널 참여
+  @action
+  Future<bool> joinByInvite(String inviteCode, String userId) async {
+    isLoading = true;
+    error = null;
+    try {
+      currentChannel = await _channelRepository.joinByInvite(inviteCode, userId);
+      successMessage = '채널에 참여하였습니다!';
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  /// 채널 멤버 추가 (MEMBER로)
   @action
   Future<void> addMember(String channelId, String userId) async {
     isLoading = true;
-    errorMessage = null;
+    error = null;
     successMessage = null;
     try {
-      await _repository.addMember(channelId, userId);
+      await _channelRepository.addMember(channelId, userId);
       successMessage = '채널에 멤버가 추가되었습니다!';
       // 멤버 추가 후 채널 정보 갱신
       await fetchChannel(channelId);
     } catch (e) {
-      errorMessage = e.toString();
+      error = e.toString();
     } finally {
       isLoading = false;
     }
@@ -94,15 +115,58 @@ abstract class _ChannelStore with Store {
   @action
   Future<String?> createInviteCode(String channelId, String userId) async {
     isLoading = true;
-    errorMessage = null;
+    error = null;
     successMessage = null;
     try {
-      final code = await _repository.createInviteCode(channelId, userId);
+      final code = await _channelRepository.createInviteCode(channelId, userId);
       successMessage = '초대 코드가 생성되었습니다!';
       return code;
     } catch (e) {
-      errorMessage = e.toString();
+      error = e.toString();
       return null;
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  @action
+  Future<void> fetchAvailableChannels() async {
+    isLoading = true;
+    error = null;
+    try {
+      final result = await _channelRepository.getAvailableChannels();
+      availableChannels = ObservableList.of(result);
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  @action
+  Future<void> fetchCurrentChannel(String userId) async {
+    isLoading = true;
+    error = null;
+    try {
+      final result = await _channelRepository.getCurrentChannel(userId);
+      currentChannel = result;
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  /// 채널 나가기
+  @action
+  Future<void> leaveChannel(String userId) async {
+    isLoading = true;
+    error = null;
+    try {
+      await _channelRepository.leaveChannel(userId);
+      currentChannel = null;
+    } catch (e) {
+      error = e.toString();
     } finally {
       isLoading = false;
     }

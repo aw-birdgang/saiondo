@@ -1,5 +1,6 @@
 import 'package:app/presentation/auth/store/auth_store.dart';
 import 'package:app/presentation/home/store/home_store.dart';
+import 'package:app/presentation/home/tabs/channel_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';
@@ -29,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     HomeTabScreen(),
+    ChannelTabScreen(),
     CalendarTab(),
-    AiAdviceTabScreen(),
     MyPageScreen(),
   ];
 
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isHomeTab = _selectedIndex == 0;
+    final isChannelTab = _selectedIndex == 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          if (isHomeTab)
+          if (isChannelTab)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -173,12 +174,12 @@ class _HomeScreenState extends State<HomeScreen> {
             label: AppLocalizations.of(context).translate('home'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.calendar_month),
-            label: AppLocalizations.of(context).translate('schedule'),
+            icon: const Icon(Icons.group),
+            label: AppLocalizations.of(context).translate('channel'),
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.psychology_alt),
-            label: AppLocalizations.of(context).translate('ai_advice'),
+            icon: const Icon(Icons.calendar_month),
+            label: AppLocalizations.of(context).translate('schedule'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

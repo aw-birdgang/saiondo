@@ -37,7 +37,24 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
       _error = null;
     });
     try {
-      await _channelStore.createOrGetChannel(userId, partnerEmail);
+      // 1. 이메일로 초대받을 유저의 id를 조회 (예시, 실제 구현 필요)
+      final inviteeId = await _channelInvitationStore.getUserIdByEmail(partnerEmail);
+      if (inviteeId == null) {
+        setState(() => _error = local?.translate('user_not_found') ?? '해당 이메일의 유저를 찾을 수 없습니다.');
+        return;
+      }
+      // 2. 현재 참여 중인 채널이 없으면 채널을 생성
+      String? channelId = _channelStore.currentChannel?.id;
+      if (channelId == null) {
+        final channel = await _channelStore.createChannel(userId);
+        channelId = channel?.id;
+      }
+      if (channelId == null) {
+        setState(() => _error = '채널 생성에 실패했습니다.');
+        return;
+      }
+      // 3. 초대장 생성
+      await _channelInvitationStore.createInvitation(channelId, userId, inviteeId);
       setState(() => _error = null);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

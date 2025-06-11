@@ -72,4 +72,17 @@ abstract class _ChannelInvitationStore with Store {
       isLoading = false;
     }
   }
+
+  Future<String?> getUserIdByEmail(String email) async {
+    // 실제 구현 필요: 이메일로 유저 id 조회 API 호출
+    // 예시:
+    // final user = await userRepository.getUserByEmail(email);
+    // return user?.id;
+    throw UnimplementedError('이메일로 유저 id 조회 기능을 구현하세요.');
+  }
+
+  Future<void> createInvitation(String channelId, String inviterId, String inviteeId) async {
+    // 실제 초대장 생성 API 호출
+    await _repository.createInvitation(channelId, inviterId, inviteeId);
+  }
 }

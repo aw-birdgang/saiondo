@@ -1,7 +1,7 @@
+import 'channel_member.dart';
+
 class Channel {
   final String id;
-  final String user1Id;
-  final String user2Id;
   final String status;
   final DateTime startedAt;
   final DateTime? endedAt;
@@ -10,11 +10,10 @@ class Channel {
   final String? keywords;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final List<ChannelMember> members;
 
   Channel({
     required this.id,
-    required this.user1Id,
-    required this.user2Id,
     required this.status,
     required this.startedAt,
     this.endedAt,
@@ -23,19 +22,22 @@ class Channel {
     this.keywords,
     this.createdAt,
     this.updatedAt,
+    required this.members,
   });
 
   factory Channel.fromJson(Map<String, dynamic> json) => Channel(
-    id: json['id'],
-    user1Id: json['user1Id'],
-    user2Id: json['user2Id'],
-    status: json['status'],
-    startedAt: DateTime.parse(json['startedAt']),
-    endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
-    inviteCode: json['inviteCode'],
-    anniversary: json['anniversary'] != null ? DateTime.parse(json['anniversary']) : null,
-    keywords: json['keywords'],
-    createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-    updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-  );
+        id: json['id'],
+        status: json['status'],
+        startedAt: DateTime.parse(json['startedAt']),
+        endedAt: json['endedAt'] != null ? DateTime.parse(json['endedAt']) : null,
+        inviteCode: json['inviteCode'],
+        anniversary: json['anniversary'] != null ? DateTime.parse(json['anniversary']) : null,
+        keywords: json['keywords'],
+        createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+        updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+        members: (json['members'] as List<dynamic>?)
+                ?.map((m) => ChannelMember.fromJson(m))
+                .toList() ??
+            [],
+      );
 }
