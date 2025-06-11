@@ -20,58 +20,72 @@ export class AdviceService {
    */
   async createAdvice(channelId: string) {
     // 1. 커플(채널) 및 유저 정보 조회 (ChannelService 사용)
-    const channel = await this.channelService.getChannelWithUserInfoById(channelId);
+    const channel = await this.channelService.getChannelById(channelId);
     if (!channel) throw new NotFoundException('채널(커플)을 찾을 수 없습니다.');
 
-    // 2. 유저별 페르소나(카테고리별 특징) 정보 취합
+    // 2. 멤버(OWNER, MEMBER) userId 추출
+    const ownerMember = channel.members.find(m => m.role === 'OWNER');
+    const participantMember = channel.members.find(m => m.role === 'MEMBER');
+    const user1Id = ownerMember?.userId;
+    const user2Id = participantMember?.userId;
+
+    // 3. 유저별 페르소나(카테고리별 특징) 정보 취합
     const [user1Personas, user2Personas] = await Promise.all([
       this.prisma.personaProfile.findMany({
-        where: { userId: channel.user1Id },
+        where: { userId: user1Id },
         include: { categoryCode: true },
       }),
       this.prisma.personaProfile.findMany({
-        where: { userId: channel.user2Id },
+        where: { userId: user2Id },
         include: { categoryCode: true },
       }),
     ]);
 
-    // 3. 최근 키워드, 기념일 등 추가 정보
+    // 4. 최근 키워드, 기념일 등 추가 정보
     const keywords: string[] = channel.keywords ? JSON.parse(channel.keywords) : [];
     const anniversary = channel.anniversary
-        ? channel.anniversary.toISOString().split('T')[0]
-        : '미입력';
+      ? channel.anniversary.toISOString().split('T')[0]
+      : '미입력';
 
-    // 4. 유저별 프로필/페르소나 요약 문자열 생성
+    // 5. 유저별 프로필/페르소나 요약 문자열 생성
     const user1PersonaSummary = this.buildPersonaSummary(user1Personas, 'user1');
     const user2PersonaSummary = this.buildPersonaSummary(user2Personas, 'user2');
 
     const user1Mbti = this.extractMbti(user1Personas);
     const user2Mbti = this.extractMbti(user2Personas);
 
-    const user1Profile = this.buildUserProfile(channel.user1, user1Mbti, user1PersonaSummary);
-    const user2Profile = this.buildUserProfile(channel.user2, user2Mbti, user2PersonaSummary);
+    // 6. 실제 유저 정보 조회 (user1, user2)
+    const members = await this.prisma.channelMember.findMany({
+      where: { channelId: channel.id },
+      include: { user: true },
+    });
+    const user1 = members.find(m => m.role === 'OWNER')?.user;
+    const user2 = members.find(m => m.role === 'MEMBER')?.user;
 
-    // 5. AI 프롬프트 생성
+    const user1Profile = this.buildUserProfile(user1, user1Mbti, user1PersonaSummary);
+    const user2Profile = this.buildUserProfile(user2, user2Mbti, user2PersonaSummary);
+
+    // 7. AI 프롬프트 생성
     const prompt = this.buildAdvicePrompt(user1Profile, user2Profile, anniversary, keywords);
 
     this.logger.log(`createAdvice>> prompt ::\n${prompt}`);
 
-    // 6. AI 호출
+    // 8. AI 호출
     const aiResult = await this.llmService.analyzeCouple(prompt);
 
     // aiResult가 undefined/null이면 기본값 처리
     const rawResult =
-        aiResult !== undefined && aiResult !== null
-            ? typeof aiResult === 'string'
-                ? aiResult
-                : JSON.stringify(aiResult)
-            : '';
+      aiResult !== undefined && aiResult !== null
+        ? typeof aiResult === 'string'
+          ? aiResult
+          : JSON.stringify(aiResult)
+        : '';
 
     if (!rawResult) {
       throw new Error('AI 분석 결과가 비어 있습니다.');
     }
 
-    // 7. DB에 LLM 원본 응답 저장
+    // 9. DB에 LLM 원본 응답 저장
     return this.prisma.advice.create({
       data: {
         channelId,

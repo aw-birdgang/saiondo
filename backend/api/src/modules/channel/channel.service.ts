@@ -1,7 +1,8 @@
-import {Injectable, Logger, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, Logger, NotFoundException} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
 import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
 import {generateInviteCode} from "@common/utils/invite-code.util";
+import {CreateChannelDto} from './dto/create-channel.dto';
 
 /**
  * ChannelService
@@ -18,38 +19,41 @@ export class ChannelService {
   // ===== 생성 관련 메서드 =====
   // =========================
 
-  /** 커플(채널) 생성 + 하위 Assistant 생성 */
-  async createChannel(user1Id: string, user2Id: string) {
-    const inviteCode = generateInviteCode();
-    return this.prisma.channel.create({
+  /** 커플(채널) 생성 + OWNER 멤버 등록 */
+  async createChannel(dto: CreateChannelDto) {
+    const channel = await this.prisma.channel.create({
       data: {
-        user1Id,
-        user2Id,
-        status: 'ACTIVE',
-        startedAt: new Date(),
-        inviteCode,
-        assistants: {
-          create: [{ userId: user1Id }, { userId: user2Id }],
-        },
+        inviteCode: dto.inviteCode ?? null,
+        status: dto.status ?? 'PENDING',
       },
-      include: { assistants: true },
     });
+
+    // 채널 생성 후 owner 멤버 등록
+    await this.prisma.channelMember.create({
+      data: {
+        channelId: channel.id,
+        userId: dto.userId,
+        role: 'OWNER',
+      },
+    });
+
+    return channel;
   }
 
   // =========================
   // ===== 조회 관련 메서드 =====
   // =========================
 
-  /** 채널 전체 조회 (어시스턴트 포함) */
+  /** 전체 채널 조회 (어시스턴트 포함) */
   async findAll() {
     return this.prisma.channel.findMany({ include: { assistants: true } });
   }
 
-  /** 채널 단건 조회 (어시스턴트 포함) */
+  /** 채널 단건 조회 (멤버 및 유저 정보 포함) */
   async getChannelById(channelId: string) {
     return this.prisma.channel.findUnique({
       where: { id: channelId },
-      include: { assistants: true },
+      include: { members: { include: { user: true } } },
     });
   }
 
@@ -60,38 +64,71 @@ export class ChannelService {
     });
   }
 
-  /** 채널 + 유저 정보 조회 */
-  async getChannelWithUserInfoById(channelId: string) {
-    return this.prisma.channel.findUnique({
-      where: { id: channelId },
-      include: {
-        user1: true,
-        user2: true,
-      },
-    });
-  }
-
-  /** 채널 정보만 조회 */
+  /** 채널 정보만 조회 (멤버/어시스턴트 미포함) */
   async getJustChannelInfoById(channelId: string) {
     return this.prisma.channel.findUnique({
       where: { id: channelId },
     });
   }
 
-  /** 채널 참가자(상대방) userId 조회 */
+  /** 채널 참가자(상대방) userId 조회 (2인 채널 기준) */
   async getChannelParticipants(channelId: string, userId: string): Promise<string | null> {
     const channel = await this.prisma.channel.findUnique({
       where: { id: channelId },
+      include: { members: { include: { user: true } } },
     });
     if (!channel) return null;
 
-    if (channel.user1Id === userId) {
-      return channel.user2Id;
-    } else if (channel.user2Id === userId) {
-      return channel.user1Id;
+    const owner = channel.members.find(m => m.role === 'OWNER');
+    const participant = channel.members.find(m => m.role === 'MEMBER');
+
+    if (owner?.userId === userId) {
+      return participant?.userId ?? null;
+    } else if (participant?.userId === userId) {
+      return owner?.userId ?? null;
     } else {
       return null;
     }
+  }
+
+  /** 초대코드로 채널 조회 (멤버 및 유저 정보 포함) */
+  async getChannelByInviteCode(inviteCode: string) {
+    return this.prisma.channel.findUnique({
+      where: { inviteCode },
+      include: { members: { include: { user: true } } },
+    });
+  }
+
+  /** 현재 참여 중인 채널 조회 (상태: PENDING, ACTIVE) */
+  async getCurrentChannel(userId: string) {
+    return this.prisma.channel.findFirst({
+      where: {
+        members: {
+          some: { userId }
+        },
+        status: { in: ['PENDING', 'ACTIVE'] },
+      },
+      include: { members: { include: { user: true } } },
+    });
+  }
+
+  /** 활성 채널 목록 조회 (상태: PENDING, ACTIVE) */
+  async getAvailableChannels() {
+    return this.prisma.channel.findMany({
+      where: { status: { in: ['PENDING', 'ACTIVE'] } },
+    });
+  }
+
+  /** 내가 참여한 모든 채널 조회 (멤버 및 유저 정보 포함) */
+  async getMyChannels(userId: string) {
+    return this.prisma.channel.findMany({
+      where: {
+        members: {
+          some: { userId }
+        }
+      },
+      include: { members: { include: { user: true } } }
+    });
   }
 
   // =========================
@@ -112,22 +149,22 @@ export class ChannelService {
     });
   }
 
-  /** 초대코드로 채널 참가 */
-  async joinByInviteCode(inviteCode: string, userId: string) {
-    // 초대코드로 채널 찾기
-    const channel = await this.prisma.channel.findUnique({ where: { inviteCode } });
-    if (!channel) throw new Error('Invalid invite code');
-    if (channel.user2Id) throw new Error('Already matched');
-
-    // user2Id 할당 및 상태 변경
+  /** 초대코드로 채널 참가 (MEMBER로 추가, 상태 ACTIVE로 변경) */
+  async joinByInviteCode(inviteCode: string, participantId: string) {
+    const channel = await this.getChannelByInviteCode(inviteCode);
+    if (!channel) throw new NotFoundException('초대 코드를 찾을 수 없습니다.');
+    const participant = channel.members.find(m => m.role === 'MEMBER');
+    if (participant) throw new BadRequestException('이미 참여한 채널입니다.');
+    await this.prisma.channelMember.create({
+      data: {
+        channelId: channel.id,
+        userId: participantId,
+        role: 'MEMBER',
+      },
+    });
     return this.prisma.channel.update({
       where: { id: channel.id },
-      data: {
-        user2Id: userId,
-        status: 'ACTIVE',
-        assistants: { create: { userId } },
-      },
-      include: { assistants: true },
+      data: { status: 'ACTIVE' },
     });
   }
 
@@ -140,23 +177,8 @@ export class ChannelService {
     return this.prisma.channel.delete({ where: { id } });
   }
 
-  /** 수락(상태를 ACTIVE로 변경) */
-  async accept(channelId: string) {
-    return this.prisma.channel.update({
-      where: { id: channelId },
-      data: { status: 'ACTIVE' },
-    });
-  }
 
-  /** 거절/종료(상태를 ENDED로 변경) */
-  async reject(channelId: string) {
-    return this.prisma.channel.update({
-      where: { id: channelId },
-      data: { status: 'ENDED' },
-    });
-  }
-
-  /** 상태 변경(일반화) */
+  /** 채널 상태 변경 (일반화) */
   async updateStatus(channelId: string, status: string) {
     return this.prisma.channel.update({
       where: { id: channelId },
@@ -164,21 +186,16 @@ export class ChannelService {
     });
   }
 
+  /** 채널에 특정 유저가 멤버인지 확인 */
   async isMember(channelId: string, userId: string) {
-    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-    return channel && (channel.user1Id === userId || channel.user2Id === userId);
+    const member = await this.prisma.channelMember.findFirst({
+      where: { channelId, userId },
+    });
+    return !!member;
   }
 
-  async addMember(channelId: string, userId: string) {
-    // user1Id, user2Id 중 빈 곳에 할당
-    const channel = await this.prisma.channel.findUnique({ where: { id: channelId } });
-    if (!channel) throw new NotFoundException('채널 없음');
-    if (channel.user1Id === userId || channel.user2Id === userId) return channel;
-    if (!channel.user1Id) return this.prisma.channel.update({ where: { id: channelId }, data: { user1Id: userId } });
-    if (!channel.user2Id) return this.prisma.channel.update({ where: { id: channelId }, data: { user2Id: userId } });
-    throw new Error('채널이 가득 찼습니다');
-  }
 
+  /** 멤버 없는(종료된) 채널 정리 */
   async cleanupEmptyChannels() {
     return this.prisma.channel.deleteMany({
       where: {
@@ -186,4 +203,70 @@ export class ChannelService {
       },
     });
   }
+
+  /** 채널 ID로 참여 (MEMBER로 추가, 상태 ACTIVE로 변경) */
+  async joinChannelById(userId: string, channelId: string) {
+    const channel = await this.getChannelById(channelId);
+    if (!channel) throw new NotFoundException('채널을 찾을 수 없습니다.');
+    const participant = channel.members.find(m => m.role === 'MEMBER');
+    if (participant) throw new BadRequestException('이미 참여한 채널입니다.');
+    await this.prisma.channelMember.create({
+      data: {
+        channelId,
+        userId,
+        role: 'MEMBER',
+      },
+    });
+    return this.prisma.channel.update({
+      where: { id: channelId },
+      data: { status: 'ACTIVE' },
+    });
+  }
+
+
+  /** 채널 상태를 ENDED로 변경 (거절/종료) */
+  async reject(channelId: string, userId: string) {
+    // userId가 해당 채널의 멤버인지, 권한이 있는지 체크 등 추가 가능
+    return this.prisma.channel.update({
+      where: { id: channelId },
+      data: { status: 'ENDED' },
+    });
+  }
+
+  /** 채널 나가기 (OWNER면 채널 삭제, MEMBER면 멤버만 제거 및 상태 PENDING) */
+  async leaveChannel(userId: string) {
+    const channel = await this.getCurrentChannel(userId);
+    if (!channel) throw new NotFoundException('참여 중인 채널이 없습니다.');
+    if (channel.members.find(m => m.role === 'OWNER')?.userId === userId) {
+      await this.prisma.channel.delete({ where: { id: channel.id } });
+    } else if (channel.members.find(m => m.role === 'MEMBER')?.userId === userId) {
+      await this.prisma.channelMember.deleteMany({
+        where: { channelId: channel.id, role: 'MEMBER' },
+      });
+      await this.prisma.channel.update({
+        where: { id: channel.id },
+        data: { status: 'PENDING' },
+      });
+    }
+    return { success: true };
+  }
+
+  /** 채널에서 멤버 제거 */
+  async removeMember(channelId: string, userId: string) {
+    return this.prisma.channelMember.deleteMany({
+      where: { channelId, userId },
+    });
+  }
+
+  async invite(channelId: string, inviterId: string, inviteeId: string) {
+    return this.prisma.invitation.create({
+      data: {
+        channelId,
+        inviterId,
+        inviteeId,
+        status: 'PENDING',
+      },
+    });
+  }
+
 }

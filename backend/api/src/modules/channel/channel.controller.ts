@@ -1,8 +1,23 @@
-import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
-import {ChannelService} from './channel.service';
-import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
-import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {JoinByInviteDto} from './dto/join-by-invite.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ChannelService } from './channel.service';
+import { InviteCodeChannelDto } from '@modules/channel/dto/invite-code-channel.dto';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JoinByInviteDto } from './dto/join-by-invite.dto';
+import { CreateChannelDto } from './dto/create-channel.dto';
 
 @ApiTags('Channel')
 @Controller('channels')
@@ -26,47 +41,25 @@ export class ChannelController {
     return this.channelService.getChannelById(id);
   }
 
+  // 채널 생성
   @Post()
   @ApiOperation({ summary: '채널 생성' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        user1Id: { type: 'string', description: '유저1 ID' },
-        user2Id: { type: 'string', description: '유저2 ID' },
-      },
-      required: ['user1Id', 'user2Id'],
-    },
-  })
+  @ApiBody({ type: CreateChannelDto })
   @ApiResponse({ status: 201, description: '채널 생성 성공' })
-  async create(@Body() body: { user1Id: string; user2Id: string }) {
-    return this.channelService.createChannel(body.user1Id, body.user2Id);
+  async create(@Body() dto: CreateChannelDto) {
+    return this.channelService.createChannel(dto);
   }
 
+  // 채널 초대 코드 재발급
   @Post(':id/inviteCode')
-  @ApiOperation({ summary: '채널 초대 코드 생성' })
+  @ApiOperation({ summary: '채널 초대 코드 재발급' })
   @ApiBody({ type: InviteCodeChannelDto })
   @ApiResponse({ status: 201, description: '채널 초대 코드 성공' })
   async inviteCode(@Body() dto: InviteCodeChannelDto) {
     return this.channelService.inviteCode(dto);
   }
 
-  @Post(':id/accept')
-  @ApiOperation({ summary: '채널 초대 수락' })
-  @ApiParam({ name: 'id', description: '채널 ID' })
-  @ApiResponse({ status: 200, description: '초대 수락 성공' })
-  async accept(@Param('id') id: string) {
-    return this.channelService.accept(id);
-  }
-
-  @Post(':id/reject')
-  @ApiOperation({ summary: '채널 초대 거절' })
-  @ApiParam({ name: 'id', description: '채널 ID' })
-  @ApiResponse({ status: 200, description: '초대 거절 성공' })
-  async reject(@Param('id') id: string) {
-    return this.channelService.reject(id);
-  }
-
+  // 채널 삭제
   @Delete(':id')
   @ApiOperation({ summary: '채널 삭제' })
   @ApiParam({ name: 'id', description: '채널 ID' })
@@ -75,29 +68,126 @@ export class ChannelController {
     return this.channelService.remove(id);
   }
 
-  @Post(':id/join-by-invite')
-  @ApiOperation({ summary: '초대코드로 채널 매칭(가입)' })
+  // 초대코드로 채널 참여 (실제 멤버 추가 및 상태 변경)
+  @Post('join-by-invite')
+  @ApiOperation({ summary: '초대코드로 채널 참여' })
   @ApiBody({ type: JoinByInviteDto })
-  @ApiResponse({ status: 200, description: '채널 매칭 성공' })
+  @ApiResponse({ status: 200, description: '채널 참여 성공' })
   async joinByInvite(@Body() dto: JoinByInviteDto) {
     return this.channelService.joinByInviteCode(dto.inviteCode, dto.userId);
   }
 
+  // 채널 ID로 참여 (MEMBER로 추가)
+  @Post('join-by-id')
+  @ApiOperation({ summary: '채널 ID로 참여' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string', description: '유저 ID' },
+        channelId: { type: 'string', description: '채널 ID' },
+      },
+      required: ['userId', 'channelId'],
+    },
+  })
+  @ApiResponse({ status: 200, description: '채널 참여 성공' })
+  async joinChannelById(@Body() body: { userId: string; channelId: string }) {
+    return this.channelService.joinChannelById(body.userId, body.channelId);
+  }
+
+  // 채널 초대 거절
+  @Post(':id/reject')
+  @ApiOperation({ summary: '채널 초대 거절' })
+  @ApiParam({ name: 'id', description: '채널 ID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string', description: '유저 ID' },
+      },
+      required: ['userId'],
+    },
+  })
+  @ApiResponse({ status: 200, description: '초대 거절 성공' })
+  async reject(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.channelService.reject(id, userId);
+  }
+
+  // 채널 멤버십 확인
   @Get(':channelId/members/:userId')
   @ApiOperation({ summary: '채널 멤버십 확인' })
-  async isMember(@Param('channelId') channelId: string, @Param('userId') userId: string) {
+  @ApiParam({ name: 'channelId', description: '채널 ID' })
+  @ApiParam({ name: 'userId', description: '유저 ID' })
+  @ApiResponse({ status: 200, description: '멤버 여부 반환' })
+  async isMember(
+    @Param('channelId') channelId: string,
+    @Param('userId') userId: string,
+  ) {
     return this.channelService.isMember(channelId, userId);
   }
 
-  @Post(':channelId/members')
-  @ApiOperation({ summary: '채널에 멤버 추가' })
-  async addMember(@Param('channelId') channelId: string, @Body() body: { userId: string }) {
-    return this.channelService.addMember(channelId, body.userId);
-  }
-
+  // 멤버 없는 채널 정리
   @Delete('cleanup')
   @ApiOperation({ summary: '멤버 없는 채널 정리' })
+  @ApiResponse({ status: 200, description: '정리 성공' })
   async cleanup() {
     return this.channelService.cleanupEmptyChannels();
+  }
+
+  // 현재 참여 채널 조회
+  @Get('current')
+  @ApiOperation({ summary: '현재 참여 채널 조회' })
+  @ApiParam({ name: 'userId', description: '유저 ID', required: true })
+  @ApiResponse({ status: 200, description: '참여 채널 반환' })
+  async getCurrentChannel(@Query('userId') userId: string) {
+    return this.channelService.getCurrentChannel(userId);
+  }
+
+  // 참여 가능한 채널 목록
+  @Get('available')
+  @ApiOperation({ summary: '참여 가능한 채널 목록' })
+  @ApiResponse({ status: 200, description: '채널 목록 반환' })
+  async getAvailableChannels() {
+    return this.channelService.getAvailableChannels();
+  }
+
+  // 채널 나가기
+  @Post('leave')
+  @ApiOperation({ summary: '채널 나가기' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: { type: 'string', description: '유저 ID' },
+      },
+      required: ['userId'],
+    },
+  })
+  @ApiResponse({ status: 200, description: '채널 나가기 성공' })
+  async leaveChannel(@Body() body: { userId: string }) {
+    return this.channelService.leaveChannel(body.userId);
+  }
+
+  // 채널에 유저 초대
+  @Post(':id/invite')
+  @ApiOperation({ summary: '채널에 유저 초대' })
+  @ApiParam({ name: 'id', description: '채널 ID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        inviterId: { type: 'string', description: '초대한 유저 ID' },
+        inviteeId: { type: 'string', description: '초대받을 유저 ID' },
+      },
+      required: ['inviterId', 'inviteeId'],
+    },
+  })
+  @ApiResponse({ status: 201, description: '초대장 생성 성공' })
+  async invite(
+    @Param('id') channelId: string,
+    @Body('inviterId') inviterId: string,
+    @Body('inviteeId') inviteeId: string,
+  ) {
+    return this.channelService.invite(channelId, inviterId, inviteeId);
   }
 }

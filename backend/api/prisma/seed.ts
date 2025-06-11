@@ -342,34 +342,42 @@ async function createUsers(): Promise<[User, User]> {
   ]);
 }
 
-// 4. 채널 및 어시스턴트 생성
-async function createChannelAndAssistants(user1: User, user2: User): Promise<Channel & { assistants: any[] }> {
-  return prisma.channel.create({
+// 4. 채널 및 멤버/어시스턴트 생성
+async function createChannelAndAssistants(user1: User, user2: User): Promise<{ channel: Channel, assistants: any[] }> {
+  // 1. 채널 생성
+  const channel = await prisma.channel.create({
     data: {
-      user1Id: user1.id,
-      user2Id: user2.id,
       status: 'ACTIVE',
       startedAt: new Date(),
       inviteCode: 'TESTCODE123',
       anniversary: new Date('2022-05-20'),
       keywords: JSON.stringify(['사랑', '신뢰', '소통']),
-      assistants: {
-        create: [
-          { userId: user1.id },
-          { userId: user2.id },
-        ],
-      },
     },
-    include: { assistants: true },
   });
+
+  // 2. 멤버(OWNER, MEMBER) 생성
+  await prisma.channelMember.createMany({
+    data: [
+      { channelId: channel.id, userId: user1.id, role: 'OWNER' },
+      { channelId: channel.id, userId: user2.id, role: 'MEMBER' },
+    ],
+  });
+
+  // 3. 어시스턴트 생성 (각 멤버별)
+  const assistants = await Promise.all([
+    prisma.assistant.create({ data: { userId: user1.id, channelId: channel.id } }),
+    prisma.assistant.create({ data: { userId: user2.id, channelId: channel.id } }),
+  ]);
+
+  return { channel, assistants };
 }
 
 // 5. 채팅 기록 생성
-async function createChatHistory(channel: Channel & { assistants: any[] }, user1: User, user2: User) {
+async function createChatHistory(channel: Channel, assistants: any[], user1: User, user2: User) {
   await prisma.chatHistory.createMany({
     data: [
       {
-        assistantId: channel.assistants[0].id,
+        assistantId: assistants[0].id,
         channelId: channel.id,
         userId: user1.id,
         sender: 'AI',
@@ -377,7 +385,7 @@ async function createChatHistory(channel: Channel & { assistants: any[] }, user1
         createdAt: new Date(),
       },
       {
-        assistantId: channel.assistants[1].id,
+        assistantId: assistants[1].id,
         channelId: channel.id,
         userId: user2.id,
         sender: 'AI',
@@ -745,9 +753,9 @@ async function main() {
     createCategoryCodes(),
     createUsers(),
   ]);
-  const channel = await createChannelAndAssistants(user1, user2);
+  const { channel, assistants } = await createChannelAndAssistants(user1, user2);
   await Promise.all([
-    createChatHistory(channel, user1, user2),
+    createChatHistory(channel, assistants, user1, user2),
     createPersonaProfiles(categoryCodeMap, user1, user2),
     createAdvices(channel),
     createEvents(user1, user2),
