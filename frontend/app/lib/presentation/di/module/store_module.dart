@@ -58,6 +58,11 @@ class StoreModule {
     );
 
     // :------------------------------------------------------------------
+    getIt.registerSingleton<UserStore>(
+      UserStore(
+        getIt<UserRepository>(),
+      ),
+    );
     getIt.registerSingleton<AuthStore>(
       AuthStore(
         getIt<LoginUseCase>(),
@@ -65,11 +70,7 @@ class StoreModule {
         getIt<AuthRepository>(),
         getIt<UserRepository>(),
         getIt<UpdateFcmTokenUseCase>(),
-      ),
-    );
-    getIt.registerSingleton<UserStore>(
-      UserStore(
-        getIt<UserRepository>(),
+        getIt<UserStore>(),
       ),
     );
     getIt.registerSingleton<PersonaProfileStore>(

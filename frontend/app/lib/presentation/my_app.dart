@@ -11,6 +11,7 @@ import '../utils/locale/app_localization.dart';
 import '../utils/routes/routes.dart';
 import 'auth/store/auth_store.dart';
 import 'home/store/language_store.dart';
+import 'user/store/user_store.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
   final ThemeStore _themeStore = getIt<ThemeStore>();
   final LanguageStore _languageStore = getIt<LanguageStore>();
   final AuthStore _authStore = getIt<AuthStore>();
+  final UserStore _userStore = getIt<UserStore>();
 
   @override
   void initState() {
@@ -78,7 +80,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Observer(
       builder: (_) {
-        final token = _authStore.accessToken;
         return MaterialApp(
           navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
@@ -86,8 +87,6 @@ class _MyAppState extends State<MyApp> {
           theme: _themeStore.darkMode
               ? AppThemeData.darkThemeData
               : AppThemeData.lightThemeData,
-          routes: Routes.routes,
-          initialRoute: Routes.splash,
           locale: Locale(_languageStore.locale),
           supportedLocales: _languageStore.supportedLanguages
               .map((language) => Locale(language.locale, language.code))
@@ -98,9 +97,11 @@ class _MyAppState extends State<MyApp> {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
+          initialRoute: Routes.splash,
+          routes: Routes.routes,
           onGenerateRoute: (settings) {
-            print('[MyApp] Generating route: ${settings.name}');
-            print('[MyApp] Route arguments: ${settings.arguments}');
+            final isLoggedIn = _userStore.userId != null && _userStore.selectedUser != null;
+            print('[MyApp] isLoggedIn :: ${isLoggedIn} , settings.name :: ${settings.name}');
             return null;
           },
         );

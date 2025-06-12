@@ -3,6 +3,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../di/service_locator.dart';
 import '../auth/store/auth_store.dart';
+import '../user/store/user_store.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,6 +14,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   final AuthStore _authStore = getIt<AuthStore>();
+  final UserStore _userStore = getIt<UserStore>();
   late AnimationController _controller;
 
   @override
@@ -33,9 +35,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   Future<void> _checkAuthAndNavigate() async {
     await _authStore.loadAuthFromPrefs();
-    final isLoggedIn = _authStore.accessToken != null;
+    // 로그인 상태면 UserStore도 동기화
+    if (_authStore.isAuthenticated) {
+      await _userStore.loadUserById(_authStore.userId!);
+    }
+    while (_userStore.isLoading) {
+      await Future.delayed(const Duration(milliseconds: 50));
+    }
+    final isLoggedIn = _authStore.isAuthenticated && _userStore.selectedUser != null;
+    print('[AuthGuard] isLoggedIn :: ${isLoggedIn} , _authStore.isAuthenticated :: ${_authStore.isAuthenticated} , _userStore.selectedUser : ${_userStore.selectedUser}');
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       if (!mounted) return;
       if (isLoggedIn) {
         Navigator.of(context).pushReplacementNamed('/home');

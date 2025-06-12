@@ -11,6 +11,7 @@ import '../../../domain/repository/auth_repository.dart';
 import '../../../domain/usecase/auth/login_usecase.dart';
 import '../../../domain/usecase/auth/register_usecase.dart';
 import '../../../domain/usecase/user/update_fcm_token_usecase.dart';
+import '../../user/store/user_store.dart';
 
 part 'auth_store.g.dart';
 
@@ -22,6 +23,7 @@ abstract class _AuthStore with Store {
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
   final UpdateFcmTokenUseCase updateFcmTokenUseCase;
+  final UserStore _userStore;
 
   _AuthStore(
       this._loginUseCase,
@@ -29,6 +31,7 @@ abstract class _AuthStore with Store {
       this._authRepository,
       this._userRepository,
       this.updateFcmTokenUseCase,
+      this._userStore,
   ) {
     _setupDisposers();
     _initFcm();
@@ -83,14 +86,13 @@ abstract class _AuthStore with Store {
   @observable
   String? lastPushMessage;
 
+  bool get isAuthenticated => accessToken != null && userId != null;
+
   BuildContext? _rootContext;
 
   void setRootContext(BuildContext context) {
     _rootContext = context;
   }
-
-  @observable
-  User? currentUser;
 
   @action
   Future<bool> login(String email, String password) async {
@@ -102,14 +104,17 @@ abstract class _AuthStore with Store {
       userId = user?['id'];
       error = null;
       isLoggedIn = true;
-      currentUser = User.fromJson(user!);
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('userId', userId!);
+
+      if (userId != null) {
+        await _userStore.loadUserById(userId!);
+      }
+
       return true;
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         await clearUserCache();
-        currentUser = null;
       }
       error = e.toString();
       logger.e('로그인 에러: $e');
@@ -131,7 +136,6 @@ abstract class _AuthStore with Store {
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         await clearUserCache();
-        currentUser = null;
       }
       error = e.toString();
       logger.e('회원 가입 에러: $e');
@@ -244,4 +248,5 @@ abstract class _AuthStore with Store {
     fcmToken = null;
     fcmRegistered = false;
   }
+
 }

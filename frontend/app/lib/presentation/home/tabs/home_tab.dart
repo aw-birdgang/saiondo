@@ -4,6 +4,7 @@ import '../../../core/widgets/lovely_action_button.dart';
 import '../../../di/service_locator.dart';
 import '../../../utils/locale/app_localization.dart';
 import '../../../utils/routes/routes.dart';
+import '../../auth/auth_guard.dart';
 import '../../user/store/user_store.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -23,6 +24,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return AuthGuard(
+      child: _buildHomeTabContent(context),
+    );
+  }
+
+  Widget _buildHomeTabContent(BuildContext context) {
     final local = AppLocalizations.of(context);
 
     return Scaffold(

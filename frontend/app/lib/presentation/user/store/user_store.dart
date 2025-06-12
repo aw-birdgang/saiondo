@@ -49,6 +49,9 @@ abstract class _UserStore with Store {
   @observable
   User? partnerUser;
 
+
+  bool get isUserLoaded => !isLoading && selectedUser != null;
+
   @action
   Future<void> initUser() async {
     isLoading = true;
@@ -99,6 +102,12 @@ abstract class _UserStore with Store {
 
   @action
   Future<void> loadPartnerUser(String partnerUserId) async {
-    partnerUser = await _userRepository.fetchUserById(partnerUserId);
+    isLoading = true;
+    try {
+      partnerUser = await _userRepository.fetchUserById(partnerUserId);
+    } finally {
+      isLoading = false;
+    }
   }
+
 }

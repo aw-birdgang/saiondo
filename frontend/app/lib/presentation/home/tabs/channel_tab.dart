@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../../di/service_locator.dart';
 import '../../advice/store/advice_store.dart';
+import '../../auth/auth_guard.dart';
 import '../../auth/store/auth_store.dart';
 import '../../channel/channel_content.dart';
 import '../../channel/store/channel_store.dart';
@@ -17,7 +18,6 @@ class ChannelTabScreen extends StatefulWidget {
 }
 
 class _ChannelTabScreenState extends State<ChannelTabScreen> {
-  late final AuthStore authStore = getIt<AuthStore>();
   late final UserStore userStore = getIt<UserStore>();
   late final ChannelStore channelStore = getIt<ChannelStore>();
   late final ChannelInvitationStore invitationStore = getIt<ChannelInvitationStore>();
@@ -27,7 +27,7 @@ class _ChannelTabScreenState extends State<ChannelTabScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final user = authStore.currentUser;
+      final user = userStore.selectedUser;
       if (user != null) {
         channelStore.fetchCurrentChannel(user.id);
         channelStore.fetchAvailableChannels();
@@ -37,8 +37,13 @@ class _ChannelTabScreenState extends State<ChannelTabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = authStore.currentUser;
+    return AuthGuard(
+      child: _buildChannelTabContent(context),
+    );
+  }
 
+  Widget _buildChannelTabContent(BuildContext context) {
+    final user = userStore.selectedUser;
     if (user == null) {
       return const Center(child: Text('로그인이 필요합니다.'));
     }

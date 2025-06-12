@@ -7,6 +7,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../di/service_locator.dart';
 import '../../../domain/entry/event.dart';
+import '../../auth/auth_guard.dart';
+import '../../user/store/user_store.dart';
 
 class CalendarTab extends StatefulWidget {
   const CalendarTab({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ class _CalendarTabState extends State<CalendarTab> {
   DateTime? _selectedDay;
 
   final _eventStore = getIt<EventStore>();
+  final userStore = getIt<UserStore>();
 
   @override
   void initState() {
@@ -37,76 +40,78 @@ class _CalendarTabState extends State<CalendarTab> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.pink[50],
-      body: Observer(
-        builder: (_) {
-          if (_eventStore.isLoading) {
-            return Center(
-              child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.pink,
-                size: 40,
-              ),
-            );
-          }
-          final events = _eventStore.events;
-          final dayEvents = _selectedDay == null ? <Event>[] : _getEventsForDay(events, _selectedDay!);
+    return AuthGuard(
+      child: Scaffold(
+        backgroundColor: Colors.pink[50],
+        body: Observer(
+          builder: (_) {
+            if (_eventStore.isLoading) {
+              return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.pink,
+                  size: 40,
+                ),
+              );
+            }
+            final events = _eventStore.events;
+            final dayEvents = _selectedDay == null ? <Event>[] : _getEventsForDay(events, _selectedDay!);
 
-          return ListView(
-            padding: const EdgeInsets.only(bottom: 80),
-            children: [
-              CalendarView(
-                focusedDay: _focusedDay,
-                selectedDay: _selectedDay,
-                onDaySelected: (selected, focused) {
-                  setState(() {
-                    _selectedDay = selected;
-                    _focusedDay = focused;
-                  });
-                },
-                eventLoader: (day) => _getEventsForDay(events, day),
+            return ListView(
+              padding: const EdgeInsets.only(bottom: 80),
+              children: [
+                CalendarView(
+                  focusedDay: _focusedDay,
+                  selectedDay: _selectedDay,
+                  onDaySelected: (selected, focused) {
+                    setState(() {
+                      _selectedDay = selected;
+                      _focusedDay = focused;
+                    });
+                  },
+                  eventLoader: (day) => _getEventsForDay(events, day),
+                ),
+                const SizedBox(height: 8),
+                EventListView(
+                  selectedDay: _selectedDay,
+                  dayEvents: dayEvents,
+                  onDelete: (eventId) async {
+                    await _eventStore.deleteEvent(eventId);
+                  },
+                ),
+              ],
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.pink[100],
+          elevation: 8,
+          icon: const Icon(Icons.favorite, color: Color(0xFFD81B60)),
+          label: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+            child: Text(
+              '일정 추가',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Color(0xFFD81B60),
+                fontFamily: 'Nunito',
               ),
-              const SizedBox(height: 8),
-              EventListView(
-                selectedDay: _selectedDay,
-                dayEvents: dayEvents,
-                onDelete: (eventId) async {
-                  await _eventStore.deleteEvent(eventId);
-                },
-              ),
-            ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.pink[100],
-        elevation: 8,
-        icon: const Icon(Icons.favorite, color: Color(0xFFD81B60)),
-        label: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-          child: Text(
-            '일정 추가',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: Color(0xFFD81B60),
-              fontFamily: 'Nunito',
             ),
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: const BorderSide(color: Color(0xFFD81B60), width: 1.2),
+          ),
+          onPressed: () async {
+            final newEvent = await showDialog<Event>(
+              context: context,
+              builder: (context) => _EventDialog(selectedDay: _selectedDay ?? DateTime.now()),
+            );
+            if (newEvent != null) {
+              await _eventStore.addEvent(newEvent);
+            }
+          },
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-          side: const BorderSide(color: Color(0xFFD81B60), width: 1.2),
-        ),
-        onPressed: () async {
-          final newEvent = await showDialog<Event>(
-            context: context,
-            builder: (context) => _EventDialog(selectedDay: _selectedDay ?? DateTime.now()),
-          );
-          if (newEvent != null) {
-            await _eventStore.addEvent(newEvent);
-          }
-        },
       ),
     );
   }

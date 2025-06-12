@@ -4,6 +4,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../di/service_locator.dart';
 import '../../../utils/locale/app_localization.dart';
+import '../../auth/auth_guard.dart';
 import '../../persona_profile/persona_profile_list.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
 import '../../user/store/user_store.dart';
@@ -43,9 +44,8 @@ class MyPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.pink[50],
-      body: Observer(
+    return AuthGuard(
+      child: Observer(
         builder: (_) {
           if (userStore.isLoading) {
             return Center(

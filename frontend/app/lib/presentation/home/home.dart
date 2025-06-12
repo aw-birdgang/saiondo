@@ -8,8 +8,6 @@ import 'package:logger/logger.dart';
 import '../../di/service_locator.dart';
 import '../../utils/locale/app_localization.dart';
 import '../../utils/routes/routes.dart';
-import '../channel/store/channel_store.dart';
-import 'tabs/ai_advice_tab.dart';
 import 'tabs/calendar_tab.dart';
 import 'tabs/home_tab.dart';
 import 'tabs/my_page_tab.dart';
@@ -23,7 +21,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeStore _homeStore = getIt<HomeStore>();
   final AuthStore _authStore = getIt<AuthStore>();
-  final ChannelStore _channelStore = getIt<ChannelStore>();
   final logger = getIt<Logger>();
 
   int _selectedIndex = 0;

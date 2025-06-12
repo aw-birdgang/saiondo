@@ -229,10 +229,6 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(28.0),
               child: Observer(
                 builder: (_) {
-                  final token = _authStore.accessToken;
-                  if (token != null && !_navigated) {
-                    _navigateToHome();
-                  }
                   return Form(
                     key: _formKey,
                     child: Column(

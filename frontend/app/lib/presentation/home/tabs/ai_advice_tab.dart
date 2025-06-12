@@ -4,6 +4,7 @@ import '../../../core/widgets/lovely_action_button.dart';
 import '../../../di/service_locator.dart';
 import '../../../utils/locale/app_localization.dart';
 import '../../../utils/routes/routes.dart';
+import '../../auth/auth_guard.dart';
 import '../../user/store/user_store.dart';
 
 class AiAdviceTabScreen extends StatefulWidget {
@@ -24,6 +25,12 @@ class _AiAdviceTabScreenState extends State<AiAdviceTabScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return AuthGuard(
+      child: _buildAdviceTabContent(context),
+    );
+  }
+
+  Widget _buildAdviceTabContent(BuildContext context) {
     final local = AppLocalizations.of(context);
 
     return Scaffold(

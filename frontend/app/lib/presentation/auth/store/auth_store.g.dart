@@ -181,22 +181,6 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
-  late final _$currentUserAtom =
-      Atom(name: '_AuthStore.currentUser', context: context);
-
-  @override
-  User? get currentUser {
-    _$currentUserAtom.reportRead();
-    return super.currentUser;
-  }
-
-  @override
-  set currentUser(User? value) {
-    _$currentUserAtom.reportWrite(value, super.currentUser, () {
-      super.currentUser = value;
-    });
-  }
-
   late final _$loginAsyncAction =
       AsyncAction('_AuthStore.login', context: context);
 
@@ -296,8 +280,7 @@ error: ${error},
 isLoggedIn: ${isLoggedIn},
 unreadPushCount: ${unreadPushCount},
 pushMessages: ${pushMessages},
-lastPushMessage: ${lastPushMessage},
-currentUser: ${currentUser}
+lastPushMessage: ${lastPushMessage}
     ''';
   }
 }
