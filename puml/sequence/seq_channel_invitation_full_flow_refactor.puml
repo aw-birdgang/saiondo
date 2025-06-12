@@ -1,0 +1,66 @@
+@startuml
+actor Man as 남자
+participant "Client" as Client
+participant "Server API" as Server
+database "Database" as DB
+participant "Notification Service" as Notify
+actor Woman as 여자
+
+== 남자가 여자를 초대하는 흐름 ==
+
+남자 -> Client: "여자 초대" 버튼 클릭
+Client -> Server: POST /channel-invitations (body: {to: 여자ID})
+Server -> DB: 채널 존재 여부 확인 (남자-여자 1:1)
+alt 채널 존재
+    Server -> DB: ChannelMember(여자) 존재 여부 확인
+    alt 이미 멤버
+        Server -> Client: 409 Conflict { code: "ALREADY_MEMBER" }
+    else 멤버 아님
+        Server -> DB: 초대장 존재 여부 확인 (pending 상태)
+        alt 초대장 있음
+            Server -> Client: 409 Conflict { code: "INVITATION_ALREADY_EXISTS" }
+        else 초대장 없음
+            Server -> DB: 초대장 생성 (status: pending, expiresAt: +24h)
+            Server -> Notify: emit InvitationSent(to: 여자)
+            Server -> Client: 201 Created
+        end
+    end
+else 채널 없음
+    Server -> DB: 채널(Channel) 생성
+    Server -> DB: ChannelMember(남자) 등록
+    Server -> DB: 초대장 생성 (status: pending, expiresAt: +24h)
+    Server -> Notify: emit InvitationSent(to: 여자)
+    Server -> Client: 201 Created
+end
+
+== 여자가 초대장 수락/거절 ==
+
+여자 -> Client: 초대장 리스트 보기
+Client -> Server: GET /channel-invitations?status=pending
+Server -> DB: 여자에게 온 초대장 조회
+Server -> Client: 초대장 리스트 반환
+
+여자 -> Client: 초대장 수락 or 거절
+Client -> Server: PATCH /channel-invitations/{id} (body: { accept: true/false })
+Server -> DB: 초대장 및 멤버 상태 확인
+alt 이미 채널 멤버
+    Server -> Client: 409 Conflict { code: "ALREADY_MEMBER" }
+else 유효한 초대장
+    alt 수락
+        Server -> DB: ChannelMember(여자) 등록
+        Server -> DB: 초대장 상태 업데이트 (accepted)
+        Server -> Notify: emit InvitationAccepted(to: 남자)
+        Server -> Client: 200 OK
+    else 거절
+        Server -> DB: 초대장 상태 업데이트 (declined)
+        Server -> Notify: emit InvitationDeclined(to: 남자)
+        Server -> Client: 200 OK
+    end
+else 초대장 만료됨
+    Server -> Client: 410 Gone { code: "INVITATION_EXPIRED" }
+end
+
+== 주기적인 채널 정리 ==
+
+note over Server, DB: 백그라운드 작업 (e.g. CronJob, Lambda)\n- 멤버 없는 채널 삭제\n- 만료된 초대장 정리
+@enduml
