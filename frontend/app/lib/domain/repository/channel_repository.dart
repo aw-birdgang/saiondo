@@ -1,5 +1,6 @@
 import '../entry/channel.dart';
 import '../entry/channel_invitation.dart';
+import '../entry/channels.dart';
 
 abstract class ChannelRepository {
   Future<List<Channel>> getAvailableChannels();
@@ -7,6 +8,7 @@ abstract class ChannelRepository {
 
   Future<Channel?> getCurrentChannel(String userId);
   Future<Channel> fetchChannelById(String channelId);
+  Future<Channels> fetchChannelsByUserId(String userId);
 
   Future<Channel> createChannel(String userId);
   Future<String> createInviteCode(String channelId, String userId);

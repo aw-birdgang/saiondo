@@ -1,10 +1,12 @@
+import 'package:collection/collection.dart';
+
 import '../../domain/entry/channel.dart';
 import '../../domain/entry/channel_invitation.dart';
+import '../../domain/entry/channels.dart';
 import '../../domain/repository/channel_repository.dart';
 import '../adapter/channel_invitation_adapter.dart';
 import '../network/apis/channel_api.dart';
 import '../network/dto/channel_invitation_response.dart';
-import 'package:collection/collection.dart';
 
 class ChannelRepositoryImpl implements ChannelRepository {
   final ChannelApi _channelApi;
@@ -19,6 +21,11 @@ class ChannelRepositoryImpl implements ChannelRepository {
   @override
   Future<Channel> fetchChannelById(String channelId) async {
     return await _channelApi.fetchChannelById(channelId);
+  }
+
+  @override
+  Future<Channels> fetchChannelsByUserId(String userId) async {
+    return await _channelApi.fetchChannelsByUserId(userId);
   }
 
   @override
@@ -113,4 +120,5 @@ class ChannelRepositoryImpl implements ChannelRepository {
         .where((c) => c.status == 'ACTIVE' || c.status == 'PENDING')
         .toList();
   }
+
 }

@@ -1,5 +1,7 @@
 import '../../../core/data/network/dio/dio_client.dart';
 import '../../../domain/entry/channel.dart';
+import '../../../domain/entry/channel.dart';
+import '../../../domain/entry/channels.dart';
 import '../constants/endpoints.dart';
 import '../dto/channel_invitation_response.dart';
 import '../dto/channel_response.dart';
@@ -25,6 +27,17 @@ class ChannelApi {
     final response = await _dioClient.dio.get(Endpoints.channelById(channelId));
     if (response.statusCode == 200) {
       return Channel.fromJson(response.data);
+    }
+    throw Exception('채널 조회 실패');
+  }
+
+  Future<Channels> fetchChannelsByUserId(String userId) async {
+    final response = await _dioClient.dio.get(Endpoints.channelByUserId(userId));
+    print('[ChannelStore] response > fetchChannelByUserId > response.statusCode :: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      Channels channels = Channels.fromJson(response.data);
+      print('[ChannelStore] response > fetchChannelByUserId > channels :: ${channels.toString()}');
+      return channels;
     }
     throw Exception('채널 조회 실패');
   }

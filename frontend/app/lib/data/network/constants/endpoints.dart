@@ -38,6 +38,7 @@ class Endpoints {
   // Channel (커플 단위)
   static const String channels = '/channels';
   static String channelById(String id) => '/channels/$id';
+  static String channelByUserId(String userId) => '/channels/by-user/$userId';
   static String inviteCode(String id) => '/channels/$id/inviteCode';
   static String accept(String id) => '/channels/$id/accept';
   static String reject(String id) => '/channels/$id/reject';

@@ -16,6 +16,9 @@ abstract class _ChannelStore with Store {
   ObservableList<Channel> availableChannels = ObservableList<Channel>();
 
   @observable
+  ObservableList<Channel> userChannels = ObservableList<Channel>();
+
+  @observable
   Channel? currentChannel;
 
   @observable
@@ -50,6 +53,39 @@ abstract class _ChannelStore with Store {
     successMessage = null;
     try {
       currentChannel = await _channelRepository.fetchChannelById(channelId);
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  /// 채널 정보 조회
+  @action
+  Future<void> fetchChannelsByUserId(String userId) async {
+    print('[ChannelStore] request > fetchChannelsByUserId > userId :: $userId');
+    isLoading = true;
+    error = null;
+    successMessage = null;
+    try {
+      final channelsResult = await _channelRepository.fetchChannelsByUserId(userId); // Channels 객체 반환
+      userChannels = ObservableList.of(channelsResult.channels);
+      currentChannel = userChannels.isNotEmpty ? userChannels.first : null;
+      print('[ChannelStore] response > fetchChannelsByUserId > userChannels :: $userChannels');
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  @action
+  Future<void> fetchCurrentChannel(String userId) async {
+    isLoading = true;
+    error = null;
+    try {
+      final result = await _channelRepository.getCurrentChannel(userId);
+      currentChannel = result;
     } catch (e) {
       error = e.toString();
     } finally {
@@ -136,20 +172,6 @@ abstract class _ChannelStore with Store {
     try {
       final result = await _channelRepository.getAvailableChannels();
       availableChannels = ObservableList.of(result);
-    } catch (e) {
-      error = e.toString();
-    } finally {
-      isLoading = false;
-    }
-  }
-
-  @action
-  Future<void> fetchCurrentChannel(String userId) async {
-    isLoading = true;
-    error = null;
-    try {
-      final result = await _channelRepository.getCurrentChannel(userId);
-      currentChannel = result;
     } catch (e) {
       error = e.toString();
     } finally {

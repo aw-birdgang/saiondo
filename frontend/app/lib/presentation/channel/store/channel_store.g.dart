@@ -25,6 +25,22 @@ mixin _$ChannelStore on _ChannelStore, Store {
     });
   }
 
+  late final _$userChannelsAtom =
+      Atom(name: '_ChannelStore.userChannels', context: context);
+
+  @override
+  ObservableList<Channel> get userChannels {
+    _$userChannelsAtom.reportRead();
+    return super.userChannels;
+  }
+
+  @override
+  set userChannels(ObservableList<Channel> value) {
+    _$userChannelsAtom.reportWrite(value, super.userChannels, () {
+      super.userChannels = value;
+    });
+  }
+
   late final _$currentChannelAtom =
       Atom(name: '_ChannelStore.currentChannel', context: context);
 
@@ -104,6 +120,24 @@ mixin _$ChannelStore on _ChannelStore, Store {
     return _$fetchChannelAsyncAction.run(() => super.fetchChannel(channelId));
   }
 
+  late final _$fetchChannelsByUserIdAsyncAction =
+      AsyncAction('_ChannelStore.fetchChannelsByUserId', context: context);
+
+  @override
+  Future<void> fetchChannelsByUserId(String userId) {
+    return _$fetchChannelsByUserIdAsyncAction
+        .run(() => super.fetchChannelsByUserId(userId));
+  }
+
+  late final _$fetchCurrentChannelAsyncAction =
+      AsyncAction('_ChannelStore.fetchCurrentChannel', context: context);
+
+  @override
+  Future<void> fetchCurrentChannel(String userId) {
+    return _$fetchCurrentChannelAsyncAction
+        .run(() => super.fetchCurrentChannel(userId));
+  }
+
   late final _$createChannelAsyncAction =
       AsyncAction('_ChannelStore.createChannel', context: context);
 
@@ -147,15 +181,6 @@ mixin _$ChannelStore on _ChannelStore, Store {
         .run(() => super.fetchAvailableChannels());
   }
 
-  late final _$fetchCurrentChannelAsyncAction =
-      AsyncAction('_ChannelStore.fetchCurrentChannel', context: context);
-
-  @override
-  Future<void> fetchCurrentChannel(String userId) {
-    return _$fetchCurrentChannelAsyncAction
-        .run(() => super.fetchCurrentChannel(userId));
-  }
-
   late final _$leaveChannelAsyncAction =
       AsyncAction('_ChannelStore.leaveChannel', context: context);
 
@@ -168,6 +193,7 @@ mixin _$ChannelStore on _ChannelStore, Store {
   String toString() {
     return '''
 availableChannels: ${availableChannels},
+userChannels: ${userChannels},
 currentChannel: ${currentChannel},
 isLoading: ${isLoading},
 error: ${error},

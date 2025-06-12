@@ -4,7 +4,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../../di/service_locator.dart';
 import '../../advice/store/advice_store.dart';
 import '../../auth/auth_guard.dart';
-import '../../auth/store/auth_store.dart';
 import '../../channel/channel_content.dart';
 import '../../channel/store/channel_store.dart';
 import '../../invite/store/channel_invitation_store.dart';
@@ -28,9 +27,9 @@ class _ChannelTabScreenState extends State<ChannelTabScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final user = userStore.selectedUser;
+      print('[ChannelTabScreen] initState > user :: ${user}');
       if (user != null) {
-        channelStore.fetchCurrentChannel(user.id);
-        channelStore.fetchAvailableChannels();
+        channelStore.fetchChannelsByUserId(user.id);
       }
     });
   }
