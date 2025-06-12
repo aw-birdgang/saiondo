@@ -4,6 +4,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 
 import '../../di/service_locator.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class PointHistoryScreen extends StatefulWidget {
   final String userId;
@@ -43,26 +45,26 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('포인트 내역'),
-        backgroundColor: Colors.pink[100],
+        title: const Text('포인트 내역', style: AppTextStyles.sectionTitle),
+        backgroundColor: AppColors.backgroundLight,
         elevation: 0,
       ),
-      backgroundColor: Colors.pink[50],
+      backgroundColor: AppColors.background,
       body: Observer(
         builder: (_) {
           if (store.isLoading) {
-            return const Center(child: CircularProgressIndicator(color: Colors.pink));
+            return const Center(child: CircularProgressIndicator(color: AppColors.loading));
           }
           if (store.histories.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.sentiment_dissatisfied, color: Colors.pink[200], size: 48),
+                  Icon(Icons.sentiment_dissatisfied, color: AppColors.heartLight, size: 48),
                   const SizedBox(height: 12),
                   const Text(
                     '포인트 내역이 없습니다.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: AppTextStyles.body,
                   ),
                 ],
               ),
@@ -77,11 +79,11 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
               final isEarn = h.amount > 0;
               return Container(
                 decoration: BoxDecoration(
-                  color: isEarn ? Colors.pink[100] : Colors.blue[50],
+                  color: isEarn ? AppColors.backgroundLight : AppColors.blueLight,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pink.withOpacity(0.08),
+                      color: AppColors.heartDark.withOpacity(0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -89,17 +91,17 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
                 ),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: isEarn ? Colors.pink[200] : Colors.blue[200],
+                    backgroundColor: isEarn ? AppColors.heartLight : AppColors.blueDark,
                     child: Icon(
                       isEarn ? Icons.favorite : Icons.shopping_bag,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                   title: Text(
                     getTypeLabel(h.type),
-                    style: TextStyle(
+                    style: AppTextStyles.body.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isEarn ? Colors.pink[700] : Colors.blue[700],
+                      color: isEarn ? AppColors.heartAccent : AppColors.blueDark,
                     ),
                   ),
                   subtitle: Column(
@@ -108,20 +110,18 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
                       if (h.description != null && h.description!.isNotEmpty)
                         Text(
                           h.description!,
-                          style: const TextStyle(fontSize: 13),
+                          style: AppTextStyles.label,
                         ),
                       Text(
                         dateFormat.format(h.createdAt),
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        style: AppTextStyles.label.copyWith(fontSize: 12),
                       ),
                     ],
                   ),
                   trailing: Text(
                     '${isEarn ? '+' : ''}${h.amount}',
-                    style: TextStyle(
-                      color: isEarn ? Colors.pink : Colors.blue,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                    style: AppTextStyles.point.copyWith(
+                      color: isEarn ? AppColors.textMain : AppColors.blue,
                     ),
                   ),
                 ),

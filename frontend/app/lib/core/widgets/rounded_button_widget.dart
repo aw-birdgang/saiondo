@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../presentation/theme/app_text_styles.dart';
 
 class RoundedButtonWidget extends StatelessWidget {
   final String? buttonText;
@@ -47,9 +48,8 @@ class RoundedButtonWidget extends StatelessWidget {
           Text(
             buttonText!,
             overflow: TextOverflow.clip,
-            style: TextStyle(
+            style: AppTextStyles.button.copyWith(
               color: textColor,
-              fontWeight: FontWeight.normal,
               fontSize: buttonTextSize,
             ),
           ),

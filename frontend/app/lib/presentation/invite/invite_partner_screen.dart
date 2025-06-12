@@ -5,6 +5,8 @@ import '../../di/service_locator.dart';
 import '../auth/store/auth_store.dart';
 import '../channel/store/channel_store.dart';
 import '../../utils/locale/app_localization.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class InvitePartnerScreen extends StatefulWidget {
   @override
@@ -60,7 +62,7 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(local?.translate('invite_sent') ?? '초대가 발송되었습니다!'),
-            backgroundColor: Colors.pink[200],
+            backgroundColor: AppColors.heartLight,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
@@ -81,28 +83,23 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(local?.translate('invite_partner') ?? '파트너 초대'),
-        backgroundColor: Colors.pink[100],
+        backgroundColor: AppColors.backgroundLight,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.pink[700]),
-        titleTextStyle: TextStyle(
-          color: Colors.pink[700],
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Nunito',
-          fontSize: 20,
-        ),
+        iconTheme: IconThemeData(color: AppColors.heartAccent),
+        titleTextStyle: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
       ),
-      backgroundColor: Colors.pink[50],
+      backgroundColor: AppColors.background,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.white,
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.pink.withOpacity(0.08),
+                  color: AppColors.heartDark.withOpacity(0.08),
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
@@ -111,15 +108,13 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.favorite, color: Colors.pink[300], size: 48),
+                Icon(Icons.favorite, color: AppColors.heartLight, size: 48),
                 const SizedBox(height: 12),
                 Text(
                   local?.translate('invite_partner_desc') ?? '연인/파트너의 이메일을 입력해 초대해보세요!',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.pink[700],
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.heartAccent,
                     fontWeight: FontWeight.w600,
-                    fontFamily: 'Nunito',
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -129,16 +124,16 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: local?.translate('partner_email') ?? '초대할 이메일',
-                    prefixIcon: Icon(Icons.mail_outline, color: Colors.pink[300]),
+                    prefixIcon: Icon(Icons.mail_outline, color: AppColors.heartLight),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(color: Colors.pink[200]!),
+                      borderSide: BorderSide(color: AppColors.heartLight),
                     ),
                     filled: true,
-                    fillColor: Colors.pink[50],
+                    fillColor: AppColors.background,
                   ),
                   enabled: !_isLoading,
-                  style: TextStyle(fontFamily: 'Nunito'),
+                  style: AppTextStyles.body,
                   onSubmitted: (_) => _invite(),
                 ),
                 if (_error != null)
@@ -146,32 +141,31 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       _error!,
-                      style: TextStyle(color: Colors.red[400], fontWeight: FontWeight.w600),
+                      style: AppTextStyles.error,
                     ),
                   ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    icon: Icon(Icons.send, color: Colors.white),
+                    icon: Icon(Icons.send, color: AppColors.white),
                     label: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2.0),
                       child: Text(
                         local?.translate('invite') ?? '초대하기',
-                        style: const TextStyle(
+                        style: AppTextStyles.sectionTitle.copyWith(
+                          color: AppColors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          fontFamily: 'Nunito',
-                          color: Colors.white,
                         ),
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pinkAccent,
+                      backgroundColor: AppColors.shadow,
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       elevation: 4,
-                      shadowColor: Colors.pinkAccent.withOpacity(0.2),
+                      shadowColor: AppColors.shadow.withOpacity(0.2),
                     ),
                     onPressed: _isLoading ? null : _invite,
                   ),
@@ -180,7 +174,7 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: CircularProgressIndicator(
-                      color: Colors.pinkAccent,
+                      color: AppColors.shadow,
                       strokeWidth: 3,
                     ),
                   ),

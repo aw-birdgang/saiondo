@@ -168,19 +168,19 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context).translate('home'),
+            label: AppLocalizations.of(context)!.translate('home'),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.group),
-            label: AppLocalizations.of(context).translate('channel'),
+            label: AppLocalizations.of(context)!.translate('channel'),
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.calendar_month),
-            label: AppLocalizations.of(context).translate('schedule'),
+            label: AppLocalizations.of(context)!.translate('schedule'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: AppLocalizations.of(context).translate('my'),
+            label: AppLocalizations.of(context)!.translate('my'),
           ),
         ],
         onTap: _onTabTapped,

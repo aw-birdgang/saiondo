@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 import '../../../domain/entry/basic_question_with_answer.dart';
 import '../store/basic_question_answer_store.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_text_styles.dart';
 
 class BasicQuestionCard extends StatefulWidget {
   final BasicQuestionWithAnswer question;
@@ -47,7 +49,7 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: AppColors.white,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
       elevation: 5,
@@ -58,15 +60,15 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
           children: [
             Row(
               children: [
-                Icon(Icons.question_answer, color: Colors.pink[300], size: 24),
+                Icon(Icons.question_answer, color: AppColors.heartLight, size: 24),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     widget.question.question,
-                    style: const TextStyle(
+                    style: AppTextStyles.body.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
-                      color: Color(0xFFD81B60),
+                      color: AppColors.heartAccent,
                     ),
                   ),
                 ),
@@ -75,7 +77,7 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
             if (widget.question.description != null)
               Padding(
                 padding: const EdgeInsets.only(top: 4.0, left: 34),
-                child: Text(widget.question.description!, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                child: Text(widget.question.description!, style: AppTextStyles.label.copyWith(fontSize: 13)),
               ),
             const SizedBox(height: 14),
             ...widget.question.options.map((opt) => RadioListTile<String>(
@@ -88,7 +90,7 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
                     }
                   },
                   title: Text(opt),
-                  activeColor: Colors.pink,
+                  activeColor: AppColors.textMain,
                   contentPadding: const EdgeInsets.only(left: 8, right: 8),
                 )),
             if (selectedAnswer != null)
@@ -96,18 +98,18 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
                 margin: const EdgeInsets.only(top: 10),
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
                 decoration: BoxDecoration(
-                  color: Colors.pink[50],
+                  color: AppColors.background,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.check_circle, color: Colors.green, size: 18),
+                    const Icon(Icons.check_circle, color: AppColors.green, size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         selectedAnswer!,
-                        style: const TextStyle(fontSize: 15, color: Colors.black87),
+                        style: AppTextStyles.body.copyWith(fontSize: 15, color: AppColors.black87),
                       ),
                     ),
                   ],

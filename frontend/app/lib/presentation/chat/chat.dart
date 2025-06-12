@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+
+import '../../core/widgets/lovely_chat_input_bar.dart';
+import '../../core/widgets/lovely_loading_indicator.dart';
 import '../../di/service_locator.dart';
 import '../../domain/entry/chat_history.dart';
 import '../../utils/locale/app_localization.dart';
-import 'store/chat_store.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 import 'chat_message_widget.dart';
+import 'store/chat_store.dart';
 
 class ChatScreen extends StatefulWidget {
   final String userId;
@@ -59,10 +64,10 @@ class _ChatScreenState extends State<ChatScreen> {
     final local = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.pink[50],
+      backgroundColor: AppColors.background,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: Colors.pink[100],
+        backgroundColor: AppColors.backgroundLight,
         elevation: 0,
         title: Observer(
           builder: (_) => Row(
@@ -71,7 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 duration: const Duration(milliseconds: 300),
                 child: Icon(
                   _chatStore.isConnected ? Icons.favorite : Icons.favorite_border,
-                  color: _chatStore.isConnected ? Colors.pinkAccent : Colors.grey,
+                  color: _chatStore.isConnected ? AppColors.shadow : AppColors.grey,
                   size: 22,
                   key: ValueKey(_chatStore.isConnected),
                 ),
@@ -81,11 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 _chatStore.isConnected
                   ? (local?.translate('chat_connected') ?? '채팅 (연결됨)')
                   : (local?.translate('chat_disconnected') ?? '채팅 (연결끊김)'),
-                style: const TextStyle(
-                  color: Color(0xFFD81B60),
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Nunito',
-                ),
+                style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
               ),
             ],
           ),
@@ -114,10 +115,10 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Observer(
             builder: (_) => _chatStore.isAwaitingLLM
-                ? const _LovelyLoadingIndicator()
+                ? const LovelyLoadingIndicator()
                 : const SizedBox.shrink(),
           ),
-          _LovelyChatInputBar(
+          LovelyChatInputBar(
             controller: _controller,
             onSend: (text) {
               _chatStore.sendMessage(text);
@@ -127,132 +128,6 @@ class _ChatScreenState extends State<ChatScreen> {
             enabled: !_chatStore.isAwaitingLLM,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _LovelyLoadingIndicator extends StatelessWidget {
-  const _LovelyLoadingIndicator();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 28,
-              height: 28,
-              child: CircularProgressIndicator(
-                strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'AI가 답변을 작성 중입니다...',
-              style: TextStyle(
-                color: Colors.pink[400],
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Nunito',
-                fontSize: 15,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Text('💗', style: TextStyle(fontSize: 18)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LovelyChatInputBar extends StatelessWidget {
-  final TextEditingController controller;
-  final void Function(String) onSend;
-  final bool enabled;
-
-  const _LovelyChatInputBar({
-    super.key,
-    required this.controller,
-    required this.onSend,
-    this.enabled = true,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final local = AppLocalizations.of(context);
-
-    return SafeArea(
-      child: Container(
-        color: Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: enabled ? Colors.white : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.pink.withOpacity(0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  controller: controller,
-                  enabled: enabled,
-                  minLines: 1,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: local?.translate('enter_message') ?? '메시지를 입력하세요',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                  ),
-                  style: const TextStyle(fontFamily: 'Nunito'),
-                  onSubmitted: (text) {
-                    if (text.trim().isNotEmpty && enabled) {
-                      onSend(text.trim());
-                    }
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: enabled ? Colors.pinkAccent : Colors.grey,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.pink.withOpacity(0.12),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.send_rounded, color: Colors.white),
-                iconSize: 24,
-                tooltip: local?.translate('send') ?? '전송',
-                onPressed: enabled
-                    ? () {
-                        if (controller.text.trim().isNotEmpty) {
-                          onSend(controller.text.trim());
-                        }
-                      }
-                    : null,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

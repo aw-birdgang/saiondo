@@ -6,6 +6,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../di/service_locator.dart';
 import '../../utils/locale/app_localization.dart';
 import 'store/advice_store.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class AdviceHistoryScreen extends StatefulWidget {
   final String channelId;
@@ -33,26 +35,22 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
     final local = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.pink[50],
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
-          local.translate('advice_history'),
-          style: const TextStyle(
-            fontFamily: 'Nunito',
-            fontWeight: FontWeight.bold,
-            color: Color(0xFFD81B60),
-          ),
+          local!.translate('advice_history'),
+          style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
         ),
-        backgroundColor: Colors.pink[100],
+        backgroundColor: AppColors.backgroundLight,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color(0xFFD81B60)),
+        iconTheme: const IconThemeData(color: AppColors.heartAccent),
       ),
       body: Observer(
         builder: (_) {
           if (_store.isLoading) {
             return Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.pink,
+                color: AppColors.heartAccent,
                 size: 40,
               ),
             );
@@ -63,16 +61,16 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.tips_and_updates, size: 64, color: Colors.pink[200]),
+                  Icon(Icons.tips_and_updates, size: 64, color: AppColors.heartLight),
                   const SizedBox(height: 16),
                   Text(
                     local.translate('no_advice_history'),
-                    style: const TextStyle(fontSize: 18, color: Color(0xFFD81B60), fontFamily: 'Nunito'),
+                    style: AppTextStyles.body.copyWith(color: AppColors.heartAccent, fontSize: 18),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     local.translate('advice_history_guide'),
-                    style: const TextStyle(fontSize: 14, color: Colors.blueGrey, fontFamily: 'Nunito'),
+                    style: AppTextStyles.label.copyWith(color: AppColors.blueDark, fontSize: 14),
                   ),
                 ],
               ),
@@ -84,7 +82,7 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.pink[100],
+                  color: AppColors.backgroundLight,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(0),
                     topRight: Radius.circular(0),
@@ -95,12 +93,12 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
                 child: Row(
                   children: [
-                    const Icon(Icons.favorite, color: Color(0xFFD81B60)),
+                    const Icon(Icons.favorite, color: AppColors.heartAccent),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         local.translate('advice_history_tip'),
-                        style: const TextStyle(fontSize: 15, color: Colors.blueGrey, fontFamily: 'Nunito'),
+                        style: AppTextStyles.body.copyWith(color: AppColors.heartAccent, fontSize: 15),
                       ),
                     ),
                   ],
@@ -119,7 +117,7 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      color: Colors.white,
+                      color: AppColors.white,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
                         child: Column(
@@ -127,14 +125,13 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.tips_and_updates, color: Colors.pink[400], size: 22),
+                                Icon(Icons.tips_and_updates, color: AppColors.heartAccent, size: 22),
                                 const SizedBox(width: 8),
                                 Text(
                                   formatDate(advice.createdAt),
-                                  style: TextStyle(
+                                  style: AppTextStyles.label.copyWith(
                                     fontSize: 13,
-                                    color: Colors.blueGrey[400],
-                                    fontFamily: 'Nunito',
+                                    color: AppColors.blueDark,
                                   ),
                                 ),
                               ],
@@ -142,11 +139,10 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                             const SizedBox(height: 12),
                             Text(
                               advice.advice,
-                              style: const TextStyle(
+                              style: AppTextStyles.body.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFFD81B60),
-                                fontFamily: 'Nunito',
+                                color: AppColors.heartAccent,
                               ),
                             ),
                           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../presentation/theme/app_text_styles.dart';
 
 class LovelyActionButton extends StatelessWidget {
   final IconData icon;
@@ -16,17 +17,12 @@ class LovelyActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      icon: Icon(icon, size: 22, color: Colors.white),
+      icon: Icon(icon, size: 22, color: AppTextStyles.button.color),
       label: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2.0),
         child: Text(
           label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            fontFamily: 'Nunito',
-            color: Colors.white,
-          ),
+          style: AppTextStyles.button,
         ),
       ),
       style: ElevatedButton.styleFrom(

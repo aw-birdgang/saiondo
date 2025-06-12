@@ -50,8 +50,8 @@ class PersonaProfileListScreen extends StatelessWidget {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(local.translate('delete_persona_profile')),
-        content: Text(local.translate('delete_persona_profile_confirm')),
+        title: Text(local!.translate('delete_persona_profile')),
+        content: Text(local!.translate('delete_persona_profile_confirm')),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
@@ -68,7 +68,7 @@ class PersonaProfileListScreen extends StatelessWidget {
       await _personaProfileStore.deleteProfile(userId, profile.categoryCodeId);
       if (_personaProfileStore.error != null && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${local.translate('delete_failed')}: ${_personaProfileStore.error}')),
+          SnackBar(content: Text('${local!.translate('delete_failed')}: ${_personaProfileStore.error}')),
         );
       }
     }
@@ -83,7 +83,7 @@ class PersonaProfileListScreen extends StatelessWidget {
           Icon(Icons.person_outline, size: 72, color: Colors.blue[100]),
           const SizedBox(height: 18),
           Text(
-            local.translate('no_persona_profile'),
+            local!.translate('no_persona_profile'),
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.blueGrey[400]),
           ),
@@ -95,7 +95,7 @@ class PersonaProfileListScreen extends StatelessWidget {
   Widget _buildProfileCard(BuildContext context, PersonaProfile profile) {
     final local = AppLocalizations.of(context);
     final category = _categoryCodeStore.codes.firstWhereOrNull((c) => c.id == profile.categoryCodeId);
-    final categoryDesc = category?.description ?? local.translate('unknown');
+    final categoryDesc = category?.description ?? local!.translate('unknown');
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
@@ -160,7 +160,7 @@ class PersonaProfileListScreen extends StatelessWidget {
                             minHeight: 18,
                           ),
                           padding: EdgeInsets.zero,
-                          tooltip: local.translate('edit'),
+                          tooltip: local!.translate('edit'),
                           onPressed: () => _editProfile(context, profile),
                         ),
                         IconButton(
@@ -171,7 +171,7 @@ class PersonaProfileListScreen extends StatelessWidget {
                             minHeight: 18,
                           ),
                           padding: EdgeInsets.zero,
-                          tooltip: local.translate('delete'),
+                          tooltip: local!.translate('delete'),
                           onPressed: () => _deleteProfile(context, profile),
                         ),
                       ],
@@ -192,11 +192,11 @@ class PersonaProfileListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(local.translate('persona_profile_list')),
+        title: Text(local!.translate('persona_profile_list')),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
-            tooltip: local.translate('category_code_guide'),
+            tooltip: local!.translate('category_code_guide'),
             onPressed: () {
               Navigator.push(
                 context,
@@ -234,7 +234,7 @@ class PersonaProfileListScreen extends StatelessWidget {
         label: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
           child: Text(
-            local.translate('add'),
+            local!.translate('add'),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,

@@ -36,7 +36,7 @@ class MyPageScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context).translate('profile_load_fail'))),
+          SnackBar(content: Text(AppLocalizations.of(context)!.translate('profile_load_fail'))),
         );
       }
     }
@@ -62,7 +62,7 @@ class MyPageScreen extends StatelessWidget {
             Future.microtask(() => _goToLogin(context));
             return Center(
               child: Text(
-                AppLocalizations.of(context).translate('no_login_info'),
+                AppLocalizations.of(context)!.translate('no_login_info'),
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),

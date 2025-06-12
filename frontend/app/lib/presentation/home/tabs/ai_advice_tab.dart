@@ -73,7 +73,7 @@ class _AiAdviceTabScreenState extends State<AiAdviceTabScreen> {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    local.translate('ai_advice_bot'),
+                    local!.translate('ai_advice_bot'),
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

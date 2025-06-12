@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../core/widgets/lovely_avatar.dart';
 import '../../di/service_locator.dart';
 import '../../utils/locale/app_localization.dart';
 import 'store/analysis_store.dart';
@@ -31,7 +32,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
       backgroundColor: Colors.pink[50],
       appBar: AppBar(
         title: Text(
-          local.translate('analysis'),
+          local!.translate('analysis'),
           style: const TextStyle(
             fontFamily: 'Nunito',
             fontWeight: FontWeight.bold,
@@ -56,7 +57,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           if (analysis == null) {
             return Center(
               child: Text(
-                local.translate('analysis_load_fail'),
+                local!.translate('analysis_load_fail'),
                 style: const TextStyle(fontSize: 16, color: Color(0xFFD81B60), fontFamily: 'Nunito'),
               ),
             );
@@ -64,8 +65,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
           final result = analysis.parsedResult;
           final user1 = result['user1'] ?? {};
           final user2 = result['user2'] ?? {};
-          final user1Name = user1['name'] ?? local.translate('user1');
-          final user2Name = user2['name'] ?? local.translate('user2');
+          final user1Name = user1['name'] ?? local!.translate('user1');
+          final user2Name = user2['name'] ?? local!.translate('user2');
           final user1Profile = user1['profileUrl'] ?? '';
           final user2Profile = user2['profileUrl'] ?? '';
           final user1Mbti = user1['mbti'] ?? '';
@@ -100,11 +101,11 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _LovelyAvatar(imageUrl: user1Profile),
+                        LovelyAvatar(imageUrl: user1Profile),
                         const SizedBox(width: 16),
                         Icon(Icons.favorite, color: Colors.pink[300], size: 36),
                         const SizedBox(width: 16),
-                        _LovelyAvatar(imageUrl: user2Profile),
+                        LovelyAvatar(imageUrl: user2Profile),
                       ],
                     ),
                   ),
@@ -196,31 +197,6 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
               : const Icon(Icons.refresh),
           backgroundColor: Colors.pink,
         ),
-      ),
-    );
-  }
-}
-
-// 러블리한 아바타 위젯
-class _LovelyAvatar extends StatelessWidget {
-  final String imageUrl;
-  const _LovelyAvatar({required this.imageUrl});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Colors.pinkAccent, Colors.blueAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: CircleAvatar(
-        backgroundImage: imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-        backgroundColor: Colors.transparent,
-        radius: 32,
-        child: imageUrl.isEmpty ? const Icon(Icons.person, color: Colors.white) : null,
       ),
     );
   }

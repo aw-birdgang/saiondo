@@ -4,6 +4,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../di/service_locator.dart';
 import '../../utils/locale/app_localization.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class NotificationsScreen extends StatelessWidget {
   final AuthStore _authStore = getIt<AuthStore>();
@@ -13,29 +15,24 @@ class NotificationsScreen extends StatelessWidget {
     final local = AppLocalizations.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.pink[50],
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: Colors.pink[100],
+        backgroundColor: AppColors.backgroundLight,
         elevation: 0,
         title: Row(
           children: [
-            Icon(Icons.notifications_active_rounded, color: Colors.pink[400]),
+            Icon(Icons.notifications_active_rounded, color: AppColors.heartDark),
             const SizedBox(width: 8),
             Text(
-              local.translate('notification_box'),
-              style: const TextStyle(
-                color: Color(0xFFD81B60),
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                fontFamily: 'Nunito',
-              ),
+              local!.translate('notification_box'),
+              style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_forever_rounded, color: Colors.pink[300]),
-            tooltip: local.translate('delete_all_notifications'),
+            icon: Icon(Icons.delete_forever_rounded, color: AppColors.heartLight),
+            tooltip: local!.translate('delete_all_notifications'),
             onPressed: () {
               _authStore.clearAllPushMessages();
             },
@@ -49,21 +46,14 @@ class NotificationsScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.notifications_off_rounded, size: 64, color: Colors.pink[100]),
+                  Icon(Icons.notifications_off_rounded, size: 64, color: AppColors.backgroundLight),
                   const SizedBox(height: 16),
                   Text(
                     local.translate('no_notifications'),
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.pink[300],
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTextStyles.body.copyWith(color: AppColors.heartLight, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '💌',
-                    style: TextStyle(fontSize: 32),
-                  ),
+                  Text('💌', style: AppTextStyles.title.copyWith(fontSize: 32)),
                 ],
               ),
             );
@@ -76,11 +66,11 @@ class NotificationsScreen extends StatelessWidget {
               final msg = _authStore.pushMessages[index];
               return Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.white,
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pink.withOpacity(0.07),
+                      color: AppColors.heartDark.withOpacity(0.07),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -88,16 +78,12 @@ class NotificationsScreen extends StatelessWidget {
                 ),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: Colors.pink[100],
-                    child: Icon(Icons.notifications_rounded, color: Colors.pink[400]),
+                    backgroundColor: AppColors.backgroundLight,
+                    child: Icon(Icons.notifications_rounded, color: AppColors.heartDark),
                   ),
                   title: Text(
                     msg,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Nunito',
-                    ),
+                    style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w500),
                   ),
                 ),
               );

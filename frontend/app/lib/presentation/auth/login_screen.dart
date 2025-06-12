@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success) {
         _navigateToHome();
       } else {
-        setState(() => _error = AppLocalizations.of(context).translate('login_error'));
+        setState(() => _error = AppLocalizations.of(context)!.translate('login_error'));
       }
     } catch (e) {
       if (!mounted) return;
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Icon(Icons.favorite, color: _mainColor, size: 32),
         const SizedBox(width: 8),
         Text(
-          AppLocalizations.of(context).translate('login'),
+          AppLocalizations.of(context)!.translate('login'),
           style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: OutlinedButton.icon(
             icon: const Icon(Icons.male, color: _maleColor),
             label: Text(
-              AppLocalizations.of(context).translate('quick_login_male'),
+              AppLocalizations.of(context)!.translate('quick_login_male'),
               style: const TextStyle(color: _maleColor),
             ),
             onPressed: _isLoading ? null : () => _quickLogin(_maleTestEmail),
@@ -173,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: OutlinedButton.icon(
             icon: const Icon(Icons.female, color: _femaleColor),
             label: Text(
-              AppLocalizations.of(context).translate('quick_login_female'),
+              AppLocalizations.of(context)!.translate('quick_login_female'),
               style: const TextStyle(color: _femaleColor),
             ),
             onPressed: _isLoading ? null : () => _quickLogin(_femaleTestEmail),
@@ -194,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextButton.icon(
         icon: const Icon(Icons.person_add_alt_1, color: _mainColor),
         label: Text(
-          AppLocalizations.of(context).translate('register'),
+          AppLocalizations.of(context)!.translate('register'),
           style: const TextStyle(color: _mainColor, fontWeight: FontWeight.w600),
         ),
         onPressed: _isLoading
@@ -238,14 +238,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 28),
                         _buildTextField(
                           controller: _emailController,
-                          label: AppLocalizations.of(context).translate('email'),
+                          label: AppLocalizations.of(context)!.translate('email'),
                           icon: Icons.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context).translate('enter_email');
+                              return AppLocalizations.of(context)!.translate('enter_email');
                             }
                             if (!value.contains('@')) {
-                              return AppLocalizations.of(context).translate('invalid_email_format');
+                              return AppLocalizations.of(context)!.translate('invalid_email_format');
                             }
                             return null;
                           },
@@ -253,15 +253,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 18),
                         _buildTextField(
                           controller: _passwordController,
-                          label: AppLocalizations.of(context).translate('password'),
+                          label: AppLocalizations.of(context)!.translate('password'),
                           icon: Icons.lock,
                           obscure: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context).translate('enter_password');
+                              return AppLocalizations.of(context)!.translate('enter_password');
                             }
                             if (value.length < 6) {
-                              return AppLocalizations.of(context).translate('password_min_length');
+                              return AppLocalizations.of(context)!.translate('password_min_length');
                             }
                             return null;
                           },

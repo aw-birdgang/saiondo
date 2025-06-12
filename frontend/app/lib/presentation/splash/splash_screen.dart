@@ -4,6 +4,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../di/service_locator.dart';
 import '../auth/store/auth_store.dart';
 import '../user/store/user_store.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -58,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.pink[50],
+      backgroundColor: AppColors.background,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -77,17 +79,17 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     children: [
                       Transform.translate(
                         offset: Offset(-dx, 0),
-                        child: Icon(Icons.favorite, color: Colors.pink[200], size: 60),
+                        child: Icon(Icons.favorite, color: AppColors.heartLight, size: 60),
                       ),
                       Transform.translate(
                         offset: Offset(dx, 0),
-                        child: Icon(Icons.favorite, color: Colors.pink[400], size: 60),
+                        child: Icon(Icons.favorite, color: AppColors.heartDark, size: 60),
                       ),
                       // 두 하트가 겹칠 때 작은 하트가 튀어나오는 효과
                       if ((dx).abs() < 5)
                         Positioned(
                           bottom: 10,
-                          child: Icon(Icons.favorite, color: Colors.redAccent, size: 32),
+                          child: Icon(Icons.favorite, color: AppColors.heartAccent, size: 32),
                         ),
                     ],
                   );
@@ -95,39 +97,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
             ),
             const SizedBox(height: 18),
-            // 서비스 제목
             const Text(
               "사이온도",
-              style: TextStyle(
-                fontSize: 38,
-                fontWeight: FontWeight.w900,
-                color: Colors.pink,
-                letterSpacing: 4,
-                fontFamily: 'Pacifico', // 러블리한 폰트 적용 가능시
-                shadows: [
-                  Shadow(
-                    color: Colors.pinkAccent,
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
+              style: AppTextStyles.title,
             ),
             const SizedBox(height: 10),
-            // 러블리한 메시지
             Text(
               "서로를 알아가며\n사이의 온도를 높여보세요",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.pink[400],
-                fontWeight: FontWeight.w500,
-                fontFamily: 'NanumPenScript', // 러블리한 폰트 적용 가능시
-              ),
+              style: AppTextStyles.subtitle,
             ),
             const SizedBox(height: 24),
             LoadingAnimationWidget.staggeredDotsWave(
-              color: Colors.pink,
+              color: AppColors.loading,
               size: 40,
             ),
           ],
