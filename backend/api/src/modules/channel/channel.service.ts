@@ -131,6 +131,16 @@ export class ChannelService {
     });
   }
 
+  async getChannelByUserId(userId: string) {
+    return this.prisma.channel.findMany({
+      where: {
+        members: {
+          some: { userId }
+        }
+      },
+    });
+  }
+
   // =========================
   // ===== 초대코드 관련 메서드 =====
   // =========================

@@ -84,6 +84,17 @@ export class ChannelController {
     return this.channelService.getAvailableChannels();
   }
 
+  // userId로 참여 중인 모든 채널 조회
+  @Get('by-user/:userId')
+  @ApiOperation({ summary: 'userId로 참여 중인 모든 채널 조회' })
+  @ApiParam({ name: 'userId', description: '유저 ID' })
+  @ApiResponse({ status: 200, description: '참여 채널 목록 반환' })
+  async getChannelsByUser(
+      @Param('userId') userId: string
+  ) {
+    return this.channelService.getChannelByUserId(userId);
+  }
+
   // =========================
   // === 생성/참여/초대 (CREATE/JOIN/INVITE) ===
   // =========================
