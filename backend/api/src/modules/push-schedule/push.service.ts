@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { FirebaseService } from '../../common/firebase/firebase.service';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import { ChatHistoryService } from '@modules/chat-history/chat-history.service';
-import { MessageSender } from '@prisma/client';
+import {Injectable, Logger} from '@nestjs/common';
+import {FirebaseService} from '../../common/firebase/firebase.service';
+import {PrismaService} from '../../common/prisma/prisma.service';
+import {MessageSender} from '@prisma/client';
+import {ChatService} from "@modules/chat/chat.service";
 
 @Injectable()
 export class PushService {
@@ -11,7 +11,7 @@ export class PushService {
   constructor(
     private readonly firebaseService: FirebaseService,
     private readonly prisma: PrismaService,
-    private readonly chatHistoryService: ChatHistoryService,
+    private readonly chatService: ChatService,
   ) {}
 
   // FCM 메시지 전송
@@ -60,7 +60,7 @@ export class PushService {
     channelId: string,
     message: string,
   ) {
-    await this.chatHistoryService.create({
+    await this.chatService.create({
       userId,
       assistantId,
       channelId,

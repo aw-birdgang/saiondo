@@ -4,7 +4,6 @@ import {ConfigModule} from '@nestjs/config';
 import {PrismaModule} from './common/prisma/prisma.module';
 import {UserModule} from '@modules/user/user.module';
 import {AdviceModule} from '@modules/advice/advice.module';
-import {ChatHistoryModule} from '@modules/chat-history/chat-history.module';
 import {PersonaProfileModule} from '@modules/persona-profile/persona-profile.module';
 import {CategoryCodeModule} from './modules/category-code/category-code.module';
 import {PushScheduleModule} from '@modules/push-schedule/push-schedule.module';
@@ -39,7 +38,6 @@ import {Web3Module} from "@modules/web3/web3.module";
     PersonaProfileModule,
     AssistantModule,
     ChatModule,
-    ChatHistoryModule,
     LlmModule,
     CategoryCodeModule,
     PointModule,

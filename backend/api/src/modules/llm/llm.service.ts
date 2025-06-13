@@ -4,7 +4,7 @@ import {ConfigService} from '@nestjs/config';
 import {AllConfigType} from '../../config/config.type';
 import {AnalyzeRequestDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
-import {buildHistory, LLMMessage, summarizeChatHistory} from "@common/utils/chat_history.util";
+import {summarizeChatHistory} from "@common/utils/chat_history.util";
 import {SuggestedFieldsService} from '../suggested-fields/suggested-fields.service';
 import {loadPromptTemplate} from "@common/utils/prompt-loader.util";
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
@@ -19,6 +19,7 @@ import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relat
 @Injectable()
 export class LlmService {
   private readonly llmApiUrl: string;
+  private readonly logger = new Logger(LlmService.name);
 
   constructor(
     private readonly configService: ConfigService<AllConfigType>,
@@ -28,8 +29,6 @@ export class LlmService {
       infer: true,
     }).llmApiUrl;
   }
-
-  private readonly logger = new Logger(LlmService.name);
 
   /**
    * 프롬프트를 LLM 서버로 전달하여 답변을 받음
@@ -44,37 +43,11 @@ export class LlmService {
       });
       return data.response;
     } catch (error: any) {
-      console.error('LLM 호출 실패:', error.message);
+      this.logger.error('LLM 호출 실패:', error.message);
       throw error;
     }
   }
 
-  /**
-   * 메시지 히스토리 기반 LLM 호출 (ask_openai_history)
-   * @param messages 전체 메시지 배열
-   * @param model 사용할 LLM 모델
-   */
-  async forwardHistoryToLLM({
-    messages,
-    model,
-  }: {
-    messages: LLMMessage[];
-    model: 'openai' | 'claude';
-  }): Promise<string> {
-    const history = buildHistory(messages, 3000);
-    console.log('[forwardHistoryToLLM] 최종 LLM 프롬프트 히스토리:', JSON.stringify(history, null, 2));
-
-    try {
-      const { data } = await axios.post(`${this.llmApiUrl}/chat-history`, {
-        messages: history,
-        model,
-      });
-      return data.response;
-    } catch (error: any) {
-      console.error('LLM history 호출 실패:', error.message);
-      throw error;
-    }
-  }
 
   async forwardToLLMQAForChatRelationshipCoach(
     body: ChatQARelationshipCoachRequestDto
@@ -100,7 +73,7 @@ export class LlmService {
       this.logger.log('[LLM][RelationshipCoach] response:', JSON.stringify(data, null, 2));
       return data.response;
     } catch (error: any) {
-      console.error('LLM relationship coach 호출 실패:', error.message);
+      this.logger.error('LLM relationship coach 호출 실패:', error.message);
       throw error;
     }
   }
@@ -109,26 +82,12 @@ export class LlmService {
    * 커스텀 분석 요청 (예: 성향 분석, 매칭 분석 등)
    * @param data AnalyzeRequestDto
    */
-  async analyze(data: AnalyzeRequestDto): Promise<any> {
+  async analyze(data: AnalyzeRequestDto | AnalyzeAnswerDto): Promise<any> {
     try {
       const { data: res } = await axios.post(`${this.llmApiUrl}/analyze`, data);
       return res;
     } catch (error: any) {
-      console.error('LLM 분석 요청 실패:', error.message);
-      throw error;
-    }
-  }
-
-  /**
-   * 답변 분석 요청 (특정 답변에 대한 추가 분석)
-   * @param data AnalyzeAnswerDto
-   */
-  async analyzeAnswer(data: AnalyzeAnswerDto) {
-    try {
-      const { data: res } = await axios.post(`${this.llmApiUrl}/analyze`, data);
-      return res;
-    } catch (error: any) {
-      console.error('LLM 분석 요청 실패:', error.message);
+      this.logger.error('LLM 분석 요청 실패:', error.message);
       throw error;
     }
   }
@@ -146,7 +105,7 @@ export class LlmService {
       });
       return data.response;
     } catch (error: any) {
-      console.error('LLM 피드백 요청 실패:', error.message);
+      this.logger.error('LLM 피드백 요청 실패:', error.message);
       // fallback: /chat 엔드포인트 사용
       try {
         const { data: fallback } = await axios.post(`${this.llmApiUrl}/chat`, {
@@ -155,6 +114,7 @@ export class LlmService {
         });
         return fallback.response;
       } catch (fallbackError: any) {
+        this.logger.error('LLM fallback 호출 실패:', fallbackError.message);
         throw fallbackError;
       }
     }
@@ -167,7 +127,7 @@ export class LlmService {
       });
       return data.response;
     } catch (error: any) {
-      console.error('LLM 호출 실패:', error.message);
+      this.logger.error('LLM 커플 분석 호출 실패:', error.message);
       throw error;
     }
   }

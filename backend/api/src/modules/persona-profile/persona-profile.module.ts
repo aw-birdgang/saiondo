@@ -1,14 +1,20 @@
-import { Module } from '@nestjs/common';
-import { PersonaProfileService } from './persona-profile.service';
-import { PersonaProfileController } from './persona-profile.controller';
-import { LlmModule } from '../llm/llm.module';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { PointModule } from '../point/point.module';
+import {Module, forwardRef} from '@nestjs/common';
+import {PersonaProfileService} from './persona-profile.service';
+import {PersonaProfileController} from './persona-profile.controller';
+import {LlmModule} from '../llm/llm.module';
+import {PrismaModule} from '@common/prisma/prisma.module';
+import {PointModule} from '../point/point.module';
+import {CoupleAnalysisModule} from '../couple-analysis/couple-analysis.module';
 
 @Module({
-  imports: [LlmModule, PointModule],
+  imports: [
+    PrismaModule,
+    forwardRef(() => CoupleAnalysisModule),
+    forwardRef(() => LlmModule),
+    forwardRef(() => PointModule),
+  ],
   controllers: [PersonaProfileController],
-  providers: [PersonaProfileService, PrismaService],
+  providers: [PersonaProfileService],
   exports: [PersonaProfileService],
 })
 export class PersonaProfileModule {}

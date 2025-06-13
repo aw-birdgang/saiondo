@@ -4,12 +4,11 @@ import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
 import {CategoryCode, ChatHistory, MessageSender, PersonaProfile, User} from '@prisma/client';
 import {LlmService} from '@modules/llm/llm.service';
 import {ChannelService} from '@modules/channel/channel.service';
-import {ChatHistoryService} from '@modules/chat-history/chat-history.service';
 import {UserService} from "@modules/user/user.services";
 import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
-import {ChatQARelationshipCoachRequestDto, SimpleProfile} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
+import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
 import {extractJsonFromCodeBlock} from "@common/utils/json.util";
-import { SimpleProfileDto } from './dto/simple-profile.dto';
+import {SimpleProfileDto} from './dto/simple-profile.dto';
 
 /**
  * ChatService
@@ -26,7 +25,6 @@ export class ChatService {
     private readonly prisma: PrismaService,
     private readonly llmService: LlmService,
     private readonly channelService: ChannelService,
-    private readonly chatHistoryService: ChatHistoryService,
     private readonly userService: UserService,
     private readonly basicQnAService: BasicQuestionWithAnswerService,
   ) {}
@@ -35,12 +33,39 @@ export class ChatService {
   // ===== 채팅 관련 메서드 =====
   // =========================
 
+
+  async create(data: {
+    userId: string;
+    assistantId: string;
+    channelId: string;
+    message: string;
+    sender: MessageSender;
+    createdAt?: Date;
+  }): Promise<ChatHistory> {
+    return this.prisma.chatHistory.create({ data });
+  }
+
   /** LLM 피드백과 함께 채팅 저장 */
   async chatWithFeedback(
     dto: ChatWithFeedbackDto,
   ): Promise<{ userChat: ChatHistory; aiChat: ChatHistory }> {
     const { userId, assistantId, channelId, message } = dto;
     return this.sendToLLM(message, assistantId, channelId, userId, '');
+  }
+
+
+  async findChatsByChannelWithAssistantId(assistantId: string) {
+    return this.prisma.chatHistory.findMany({
+      where: { assistantId },
+    });
+  }
+
+  async findManyByChannelAndAssistant(channelId: string, assistantId: string, limit = 10): Promise<ChatHistory[]> {
+    return this.prisma.chatHistory.findMany({
+      where: { channelId, assistantId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
   }
 
   /** LLM에 피드백 요청 */
@@ -55,7 +80,7 @@ export class ChatService {
     return await this.llmService.getFeedback(prompt, assistantId);
   }
 
-  /** 채팅 메시지 저장 (ChatHistoryService 사용) */
+  /** 채팅 메시지 저장 (ChatService 사용) */
   private async saveChatMessage(
     userId: string,
     assistantId: string,
@@ -63,7 +88,7 @@ export class ChatService {
     message: string,
     sender: MessageSender,
   ) {
-    return this.chatHistoryService.create({
+    return this.create({
       userId,
       assistantId,
       channelId,
@@ -79,7 +104,7 @@ export class ChatService {
     assistantId: string,
     limit = 10
   ): Promise<string> {
-    const history = await this.chatHistoryService.findManyByChannelAndAssistant(channelId, assistantId, limit);
+    const history = await this.findManyByChannelAndAssistant(channelId, assistantId, limit);
     history.reverse();
     return history
       .map(msg => `${msg.sender === 'USER' ? '유저' : 'AI'}: ${msg.message}`)

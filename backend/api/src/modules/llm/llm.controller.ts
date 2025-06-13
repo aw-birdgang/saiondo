@@ -1,21 +1,18 @@
 import {Body, Controller, forwardRef, HttpException, HttpStatus, Inject, Post,} from '@nestjs/common';
 import {LlmService} from './llm.service';
 import {ChatRequestDto, ChatResponseDto} from './dto/chat.dto';
-import {ChatHistoryService} from '../chat-history/chat-history.service';
 import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {AnalyzeRequestDto, AnalyzeResponseDto} from './dto/analyze.dto';
-import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
-import {ChatHistoryRequestDto} from "@modules/llm/dto/chat-history-request.dto";
-import {ChatHistoryResponseDto} from "@modules/llm/dto/chat-history-response.dto";
 import {MessageSender} from "@prisma/client";
+import {ChatService} from "@modules/chat/chat.service";
 
 @ApiTags('LLM')
 @Controller('llm')
 export class LlmController {
   constructor(
     private readonly llmService: LlmService,
-    @Inject(forwardRef(() => ChatHistoryService))
-    private readonly chatHistoryService: ChatHistoryService,
+    @Inject(forwardRef(() => ChatService))
+    private readonly chatService: ChatService,
   ) {}
 
   @Post('chat')
@@ -35,7 +32,7 @@ export class LlmController {
       const result = await this.llmService.forwardToLLM(body.prompt, body.model);
 
       // 1. 사용자 프롬프트 저장
-      await this.chatHistoryService.create({
+      await this.chatService.create({
         assistantId: body.assistantId,
         channelId: body.channelId,
         userId: body.userId,
@@ -45,7 +42,7 @@ export class LlmController {
       });
 
       // 2. LLM 응답 저장
-      await this.chatHistoryService.create({
+      await this.chatService.create({
         assistantId: body.assistantId,
         channelId: body.channelId,
         userId: body.userId,
@@ -66,34 +63,6 @@ export class LlmController {
   @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
   async analyze(@Body() body: AnalyzeRequestDto): Promise<AnalyzeResponseDto> {
     return this.llmService.analyze(body);
-  }
-
-  @Post('analyze-answer')
-  @ApiOperation({ summary: '유저 답변 LLM 분석' })
-  @ApiBody({ type: AnalyzeAnswerDto })
-  @ApiResponse({ status: 200, description: 'LLM 분석 결과 반환' })
-  async analyzeAnswer(@Body() dto: AnalyzeAnswerDto) {
-    return this.llmService.analyzeAnswer(dto);
-  }
-
-  @Post('chat-history')
-  @ApiOperation({ summary: 'LLM 대화 히스토리 기반 응답 생성' })
-  @ApiBody({ type: ChatHistoryRequestDto })
-  @ApiResponse({
-    status: 200,
-    description: 'LLM 응답 성공',
-    type: ChatHistoryResponseDto,
-    example: {
-      response: '상담을 위해 최근 다툰 구체적인 예시를 말씀해주실 수 있나요?'
-    }
-  })
-  @ApiResponse({ status: 500, description: 'LLM 응답 실패' })
-  async chatHistory(
-    @Body() body: ChatHistoryRequestDto
-  ): Promise<ChatHistoryResponseDto> {
-    const { messages, model } = body;
-    const response = await this.llmService.forwardHistoryToLLM({ messages, model });
-    return { response };
   }
 
 }

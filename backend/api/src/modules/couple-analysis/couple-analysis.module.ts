@@ -1,11 +1,14 @@
-import {Module} from '@nestjs/common';
+import {Module, forwardRef} from '@nestjs/common';
 import {CoupleAnalysisController} from './couple-analysis.controller';
 import {CoupleAnalysisService} from './couple-analysis.service';
 import {PrismaModule} from '@common/prisma/prisma.module';
 import {LlmModule} from '../llm/llm.module';
 
 @Module({
-  imports: [PrismaModule, LlmModule],
+  imports: [
+    PrismaModule,
+    forwardRef(() => LlmModule),
+  ],
   controllers: [CoupleAnalysisController],
   providers: [CoupleAnalysisService],
 })
