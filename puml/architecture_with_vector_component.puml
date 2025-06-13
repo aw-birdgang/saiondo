@@ -1,6 +1,6 @@
 @startuml
 !theme plain
-title Saiondo Backend Component (AWS Infra + Web3 + LLM)
+title Saiondo Backend - 문서 업로드 & 벡터화 흐름 포함
 
 skinparam defaultFontSize 16
 skinparam package {
@@ -23,11 +23,6 @@ skinparam storage {
   BorderColor #66AA66
   FontColor #222244
 }
-skinparam queue {
-  BackgroundColor #FFF8FF
-  BorderColor #AA66AA
-  FontColor #222244
-}
 skinparam node {
   BackgroundColor #F8F8FF
   BorderColor #8888AA
@@ -45,46 +40,56 @@ cloud "AWS Cloud" as aws {
     [REST API\n(NestJS Controller)] as api #LightYellow
     [Domain Services] as services #LightYellow
     [LLM Proxy] as llmproxy #LightYellow
-    [Logger/Monitoring] as logger #LightYellow
+    [Vector Task Dispatcher] as vectordispatch #LightYellow
     [Web3 Service] as web3svc #LightYellow
+    [Logger/Monitoring] as logger #LightYellow
 
     api -down-> services : Service 호출
-    services -down-> llmproxy : LLM 프록시
-    api -down-> logger : 로깅/모니터링
-    services -down-> web3svc : Web3 연동
+    services -down-> vectordispatch : 문서 벡터화 요청
+    services -down-> llmproxy : LLM 응답 호출
+    api -down-> logger : 로깅
   }
 
+  storage "Amazon S3\n(문서 저장)" as s3 #Azure
   database "Amazon RDS\n(PostgreSQL)" as db #LightGoldenRodYellow
 
   backend --> db : ORM (Prisma)
+  api --> s3 : 문서 업로드 (multipart/form-data)
 }
 
 ' === LLM Server ===
-package "LLM Server (FastAPI)" {
+package "LLM Server (FastAPI + LangChain)" {
   [FastAPI + LangChain] as fastapi #Thistle
   [OpenAI Provider] as openai #White
   [Claude Provider] as claude #White
   [Provider Base] as base #White
   [Logger/Tracing] as tracing #White
 
+  storage "Vector Store\n(Qdrant, Chroma 등)" as vectorstore #HoneyDew
+
   fastapi -down-> base : provider 패턴
-  base -down-> openai : OpenAI 연동
-  base -down-> claude : Claude 연동
+  base -down-> openai
+  base -down-> claude
   fastapi -down-> tracing : LangChain Tracing
+  fastapi -down-> vectorstore : 임베딩 + 저장
 }
 
 cloud "Blockchain\n(Ethereum, Klaytn 등)" as chain #MintCream
 
-' === 데이터 흐름 (실선) ===
-flutter -down-> api : REST API (HTTPS)
-api -down-> llmproxy : LLM 요청 위임
-llmproxy -down-> fastapi : HTTP (분석/프롬프트)
-fastapi -right-> tracing : 호출 추적
+' === 실선 데이터 흐름 ===
+flutter -down-> api : 문서 업로드 요청
+api -down-> s3 : S3에 문서 저장
+vectordispatch -down-> fastapi : 문서 메타 + URL 전달
+fastapi -down-> vectorstore : 유사 문서 임베딩 및 저장
 
-' === Web3 연동 흐름 (실선) ===
+' === 기존 LLM 질의 흐름 ===
+flutter -down-> api : 사용자 질문
+llmproxy -down-> fastapi : LLM 질의
+fastapi -down-> vectorstore : 관련 문서 검색
+fastapi -down-> tracing : 호출 추적
+
+' === Web3 ===
 web3svc -down-> chain : RPC/HTTP
-
-' === (선택) Flutter App이 직접 Web3 연동하는 경우 (점선) ===
 flutter ..right..> chain : 직접 Web3 연동 (선택)
 
 @enduml

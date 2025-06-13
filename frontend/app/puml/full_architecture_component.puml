@@ -1,0 +1,89 @@
+@startuml
+' 스타일 정의
+skinparam package {
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
+  FontSize 15
+}
+skinparam rectangle {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+skinparam ArrowColor #336699
+skinparam ArrowFontColor #336699
+skinparam ArrowFontSize 13
+
+' === 패키지 구조 ===
+
+package "lib/" {
+
+  package "main.dart" as main
+
+  package "core" {
+    [Extensions]
+    [UI Components]
+  }
+
+  package "data" {
+    [Repositories Impl]
+
+    package "DataSources" {
+      [RemoteDataSource]
+      [LocalDataSource]
+      [Error Adapter]
+      [Network Client (Dio/http)]
+    }
+
+    [Models (DTO)]
+    [Mappers (DTO <-> Entity)]
+  }
+
+  package "domain" {
+    [UseCases]
+    [Repositories (Abstraction)]
+    [Entities]
+  }
+
+  package "presentation" {
+    [Screens]
+    [Stores (MobX/Riverpod)]
+  }
+
+  package "di" {
+    [AppModule / FeatureModule]
+  }
+}
+
+' === 의존성 관계 ===
+
+main --> [AppModule / FeatureModule] : "앱 초기화 및 DI 구성"
+[AppModule / FeatureModule] --> [Repositories Impl]
+[AppModule / FeatureModule] --> [UseCases]
+[AppModule / FeatureModule] --> [Stores (MobX/Riverpod)]
+
+[Screens] --> [Stores (MobX/Riverpod)]
+[Screens] --> [UseCases]
+[Stores (MobX/Riverpod)] --> [UseCases]
+
+[UseCases] --> [Repositories (Abstraction)]
+[Repositories (Abstraction)] <.. [Repositories Impl]
+
+[Repositories Impl] --> [RemoteDataSource]
+[Repositories Impl] --> [LocalDataSource]
+[Repositories Impl] --> [Mappers (DTO <-> Entity)]
+
+[RemoteDataSource] --> [Network Client (Dio/http)]
+[RemoteDataSource] --> [Error Adapter] : "예외 처리"
+[RemoteDataSource] --> [Models (DTO)]
+
+[LocalDataSource] --> [Models (DTO)]
+
+[Mappers (DTO <-> Entity)] --> [Models (DTO)]
+[Mappers (DTO <-> Entity)] --> [Entities]
+
+[UI Components] --> [Screens]
+[Extensions] --> [Screens]
+
+@enduml

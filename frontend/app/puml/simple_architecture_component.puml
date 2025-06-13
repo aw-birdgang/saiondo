@@ -1,0 +1,59 @@
+@startuml
+' 스타일 정의
+skinparam package {
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
+  FontSize 15
+}
+skinparam rectangle {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+skinparam ArrowColor #336699
+skinparam ArrowFontColor #336699
+skinparam ArrowFontSize 13
+
+' 패키지 및 컴포넌트 정의
+package "Presentation" {
+  [Screens/Widgets]
+  [State Management]
+}
+package "Domain" {
+  [UseCases]
+  [Repositories (Abstraction)]
+}
+package "Data" {
+  [Repositories (Impl)]
+  [Network/Local Adapter]
+  [SQLite Adapter]
+  [SharedPref]
+}
+package "Core" {
+  [Stores]
+  [Widgets]
+  [Extensions]
+}
+package "DI" {
+  [Service Locator]
+}
+
+' 관계 및 설명 추가
+[main.dart] --> [Service Locator] : "앱 초기화 및 DI 설정"
+[Service Locator] --> [Repositories (Impl)] : "Repository 구현체 주입"
+[Service Locator] --> [UseCases] : "UseCase 인스턴스 주입"
+[Service Locator] --> [Stores] : "Store(상태) 인스턴스 주입"
+
+[Screens/Widgets] --> [State Management] : "상태관리(MobX 등) 연동"
+[Screens/Widgets] --> [UseCases] : "비즈니스 로직 호출"
+[UseCases] --> [Repositories (Abstraction)] : "데이터 접근 추상화"
+[Repositories (Abstraction)] <.. [Repositories (Impl)] : "구현체 의존성 주입"
+[Repositories (Impl)] --> [Network/Local Adapter] : "API/DB/로컬 데이터 연동"
+[Repositories (Impl)] --> [SQLite Adapter] : "SQLite 연동"
+[Repositories (Impl)] --> [SharedPref] : "로컬 저장소 연동"
+
+[Stores] --> [State Management] : "상태관리 객체 제공"
+[Widgets] --> [Screens/Widgets] : "공통 위젯 조합"
+[Extensions] --> [Screens/Widgets] : "확장 함수/유틸리티 제공"
+@enduml

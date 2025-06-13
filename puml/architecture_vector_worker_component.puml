@@ -1,0 +1,81 @@
+@startuml
+!theme plain
+title Saiondo Vector Ingestion Flow (NestJS + Bull + Worker + LangChain)
+
+skinparam defaultFontSize 16
+skinparam package {
+  BackgroundColor #FFFFFF
+  BorderColor #8888AA
+  FontColor #222244
+}
+skinparam cloud {
+  BackgroundColor #F8F8FF
+  BorderColor #8888AA
+  FontColor #222244
+}
+skinparam database {
+  BackgroundColor #FFFFF0
+  BorderColor #888866
+  FontColor #222244
+}
+skinparam storage {
+  BackgroundColor #F8FFF8
+  BorderColor #66AA66
+  FontColor #222244
+}
+skinparam queue {
+  BackgroundColor #FFF8FF
+  BorderColor #AA66AA
+  FontColor #222244
+}
+skinparam node {
+  BackgroundColor #F8F8FF
+  BorderColor #8888AA
+  FontColor #222244
+}
+
+' === Frontend ===
+package "Frontend (Flutter)" {
+  [📱 Flutter App] as flutter #LightSkyBlue
+}
+
+' === AWS Cloud / NestJS ===
+cloud "NestJS Backend (EC2/ECS)" as nest {
+  node "Main Backend" as backend #LightYellow {
+    [REST API] as api
+    [Bull Producer] as bullprod
+    [Logger] as logger
+  }
+
+  storage "Amazon S3" as s3 #Azure
+  queue "Redis + Bull Queue" as bullq #Lavender
+}
+
+' === Vector Worker ===
+node "Vector Worker (NestJS 모듈)" as worker #MintCream {
+  [Bull Consumer] as bullcon
+  [S3 Downloader] as s3down
+  [HTTP Client] as httpclient
+}
+
+' === LLM Server (FastAPI + LangChain) ===
+package "LLM Server" {
+  [FastAPI + LangChain] as fastapi #Thistle
+  storage "Vector Store\n(Qdrant, Chroma)" as vectorstore #HoneyDew
+}
+
+' === 데이터 흐름 ===
+flutter -down-> api : 문서 업로드 요청
+api -down-> s3 : S3에 문서 저장
+api -down-> bullprod : 벡터화 태스크 생성
+bullprod --> bullq : 문서 URL 포함 태스크 발행
+
+bullq --> bullcon : 태스크 소비
+bullcon -down-> s3down : S3에서 문서 다운로드
+s3down -down-> httpclient : LLM Server에 전송
+httpclient -down-> fastapi : POST /ingest (문서 전송)
+fastapi -down-> vectorstore : 벡터 저장 (임베딩 수행)
+
+api -right-> logger : 업로드/태스크 기록
+
+@enduml

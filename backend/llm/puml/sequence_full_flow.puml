@@ -1,0 +1,21 @@
+@startuml
+actor Client
+participant "FastAPI Router\n(api/chat.py)" as Router
+participant "Service Layer\n(services/chat_service.py)" as Service
+participant "LLMProvider\n(services/llm_provider.py)" as Provider
+participant "OpenAI/Claude Provider\n(providers/)" as LLM
+
+Client -> Router : POST /chat (prompt, model)
+Router -> Service : chat_service.chat(prompt, model)
+Service -> Provider : llm_provider.ask(prompt, model)
+alt model == "openai"
+    Provider -> LLM : ask_openai(prompt)
+    LLM -> Provider : LLM 응답 반환
+else model == "claude"
+    Provider -> LLM : ask_claude(prompt)
+    LLM -> Provider : LLM 응답 반환
+end
+Provider -> Service : LLM 응답 반환
+Service -> Router : LLM 응답 반환
+Router -> Client : ChatResponse(response)
+@enduml
