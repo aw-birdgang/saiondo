@@ -94,8 +94,8 @@ class Endpoints {
 
   static String getChats = baseUrl + '/chat/list?pageRows=10&pageNumber=1&languageType=EN';
 
-  static String chatHistories = baseUrl + "/chat-histories";
   static String chat = baseUrl + "/chat";
+  static String chatHistories(String assistantId) => '$baseUrl/chat/$assistantId/histories';
 
   //
   static String getCategoryCodes = baseUrl + '/category-codes';

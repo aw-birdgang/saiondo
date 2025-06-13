@@ -1,6 +1,6 @@
-import '../entry/chat_history.dart';
+import '../entry/chat.dart';
 
 abstract class ChatHistoryRepository {
-  Future<List<ChatHistory>> fetchChatHistories(String assistantId);
-  Future<ChatHistory> sendMessage(String userId, String assistantId, String message);
+  Future<List<Chat>> fetchChatHistories(String assistantId);
+  Future<Chat> sendMessage(String userId, String assistantId, String message);
 }

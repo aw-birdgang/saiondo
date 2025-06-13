@@ -4,7 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../../core/widgets/lovely_chat_input_bar.dart';
 import '../../core/widgets/lovely_loading_indicator.dart';
 import '../../di/service_locator.dart';
-import '../../domain/entry/chat_history.dart';
+import '../../domain/entry/chat.dart';
 import '../../utils/locale/app_localization.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
@@ -106,7 +106,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: _chatStore.messages.length,
                   itemBuilder: (context, index) {
                     final reversedIndex = _chatStore.messages.length - 1 - index;
-                    final ChatHistory msg = _chatStore.messages[reversedIndex];
+                    final Chat msg = _chatStore.messages[reversedIndex];
                     return ChatMessageWidget(chat: msg);
                   },
                 );

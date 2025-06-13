@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../data/network/socket_io/socket_io_service.dart';
-import '../../../domain/entry/chat_history.dart';
+import '../../../domain/entry/chat.dart';
 import '../../../domain/usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../../domain/usecase/chat/send_message_usecase.dart';
 
@@ -24,7 +24,7 @@ abstract class _ChatStore with Store {
   );
 
   @observable
-  ObservableList<ChatHistory> messages = ObservableList<ChatHistory>();
+  ObservableList<Chat> messages = ObservableList<Chat>();
 
   @observable
   bool isConnected = false;
@@ -65,7 +65,7 @@ abstract class _ChatStore with Store {
       print('[ChatStore] sendMessage 호출 전 connect 필요');
       return;
     }
-    final userChat = ChatHistory(
+    final userChat = Chat(
       id: UniqueKey().toString(),
       userId: _userId!,
       assistantId: _assistantId!,
@@ -92,12 +92,12 @@ abstract class _ChatStore with Store {
     try {
       final map = data is String ? jsonDecode(data) : data;
       if (map['aiChat'] != null) {
-        final aiChat = ChatHistory.fromJson(map['aiChat']);
+        final aiChat = Chat.fromJson(map['aiChat']);
         messages.add(aiChat);
         print('[ChatStore] AI 메시지 수신: ${aiChat.message}');
       }
     } catch (e) {
-      messages.add(ChatHistory(
+      messages.add(Chat(
         id: UniqueKey().toString(),
         userId: _assistantId ?? '',
         assistantId: _assistantId ?? '',

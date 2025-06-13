@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../domain/entry/chat_history.dart';
+
+import '../../domain/entry/chat.dart';
 import 'chat_message_bubble.dart';
 
 class ChatMessageWidget extends StatelessWidget {
-  final ChatHistory chat;
+  final Chat chat;
 
   const ChatMessageWidget({
     super.key,
