@@ -373,8 +373,8 @@ async function createChannelAndAssistants(user1: User, user2: User): Promise<{ c
 }
 
 // 5. 채팅 기록 생성
-async function createChatHistory(channel: Channel, assistants: any[], user1: User, user2: User) {
-  await prisma.chatHistory.createMany({
+async function createChat(channel: Channel, assistants: any[], user1: User, user2: User) {
+  await prisma.chat.createMany({
     data: [
       {
         assistantId: assistants[0].id,
@@ -755,7 +755,7 @@ async function main() {
   ]);
   const { channel, assistants } = await createChannelAndAssistants(user1, user2);
   await Promise.all([
-    createChatHistory(channel, assistants, user1, user2),
+    createChat(channel, assistants, user1, user2),
     createPersonaProfiles(categoryCodeMap, user1, user2),
     createAdvices(channel),
     createEvents(user1, user2),

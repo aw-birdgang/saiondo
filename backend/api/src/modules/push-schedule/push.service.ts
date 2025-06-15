@@ -60,7 +60,7 @@ export class PushService {
     channelId: string,
     message: string,
   ) {
-    await this.chatService.create({
+    await this.chatService.createChat({
       userId,
       assistantId,
       channelId,

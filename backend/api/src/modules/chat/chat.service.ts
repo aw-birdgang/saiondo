@@ -1,7 +1,6 @@
 import {BadRequestException, Injectable, Logger} from '@nestjs/common';
-import {PrismaService} from '../../common/prisma/prisma.service';
 import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
-import {CategoryCode, ChatHistory, MessageSender, PersonaProfile, User} from '@prisma/client';
+import {CategoryCode, MessageSender, PersonaProfile, User} from '@prisma/client';
 import {LlmService} from '@modules/llm/llm.service';
 import {ChannelService} from '@modules/channel/channel.service';
 import {UserService} from "@modules/user/user.services";
@@ -9,6 +8,13 @@ import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basi
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
 import {extractJsonFromCodeBlock} from "@common/utils/json.util";
 import {SimpleProfileDto} from './dto/simple-profile.dto';
+import {
+  RelationalChatRepository
+} from "../../database/chat/infrastructure/persistence/relational/repositories/chat.repository";
+import {Chat as DomainChat} from '../../database/chat/domain/chat';
+import {CreateChatDto} from "@modules/chat/dto/create-chat.dto";
+import {PrismaService} from "@common/prisma/prisma.service";
+import { randomUUID } from 'crypto';
 
 /**
  * ChatService
@@ -22,50 +28,51 @@ export class ChatService {
   private readonly logger = new Logger(ChatService.name);
 
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly chatRepo: RelationalChatRepository,
     private readonly llmService: LlmService,
     private readonly channelService: ChannelService,
     private readonly userService: UserService,
     private readonly basicQnAService: BasicQuestionWithAnswerService,
+    private readonly prisma: PrismaService,
   ) {}
+
 
   // =========================
   // ===== 채팅 관련 메서드 =====
   // =========================
 
 
-  async create(data: {
-    userId: string;
-    assistantId: string;
-    channelId: string;
-    message: string;
-    sender: MessageSender;
-    createdAt?: Date;
-  }): Promise<ChatHistory> {
-    return this.prisma.chatHistory.create({ data });
+  async createChat(dto: CreateChatDto): Promise<DomainChat> {
+    const chat = new DomainChat();
+    chat.id = randomUUID();
+    chat.userId = dto.userId;
+    chat.assistantId = dto.assistantId;
+    chat.channelId = dto.channelId;
+    chat.message = dto.message;
+    chat.sender = dto.sender;
+    chat.createdAt = dto.createdAt ?? new Date();
+    return this.chatRepo.save(chat);
   }
 
   /** LLM 피드백과 함께 채팅 저장 */
   async chatWithFeedback(
     dto: ChatWithFeedbackDto,
-  ): Promise<{ userChat: ChatHistory; aiChat: ChatHistory }> {
+  ): Promise<{ userChat: DomainChat; aiChat: DomainChat }> {
     const { userId, assistantId, channelId, message } = dto;
     return this.sendToLLM(message, assistantId, channelId, userId, '');
   }
 
-
-  async findChatsByChannelWithAssistantId(assistantId: string) {
-    return this.prisma.chatHistory.findMany({
-      where: { assistantId },
-    });
+  async findChatsByChannelWithAssistantId(assistantId: string): Promise<DomainChat[]> {
+    const allChats = await this.chatRepo.findAll();
+    return allChats.filter(chat => chat.assistantId === assistantId);
   }
 
-  async findManyByChannelAndAssistant(channelId: string, assistantId: string, limit = 10): Promise<ChatHistory[]> {
-    return this.prisma.chatHistory.findMany({
-      where: { channelId, assistantId },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-    });
+  async findManyByChannelAndAssistant(channelId: string, assistantId: string, limit = 10): Promise<DomainChat[]> {
+    const allChats = await this.chatRepo.findAll();
+    return allChats
+      .filter(chat => chat.channelId === channelId && chat.assistantId === assistantId)
+      .sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0))
+      .slice(0, limit);
   }
 
   /** LLM에 피드백 요청 */
@@ -88,7 +95,7 @@ export class ChatService {
     message: string,
     sender: MessageSender,
   ) {
-    return this.create({
+    return this.createChat({
       userId,
       assistantId,
       channelId,
@@ -97,6 +104,7 @@ export class ChatService {
       createdAt: new Date(),
     });
   }
+
 
   /** 최근 채팅 내역을 텍스트로 변환 */
   private async chatHistoryToText(

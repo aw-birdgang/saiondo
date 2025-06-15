@@ -1,30 +1,44 @@
-import { Chat } from '../../../../domain/chat';
 import { ChatEntity } from '../entities/chat.entity';
+import { Chat as PrismaChat, MessageSender } from '@prisma/client';
+import { Chat } from '../../../../domain/chat';
 
 export class ChatMapper {
-  static toDomain(raw: ChatEntity): Chat {
-    const domainEntity = new Chat();
-    domainEntity.id = raw.id;
-    domainEntity.userId = raw.userId;
-    domainEntity.message = raw.message;
-    domainEntity.sender = raw.sender;
-    domainEntity.isQuestionResponse = raw.isQuestionResponse;
-    domainEntity.isUserInitiated = raw.isUserInitiated;
-    domainEntity.analyzedByLlm = raw.analyzedByLlm;
-    domainEntity.createAt = raw.createAt;
-    return domainEntity;
+  // Prisma → Entity
+  static fromPrisma(prisma: PrismaChat): ChatEntity {
+    return {
+      id: prisma.id,
+      assistantId: prisma.assistantId,
+      channelId: prisma.channelId,
+      userId: prisma.userId,
+      sender: prisma.sender as MessageSender,
+      message: prisma.message,
+      createdAt: prisma.createdAt,
+    };
   }
 
-  static toPersistence(domainEntity: Chat): ChatEntity {
-    const persistenceEntity = new ChatEntity();
-    persistenceEntity.id = domainEntity.id;
-    persistenceEntity.userId = domainEntity.userId;
-    persistenceEntity.message = domainEntity.message;
-    persistenceEntity.sender = domainEntity.sender;
-    persistenceEntity.isQuestionResponse = domainEntity.isQuestionResponse;
-    persistenceEntity.isUserInitiated = domainEntity.isUserInitiated;
-    persistenceEntity.analyzedByLlm = domainEntity.analyzedByLlm;
-    persistenceEntity.createAt = domainEntity.createAt;
-    return persistenceEntity;
+  // Entity → 도메인
+  static toDomain(entity: ChatEntity): Chat {
+    const chat = new Chat();
+    chat.id = entity.id;
+    chat.assistantId = entity.assistantId;
+    chat.channelId = entity.channelId;
+    chat.userId = entity.userId;
+    chat.sender = entity.sender;
+    chat.message = entity.message;
+    chat.createdAt = entity.createdAt;
+    return chat;
+  }
+
+  // 도메인 → Entity
+  static toEntity(domain: Chat): ChatEntity {
+    return {
+      id: domain.id,
+      assistantId: domain.assistantId,
+      channelId: domain.channelId,
+      userId: domain.userId,
+      sender: domain.sender,
+      message: domain.message,
+      createdAt: domain.createdAt,
+    };
   }
 }

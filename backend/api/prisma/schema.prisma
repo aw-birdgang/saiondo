@@ -70,7 +70,7 @@ model User {
 
   // 관계
   assistants      Assistant[]
-  chatHistories   ChatHistory[]
+  chats           Chat[]
   personaProfiles PersonaProfile[]
   pushSchedules   PushSchedule[]
   generatedReports Advice[]    @relation("GeneratedBy")
@@ -99,7 +99,7 @@ model Channel {
   // 관계
   assistants      Assistant[]
   advices         Advice[]
-  chatHistories   ChatHistory[]
+  chats           Chat[]
   coupleAnalyses  CoupleAnalysis[]
   members         ChannelMember[]
   invitations     Invitation[]
@@ -126,11 +126,10 @@ model Assistant {
   // 관계
   user         User     @relation(fields: [userId], references: [id])
   channel      Channel  @relation(fields: [channelId], references: [id])
-  chatHistories ChatHistory[]
+  chats        Chat[]
 
   @@map("assistants")
 }
-
 
 model Wallet {
   id              String   @id @default(uuid())
@@ -144,8 +143,7 @@ model Wallet {
   updatedAt       DateTime @updatedAt
 }
 
-
-model ChatHistory {
+model Chat {
   id          String    @id @default(uuid())
   assistantId String    @map("assistant_id")
   channelId   String    @map("channel_id")

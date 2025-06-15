@@ -1,8 +1,8 @@
-import {Controller, Post, Body, Get, Query, Param} from '@nestjs/common';
-import { ChatService } from './chat.service';
-import { ChatWithFeedbackDto } from './dto/chat-with-feedback.dto';
-import {ApiTags, ApiOperation, ApiBody, ApiResponse, ApiQuery} from '@nestjs/swagger';
-import {CreateChatHistoryDto} from "@modules/chat/dto/create-chat-history.dto";
+import {Body, Controller, Get, Param, Post} from '@nestjs/common';
+import {ChatService} from './chat.service';
+import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
+import {ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {CreateChatDto} from "@modules/chat/dto/create-chat.dto";
 
 @ApiTags('Chat')
 @Controller('chat')
@@ -21,10 +21,10 @@ export class ChatController {
 
   @Post('with-histories')
   @ApiOperation({ summary: '채팅 메시지 생성(Room 기반)' })
-  @ApiBody({ type: CreateChatHistoryDto })
+  @ApiBody({ type: CreateChatDto })
   @ApiResponse({ status: 201, description: '생성된 채팅 기록 반환' })
-  async create(@Body() dto: CreateChatHistoryDto) {
-    return this.service.create(dto);
+  async create(@Body() dto: CreateChatDto) {
+    return this.service.createChat(dto);
   }
 
   @Get(':assistantId/histories')

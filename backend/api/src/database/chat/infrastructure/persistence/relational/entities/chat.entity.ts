@@ -1,16 +1,15 @@
 import { MessageSender } from '@prisma/client';
-import { UserEntity } from '../../../../../user/infrastructure/persistence/relational/entities/user.entity';
 
 export class ChatEntity {
   id: string;
+  assistantId: string;
+  channelId: string;
   userId: string;
-  message: string;
   sender: MessageSender;
-  isQuestionResponse: boolean;
-  isUserInitiated: boolean;
-  analyzedByLlm: boolean;
-  createAt: Date;
-
-  // 관계
-  user?: UserEntity;
+  message: string;
+  createdAt: Date;
+  // 관계 필드는 필요시 추가 (예: assistant, channel, user)
+  // assistant?: AssistantEntity;
+  // channel?: ChannelEntity;
+  // user?: UserEntity;
 }

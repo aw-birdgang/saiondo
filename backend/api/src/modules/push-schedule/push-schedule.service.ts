@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { PushService } from './push.service';
-import { Cron } from '@nestjs/schedule';
+import {Injectable} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {PushService} from './push.service';
 
 @Injectable()
 export class PushScheduleService {

@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {ChatRepository} from '../chat-history.repository';
+import {ChatRepository} from "../chat.repository";
 
 @Module({
   exports: [ChatRepository],

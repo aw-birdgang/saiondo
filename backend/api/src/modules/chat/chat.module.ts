@@ -8,6 +8,9 @@ import {ChannelModule} from '../channel/channel.module';
 import {UserModule} from '../user/user.module';
 import {PersonaProfileModule} from '../persona-profile/persona-profile.module';
 import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
+import {
+  RelationalChatPersistenceModule
+} from '../../database/chat/infrastructure/persistence/relational/relational-persistence.module';
 
 @Module({
   imports: [
@@ -16,6 +19,7 @@ import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basi
     UserModule,
     PersonaProfileModule,
     ChannelModule,
+    RelationalChatPersistenceModule,
   ],
   controllers: [ChatController],
   providers: [

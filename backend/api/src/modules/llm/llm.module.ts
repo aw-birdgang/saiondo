@@ -7,7 +7,7 @@ import {ChatModule} from "@modules/chat/chat.module";
 
 @Module({
   imports: [
-      ConfigModule,
+    ConfigModule,
     forwardRef(() => ChatModule),
     SuggestedFieldsModule
   ],

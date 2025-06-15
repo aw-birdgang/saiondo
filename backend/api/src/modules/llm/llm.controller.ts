@@ -32,7 +32,7 @@ export class LlmController {
       const result = await this.llmService.forwardToLLM(body.prompt, body.model);
 
       // 1. 사용자 프롬프트 저장
-      await this.chatService.create({
+      await this.chatService.createChat({
         assistantId: body.assistantId,
         channelId: body.channelId,
         userId: body.userId,
@@ -42,7 +42,7 @@ export class LlmController {
       });
 
       // 2. LLM 응답 저장
-      await this.chatService.create({
+      await this.chatService.createChat({
         assistantId: body.assistantId,
         channelId: body.channelId,
         userId: body.userId,

@@ -17,14 +17,14 @@ export class AssistantService {
 
   async findAll() {
     return this.prisma.assistant.findMany({
-      include: { chatHistories: true },
+      include: { chats: true },
     });
   }
 
   async findOne(id: string) {
     const assistant = await this.prisma.assistant.findUnique({
       where: { id },
-      include: { chatHistories: true },
+      include: { chats: true },
     });
     if (!assistant) throw new NotFoundException('Room not found');
     return assistant;
