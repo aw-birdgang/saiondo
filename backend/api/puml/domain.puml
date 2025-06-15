@@ -1,0 +1,63 @@
+@startuml
+' 스타일
+skinparam package {
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
+  FontSize 15
+}
+skinparam rectangle {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+skinparam ArrowColor #336699
+skinparam ArrowFontColor #336699
+skinparam ArrowFontSize 13
+
+' 서버/엔드포인트
+package "NestJS Server" {
+  [main.ts]
+  [AppModule]
+  [ChannelController]
+  [ChannelService]
+}
+
+' 도메인 계층
+package "Domain" {
+  [Channel (domain model)]
+}
+
+' 인프라 계층
+package "Infrastructure" {
+  [ChannelEntity]
+  [RelationalChannelRepository]
+  [PrismaService]
+}
+
+' ORM/DB
+package "Prisma ORM" {
+  [@prisma/client.Channel]
+  [PrismaClient]
+  [DB (Postgres)]
+}
+
+' 관계
+[main.ts] --> [AppModule]
+[AppModule] --> [ChannelController]
+[ChannelController] --> [ChannelService]
+[ChannelService] --> [RelationalChannelRepository]
+[ChannelService] --> [Channel (domain model)]
+
+[RelationalChannelRepository] --> [ChannelEntity]
+[RelationalChannelRepository] --> [PrismaService]
+[RelationalChannelRepository] --> [@prisma/client.Channel]
+
+[PrismaService] --> [PrismaClient]
+[PrismaClient] --> [DB (Postgres)]
+
+' 매핑 흐름
+[@prisma/client.Channel] <..> [ChannelEntity] : "매퍼 변환"
+[ChannelEntity] <..> [Channel (domain model)] : "매퍼 변환"
+
+@enduml

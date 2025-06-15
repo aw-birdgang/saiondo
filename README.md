@@ -48,7 +48,7 @@ saiondo/
 
 ## 🗃️ 데이터베이스 ERD
 
-- User, Relationship, ChatHistory, PersonaProfile, AdviceReport 등 주요 엔티티로 구성
+- User, Relationship, Chat, PersonaProfile, AdviceReport 등 주요 엔티티로 구성
 - 상세 ERD 및 시퀀스는 `puml/` 참고
 
 ## 📚 참고

@@ -1,9 +1,9 @@
-import { ChatHistory } from '../../../../domain/chat-history';
-import { ChatHistoryEntity } from '../entities/chat-history.entity';
+import { Chat } from '../../../../domain/chat';
+import { ChatEntity } from '../entities/chat.entity';
 
-export class ChatHistoryMapper {
-  static toDomain(raw: ChatHistoryEntity): ChatHistory {
-    const domainEntity = new ChatHistory();
+export class ChatMapper {
+  static toDomain(raw: ChatEntity): Chat {
+    const domainEntity = new Chat();
     domainEntity.id = raw.id;
     domainEntity.userId = raw.userId;
     domainEntity.message = raw.message;
@@ -15,8 +15,8 @@ export class ChatHistoryMapper {
     return domainEntity;
   }
 
-  static toPersistence(domainEntity: ChatHistory): ChatHistoryEntity {
-    const persistenceEntity = new ChatHistoryEntity();
+  static toPersistence(domainEntity: Chat): ChatEntity {
+    const persistenceEntity = new ChatEntity();
     persistenceEntity.id = domainEntity.id;
     persistenceEntity.userId = domainEntity.userId;
     persistenceEntity.message = domainEntity.message;

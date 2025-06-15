@@ -1,6 +1,7 @@
 import { MessageSender } from '@prisma/client';
+import { UserEntity } from '../../../../../user/infrastructure/persistence/relational/entities/user.entity';
 
-export class ChatHistory {
+export class ChatEntity {
   id: string;
   userId: string;
   message: string;
@@ -9,4 +10,7 @@ export class ChatHistory {
   isUserInitiated: boolean;
   analyzedByLlm: boolean;
   createAt: Date;
+
+  // 관계
+  user?: UserEntity;
 }

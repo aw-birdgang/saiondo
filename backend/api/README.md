@@ -33,7 +33,7 @@ api/
 - **User**: 사용자 정보, 인증/인가
 - **Relationship**: 1:1 관계(초대→수락→room 생성)
 - **Room**: 1:1 대화 공간
-- **ChatHistory**: 대화 기록
+- **Chat**: 대화 기록
 - **PersonaProfile, Advice**: 프로필/리포트
 - **CategoryCode, QuestionTemplate, PushSchedule, UserAnswer**: 카테고리/질문/푸시/답변 관리
 

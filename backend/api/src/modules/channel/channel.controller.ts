@@ -1,23 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
-import { ChannelService } from './channel.service';
-import { InviteCodeChannelDto } from '@modules/channel/dto/invite-code-channel.dto';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { JoinByInviteDto } from './dto/join-by-invite.dto';
-import { CreateChannelDto } from './dto/create-channel.dto';
+import {Body, Controller, Delete, Get, Param, Post, Query,} from '@nestjs/common';
+import {ChannelService} from './channel.service';
+import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
+import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags,} from '@nestjs/swagger';
+import {JoinByInviteDto} from './dto/join-by-invite.dto';
+import {CreateChannelDto} from './dto/create-channel.dto';
+import {Channel} from "@prisma/client";
 
 @ApiTags('Channel')
 @Controller('channels')
@@ -32,7 +19,7 @@ export class ChannelController {
   @Get()
   @ApiOperation({ summary: '전체 채널 조회' })
   @ApiResponse({ status: 200, description: '채널 목록 반환' })
-  async findAll() {
+  async findAll(): Promise<Channel[]> {
     return this.channelService.findAll();
   }
 

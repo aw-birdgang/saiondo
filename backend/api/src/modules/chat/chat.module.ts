@@ -4,7 +4,7 @@ import {ChatService} from './chat.service';
 import {PrismaModule} from '../../common/prisma/prisma.module';
 import {LlmModule} from '@modules/llm/llm.module';
 import {ChatGateway} from './chat.gateway';
-import {ChannelService} from '@modules/channel/channel.service';
+import {ChannelModule} from '../channel/channel.module';
 import {UserModule} from '../user/user.module';
 import {PersonaProfileModule} from '../persona-profile/persona-profile.module';
 import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
@@ -15,13 +15,13 @@ import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basi
     forwardRef(() => LlmModule),
     UserModule,
     PersonaProfileModule,
+    ChannelModule,
   ],
   controllers: [ChatController],
   providers: [
     ChatGateway,
-    ChannelService,
-    BasicQuestionWithAnswerService,
     ChatService,
+    BasicQuestionWithAnswerService,
   ],
   exports: [ChatService],
 })

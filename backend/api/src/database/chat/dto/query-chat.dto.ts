@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { plainToInstance, Transform, Type } from 'class-transformer';
-import { ChatHistory } from '../domain/chat-history';
+import { Chat } from '../domain/chat';
 
-export class FilterChatHistoryDto {
+export class FilterChatDto {
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @ValidateNested({ each: true })
@@ -15,18 +15,18 @@ export class FilterChatHistoryDto {
   memberId: number | string;
 }
 
-export class SortChatHistoryDto {
+export class SortChatDto {
   @ApiProperty()
   @Type(() => String)
   @IsString()
-  orderBy: keyof ChatHistory;
+  orderBy: keyof Chat;
 
   @ApiProperty()
   @IsString()
   order: string;
 }
 
-export class QueryChatHistoryDto {
+export class QueryChatDto {
   @ApiPropertyOptional()
   @Transform(({ value }) => (value ? Number(value) : 1))
   @IsNumber()
@@ -42,18 +42,18 @@ export class QueryChatHistoryDto {
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) =>
-    value ? plainToInstance(FilterChatHistoryDto, JSON.parse(value)) : undefined,
+    value ? plainToInstance(FilterChatDto, JSON.parse(value)) : undefined,
   )
   @ValidateNested()
-  @Type(() => FilterChatHistoryDto)
-  filters?: FilterChatHistoryDto | null;
+  @Type(() => FilterChatDto)
+  filters?: FilterChatDto | null;
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   @Transform(({ value }) => {
-    return value ? plainToInstance(SortChatHistoryDto, JSON.parse(value)) : undefined;
+    return value ? plainToInstance(SortChatDto, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
-  @Type(() => SortChatHistoryDto)
-  sort?: SortChatHistoryDto[] | null;
+  @Type(() => SortChatDto)
+  sort?: SortChatDto[] | null;
 }
