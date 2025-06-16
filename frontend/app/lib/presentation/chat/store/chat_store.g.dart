@@ -57,6 +57,22 @@ mixin _$ChatStore on _ChatStore, Store {
     });
   }
 
+  late final _$errorMessageAtom =
+      Atom(name: '_ChatStore.errorMessage', context: context);
+
+  @override
+  String? get errorMessage {
+    _$errorMessageAtom.reportRead();
+    return super.errorMessage;
+  }
+
+  @override
+  set errorMessage(String? value) {
+    _$errorMessageAtom.reportWrite(value, super.errorMessage, () {
+      super.errorMessage = value;
+    });
+  }
+
   late final _$loadMessagesAsyncAction =
       AsyncAction('_ChatStore.loadMessages', context: context);
 
@@ -102,11 +118,23 @@ mixin _$ChatStore on _ChatStore, Store {
   }
 
   @override
+  void _onErrorReceived(dynamic error) {
+    final _$actionInfo = _$_ChatStoreActionController.startAction(
+        name: '_ChatStore._onErrorReceived');
+    try {
+      return super._onErrorReceived(error);
+    } finally {
+      _$_ChatStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 messages: ${messages},
 isConnected: ${isConnected},
-isAwaitingLLM: ${isAwaitingLLM}
+isAwaitingLLM: ${isAwaitingLLM},
+errorMessage: ${errorMessage}
     ''';
   }
 }

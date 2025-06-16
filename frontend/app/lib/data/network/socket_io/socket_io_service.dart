@@ -16,6 +16,7 @@ class SocketIoService {
   void connect({
     required Function(dynamic) onMessage,
     required Function(bool) onStatus,
+    Function(dynamic)? onError,
   }) {
     print('[Socket.io] connect() called');
     _socket = IO.io(
@@ -39,8 +40,17 @@ class SocketIoService {
       onMessage(data);
     });
 
+    //커스텀 에러(서버 emit('error'))
+    _socket.on('error', (err) {
+      print('[Socket.io] Custom error event: $err');
+      if (onError != null) {
+        onError(err);
+      }
+    });
+
+    // 네트워크/연결/프로토콜 에러
     _socket.onError((err) {
-      print('[Socket.io] Error: $err');
+      print('[Socket.io] Socket error: $err');
       onStatus(false);
     });
 

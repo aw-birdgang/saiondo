@@ -32,6 +32,9 @@ abstract class _ChatStore with Store {
   @observable
   bool isAwaitingLLM = false;
 
+  @observable
+  String? errorMessage;
+
   String? _userId;
   String? _assistantId;
   String? _channelId;
@@ -55,6 +58,7 @@ abstract class _ChatStore with Store {
     _socketService.connect(
       onMessage: _onMessageReceived,
       onStatus: _onStatusChanged,
+      onError: _onErrorReceived,
     );
     print('[ChatStore] 소켓 연결 시도: userId=$_userId, assistantId=$_assistantId, channelId=$_channelId');
   }
@@ -115,6 +119,22 @@ abstract class _ChatStore with Store {
   void _onStatusChanged(bool connected) {
     print('[ChatStore] Socket.io status changed: $connected');
     isConnected = connected;
+  }
+
+  @action
+  void _onErrorReceived(dynamic error) {
+    String msg = '알 수 없는 오류가 발생했습니다.';
+    if (error is Map && error['message'] != null) {
+      msg = error['message'];
+      if (error['status'] == 400 && error['error'] == 'Bad Request') {
+        msg = '포인트가 부족합니다. 충전 후 이용해 주세요.';
+      }
+    } else if (error is String) {
+      msg = error;
+    }
+    errorMessage = msg;
+    isAwaitingLLM = false;
+    print('[ChatStore] 에러 발생: $msg');
   }
 
   void dispose() {

@@ -95,6 +95,22 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
+          Observer(
+            builder: (_) {
+              if (_chatStore.errorMessage != null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(_chatStore.errorMessage!),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  _chatStore.errorMessage = null;
+                });
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           Expanded(
             child: Observer(
               builder: (_) {
