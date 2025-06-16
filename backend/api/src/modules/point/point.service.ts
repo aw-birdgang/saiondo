@@ -1,13 +1,17 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {PointType} from '@prisma/client';
 import {PrismaService} from "@common/prisma/prisma.service";
-import { TokenTransferService } from '../token-transfer/token-transfer.service';
-import { WalletService } from '@modules/wallet/wallet.service';
+import {TokenTransferService} from '../token-transfer/token-transfer.service';
+import {WalletService} from '@modules/wallet/wallet.service';
 import {Web3Service} from "@modules/web3/web3.service";
+import {
+  RelationalPointRepository
+} from "../../database/point/infrastructure/persistence/relational/repositories/point.repository";
 
 @Injectable()
 export class PointService {
   constructor(
+    private readonly pointRepository: RelationalPointRepository,
     private readonly prisma: PrismaService,
     private readonly web3Service: Web3Service,
     private readonly tokenTransferService: TokenTransferService,
@@ -32,9 +36,8 @@ export class PointService {
         data: { point: { increment: amount } },
       });
 
-      await tx.pointHistory.create({
-        data: { userId, amount, type, description },
-      });
+      // 포인트 이력 생성
+      await this.pointRepository.createHistory(userId, amount, type, description);
 
       return updatedUser;
     });
@@ -67,10 +70,7 @@ export class PointService {
 
   // 포인트 이력 조회
   async getPointHistory(userId: string) {
-    return this.prisma.pointHistory.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-    });
+    return this.pointRepository.findHistoryByUserId(userId);
   }
 
   /**
@@ -112,13 +112,7 @@ export class PointService {
     });
 
     // 6. 기록 저장 (선택)
-    await this.prisma.pointHistory.create({
-      data: {
-        userId,
-        type: 'CONVERT_TO_TOKEN',
-        amount: pointAmount,
-      },
-    });
+    await this.pointRepository.createHistory(userId, pointAmount, PointType.CONVERT_TO_TOKEN);
 
     return { txHash };
   }
