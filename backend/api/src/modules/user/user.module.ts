@@ -1,13 +1,28 @@
-import { Module } from '@nestjs/common';
-import { UserController } from './user.controller';
-import { UserService } from './user.services';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { WalletModule } from '../wallet/wallet.module';
+import {Module} from '@nestjs/common';
+import {UserController} from './user.controller';
+import {UserService} from './user.services';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {WalletModule} from '../wallet/wallet.module';
+import {
+  RelationalUserPersistenceModule
+} from '../../database/user/infrastructure/persistence/relational/relational-persistence.module';
+import {WalletService} from '../wallet/wallet.service';
+import {Web3Module} from "@modules/web3/web3.module";
+import {Web3Service} from '../web3/web3.service';
 
 @Module({
   controllers: [UserController],
-  providers: [UserService, PrismaService],
+  providers: [
+    UserService,
+    PrismaService,
+    WalletService,
+    Web3Service
+  ],
   exports: [UserService],
-  imports: [WalletModule],
+  imports: [
+    Web3Module,
+    WalletModule,
+    RelationalUserPersistenceModule,
+  ],
 })
 export class UserModule {}

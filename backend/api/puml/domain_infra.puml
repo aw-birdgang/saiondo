@@ -33,12 +33,15 @@ package "Infrastructure" {
       [RelationalChannelRepository]
       [ChannelEntity]
       [ChannelMapper]
+      [PrismaService]
     }
     package "Document" {
-      [DocumentPersistenceModule]
+      [DocumentChannelRepository]
+      [DocumentChannelEntity]
+      [DocumentChannelMapper]
+      [DocumentDbService]
     }
   }
-  [PrismaService]
 }
 
 ' ORM/DB
@@ -48,25 +51,38 @@ package "Prisma ORM" {
   [DB (Postgres)]
 }
 
+' Document DB
+package "DocumentDB" {
+  [DocumentDbClient]
+  [DB (Document)]
+}
+
 ' 관계
 [ChannelService] --> [ChannelRepository (abstract)]
 [ChannelService] --> [Channel (domain model)]
 
 [ChannelRepository (abstract)] <|-- [RelationalChannelRepository]
+[ChannelRepository (abstract)] <|-- [DocumentChannelRepository]
+
+' Relational
 [RelationalChannelRepository] --> [ChannelEntity]
 [RelationalChannelRepository] --> [ChannelMapper]
 [RelationalChannelRepository] --> [PrismaService]
 [RelationalChannelRepository] --> [@prisma/client.Channel]
-
 [ChannelMapper] <..> [ChannelEntity] : "Entity 변환"
 [ChannelMapper] <..> [@prisma/client.Channel] : "Prisma ↔ Entity"
-
 [ChannelEntity] <..> [Channel (domain model)] : "Entity ↔ Domain"
-
 [PrismaService] --> [PrismaClient]
 [PrismaClient] --> [DB (Postgres)]
 
-' Document 계층 (확장 가능성 표현)
-[ChannelRepository (abstract)] <|.. [DocumentPersistenceModule]
+' Document
+[DocumentChannelRepository] --> [DocumentChannelEntity]
+[DocumentChannelRepository] --> [DocumentChannelMapper]
+[DocumentChannelRepository] --> [DocumentDbService]
+[DocumentChannelRepository] --> [DocumentDbClient]
+[DocumentChannelMapper] <..> [DocumentChannelEntity] : "Entity 변환"
+[DocumentChannelEntity] <..> [Channel (domain model)] : "Entity ↔ Domain"
+[DocumentDbService] --> [DocumentDbClient]
+[DocumentDbClient] --> [DB (Document)]
 
 @enduml

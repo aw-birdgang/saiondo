@@ -54,4 +54,19 @@ export class QueryUserDto {
   @ValidateNested({ each: true })
   @Type(() => SortUserDto)
   sort?: SortUserDto[] | null;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  @IsString()
+  name?: string;
 }

@@ -1,75 +1,72 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { CreateUserDto } from '@modules/user/dto/user.dto';
-import { WalletService } from '../wallet/wallet.service';
+import {BadRequestException, Injectable} from '@nestjs/common';
+import {CreateUserDto} from '@modules/user/dto/user.dto';
+import {WalletService} from '../wallet/wallet.service';
+import {User} from "../../database/user/domain/user";
+import {
+  RelationalUserRepository
+} from "../../database/user/infrastructure/persistence/relational/repositories/user.repository";
 
 @Injectable()
 export class UserService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly userRepository: RelationalUserRepository,
     private readonly walletService: WalletService,
   ) {}
 
-  async findAll() {
-    return this.prisma.user.findMany();
+  async findAll(): Promise<User[]> {
+    return this.userRepository.findAll();
   }
 
-  async createUser(data: CreateUserDto) {
+  async createUser(data: CreateUserDto): Promise<User | null> {
     if (!data.name || !data.gender) {
       throw new BadRequestException('이름과 성별은 필수 입니다.');
     }
-    // 1. 유저 생성
-    const user = await this.prisma.user.create({
-      data: {
-        name: data.name,
-        gender: data.gender,
-        birthDate: new Date(),
-        email: data.email,
-        password: data.password,
-      },
+    const user = await this.userRepository.create({
+      name: data.name,
+      gender: data.gender,
+      birthDate: data.birthDate ? new Date(data.birthDate) : new Date(),
+      email: data.email,
+      password: data.password,
+      fcmToken: data.fcmToken,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null,
+      point: 0,
+      walletId: null,
+      wallet: null,
     });
-    // 2. 지갑 생성 및 연결
+    if (!user.id) throw new Error('User id is required for wallet creation');
     await this.walletService.createWalletForUser(user.id);
-    // 3. 유저+지갑 반환
     return this.findById(user.id);
   }
 
-  async findById(userId: string) {
-    return this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+  async findById(userId: string): Promise<User | null> {
+    return this.userRepository.findById(userId);
   }
 
-  // 또는 user와 assistants를 함께 조회하고 싶다면:
-  async findAssistantsByUserId(userId: string) {
-    return this.prisma.user.findUnique({
-      where: { id: userId },
-      include: { assistants: true },
-    });
+  async findAssistantsByUserId(userId: string): Promise<User | null> {
+    const user = await this.userRepository.findWithRelations(userId, { assistants: true });
+    return user;
   }
 
-  async updateFcmToken(userId: string, fcmToken: string) {
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { fcmToken },
-    });
+  async updateFcmToken(userId: string, fcmToken: string): Promise<User> {
+    return this.userRepository.update(userId, { fcmToken });
   }
 
-  async findUserWithPointHistory(userId: string) {
-    return this.prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        pointHistories: {
-          orderBy: { createdAt: 'desc' },
-        },
-      },
-    });
+  async findUserWithPointHistory(userId: string): Promise<User | null> {
+    const user = await this.userRepository.findWithRelations(userId, { pointHistories: true });
+    if (user && user.pointHistories) {
+      user.pointHistories.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+      );
+    }
+    return user;
   }
 
   async deleteUser(userId: string): Promise<boolean> {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const user = await this.userRepository.findById(userId);
     if (!user) return false;
-    await this.prisma.user.delete({ where: { id: userId } });
+    await this.userRepository.remove(userId);
     return true;
   }
 }

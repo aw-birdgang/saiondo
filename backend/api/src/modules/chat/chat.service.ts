@@ -7,7 +7,7 @@ import {UserService} from "@modules/user/user.services";
 import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
 import {extractJsonFromCodeBlock} from "@common/utils/json.util";
-import {SimpleProfileDto} from './dto/simple-profile.dto';
+import {ProfileFeatureDto, SimpleProfileDto, TraitQnADto} from './dto/simple-profile.dto';
 import {
   RelationalChatRepository
 } from "../../database/chat/infrastructure/persistence/relational/repositories/chat.repository";
@@ -203,7 +203,22 @@ export class ChatService {
   private async getPartnerUser(channelId: string, userId: string): Promise<User | null> {
     this.logger.log(`[ChatService] getPartnerUser channelId: ${channelId}, userId: ${userId}`);
     const partnerId = await this.channelService.getChannelParticipants(channelId, userId);
-    return partnerId ? this.userService.findById(partnerId) : null;
+    const user = partnerId ? await this.userService.findById(partnerId) : null;
+    if (!user || !user.id) return null;
+    return {
+      name: user.name,
+      id: user.id,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt ?? null,
+      gender: user.gender,
+      email: user.email,
+      password: user.password,
+      birthDate: user.birthDate,
+      fcmToken: user.fcmToken ?? null,
+      point: user.point ?? 0,
+      walletId: user.walletId ?? null,
+    };
   }
 
   // =========================
@@ -225,15 +240,18 @@ export class ChatService {
   }
 
   /** 관계코치용 profile 조회 (user + partner 정보 포함) */
-  async getProfileWithPartner(userId: string, channelId: string): Promise<{ me: SimpleProfileDto; partner: SimpleProfileDto }> {
+  async getProfileWithPartner(
+    userId: string,
+    channelId: string
+  ): Promise<{ me: SimpleProfileDto; partner: SimpleProfileDto }> {
     const user = await this.userService.findById(userId);
     if (!user) throw new Error('존재하지 않는 사용자입니다.');
-    const userPersonaSummary = await this.getPersonaSummary(userId);
+    const userPersonaSummary: ProfileFeatureDto[] = await this.getPersonaSummary(userId);
 
     const partner = await this.getPartnerUser(channelId, userId);
-    const partnerPersonaSummary = partner ? await this.getPersonaSummary(partner.id) : [];
-    const userTraitQnA = await this.analyzeTraitsForUser(userId);
-    const partnerTraitQnA = partner ? await this.analyzeTraitsForUser(partner.id) : {};
+    const partnerPersonaSummary: ProfileFeatureDto[] = partner ? await this.getPersonaSummary(partner.id) : [];
+    const userTraitQnA: Record<string, TraitQnADto[]> = await this.analyzeTraitsForUser(userId);
+    const partnerTraitQnA: Record<string, TraitQnADto[]> = partner ? await this.analyzeTraitsForUser(partner.id) : {};
 
     // 빈 프로필 생성 함수
     const emptyProfile = (): SimpleProfileDto => ({
@@ -246,19 +264,19 @@ export class ChatService {
 
     return {
       me: {
-        이름: user.name,
-        성별: user.gender,
-        생년월일: user.birthDate,
-        특징: userPersonaSummary,
-        trait_qna: userTraitQnA,
+        이름: user.name ?? '',
+        성별: typeof user.gender === 'string' ? user.gender : String(user.gender ?? ''),
+        생년월일: user.birthDate ?? new Date(0),
+        특징: userPersonaSummary ?? [],
+        trait_qna: userTraitQnA ?? {},
       },
       partner: partner
         ? {
-            이름: partner.name,
-            성별: partner.gender,
-            생년월일: partner.birthDate,
-            특징: partnerPersonaSummary,
-            trait_qna: partnerTraitQnA,
+            이름: partner.name ?? '',
+            성별: typeof partner.gender === 'string' ? partner.gender : String(partner.gender ?? ''),
+            생년월일: partner.birthDate ?? new Date(0),
+            특징: partnerPersonaSummary ?? [],
+            trait_qna: partnerTraitQnA ?? {},
           }
         : emptyProfile(),
     };

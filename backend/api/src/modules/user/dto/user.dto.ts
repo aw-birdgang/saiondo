@@ -1,5 +1,5 @@
 // api/src/modules/user/user.dto.ts
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum Gender {
@@ -27,4 +27,14 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @ApiProperty({ example: '1990-01-01', description: '생년월일', required: false })
+  @IsOptional()
+  @IsDateString()
+  birthDate?: string;
+
+  @ApiProperty({ example: 'fcm_token_example', description: 'FCM 토큰', required: false })
+  @IsOptional()
+  @IsString()
+  fcmToken?: string;
 }
