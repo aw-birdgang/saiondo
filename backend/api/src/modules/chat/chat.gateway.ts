@@ -81,7 +81,19 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       this.log(`[API][WebSocket] Sent feedback to all clients:`, response.aiChat);
     } catch (error) {
       this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
-      client.emit('error', { message: error?.message ?? 'Unknown error' });
+
+      // NestJS HttpException 또는 일반 에러 모두 처리
+      let errorPayload: any = {
+        message: error?.message ?? 'Unknown error',
+      };
+      if (error?.response) {
+        // NestJS HttpException의 경우
+        errorPayload = {
+          ...error.response,
+          status: error.status ?? error.response?.statusCode ?? 500,
+        };
+      }
+      client.emit('error', errorPayload);
     }
   }
 

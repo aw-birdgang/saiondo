@@ -15,6 +15,8 @@ import {Chat as DomainChat} from '../../database/chat/domain/chat';
 import {CreateChatDto} from "@modules/chat/dto/create-chat.dto";
 import {PrismaService} from "@common/prisma/prisma.service";
 import { randomUUID } from 'crypto';
+import { PointService } from '../point/point.service';
+import { PointType } from '@prisma/client';
 
 /**
  * ChatService
@@ -34,6 +36,7 @@ export class ChatService {
     private readonly userService: UserService,
     private readonly basicQnAService: BasicQuestionWithAnswerService,
     private readonly prisma: PrismaService,
+    private readonly pointService: PointService,
   ) {}
 
 
@@ -131,6 +134,15 @@ export class ChatService {
     message: string,
     model: 'openai' | 'claude' = 'openai'
   ) {
+    // 1. 메시지 전송 시 포인트 차감
+    const POINT_COST = 10;
+    await this.pointService.usePoint(
+      userId,
+      POINT_COST,
+      PointType.CHAT_USE,
+      'AI 대화 시도'
+    );
+
     // 병렬로 가져올 수 있는 데이터는 동시에 처리
     const [memorySchema, profileWithPartner, chatHistoryText] = await Promise.all([
       this.getMemorySchema(channelId, userId, assistantId),

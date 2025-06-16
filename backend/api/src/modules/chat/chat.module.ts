@@ -11,6 +11,7 @@ import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basi
 import {
   RelationalChatPersistenceModule
 } from '../../database/chat/infrastructure/persistence/relational/relational-persistence.module';
+import { PointModule } from '../point/point.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import {
     PersonaProfileModule,
     ChannelModule,
     RelationalChatPersistenceModule,
+    PointModule,
   ],
   controllers: [ChatController],
   providers: [
