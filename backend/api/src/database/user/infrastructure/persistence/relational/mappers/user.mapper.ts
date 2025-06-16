@@ -50,7 +50,6 @@ export class UserMapper {
     user.channelMembers = prisma.channelMembers ?? undefined;
     user.invitationsSent = prisma.invitationsSent ?? undefined;
     user.invitationsReceived = prisma.invitationsReceived ?? undefined;
-    // ...다른 관계 필드도 필요시 추가
 
     return user;
   }

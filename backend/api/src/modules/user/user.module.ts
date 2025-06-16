@@ -6,7 +6,6 @@ import {WalletModule} from '../wallet/wallet.module';
 import {
   RelationalUserPersistenceModule
 } from '../../database/user/infrastructure/persistence/relational/relational-persistence.module';
-import {WalletService} from '../wallet/wallet.service';
 import {Web3Module} from "@modules/web3/web3.module";
 import {Web3Service} from '../web3/web3.service';
 
@@ -15,7 +14,6 @@ import {Web3Service} from '../web3/web3.service';
   providers: [
     UserService,
     PrismaService,
-    WalletService,
     Web3Service
   ],
   exports: [UserService],
