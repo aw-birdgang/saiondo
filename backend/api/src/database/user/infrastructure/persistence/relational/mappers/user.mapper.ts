@@ -1,6 +1,20 @@
 import {User} from '../../../../domain/user';
 import {UserEntity} from '../entities/user.entity';
-import {User as PrismaUser, Assistant, Wallet, Chat, PersonaProfile, PushSchedule, Advice, Event, SuggestedField, PointHistory, TokenTransfer, ChannelMember, Invitation} from "@prisma/client";
+import {
+  Advice,
+  Assistant,
+  ChannelMember,
+  Chat,
+  Event,
+  Invitation,
+  PersonaProfile,
+  PointHistory,
+  PushSchedule,
+  SuggestedField,
+  TokenTransfer,
+  User as PrismaUser,
+  Wallet
+} from "@prisma/client";
 
 type PrismaUserWithRelations = PrismaUser & {
   assistants?: Assistant[];
@@ -37,6 +51,10 @@ export class UserMapper {
     user.walletId = prisma.walletId ?? undefined;
     user.wallet = prisma.wallet ?? undefined;
 
+    // 구독 관련 필드 추가
+    user.isSubscribed = prisma.isSubscribed ?? false;
+    user.subscriptionUntil = prisma.subscriptionUntil ?? null;
+
     // 관계 필드 매핑
     user.assistants = prisma.assistants ?? undefined;
     user.chats = prisma.chats ?? undefined;
@@ -72,6 +90,11 @@ export class UserMapper {
     user.point = entity.point;
     user.walletId = entity.walletId;
     user.wallet = entity.wallet;
+
+    // 구독 관련 필드 추가
+    user.isSubscribed = entity.isSubscribed ?? false;
+    user.subscriptionUntil = entity.subscriptionUntil ?? null;
+
     user.assistants = entity.assistants;
     user.chats = entity.chats;
     user.personaProfiles = entity.personaProfiles;
@@ -105,6 +128,11 @@ export class UserMapper {
       point: domain.point,
       walletId: domain.walletId,
       wallet: domain.wallet,
+
+      // 구독 관련 필드 추가
+      isSubscribed: domain.isSubscribed ?? false,
+      subscriptionUntil: domain.subscriptionUntil ?? null,
+
       assistants: domain.assistants,
       chats: domain.chats,
       personaProfiles: domain.personaProfiles,

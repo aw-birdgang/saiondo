@@ -15,6 +15,10 @@ export class User {
   public walletId?: string | null;
   public wallet?: any;
 
+  // 구독 관련 필드
+  public isSubscribed?: boolean;
+  public subscriptionUntil?: Date | null;
+
   // 관계
   public assistants?: any[];
   public chats?: any[];

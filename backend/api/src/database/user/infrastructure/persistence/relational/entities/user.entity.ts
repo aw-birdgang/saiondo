@@ -28,4 +28,8 @@ export class UserEntity {
   channelMembers?: any[];
   invitationsSent?: any[];
   invitationsReceived?: any[];
+
+  // 구독 관련 필드
+  isSubscribed?: boolean;
+  subscriptionUntil?: Date | null;
 }

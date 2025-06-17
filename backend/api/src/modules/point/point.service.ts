@@ -123,4 +123,30 @@ export class PointService {
     await this.earnPoint(userId, tokenAmount, PointType.ADMIN_ADJUST, '토큰→포인트 전환');
     return { success: true };
   }
+
+  // 포인트 상품 목록 조회
+  async getPointProducts() {
+    // 실제로는 DB에서 조회해야 함 (예시)
+    return this.prisma.pointProduct.findMany({ where: { isActive: true } });
+  }
+
+  // 포인트 상품 구매
+  async purchasePoint(userId: string, productId: string) {
+    // 실제 결제 연동은 생략(성공 가정)
+    const product = await this.prisma.pointProduct.findUnique({ where: { id: productId } });
+    if (!product || !product.isActive) throw new Error('상품 없음');
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { point: { increment: product.pointAmount } },
+    });
+    await this.prisma.pointPurchaseHistory.create({
+      data: {
+        userId,
+        productId: product.id,
+        amount: product.pointAmount,
+        price: product.price,
+      },
+    });
+    return { success: true, pointAdded: product.pointAmount };
+  }
 }

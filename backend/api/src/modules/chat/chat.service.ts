@@ -134,14 +134,21 @@ export class ChatService {
     message: string,
     model: 'openai' | 'claude' = 'openai'
   ) {
-    // 1. 메시지 전송 시 포인트 차감
-    const POINT_COST = 10;
-    await this.pointService.usePoint(
-      userId,
-      POINT_COST,
-      PointType.CHAT_USE,
-      'AI 대화 시도'
-    );
+    // 1. 구독자라면 포인트 차감 없이 통과
+    const user = await this.userService.findById(userId);
+    const now = new Date();
+    if (!user) throw new BadRequestException('존재하지 않는 사용자입니다.');
+    const isActiveSub = user.isSubscribed && user.subscriptionUntil && user.subscriptionUntil > now;
+    if (!isActiveSub) {
+      // 비구독자는 포인트 차감
+      const POINT_COST = 5;
+      await this.pointService.usePoint(
+        userId,
+        POINT_COST,
+        PointType.CHAT_USE,
+        'AI 대화 시도'
+      );
+    }
 
     // 병렬로 가져올 수 있는 데이터는 동시에 처리
     const [memorySchema, profileWithPartner, chatHistoryText] = await Promise.all([
@@ -230,6 +237,8 @@ export class ChatService {
       fcmToken: user.fcmToken ?? null,
       point: user.point ?? 0,
       walletId: user.walletId ?? null,
+      isSubscribed: user.isSubscribed ?? false,
+      subscriptionUntil: user.subscriptionUntil ?? null,
     };
   }
 

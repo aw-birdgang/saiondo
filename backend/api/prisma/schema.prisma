@@ -82,6 +82,12 @@ model User {
   channelMembers  ChannelMember[]
   invitationsSent Invitation[] @relation("Inviter")
   invitationsReceived Invitation[] @relation("Invitee")
+
+  isSubscribed      Boolean   @default(false)
+  subscriptionUntil DateTime?
+
+  subscriptionHistories SubscriptionHistory[]
+  pointPurchaseHistories PointPurchaseHistory[]
 }
 
 model Channel {
@@ -331,4 +337,37 @@ model Invitation {
   channel    Channel  @relation(fields: [channelId], references: [id])
   inviter    User     @relation("Inviter", fields: [inviterId], references: [id])
   invitee    User     @relation("Invitee", fields: [inviteeId], references: [id])
+}
+
+model SubscriptionHistory {
+  id           String   @id @default(uuid())
+  userId       String
+  plan         String   // 예: 'MONTHLY', 'YEARLY'
+  startedAt    DateTime @default(now())
+  expiredAt    DateTime
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model PointProduct {
+  id          String   @id @default(uuid())
+  name        String
+  pointAmount Int
+  price       Int      // 단위: 원
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  pointPurchaseHistories PointPurchaseHistory[]
+}
+
+model PointPurchaseHistory {
+  id          String   @id @default(uuid())
+  userId      String
+  productId   String
+  purchasedAt DateTime @default(now())
+  amount      Int      // 구매 포인트
+  price       Int      // 결제 금액
+  user        User     @relation(fields: [userId], references: [id])
+  product     PointProduct @relation(fields: [productId], references: [id])
 }

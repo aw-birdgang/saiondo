@@ -91,4 +91,58 @@ export class PointController {
   ) {
     return this.pointService.convertTokenToPoint(userId, body.tokenAmount);
   }
+
+  @Get('products')
+  @ApiOperation({ summary: '포인트 상품 목록 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '포인트 상품 목록',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', example: 'product-uuid' },
+          name: { type: 'string', example: '1000포인트' },
+          pointAmount: { type: 'number', example: 1000 },
+          price: { type: 'number', example: 10000 },
+          isActive: { type: 'boolean', example: true },
+          createdAt: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
+  })
+  async getProducts() {
+    return this.pointService.getPointProducts();
+  }
+
+  @Post(':userId/purchase')
+  @ApiOperation({ summary: '포인트 상품 구매' })
+  @ApiParam({ name: 'userId', description: '유저 ID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        productId: { type: 'string', example: 'product-uuid' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: '포인트 상품 구매 성공',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        pointAdded: { type: 'number', example: 1000 },
+      },
+    },
+  })
+  async purchasePoint(
+    @Param('userId') userId: string,
+    @Body() body: { productId: string }
+  ) {
+    // 실제 결제 연동은 별도 구현 필요(이니시스, 카카오페이 등)
+    return this.pointService.purchasePoint(userId, body.productId);
+  }
 }

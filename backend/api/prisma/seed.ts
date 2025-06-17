@@ -315,9 +315,11 @@ async function createCategoryCodes() {
   );
 }
 
-// 3. 유저 생성
+// 3. 유저 생성 (구독 필드 추가)
 async function createUsers(): Promise<[User, User]> {
   const hash = await bcrypt.hash('password123', 10);
+  const now = new Date();
+  const nextMonth = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   return Promise.all([
     prisma.user.create({
       data: {
@@ -327,6 +329,8 @@ async function createUsers(): Promise<[User, User]> {
         email: 'kim@example.com',
         password: hash,
         fcmToken: 'test_token_1',
+        isSubscribed: true,
+        subscriptionUntil: nextMonth,
       },
     }),
     prisma.user.create({
@@ -337,6 +341,8 @@ async function createUsers(): Promise<[User, User]> {
         email: 'lee@example.com',
         password: hash,
         fcmToken: 'test_token_2',
+        isSubscribed: false,
+        subscriptionUntil: null,
       },
     }),
   ]);

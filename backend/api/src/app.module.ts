@@ -20,6 +20,7 @@ import {PointModule} from "@modules/point/point.module";
 import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer/basic-question-with-answer.module";
 import {WalletModule} from "@modules/wallet/wallet.module";
 import {Web3Module} from "@modules/web3/web3.module";
+import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-subscription.module";
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import {Web3Module} from "@modules/web3/web3.module";
     ChatModule,
     LlmModule,
     CategoryCodeModule,
+    PaymentSubscriptionModule,
     PointModule,
     AdviceModule,
     EventModule,
