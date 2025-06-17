@@ -14,6 +14,7 @@ import '../../network/apis/category_code_api.dart';
 import '../../network/apis/channel_api.dart';
 import '../../network/apis/chat_history_api.dart';
 import '../../network/apis/event_api.dart';
+import '../../network/apis/payment_subscription_api.dart';
 import '../../network/apis/point_api.dart';
 import '../../network/apis/user_api.dart';
 import '../../network/constants/endpoints.dart';
@@ -70,6 +71,7 @@ class NetworkModule {
     getIt.registerSingleton(AnalysisApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(AdviceApi(getIt<DioClient>(), getIt<RestClient>()));
     getIt.registerSingleton(CategoryCodeApi(getIt<DioClient>(), getIt<RestClient>()));
-
+    //
+    getIt.registerSingleton(PaymentSubscriptionApi(getIt<DioClient>(), getIt<RestClient>()));
   }
 }

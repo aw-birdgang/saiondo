@@ -5,6 +5,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../di/service_locator.dart';
 import '../../../utils/locale/app_localization.dart';
 import '../../auth/auth_guard.dart';
+import '../../payment_subscription/payment_subscription.dart';
 import '../../persona_profile/persona_profile_list.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
 import '../../user/store/user_store.dart';
@@ -42,6 +43,15 @@ class MyPageScreen extends StatelessWidget {
     }
   }
 
+  void _openPaymentSubscription(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PaymentSubscriptionScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AuthGuard(
@@ -72,6 +82,13 @@ class MyPageScreen extends StatelessWidget {
           return MyPageContent(
             user: user,
             onPersonaProfileTap: () => _openPersonaProfile(context, userId),
+            extraActions: [
+              ListTile(
+                leading: Icon(Icons.subscriptions),
+                title: Text('구독 관리'),
+                onTap: () => _openPaymentSubscription(context),
+              ),
+            ],
           );
         },
       ),

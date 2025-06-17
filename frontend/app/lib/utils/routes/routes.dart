@@ -9,6 +9,7 @@ import '../../presentation/home/home.dart';
 import '../../presentation/invite/channel_invitation_screen.dart';
 import '../../presentation/invite/invite_partner_screen.dart';
 import '../../presentation/notifications/notifications.dart';
+import '../../presentation/payment_subscription/payment_subscription.dart';
 import '../../presentation/splash/splash_screen.dart';
 
 class Routes {
@@ -24,6 +25,7 @@ class Routes {
   static const String splash = '/splash';
   static const String invitePartner = '/invite_partner';
   static const String channelInvitations = '/channel_invitations';
+  static const String paymentSubscribe = '/payment_subscribe';
 
   static final routes = <String, WidgetBuilder>{
     home: (BuildContext context) => HomeScreen(),
@@ -67,6 +69,7 @@ class Routes {
     splash: (BuildContext context) => const SplashScreen(),
     invitePartner: (BuildContext context) => InvitePartnerScreen(),
     channelInvitations: (BuildContext context) => ChannelInvitationScreen(),
+    paymentSubscribe: (BuildContext context) => PaymentSubscriptionScreen(),
   };
 
 }

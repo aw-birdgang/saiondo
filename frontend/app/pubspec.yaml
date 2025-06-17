@@ -79,6 +79,11 @@ dependencies:
   # X
   xxtea: ^2.1.0
 
+  # New dependencies
+  in_app_purchase: ^3.1.11
+  in_app_purchase_storekit: ^0.3.7+1  # iOS용
+  in_app_purchase_android: ^0.3.0+13  # Android용
+
 dev_dependencies:
   analyzer: ^5.10.0
   build_runner: ^2.3.3

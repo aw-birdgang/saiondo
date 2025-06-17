@@ -12,6 +12,7 @@ import 'package:app/presentation/home/store/home_store.dart';
 import 'package:app/presentation/home/store/theme_store.dart';
 
 import '../../../core/stores/error/error_store.dart';
+import '../../../data/network/apis/payment_subscription_api.dart';
 import '../../../data/network/socket_io/socket_io_service.dart';
 import '../../../di/service_locator.dart';
 import '../../../domain/repository/advice_repository.dart';
@@ -34,6 +35,7 @@ import '../../chat/store/chat_store.dart';
 import '../../home/store/event_store.dart';
 import '../../home/store/language_store.dart';
 import '../../invite/store/channel_invitation_store.dart';
+import '../../payment_subscription/store/payment_subscription_store.dart';
 import '../../persona_profile/store/persona_profile_store.dart';
 import '../../user/store/basic_question_answer_store.dart';
 import '../../user/store/basic_question_category_store.dart';
@@ -132,10 +134,19 @@ class StoreModule {
         getIt<EventRepository>(),
       ),
     );
+
+
     // :------------------------------------------------------------------
     getIt.registerSingleton<CategoryCodeStore>(
       CategoryCodeStore(
         getIt<FetchCategoryCodesUseCase>(),
+      ),
+    );
+
+    // :------------------------------------------------------------------
+    getIt.registerSingleton<PaymentSubscriptionStore>(
+      PaymentSubscriptionStore(
+        getIt<PaymentSubscriptionApi>(),
       ),
     );
 

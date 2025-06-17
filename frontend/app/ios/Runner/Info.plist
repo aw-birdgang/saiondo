@@ -57,5 +57,11 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>SKAdNetworkItems</key>
+	<array/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>itms-services</string>
+	</array>
 </dict>
 </plist>

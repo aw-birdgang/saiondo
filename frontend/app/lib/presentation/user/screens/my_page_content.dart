@@ -8,11 +8,13 @@ import 'basic_question_answer_screen.dart';
 class MyPageContent extends StatelessWidget {
   final User user;
   final VoidCallback onPersonaProfileTap;
+  final List<ListTile> extraActions;
 
   const MyPageContent({
     super.key,
     required this.user,
     required this.onPersonaProfileTap,
+    this.extraActions = const [],
   });
 
   @override
@@ -127,6 +129,11 @@ class MyPageContent extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             BasicQuestionAnswerSection(userId: user.id),
+            if (extraActions.isNotEmpty) ...[
+              const SizedBox(height: 32),
+              const Divider(),
+              ...extraActions,
+            ],
           ],
         ),
       ),

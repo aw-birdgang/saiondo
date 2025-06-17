@@ -10,12 +10,14 @@ import '../../../data/network/apis/user_api.dart';
 import '../../../data/repository/chat_history_repository_impl.dart';
 import '../../repository/assitant_repository.dart';
 import '../../repository/auth_repository.dart';
+import '../../repository/payment_subscription_repository.dart';
 import '../../usecase/assistant/fetch_assistants_usecase.dart';
 import '../../usecase/auth/login_usecase.dart';
 import '../../usecase/auth/register_usecase.dart';
 import '../../usecase/category/fetch_category_codes_usecase.dart';
 import '../../usecase/chat/fetch_chat_histories_usecase.dart';
 import '../../usecase/chat/send_message_usecase.dart';
+import '../../usecase/payment_subscription/payment_subscription_usecases.dart';
 
 class UseCaseModule {
   static Future<void> configureUseCaseModuleInjection() async {
@@ -51,6 +53,9 @@ class UseCaseModule {
     getIt.registerLazySingleton<FetchAssistantsUseCase>(
             () => FetchAssistantsUseCase(getIt<AssistantRepository>()));
 
+    // payment subscription:--------------------------------------------------------------------
+    getIt.registerLazySingleton<PaymentSubscriptionUseCases>(
+            () => PaymentSubscriptionUseCases(getIt<PaymentSubscriptionRepository>()));
 
 
   }

@@ -100,4 +100,12 @@ class Endpoints {
   //
   static String getCategoryCodes = baseUrl + '/category-codes';
 
+  static const String paymentSubscription = '/payment_subscription';
+  static const String paymentSubscriptionCurrent = '/payment-subscription/current';
+  static const String paymentSubscriptionVerify = '/payment-subscription/verify';
+  static const String paymentSubscriptionSave = '/payment-subscription/save';
+  static const String paymentSubscriptionHistories = '/payment-subscription/subscription-histories';
+  static String paymentSubscriptionHistoriesByUser(String userId) =>
+      '/payment-subscription/$userId/subscription-histories';
+
 }
