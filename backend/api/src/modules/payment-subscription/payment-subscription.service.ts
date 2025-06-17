@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@common/prisma/prisma.service';
-import { BuyPointDto } from './dto/buy-point.dto';
-import { SubscribeDto } from './dto/subscribe.dto';
-import { SubscriptionHistoryDto } from './dto/subscription-history.dto';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {PrismaService} from '@common/prisma/prisma.service';
+import {BuyPointDto} from './dto/buy-point.dto';
+import {SubscribeDto} from './dto/subscribe.dto';
+import {SubscriptionHistoryDto} from './dto/subscription-history.dto';
+import {VerifyReceiptDto} from './dto/verify-receipt.dto';
+import axios from 'axios';
 
 @Injectable()
 export class PaymentSubscriptionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+  ) {}
 
   // 포인트 상품 목록
   async getPointProducts() {
@@ -96,5 +100,61 @@ export class PaymentSubscriptionService {
       expiredAt: h.expiredAt,
       createdAt: h.createdAt,
     }));
+  }
+
+  async verifyReceipt(userId: string, dto: VerifyReceiptDto) {
+    let verifyResult;
+    if (dto.platform === 'apple') {
+      verifyResult = await this.verifyAppleReceipt(dto.receipt);
+    } else {
+      verifyResult = await this.verifyGoogleReceipt(dto.receipt);
+    }
+
+    // DB 저장/갱신 (Prisma 사용)
+    let subscription = await this.prisma.subscription.findUnique({ where: { userId } });
+    if (!subscription) {
+      subscription = await this.prisma.subscription.create({
+        data: {
+          userId,
+          platform: dto.platform,
+          receipt: dto.receipt,
+          isValid: verifyResult.isValid,
+          expiresAt: verifyResult.expiresAt,
+        },
+      });
+    } else {
+      subscription = await this.prisma.subscription.update({
+        where: { userId },
+        data: {
+          platform: dto.platform,
+          receipt: dto.receipt,
+          isValid: verifyResult.isValid,
+          expiresAt: verifyResult.expiresAt,
+        },
+      });
+    }
+
+    return { success: verifyResult.isValid, expiresAt: verifyResult.expiresAt };
+  }
+
+  private async verifyAppleReceipt(receipt: string) {
+    // 실제 Apple API 엔드포인트 사용
+    const response = await axios.post('https://buy.itunes.apple.com/verifyReceipt', {
+      'receipt-data': receipt,
+      'password': 'YOUR_APPLE_SHARED_SECRET',
+    });
+    // 실제 응답 파싱 필요
+    const isValid = response.data.status === 0;
+    const expiresAt = new Date(/* 파싱된 만료일 */);
+    return { isValid, expiresAt };
+  }
+
+  private async verifyGoogleReceipt(receipt: string) {
+    // 실제 Google API 엔드포인트 사용
+    // OAuth2 인증 필요 (생략)
+    // 예시용
+    const isValid = true;
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30일 후
+    return { isValid, expiresAt };
   }
 }
