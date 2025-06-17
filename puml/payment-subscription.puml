@@ -1,0 +1,19 @@
+@startuml
+title Mobile Subscription Verification Flow
+
+actor User
+participant "Flutter App" as App
+participant "NestJS Server" as Server
+participant "Apple / Google API" as Platform
+database "DB (Subscription)" as DB
+
+User -> App : 클릭 (구독 구매)
+App -> Platform : 인앱 결제 요청
+Platform -> App : 결제 완료 + 영수증
+App -> Server : receipt + platform 전송
+Server -> Platform : receipt 검증 요청
+Platform -> Server : 응답 (유효 여부 + 만료일)
+Server -> DB : 구독 저장 또는 갱신
+Server -> App : 구독 성공 응답
+App -> User : "구독 활성화 완료"
+@enduml
