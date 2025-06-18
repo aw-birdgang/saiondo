@@ -85,7 +85,11 @@ abstract class _UserStore with Store {
       if (selectedUser != null) {
         users = ObservableList.of([selectedUser!]);
       }
-    } finally {
+    }
+    catch (e) {
+      _userRepository.removeUser();
+    }
+    finally {
       isLoading = false;
     }
   }

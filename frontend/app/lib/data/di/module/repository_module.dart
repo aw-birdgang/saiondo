@@ -66,7 +66,7 @@ class RepositoryModule {
       getIt<UserApi>(),
       getIt<SharedPreferenceHelper>()
     ));
-
+    
     getIt.registerSingleton<ChannelRepository>(ChannelRepositoryImpl(
         getIt<ChannelApi>(),
     ));

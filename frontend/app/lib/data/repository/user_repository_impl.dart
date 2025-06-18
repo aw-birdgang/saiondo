@@ -54,6 +54,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> removeUser() async {
     await _prefs.removeUserInfo();
+    await _prefs.removeAccessToken();
   }
 
   @override
