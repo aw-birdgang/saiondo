@@ -1,0 +1,10 @@
+# Terraform state
+.terraform/
+*.tfstate
+*.tfstate.backup
+crash.log
+
+# Ignore environment and global config
+!/environments/
+!/global/
+!/modules/ 

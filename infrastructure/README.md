@@ -113,10 +113,16 @@ ssh-keygen -t rsa -b 2048 -f mykey
 terraform init
 terraform plan -var-file=environments/dev/terraform.tfvars
 terraform apply -var-file=environments/dev/terraform.tfvars
+terraform destroy -var-file=environments/dev/terraform.tfvars
 terraform destroy
 
 # 예시: 인프라 배포
 terraform apply -var-file="secret.tfvars" -var-file="production.tfvars"
+
+
+terraform plan -var-file=../../global/terraform.tfvars
+terraform apply -var-file=../../global/terraform.tfvars
+terraform destroy -var-file=../../global/terraform.tfvars
 ```
 
 ---
