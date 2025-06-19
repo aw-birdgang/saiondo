@@ -270,6 +270,44 @@ const categoryCodes = [
   { code: 'CAREER', description: '직업/학업' },
 ];
 
+// === 레이블링 관련 시드 데이터 ===
+const labelCategories = [
+  { name: 'emotion_expression', description: '감정 표현' },
+  { name: 'self_assertion', description: '자기 주장' },
+  { name: 'relationship_attitude', description: '관계 태도' },
+  { name: 'communication_style', description: '소통 방식' },
+  { name: 'attachment_pattern', description: '애착 패턴' },
+];
+
+const labelsByCategory: Record<string, { name: string, description: string }[]> = {
+  emotion_expression: [
+    { name: 'affection', description: '애정 표현 (예: 너 정말 고마워, 사랑해)' },
+    { name: 'frustration', description: '좌절 또는 짜증 (예: 왜 또 그래?, 진짜 지친다)' },
+    { name: 'anxiety', description: '불안, 걱정, 소외감 (예: 나 요즘 신경 안 쓰는 것 같아)' },
+    { name: 'gratitude', description: '감사 표현 (예: 고마워, 네 덕분이야)' },
+  ],
+  self_assertion: [
+    { name: 'request', description: '요구, 바람 표현 (예: 나한테 좀 더 신경 써줘)' },
+    { name: 'complaint', description: '불만, 비판 (예: 넌 항상 내 말 무시해)' },
+    { name: 'boundaries', description: '선 긋기 또는 한계 표현 (예: 이건 더 이상 못 참아)' },
+  ],
+  relationship_attitude: [
+    { name: 'accommodating', description: '양보, 이해, 수용 (예: 네 말이 맞는 것 같아)' },
+    { name: 'withdrawing', description: '회피, 침묵, 회상 (예: 됐어, 나중에 얘기하자)' },
+    { name: 'confronting', description: '직면, 문제 제기 (예: 이건 꼭 짚고 넘어가야 해)' },
+  ],
+  communication_style: [
+    { name: 'question', description: '질문 형태 (예: 지금 어디야?, 무슨 뜻이야?)' },
+    { name: 'explanation', description: '상황 설명 또는 이유 전달 (예: 오늘은 회사 회식이 있었어)' },
+    { name: 'silence', description: '무응답, 단답형, 읽씹 등 (예: ... / 응 / 그래)' },
+  ],
+  attachment_pattern: [
+    { name: 'secure', description: '안정형 애착, 균형 있는 표현' },
+    { name: 'anxious', description: '불안형 애착, 반응에 민감함' },
+    { name: 'avoidant', description: '회피형 애착, 감정 표현 기피' },
+  ],
+};
+
 // ===== 유닛 함수들 =====
 
 // 1. 카테고리 및 질문 생성
@@ -751,6 +789,36 @@ async function createWalletsForUsers() {
   }));
 }
 
+// 10. 레이블 생성
+async function seedLabels() {
+  const categoryMap = Object.fromEntries(
+    await Promise.all(
+      labelCategories.map(async (cat) => [
+        cat.name,
+        await prisma.labelCategory.upsert({
+          where: { name: cat.name },
+          update: {},
+          create: cat,
+        }),
+      ])
+    )
+  );
+  for (const [catName, labels] of Object.entries(labelsByCategory)) {
+    const category = categoryMap[catName];
+    for (const label of labels) {
+      await prisma.label.upsert({
+        where: { name_categoryId: { name: label.name, categoryId: category.id } },
+        update: {},
+        create: {
+          ...label,
+          categoryId: category.id,
+        },
+      });
+    }
+  }
+  console.log('Label categories & labels seeded!');
+}
+
 // ===== 메인 실행 함수 =====
 async function main() {
   await setupTokenContract();
@@ -766,6 +834,7 @@ async function main() {
     createAdvices(channel),
     createEvents(user1, user2),
     createWalletsForUsers(),
+    seedLabels(),
   ]);
   console.log('Seed completed!');
 }

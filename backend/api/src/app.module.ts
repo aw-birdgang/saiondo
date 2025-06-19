@@ -19,8 +19,8 @@ import {EventModule} from './modules/event/event.module';
 import {PointModule} from "@modules/point/point.module";
 import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer/basic-question-with-answer.module";
 import {WalletModule} from "@modules/wallet/wallet.module";
-import {Web3Module} from "@modules/web3/web3.module";
 import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-subscription.module";
+import {LabelModule} from "@modules/label/label.module";
 
 @Module({
   imports: [
@@ -30,7 +30,6 @@ import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-s
       envFilePath: ['.env'],
     }),
     PrismaModule,
-    Web3Module,
     AuthModule,
     UserModule,
     ChannelModule,
@@ -48,6 +47,8 @@ import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-s
     BasicQuestionWithAnswerModule,
     PushScheduleModule,
     UserAnswerModule,
+    LabelModule,
+    // Web3Module,
   ],
 })
 export class AppModule {}

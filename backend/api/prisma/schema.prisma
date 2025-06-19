@@ -385,3 +385,42 @@ model Subscription {
 
   user       User     @relation(fields: [userId], references: [id])
 }
+
+model LabelCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  labels      Label[]
+}
+
+model Label {
+  id              String        @id @default(uuid())
+  categoryId      String
+  name            String
+  description     String?
+  attachmentType  AttachmentPattern?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  category        LabelCategory @relation(fields: [categoryId], references: [id])
+  messageLabels   MessageLabel[]
+
+  @@unique([name, categoryId])
+}
+
+model MessageLabel {
+  id        String   @id @default(uuid())
+  messageId String   // Chat.id 등 메시지의 PK
+  labelId   String
+  createdAt DateTime @default(now())
+
+  label     Label    @relation(fields: [labelId], references: [id])
+  // message  Chat?  @relation(fields: [messageId], references: [id]) // 필요시 주석 해제
+}
+
+// (선택) 애착 패턴 등 enum 정의
+enum AttachmentPattern {
+  SECURE
+  ANXIOUS
+  AVOIDANT
+}
