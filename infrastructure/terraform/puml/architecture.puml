@@ -1,58 +1,40 @@
 @startuml
-' 스타일
-skinparam package {
-  BackgroundColor #F8F8FF
-  BorderColor #333366
-  FontColor #222244
-  FontSize 15
-}
-skinparam rectangle {
-  BackgroundColor #F0F8FF
-  BorderColor #333366
-  FontColor #222244
-}
-skinparam ArrowColor #336699
-skinparam ArrowFontColor #336699
-skinparam ArrowFontSize 13
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-' 주요 패키지
-package "Terraform Root" {
-  [main.tf]
-  [providers.tf]
-  [terraform.tfvars]
-}
+skinparam linetype ortho
 
-package "dev 환경" {
-  [vpc.tf]
-  [ec2.tf]
-  [securitygroup.tf]
-  [s3.tf]
-  [pipeline.tf]
-  [variables.tf]
-  [outputs.tf]
+Person(user, "User", "Web App User")
+System_Ext(github, "GitHub", "Source Code Repository")
+
+System_Boundary(aws, "AWS Cloud") {
+
+    System_Boundary(vpc, "VPC") {
+        Container(alb, "Application Load Balancer", "Technology: AWS ALB", "Distributes incoming traffic")
+
+        System_Boundary(private_subnet, "Private Subnet (Multi-AZ)") {
+            Container(ecs_service, "ECS Service", "Technology: Docker", "Runs the containerized application")
+            ContainerDb(rds, "RDS Database", "Technology: PostgreSQL", "Stores application data")
+        }
+    }
+
+    System_Boundary(cicd, "CI/CD Pipeline") {
+        Container(pipeline, "CodePipeline", "Technology: AWS Service", "Orchestrates the deployment process")
+        Container(codebuild, "CodeBuild", "Technology: AWS Service", "Builds Docker image")
+        Container(ecr, "ECR", "Technology: AWS Service", "Stores Docker images")
+        Container(s3, "S3 Bucket", "Technology: AWS Service", "Stores build artifacts")
+    }
+
 }
 
-package "AWS 리소스" {
-  [VPC]
-  [Subnet]
-  [InternetGateway]
-  [RouteTable]
-  [EC2]
-  [SecurityGroup]
-  [S3]
-  [DynamoDB]
-  [CodeBuild]
-  [CodePipeline]
-}
+Rel(user, alb, "Sends HTTPS request")
+Rel(alb, ecs_service, "Forwards traffic")
+Rel(ecs_service, rds, "Reads/Writes data", "SQL")
 
-' 관계 및 설명
-[main.tf] --> [AWS 리소스] : "글로벌 리소스 선언"
-[providers.tf] --> [AWS 리소스] : "Provider/Region 설정"
-[dev 환경] --> [AWS 리소스] : "환경별 리소스 선언"
-[pipeline.tf] --> [CodeBuild] : "CI 빌드 자동화"
-[pipeline.tf] --> [CodePipeline] : "CI/CD 파이프라인"
-[ec2.tf] --> [EC2] : "앱 서버 배포"
-[vpc.tf] --> [VPC] : "네트워크/VPC 구성"
-[s3.tf] --> [S3] : "아티팩트/정적 파일 저장"
-[securitygroup.tf] --> [SecurityGroup] : "보안그룹 관리"
+Rel(github, pipeline, "Triggers via Webhook")
+Rel(pipeline, codebuild, "Triggers build")
+Rel(codebuild, ecr, "Pushes image")
+Rel(codebuild, s3, "Stores artifacts")
+Rel(pipeline, ecs_service, "Deploys new version")
+
+
 @enduml

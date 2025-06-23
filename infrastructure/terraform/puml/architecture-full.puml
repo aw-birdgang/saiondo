@@ -1,0 +1,84 @@
+@startuml
+skinparam linetype ortho
+skinparam rectangle {
+    roundCorner 10
+}
+skinparam package {
+    roundCorner 10
+    borderStyle solid
+}
+skinparam database {
+    roundCorner 20
+}
+skinparam cloud {
+    borderStyle dashed
+}
+
+actor "User" as user
+rectangle "GitHub Repository\n<size:10>[Source Code / Webhook Trigger]" as github
+
+cloud "AWS Cloud" {
+
+    ' === CI/CD Section (좌측) ===
+    package "CI/CD Pipeline" {
+        rectangle "CodePipeline\n<size:10>[CI/CD Orchestration]" as pipeline
+        rectangle "CodeBuild\n<size:10>[Builds Docker image]" as codebuild
+        rectangle "ECR\n<size:10>[Docker Image Registry]" as ecr
+        rectangle "S3 (Artifacts)\n<size:10>[Build Artifacts]" as s3
+        rectangle "CodeDeploy\n<size:10>[Blue/Green Deployment]" as codedeploy
+        rectangle "IAM Roles\n<size:10>[Permissions]" as iam
+    }
+
+    ' === VPC Section (우측) ===
+    package "VPC (Virtual Private Cloud)" {
+
+        ' Public Subnets
+        package "Public Subnet" {
+            rectangle "Internet Gateway (IGW)" as igw
+            rectangle "ALB (App Load Balancer)\n<size:10>[Ingress traffic]" as alb
+            rectangle "NAT Gateway\n<size:10>[Outbound internet]" as nat
+        }
+
+        ' Private Subnets
+        package "Private Subnet" {
+            rectangle "ECS Service\n<size:10>[Manages container tasks]" as ecs_service
+            rectangle "EC2 Instances\n<size:10>[Container hosts]" as ec2
+            database "RDS\n<size:10>[Relational DB]" as rds
+        }
+
+        ' Security Groups
+        rectangle "SG: ALB\n<size:9>[Allow HTTP/S 0.0.0.0/0]" as sg_alb
+        rectangle "SG: ECS\n<size:9>[Only from ALB SG]" as sg_ecs
+        rectangle "SG: RDS\n<size:9>[Only from ECS SG]" as sg_rds
+    }
+}
+
+' === User Traffic Flow (Blue) ===
+user -down-> alb : "<color:blue>1. HTTPS Request</color>"
+igw -right-> alb : "<color:blue>2. Inbound Route</color>"
+alb -down-> ecs_service : "<color:blue>3. Forward to ECS</color>"
+ecs_service -down-> ec2 : "<color:blue>4. Runs on EC2</color>"
+ec2 -down-> rds : "<color:blue>5. DB Access</color>"
+ec2 -right-> nat : "<color:blue>6. Outbound API Call</color>"
+nat -up-> igw : "<color:blue>7. Route to Internet</color>"
+
+
+' === CI/CD Flow (Green) ===
+github -down-> pipeline : "<color:darkgreen>1. Commit Trigger</color>"
+pipeline -down-> codebuild : "<color:darkgreen>2. Build Start</color>"
+codebuild -down--> s3 : "<color:darkgreen>3. Save Artifact</color>"
+codebuild -down--> ecr : "<color:darkgreen>4. Push Docker Image</color>"
+pipeline -down-> codedeploy : "<color:darkgreen>5. Trigger Deploy</color>"
+codedeploy -down-> ecs_service : "<color:darkgreen>6. ECS Blue/Green Deploy</color>"
+codedeploy .> alb : "<color:darkgreen>7. Update Listener</color>"
+
+
+' === Security Group Relations ===
+alb .down.> sg_alb : "<color:purple>SG Attached</color>"
+ecs_service .down.> sg_ecs : "<color:purple>SG Attached</color>"
+rds .down.> sg_rds : "<color:purple>SG Attached</color>"
+codebuild ..> iam : "<color:orange>Uses IAM</color>"
+ecs_service ..> iam : "<color:orange>Uses Task Role</color>"
+
+
+@enduml

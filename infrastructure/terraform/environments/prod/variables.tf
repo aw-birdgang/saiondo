@@ -66,3 +66,9 @@ variable "cluster_max_size" {
   type        = number
   default     = 1
 }
+
+variable "db_password" {
+  description = "Password for the RDS database. Should be passed via .tfvars or environment variables."
+  type        = string
+  sensitive   = true
+}

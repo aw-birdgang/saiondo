@@ -1,0 +1,29 @@
+module "prod_rds" {
+    environment             = var.environment
+    name                    = "${var.environment}-${var.project_name}-rds"
+    source                  = "../../modules/rds"
+    rds_name                = "${var.environment}-${var.project_name}-rds"
+    engine                  = "postgres"
+    engine_version          = "14.5"
+    port                    = 5432
+    instance_class          = "db.t3.small"
+    multi_az                = "true"
+    identifier              = "postgres-prod"
+    username                = "admin_prod"
+    password                = var.db_password
+    db_name                 = "siaondo_prod"
+    storage_type            = "gp3"
+    allocated_storage       = 50
+    max_allocated_storage   = 200
+    subnet_group_name       = "${var.environment}-${var.project_name}-rds-subnet"
+    backup_retention_period = 15
+    skip_final_snapshot     = false
+    publicly_accessible     = false
+    storage_encrypted       = true
+    aws_region              = var.aws_region
+    vpc_id                  = module.prod_vpc.id
+
+    vpc_security_group_ids = module.prod_security_group.vpc_rds_security_group_ids
+    subnet_ids             = module.prod_vpc.private_subnets
+    availability_zone      = module.prod_vpc.public_1_availability_zone
+}

@@ -1,0 +1,29 @@
+@startuml
+actor Developer
+
+participant CodeCommit
+participant CodePipeline
+participant CodeBuild as Build1
+participant StepFunctions
+participant DynamoDB as DDB1
+participant ECS
+participant DynamoDB as DDB2
+participant CodeBuild as Build2
+participant CodeDeploy
+
+Developer -> CodeCommit : git commit & push
+CodeCommit -> CodePipeline : trigger pipeline
+
+CodePipeline -> Build1 : build source
+Build1 -> StepFunctions : invoke step function
+
+StepFunctions -> DDB1 : PutItem (initiate test task metadata)
+StepFunctions -> ECS : Start Task (load test)
+
+ECS -> DDB2 : GetItem (read task metadata / result)
+ECS --> StepFunctions : return load test result
+
+StepFunctions -> Build2 : continue pipeline
+Build2 -> CodeDeploy : deploy to EC2/ECS
+
+@enduml

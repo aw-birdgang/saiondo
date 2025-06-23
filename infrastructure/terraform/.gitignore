@@ -7,4 +7,16 @@ crash.log
 # Ignore environment and global config
 !/environments/
 !/global/
-!/modules/ 
+!/modules/
+
+# Terraform 변수 파일 (민감한 정보를 포함할 수 있음)
+*.tfvars
+*.tfvars.json
+
+# Terraform 상태 파일
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log 
