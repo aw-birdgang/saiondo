@@ -14,7 +14,7 @@ resource "aws_db_subnet_group" "rds-subnet" {
 # The group allows for customization of the database engine configuration.
 resource "aws_db_parameter_group" "rds-parameters" {
   name   = "rds-parameters-group"
-  family = "postgres${var.engine_version}" # PostgreSQL 버전에 맞춰 설정
+  family = "postgres14"
   description = "PostgreSQL parameter group"
 
   # PostgreSQL에 맞는 파라미터가 필요할 경우 여기에 추가합니다.
@@ -29,8 +29,8 @@ resource "aws_db_parameter_group" "rds-parameters" {
 # Option groups provide additional features and settings for specific database engines.
 resource "aws_db_option_group" "example" {
   name                   = "option-group"
-  engine_name            = var.engine
-  major_engine_version   = var.engine_version # PostgreSQL 버전에 맞춰 설정
+  engine_name            = "postgres"
+  major_engine_version   = "14"
   option_group_description = "Example option group for PostgreSQL"
 }
 
@@ -46,5 +46,7 @@ resource "aws_db_instance" "this" {
   port                = var.port
   allocated_storage   = var.allocated_storage
   storage_type        = var.storage_type
+  username            = var.rds_username
+  password            = var.rds_password
   # ... 기타 설정
 }

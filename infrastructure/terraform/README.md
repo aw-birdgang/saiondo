@@ -130,12 +130,12 @@ Terraform으로 생성된 모든 리소스를 삭제하려면 각 환경에 맞�
 
 **개발 환경 (`dev`)**
 ```sh
-terraform destroy -var-file="../../global/global.tfvars" -var-file="dev.tfvars"
+terraform destroy -var-file="../../global/terraform.tfvars" -var-file="terraform.tfvars"
 ```
 
 **운영 환경 (`prod`)**
 ```sh
-terraform destroy -var-file="../../global/global.tfvars" -var-file="prod.tfvars"
+terraform destroy -var-file="../../global/terraform.tfvars" -var-file="terraform.tfvars"
 ```
 > `yes`를 입력하여 삭제를 확인합니다.
 

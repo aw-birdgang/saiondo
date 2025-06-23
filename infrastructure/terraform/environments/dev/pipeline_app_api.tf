@@ -23,13 +23,8 @@ module "dev_codepipeline_app_api" {
    ecs_task_execution_role_arn = module.dev_ecs.ecs_task_execution_role_arn
    ecs_task_role_arn = module.dev_ecs.ecs_task_role_arn
 
-   front_end_arn = module.dev_lb.front_end_arn
-   target_group_blue_name = module.dev_lb.target_group_blue_name
-   target_group_green_name = module.dev_lb.target_group_green_name
-
    s3_artifacts_bucket = module.dev_s3.s3_artifacts_bucket
    s3_artifacts_arn = module.dev_s3.s3_artifacts_arn
    codebuild_cache_arn = module.dev_s3.codebuild_cache_arn
-
 
 }

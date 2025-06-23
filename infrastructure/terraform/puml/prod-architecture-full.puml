@@ -5,45 +5,42 @@ skinparam packageRoundCorner 10
 skinparam packageBorderStyle solid
 skinparam databaseRoundCorner 20
 skinparam cloudBorderStyle dashed
+skinparam defaultFontSize 14
+skinparam ArrowFontColor #333366
 
 actor "User" as user
 rectangle "GitHub\n<size:10>[Source/Trigger]" as github
 
-cloud "AWS Cloud" {
+cloud "AWS Cloud (Prod)" {
+  package "CI/CD Pipeline" {
+    rectangle "CodePipeline (prod)\n<size:10>[CI/CD Orchestration]" as pipeline
+    rectangle "CodeBuild (prod)\n<size:10>[Builds Docker image]" as codebuild
+    rectangle "ECR (prod)\n<size:10>[Docker Image Registry]" as ecr
+    rectangle "S3 (prod)\n<size:10>[Build Artifacts]" as s3
+    rectangle "CodeDeploy (prod)\n<size:10>[Blue/Green Deployment]" as codedeploy
+    rectangle "IAM Roles (prod)\n<size:10>[Permissions]" as iam
+    rectangle "Codestar Connection (prod)\n<size:10>[GitHub Integration]" as codestar
+  }
 
-    ' === CI/CD Section (좌측) ===
-    package "CI/CD Pipeline" {
-        rectangle "CodePipeline (prod)\n<size:10>[CI/CD Orchestration]" as pipeline
-        rectangle "CodeBuild (prod)\n<size:10>[Builds Docker image]" as codebuild
-        rectangle "ECR (prod)\n<size:10>[Docker Image Registry]" as ecr
-        rectangle "S3 (prod)\n<size:10>[Build Artifacts]" as s3
-        rectangle "CodeDeploy (prod)\n<size:10>[Blue/Green Deployment]" as codedeploy
-        rectangle "IAM Roles (prod)\n<size:10>[Permissions]" as iam
-        rectangle "Codestar Connection (prod)\n<size:10>[GitHub Integration]" as codestar
+  package "VPC (prod)" {
+    package "Public Subnet" {
+      rectangle "Internet Gateway (IGW)\n<size:10>[Public internet access]" as igw
+      rectangle "ALB (prod)\n<size:10>[Ingress traffic]" as alb
+      rectangle "NAT Gateway (prod)\n<size:10>[Outbound internet]" as nat
     }
 
-    ' === VPC Section (우측) ===
-    package "VPC (Virtual Private Cloud) (prod)" {
-        ' Public Subnets
-        package "Public Subnet" {
-            rectangle "Internet Gateway (IGW)\n<size:10>[Public internet access]" as igw
-            rectangle "ALB (prod)\n<size:10>[Ingress traffic]" as alb
-            rectangle "NAT Gateway (prod)\n<size:10>[Outbound internet]" as nat
-        }
-        ' Private Subnets
-        package "Private Subnet" {
-            rectangle "ECS Service (prod)\n<size:10>[Manages container tasks]" as ecs_service
-            rectangle "EC2 (prod) x2~5\n<size:10>[Container hosts, Auto Scaling]" as ec2
-            database "RDS (prod)\n(Multi-AZ)\n<size:10>[Relational DB, High Availability]" as rds
-        }
-        ' Security Groups
-        rectangle "SG: ALB (prod)\n<size:9>[Allow HTTP/S 0.0.0.0/0]" as sg_alb
-        rectangle "SG: ECS (prod)\n<size:9>[Only from ALB SG]" as sg_ecs
-        rectangle "SG: RDS (prod)\n<size:9>[Only from ECS SG]" as sg_rds
+    package "Private Subnet" {
+      rectangle "ECS Service (prod)\n<size:10>[Manages container tasks]" as ecs_service
+      rectangle "EC2 (prod) x2~5\n<size:10>[Container hosts, Auto Scaling]" as ec2
+      database "RDS (prod)\n(Multi-AZ)\n<size:10>[Relational DB, High Availability]" as rds
     }
+
+    rectangle "SG: ALB (prod)\n<size:9>[Allow HTTP/S 0.0.0.0/0]" as sg_alb
+    rectangle "SG: ECS (prod)\n<size:9>[Only from ALB SG]" as sg_ecs
+    rectangle "SG: RDS (prod)\n<size:9>[Only from ECS SG]" as sg_rds
+  }
 }
 
-' === User Traffic Flow (Blue) ===
 user -down-> alb : "<color:blue>1. HTTPS Request</color>"
 igw -right-> alb : "<color:blue>2. Inbound Route</color>"
 alb -down-> ecs_service : "<color:blue>3. Forward to ECS</color>"
@@ -52,7 +49,6 @@ ec2 -down-> rds : "<color:blue>5. DB Access</color>"
 ec2 -right-> nat : "<color:blue>6. Outbound API</color>"
 nat -up-> igw : "<color:blue>7. Internet</color>"
 
-' === CI/CD Flow (Green) ===
 github -down-> codestar : "<color:darkgreen>1. PR/Push</color>"
 codestar -down-> pipeline : "<color:darkgreen>2. Webhook</color>"
 pipeline -down-> codebuild : "<color:darkgreen>3. Build</color>"
@@ -62,11 +58,9 @@ pipeline -down-> codedeploy : "<color:darkgreen>6. Deploy</color>"
 codedeploy -down-> ecs_service : "<color:darkgreen>7. ECS Deploy</color>"
 codedeploy .> alb : "<color:darkgreen>8. Update Listener</color>"
 
-' === Security Group Relations (Purple) ===
 alb .down.> sg_alb : "<color:purple>1. SG</color>"
 ecs_service .down.> sg_ecs : "<color:purple>2. SG</color>"
 rds .down.> sg_rds : "<color:purple>3. SG</color>"
 codebuild ..> iam : "<color:orange>4. IAM</color>"
 ecs_service ..> iam : "<color:orange>5. Task Role</color>"
-
 @enduml

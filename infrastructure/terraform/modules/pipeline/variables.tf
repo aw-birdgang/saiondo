@@ -88,15 +88,21 @@ variable "ecs_service_name" {
 }
 
 variable "front_end_arn" {
-  description = "front end arn"
+  description = "ALB/LB ARN"
+  type        = string
+  default     = null
 }
 
 variable "target_group_blue_name" {
-  description = "target group blue name"
+  description = "Blue Target Group Name"
+  type        = string
+  default     = null
 }
 
 variable "target_group_green_name" {
-  description = "target group green name"
+  description = "Green Target Group Name"
+  type        = string
+  default     = null
 }
 
 

@@ -51,11 +51,14 @@ resource "aws_ecs_service" "ec2_service" {
   task_definition = aws_ecs_task_definition.ec2_task_definition[0].arn
   desired_count   = var.cluster_desired_capacity
   launch_type     = "EC2"
-
-  load_balancer {
-    target_group_arn = var.lb_target_group_blue_id
-    container_name   = var.aws_ecs_task_definition_name
-    container_port   = 3000
+  
+  dynamic "load_balancer" {
+    for_each = var.lb_listener_front_end != null && var.lb_target_group_blue_id != null ? [1] : []
+    content {
+      target_group_arn = var.lb_target_group_blue_id
+      container_name   = var.aws_ecs_task_definition_name
+      container_port   = 3000
+    }
   }
 
   depends_on = [var.lb_listener_front_end]

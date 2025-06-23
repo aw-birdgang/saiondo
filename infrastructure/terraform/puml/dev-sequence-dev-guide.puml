@@ -1,0 +1,69 @@
+@startuml
+' 스타일 설정
+skinparam sequenceParticipant underline
+skinparam sequenceLifeLineBorderColor #8888AA
+skinparam sequenceLifeLineBackgroundColor #F8F8FF
+skinparam sequenceBoxBorderColor #A3C1DA
+skinparam sequenceBoxBackgroundColor #F0F6FA
+skinparam participantBorderColor #3B5998
+skinparam participantBackgroundColor #EAF3FB
+skinparam actorBorderColor #3B5998
+skinparam actorBackgroundColor #F5F5F5
+skinparam noteBackgroundColor #FFFBEA
+skinparam noteBorderColor #E1C699
+
+actor Developer as Dev #F5F5F5
+
+participant "GitHub" as github #EAF3FB
+participant "AWS Codestar\nConnection" as codestar #EAF3FB
+participant "AWS CodePipeline" as pipeline #EAF3FB
+participant "AWS CodeBuild" as codebuild #EAF3FB
+participant "AWS ECR" as ecr #EAF3FB
+participant "AWS S3" as s3 #EAF3FB
+participant "AWS CodeDeploy" as codedeploy #EAF3FB
+participant "AWS ECS Service" as ecs #EAF3FB
+participant "CloudWatch/Logs" as logs #EAF3FB
+
+== 1. 코드 작성 및 로컬 테스트 ==
+Dev -> Dev: 코드 작성 및 로컬 테스트\n(docker build, pytest 등)
+note right of Dev: 개발자는 로컬에서 기능을 개발하고\n테스트를 완료합니다.
+
+== 2. GitHub에 commit & push ==
+Dev -> github: git commit & push
+note right of github: 소스코드가 원격 저장소에 업로드됩니다.
+
+== 3. GitHub → Codestar Webhook 트리거 ==
+github -> codestar: PR/Push 이벤트(Webhook)
+note right of codestar: AWS와 GitHub가 연동되어\n이벤트가 전달됩니다.
+
+== 4. CodePipeline 실행 ==
+codestar -> pipeline: 파이프라인 트리거
+note right of pipeline: 파이프라인이 자동으로 실행됩니다.
+
+== 5. CodeBuild에서 빌드 ==
+pipeline -> codebuild: 소스 전달 및 빌드 시작
+codebuild -> codebuild: Docker 이미지 빌드, 테스트 등
+note right of codebuild: 빌드, 테스트, 정적 분석 등\n자동화 작업이 실행됩니다.
+
+== 6. ECR에 Docker 이미지 push ==
+codebuild -> ecr: Docker 이미지 push
+note right of ecr: 빌드된 이미지는 ECR에 저장됩니다.
+
+== 7. S3에 빌드 아티팩트 저장 ==
+codebuild -> s3: 빌드 산출물(아티팩트) 저장
+note right of s3: 필요시 빌드 결과물이 S3에 저장됩니다.
+
+== 8. CodeDeploy가 ECS에 배포 ==
+pipeline -> codedeploy: 배포 요청
+codedeploy -> ecs: Task Definition 업데이트 및 롤링 배포
+note right of ecs: ECS 서비스가 새 컨테이너로\n무중단 롤링 업데이트를 수행합니다.
+
+== 9. ECS 서비스 롤링 업데이트 ==
+ecs -> ecs: 새 컨테이너로 롤링 업데이트
+
+== 10. 배포 완료 후 상태 확인 ==
+ecs -> logs: 로그 및 상태 기록
+Dev -> logs: 배포 상태/로그 확인
+note right of logs: CloudWatch 등에서 배포 결과와\n애플리케이션 로그를 확인할 수 있습니다.
+
+@enduml

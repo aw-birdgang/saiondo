@@ -5,58 +5,54 @@ skinparam packageRoundCorner 10
 skinparam packageBorderStyle solid
 skinparam databaseRoundCorner 20
 skinparam cloudBorderStyle dashed
+skinparam defaultFontSize 14
+skinparam ArrowFontColor #333366
 
 actor "User" as user
 rectangle "GitHub\n<size:10>[Source/Trigger]" as github
 
-cloud "AWS Cloud" {
-    package "CI/CD Pipeline" {
-        rectangle "CodePipeline (dev)\n<size:10>[CI/CD Orchestration]" as pipeline
-        rectangle "CodeBuild (dev)\n<size:10>[Builds Docker image]" as codebuild
-        rectangle "ECR (dev)\n<size:10>[Docker Image Registry]" as ecr
-        rectangle "S3 (dev)\n<size:10>[Build Artifacts]" as s3
-        rectangle "CodeDeploy (dev)\n<size:10>[Blue/Green Deployment]" as codedeploy
-        rectangle "IAM Roles (dev)\n<size:10>[Permissions]" as iam
-        rectangle "Codestar Connection (dev)\n<size:10>[GitHub Integration]" as codestar
+cloud "AWS Cloud (Dev)" {
+  package "CI/CD Pipeline" {
+    rectangle "CodePipeline (dev)\n<size:10>[CI/CD Orchestration]" as pipeline
+    rectangle "CodeBuild (dev)\n<size:10>[Builds Docker image]" as codebuild
+    rectangle "ECR (dev)\n<size:10>[Docker Image Registry]" as ecr
+    rectangle "S3 (dev)\n<size:10>[Build Artifacts]" as s3
+    rectangle "CodeDeploy (dev)\n<size:10>[Blue/Green Deployment]" as codedeploy
+    rectangle "IAM Roles (dev)\n<size:10>[Permissions]" as iam
+    rectangle "Codestar Connection (dev)\n<size:10>[GitHub Integration]" as codestar
+  }
+
+  package "VPC (dev)" {
+    package "Public Subnet" {
+      rectangle "Internet Gateway (IGW)\n<size:10>[Public internet access]" as igw
+      rectangle "ECS Service (dev)\n<size:10>[Manages container tasks, Public IP]" as ecs_service
     }
-    package "VPC (Virtual Private Cloud) (dev)" {
-        package "Public Subnet" {
-            rectangle "Internet Gateway (IGW)\n<size:10>[Public internet access]" as igw
-            rectangle "ALB (dev)\n<size:10>[Ingress traffic]" as alb
-        }
-        package "Private Subnet" {
-            rectangle "ECS Service (dev)\n<size:10>[Manages container tasks]" as ecs_service
-            rectangle "EC2 (dev)\n<size:10>[Container hosts]" as ec2
-            database "RDS (dev)\n<size:10>[Relational DB]" as rds
-        }
-        rectangle "SG: ALB (dev)\n<size:9>[Allow HTTP/S 0.0.0.0/0]" as sg_alb
-        rectangle "SG: ECS (dev)\n<size:9>[Only from ALB SG]" as sg_ecs
-        rectangle "SG: RDS (dev)\n<size:9>[Only from ECS SG]" as sg_rds
+
+    package "Private Subnet" {
+      rectangle "EC2 (dev)\n<size:10>[Container hosts]" as ec2
+      database "RDS (dev)\n<size:10>[Relational DB]" as rds
     }
+
+    rectangle "SG: ECS (dev)\n<size:9>[Allow HTTP/S 0.0.0.0/0]" as sg_ecs
+    rectangle "SG: RDS (dev)\n<size:9>[Only from ECS SG]" as sg_rds
+  }
 }
 
-' === User Traffic Flow (Blue) ===
-user -down-> alb : "<color:blue>1. HTTPS</color>"
-igw -right-> alb : "<color:blue>2. IGW</color>"
-alb -down-> ecs_service : "<color:blue>3. To ECS</color>"
-ecs_service -down-> ec2 : "<color:blue>4. On EC2</color>"
-ec2 -down-> rds : "<color:blue>5. DB</color>"
+user -down-> ecs_service : "<color:blue>1. HTTPS (Public IP)</color>"
+igw -right-> ecs_service : "<color:blue>2. IGW</color>"
+ecs_service -down-> ec2 : "<color:blue>3. On EC2</color>"
+ec2 -down-> rds : "<color:blue>4. DB</color>"
 
-' === CI/CD Flow (Green) ===
 github --> codestar : "<color:darkgreen>1. PR/Push</color>"
 codestar -down-> pipeline : "<color:darkgreen>2. Webhook</color>"
-pipeline -down-> codebuild : "<color:darkgreen>3. Build</color>"
+pipeline -down--> codebuild : "<color:darkgreen>3. Build</color>"
 codebuild --> s3 : "<color:darkgreen>4. Artifact</color>"
 codebuild -down-> ecr : "<color:darkgreen>5. Docker</color>"
 pipeline -right-> codedeploy : "<color:darkgreen>6. Deploy</color>"
 codedeploy -down-> ecs_service : "<color:darkgreen>7. ECS Deploy</color>"
-codedeploy -left-> alb : "<color:darkgreen>8. Listener</color>"
 
-' === Security Group Relations (Purple) ===
-alb --> sg_alb : "<color:purple>1. SG</color>"
-ecs_service --> sg_ecs : "<color:purple>2. SG</color>"
-rds -right-> sg_rds : "<color:purple>3. SG</color>"
-codebuild -up-> iam : "<color:orange>4. IAM</color>"
-ecs_service -up-> iam : "<color:orange>5. TaskRole</color>"
-
+ecs_service --> sg_ecs : "<color:purple>1. SG</color>"
+rds -right-> sg_rds : "<color:purple>2. SG</color>"
+codebuild -up-> iam : "<color:orange>3. IAM</color>"
+ecs_service -up-> iam : "<color:orange>4. TaskRole</color>"
 @enduml

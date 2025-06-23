@@ -87,11 +87,13 @@ variable "launch_type" {
 ############################## FARGATE ####################
 
 variable "lb_listener_front_end" {
-  description = "lb listener front end."
+  description = "ALB/LB Listener ARN"
+  type        = string
+  default     = null
 }
 
 variable "lb_target_group_blue_id" {
-  description = "lb target group blue id."
+  description = "ALB/LB Target Group Blue ID"
+  type        = string
+  default     = null
 }
-
-

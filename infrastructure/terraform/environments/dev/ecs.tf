@@ -16,7 +16,4 @@ module "dev_ecs" {
 
   aws_ecs_task_definition_name = "${var.environment}-${var.project_name}-ecs-task-def"
   repository_url               = module.dev_ecr.ecr_repository_url
-
-  lb_listener_front_end   = var.alb_enabled ? module.dev_alb.arn : null
-  lb_target_group_blue_id = module.dev_lb.target_group_blue_id
 }

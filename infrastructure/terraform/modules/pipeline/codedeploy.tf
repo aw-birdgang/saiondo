@@ -7,6 +7,8 @@ resource "aws_codedeploy_app" "codedeploy_app" {
 
 #Provides a CodeDeploy Deployment Group for a CodeDeploy Application
 resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
+  count = var.target_group_blue_name != null && var.target_group_green_name != null ? 1 : 0
+
   #(Required) The name of the application.
   app_name = aws_codedeploy_app.codedeploy_app.name
   #(Optional) The name of the group's deployment config. The default is "CodeDeployDefault.OneAtATime".
@@ -25,17 +27,20 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
   }
 
   #(Optional) Configuration block of the blue/green deployment options for a deployment group.
-  blue_green_deployment_config {
-    #(Optional) Information about the action to take when newly provisioned instances are ready to receive traffic in a blue/green deployment (documented below).
-    deployment_ready_option {
-      action_on_timeout = "CONTINUE_DEPLOYMENT"
-    }
-    #(Optional) Information about whether to terminate instances in the original fleet during a blue/green deployment (documented below).
-    terminate_blue_instances_on_deployment_success {
-      #(Optional) The action to take on instances in the original environment after a successful blue/green deployment.
-      action = "TERMINATE"
-      #(Optional) The number of minutes to wait after a successful blue/green deployment before terminating instances from the original environment.
-      termination_wait_time_in_minutes = 5
+  dynamic "blue_green_deployment_config" {
+    for_each = var.target_group_blue_name != null && var.target_group_green_name != null ? [1] : []
+    content {
+      #(Optional) Information about the action to take when newly provisioned instances are ready to receive traffic in a blue/green deployment (documented below).
+      deployment_ready_option {
+        action_on_timeout = "CONTINUE_DEPLOYMENT"
+      }
+      #(Optional) Information about whether to terminate instances in the original fleet during a blue/green deployment (documented below).
+      terminate_blue_instances_on_deployment_success {
+        #(Optional) The action to take on instances in the original environment after a successful blue/green deployment.
+        action = "TERMINATE"
+        #(Optional) The number of minutes to wait after a successful blue/green deployment before terminating instances from the original environment.
+        termination_wait_time_in_minutes = 5
+      }
     }
   }
 
@@ -56,22 +61,25 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
   }
 
   #(Optional) Single configuration block of the load balancer to use in a blue/green deployment (documented below).
-  load_balancer_info {
-    #(Optional) The (Application/Network Load Balancer) target group pair to use in a deployment. Conflicts with elb_info and target_group_info.
-    target_group_pair_info {
-      #(Required) Configuration block for the production traffic route
-      prod_traffic_route {
-#        listener_arns = [aws_lb_listener.front_end.arn]
-        listener_arns = [var.front_end_arn]
-      }
-      #(Required) Configuration blocks for a target group within a target group pair
-      target_group {
-#        name = aws_lb_target_group.lb-target-group-blue.name
-        name = var.target_group_blue_name
-      }
-      target_group {
-#        name = aws_lb_target_group.lb-target-group-green.name
-        name = var.target_group_green_name
+  dynamic "load_balancer_info" {
+    for_each = var.target_group_blue_name != null && var.target_group_green_name != null ? [1] : []
+    content {
+      #(Optional) The (Application/Network Load Balancer) target group pair to use in a deployment. Conflicts with elb_info and target_group_info.
+      target_group_pair_info {
+        #(Required) Configuration block for the production traffic route
+        prod_traffic_route {
+#          listener_arns = [aws_lb_listener.front_end.arn]
+          listener_arns = [var.front_end_arn]
+        }
+        #(Required) Configuration blocks for a target group within a target group pair
+        target_group {
+#          name = aws_lb_target_group.lb-target-group-blue.name
+          name = var.target_group_blue_name
+        }
+        target_group {
+#          name = aws_lb_target_group.lb-target-group-green.name
+          name = var.target_group_green_name
+        }
       }
     }
   }

@@ -43,17 +43,14 @@ variable "vpc_cidr_block" {}
 variable "public_subnet_cidr" {}
 variable "availability_zone" {}
 variable "instance_type" {}
-variable "key_name" {}
+variable "key_name" {
+  description = "EC2 Key Pair name for SSH access"
+  type        = string
+}
 variable "github_oauth_token" {
   sensitive = true
 }
 variable "region" {}
-
-variable "alb_enabled" {
-  description = "Flag to control the creation of the ALB"
-  type        = bool
-  default     = false
-}
 
 variable "cluster_min_size" {
   description = "ECS cluster min size"
@@ -65,4 +62,20 @@ variable "cluster_max_size" {
   description = "ECS cluster max size"
   type        = number
   default     = 1
+}
+
+variable "ami_id" {
+  description = "AMI ID for EC2"
+  type        = string
+}
+
+variable "rds_username" {
+  description = "RDS master username"
+  type        = string
+}
+
+variable "rds_password" {
+  description = "RDS master password"
+  type        = string
+  sensitive   = true
 }
