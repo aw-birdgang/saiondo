@@ -3,20 +3,36 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      docker: 20
+      nodejs: 18
+      python: 3.9
   pre_build:
     commands:
-      - echo "$EC2_SSH_KEY" > /tmp/saiondo.pem
-      - chmod 600 /tmp/saiondo.pem
-      - chmod +x deploy.sh
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
-      - echo "Deploying backend/api, backend/llm, postgres to EC2"
-      - scp -i /tmp/saiondo.pem -o StrictHostKeyChecking=no -r ./api ./llm ./docker-compose.yml deploy.sh $EC2_USER@$EC2_HOST:/home/ec2-user/saiondo-backend/
-      - ssh -i /tmp/saiondo.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST '
-          cd /home/ec2-user/saiondo-backend &&
-          bash deploy.sh
-        '
+      - echo Build started on `date`
+      - echo Building the Docker images...
+      # NestJS API 빌드
+      - docker build -t $API_REPO_NAME:$IMAGE_TAG -f api.Dockerfile .
+      - docker tag $API_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$API_REPO_NAME:$IMAGE_TAG
+      # FastAPI LLM 빌드
+      - docker build -t $LLM_REPO_NAME:$IMAGE_TAG -f llm.Dockerfile .
+      - docker tag $LLM_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$LLM_REPO_NAME:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$API_REPO_NAME:$IMAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$LLM_REPO_NAME:$IMAGE_TAG
+      # 배포 매니페스트 생성
+      - printf '{"ImageURI":"%s"}' $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$API_REPO_NAME:$IMAGE_TAG > imageDefinitions.json
+
 artifacts:
   files:
-    - '**/*'
+    - imageDefinitions.json
+    - appspec.yaml
+    - taskdef.json
+  discard-paths: yes

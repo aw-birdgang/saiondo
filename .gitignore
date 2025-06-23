@@ -1,0 +1,41 @@
+# VS Code settings
+.vscode/
+
+#IntelliJ
+.idea
+
+# === Terraform 관련 ===
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+# === 환경/글로벌/모듈 디렉토리는 포함 ===
+!/environments/
+!/global/
+!/modules/
+
+# === 백업 파일 ===
+*.backup
+
+# === IDE/OS별 임시 파일 ===
+# VSCode
+.vscode/
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === 기타 ===
+# Terraform plan 파일 (로컬에서만 필요)
+*.plan
