@@ -6,13 +6,13 @@ module "prod_codepipeline_app_api" {
    vpc_id = module.prod_vpc.id
    public_subnets = module.prod_vpc.public_subnets
    private_subnets = module.prod_vpc.private_subnets
-   repository_in = "aw-birdgang/demo"
+   repository_in = var.repository_in
    codestar_connection_arn = module.prod_codestar_connection.codestar_arn
-   branch = "main"
+   branch = var.environment
    codebuild_timeout = "30"
-   codebuild_docker_file_path = "Dockerfile"
+   codebuild_docker_file_path = var.codebuild_docker_file_path
    codebuild_docker_image_tag = "latest"
-   codebuild_container_name = "demo-container-prod"
+   codebuild_container_name = var.codebuild_container_name
    s3_bucket_name = "${var.environment}-${var.project_name}=bucket"
    aws_ecs_task_definition_name = "${var.environment}-${var.project_name}-ecs-task-def"
    ecr_repository_name = module.prod_ecr.ecr_repository_name

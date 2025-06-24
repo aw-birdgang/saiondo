@@ -88,3 +88,20 @@ variable "rds_identifier" {
   description = "RDS instance identifier"
   type        = string
 }
+
+
+######################## pipeline app api ########################################
+variable "repository_in" {
+  description = "GitHub repository (예: aw-birdgang/saiondo)"
+  type        = string
+}
+
+variable "codebuild_docker_file_path" {
+  description = "빌드에 사용할 Dockerfile 경로"
+  type        = string
+}
+
+variable "codebuild_container_name" {
+  description = "빌드에 사용할 컨테이너 이름"
+  type        = string
+}
