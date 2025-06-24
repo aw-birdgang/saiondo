@@ -51,16 +51,6 @@ output "autoscaling_group_desired_capacity" {
   value       = one(aws_autoscaling_group.autoscaling_group[*].desired_capacity)
 }
 
-output "launch_configuration_id" {
-  description = "The ID of the launch configuration"
-  value       = one(aws_launch_configuration.launch_configuration[*].id)
-}
-
-output "launch_configuration_name" {
-  description = "The name of the launch configuration"
-  value       = one(aws_launch_configuration.launch_configuration[*].name)
-}
-
 ################################################################################
 # ECS Service Outputs (Conditional)
 ################################################################################
@@ -92,4 +82,12 @@ output "ecs_task_execution_role_arn" {
 output "ecs_task_role_arn" {
   description = "The ARN of the ECS task role for application access"
   value       = aws_iam_role.ecs_task_role.arn
+}
+
+output "launch_template_id" {
+  value = aws_launch_template.ecs_launch_template.id
+}
+
+output "launch_template_name" {
+  value = aws_launch_template.ecs_launch_template.name
 }

@@ -67,8 +67,24 @@ variable "cluster_max_size" {
   default     = 1
 }
 
-variable "db_password" {
-  description = "Password for the RDS database. Should be passed via .tfvars or environment variables."
+
+variable "rds_username" {
+  description = "RDS master username"
+  type        = string
+}
+
+variable "rds_password" {
+  description = "RDS master password"
   type        = string
   sensitive   = true
+}
+
+variable "rds_db_name" {
+  description = "RDS database name"
+  type        = string
+}
+
+variable "rds_identifier" {
+  description = "RDS instance identifier"
+  type        = string
 }

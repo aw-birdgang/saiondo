@@ -79,3 +79,18 @@ variable "rds_password" {
   type        = string
   sensitive   = true
 }
+
+variable "rds_db_name" {
+  description = "RDS database name"
+  type        = string
+}
+
+variable "rds_identifier" {
+  description = "RDS instance identifier"
+  type        = string
+}
+
+variable "security_group_id" {
+  description = "Security Group ID for EC2 instance"
+  type        = string
+}

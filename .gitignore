@@ -39,3 +39,13 @@ Desktop.ini
 # === 기타 ===
 # Terraform plan 파일 (로컬에서만 필요)
 *.plan
+
+# Local .pem key files
+*.pem
+
+# OS/Editor files
+*.swp
+*.swo
+
+# Backup files
+*~

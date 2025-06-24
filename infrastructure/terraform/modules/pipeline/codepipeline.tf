@@ -75,24 +75,41 @@ resource "aws_codepipeline" "codepipeline" {
   }
 
   stage {
-    name = "Deploy"
-
+    name = "Test"
     action {
-      name = "DeployToECS"
-      category = "Deploy"
-      owner = "AWS"
-      provider = "CodeDeployToECS"
+      name     = "Test"
+      category = "Test"
+      owner    = "AWS"
+      provider = "CodeBuild"
       input_artifacts = ["${var.name}-docker-build"]
+      output_artifacts = []
       version = "1"
-
       configuration = {
-        ApplicationName = aws_codedeploy_app.codedeploy_app.name
-        DeploymentGroupName = aws_codedeploy_deployment_group.codedeploy_deployment_group.deployment_group_name
-        TaskDefinitionTemplateArtifact = "${var.name}-docker-build"
-        AppSpecTemplateArtifact = "${var.name}-docker-build"
+        ProjectName = aws_codebuild_project.codebuild_project.name
+      }
+    }
+  }
+
+  dynamic "stage" {
+    for_each = local.create_codedeploy ? [1] : []
+    content {
+      name = "Deploy"
+      action {
+        name             = "Deploy"
+        category         = "Deploy"
+        owner            = "AWS"
+        provider         = "CodeDeploy"
+        input_artifacts  = ["${var.name}-docker-build"]
+        version          = "1"
+        configuration = {
+          ApplicationName     = aws_codedeploy_app.codedeploy_app.name
+          DeploymentGroupName = aws_codedeploy_deployment_group.codedeploy_deployment_group[0].deployment_group_name
+        }
       }
     }
   }
 }
 
-
+locals {
+  create_codedeploy = length(aws_codedeploy_deployment_group.codedeploy_deployment_group) > 0
+}

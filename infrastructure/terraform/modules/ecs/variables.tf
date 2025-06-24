@@ -1,7 +1,13 @@
 ############################## BASE ####################
 
+variable "project_name" {
+  description = "Project name"
+  type        = string
+}
+
 variable "environment" {
-  description = "environment"
+  description = "Environment (dev, prod, etc)"
+  type        = string
 }
 
 variable "name" {
@@ -14,6 +20,11 @@ variable "aws_region" {
   default = "ap-northeast-2"
 }
 
+variable "allowed_cidrs" {
+  description = "Allowed CIDR blocks for ECS service"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
 
 ############################## VPC ####################
 
@@ -96,4 +107,19 @@ variable "lb_target_group_blue_id" {
   description = "ALB/LB Target Group Blue ID"
   type        = string
   default     = null
+}
+
+variable "ami_id" {
+  description = "AMI ID for EC2 instance"
+  type        = string
+}
+
+variable "key_name" {
+  description = "EC2 Key Pair name"
+  type        = string
+}
+
+variable "security_group_id" {
+  description = "Security Group ID for EC2 instance"
+  type        = string
 }

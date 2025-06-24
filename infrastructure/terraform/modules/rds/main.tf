@@ -1,5 +1,3 @@
-# This defines a group of subnets within a VPC where the database instance will be located.
-# It enables the database instance to communicate within a specific VPC.
 resource "aws_db_subnet_group" "rds-subnet" {
   name = var.subnet_group_name
   description = "RDS subnet group"
@@ -46,7 +44,8 @@ resource "aws_db_instance" "this" {
   port                = var.port
   allocated_storage   = var.allocated_storage
   storage_type        = var.storage_type
-  username            = var.rds_username
-  password            = var.rds_password
-  # ... 기타 설정
+  username            = var.username
+  password            = var.password
+  skip_final_snapshot = var.skip_final_snapshot
+  final_snapshot_identifier = "mydb-final-snapshot-${var.environment}-${formatdate("YYYYMMDDhhmmss", timestamp())}"
 }

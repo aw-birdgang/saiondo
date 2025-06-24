@@ -105,37 +105,22 @@ resource "aws_ecs_service" "ecs_service" {
 
 #Terraform currently provides a Security Group resource with ingress and egress rules defined in-line and a Security Group Rule resource which manages one or more ingress or egress rules.
 resource "aws_security_group" "ecs_security_group" {
-  #(Optional, Forces new resource) Name of the security group. If omitted, Terraform will assign a random, unique name.
-  name = "${var.environment} ecs security group"
-  #(Optional, Forces new resource) VPC ID. Defaults to the region's default VPC.
-  vpc_id = var.vpc_id
-  #(Optional, Forces new resource) Security group description. Defaults to Managed by Terraform. Cannot be "". NOTE: This field maps to the AWS GroupDescription attribute, for which there is no Update API. If you'd like to classify your security groups in a way that can be updated, use tags.
-  description = "ECS demo"
+  name        = "${var.project_name}-${var.environment}-ecs-sg"
+  vpc_id      = var.vpc_id
+  description = "ECS security group for ${var.environment}"
 
-  #Optional) Configuration block for ingress rules. Can be specified multiple times for each ingress rule.
   ingress {
-    #(Required) Start port (or ICMP type number if protocol is icmp or icmpv6).
-    from_port = 3000
-    #(Required) End range port (or ICMP code if protocol is icmp).
-    to_port = 3000
-    #(Required) Protocol. If you select a protocol of -1 (semantically equivalent to all, which is not a valid value here), you must specify a from_port and to_port equal to 0. The supported values are defined in the IpProtocol argument on the IpPermission API reference. This argument is normalized to a lowercase value to match the AWS API requirement when using with Terraform 0.12.x and above, please make sure that the value of the protocol is specified as lowercase when using with older version of Terraform to avoid an issue during upgrade.
-    protocol = "tcp"
-    #(Optional) List of CIDR blocks.
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_cidrs
   }
 
-  #(Optional, VPC only) Configuration block for egress rules. Can be specified multiple times for each egress rule. Each egress block supports fields documented below. This argument is processed in attribute-as-blocks mode.
   egress {
-    #(Required) Start port (or ICMP type number if protocol is icmp)
-    from_port = 0
-    #(Required) End range port (or ICMP code if protocol is icmp).
-    to_port = 0
-    #(Required) Protocol. If you select a protocol of -1 (semantically equivalent to all, which is not a valid value here), you must specify a from_port and to_port equal to 0. The supported values are defined in the IpProtocol argument in the IpPermission API reference. This argument is normalized to a lowercase value to match the AWS API requirement when using Terraform 0.12.x and above. Please make sure that the value of the protocol is specified as lowercase when used with older version of Terraform to avoid issues during upgrade.
-    protocol  = "-1"
-    #(Optional) List of CIDR blocks.
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 

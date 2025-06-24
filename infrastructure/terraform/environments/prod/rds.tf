@@ -8,10 +8,10 @@ module "prod_rds" {
     port                    = 5432
     instance_class          = "db.t3.small"
     multi_az                = "true"
-    identifier              = "postgres-prod"
-    username                = "admin_prod"
-    password                = var.db_password
-    db_name                 = "siaondo_prod"
+    identifier              = var.rds_identifier
+    username                = var.rds_username
+    password                = var.rds_password
+    db_name                 = var.rds_db_name
     storage_type            = "gp3"
     allocated_storage       = 50
     max_allocated_storage   = 200
