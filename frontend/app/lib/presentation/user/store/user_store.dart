@@ -59,7 +59,7 @@ abstract class _UserStore with Store {
       userId = await _userRepository.getUserIdInPreference();
       print('[UserStore] initUser: userId=$userId');
       if (userId == null || userId!.isEmpty) {
-        print('[UserStore] userId가 null 또는 빈값입니다.');
+        print('[UserStore] userId가 null 또는 빈값 입니다.');
         return;
       }
       selectedUser = await _userRepository.fetchUserById(userId!);
