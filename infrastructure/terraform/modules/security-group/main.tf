@@ -108,8 +108,6 @@ resource "aws_security_group" "allow-mariadb" {
   }
 }
 
-
-
 resource "aws_security_group" "allow-mariadb-everyone" {
   vpc_id = var.vpc_id
   name = "allow-mariadb-everyone-${var.environment}"
@@ -122,6 +120,52 @@ resource "aws_security_group" "allow-mariadb-everyone" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow-backend" {
+  name        = "sample-backend-sg"
+  description = "Security group for SAIONDO backend (api, llm, postgres)"
+  vpc_id = var.vpc_id
+
+  # SSH (운영 시 내 IP만 허용 권장)
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # API 서버 (3000)
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # LLM 서버 (8000)
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # (선택) Postgres를 외부에서 접근해야 한다면 아래 주석 해제
+  # ingress {
+  #   from_port   = 5432
+  #   to_port     = 5432
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
+
+  # Outbound: 모든 트래픽 허용
   egress {
     from_port   = 0
     to_port     = 0

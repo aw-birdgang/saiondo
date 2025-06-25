@@ -41,7 +41,7 @@ PostgreSQL 데이터베이스와 함께 Docker Compose로 전체 서비스를 �
 
 
 #
-````
+```
 docker rm -f $(docker ps -aq)
 docker rmi -f $(docker images -aq)
 docker volume rm $(docker volume ls -q)
@@ -52,13 +52,46 @@ docker compose build --no-cache
 docker compose up
 docker compose up --build
 docker compose -f docker-compose.yml up --build
-````
+```
 
 #
-````
+```
 backend/
 ├── api/ # NestJS + Prisma 기반 메인 API 서버
 ├── llm/ # FastAPI 기반 LLM 서버
 ├── docker-compose.yml # 전체 서비스 오케스트레이션
 └── .env # 공통 환경변수
-````
+```
+
+
+
+
+
+#
+```
+# 1. git, docker, docker-compose 설치
+sudo yum update -y
+sudo yum install -y git docker
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ec2-user
+exit
+# (SSH 재접속)
+
+# 2. docker-compose 설치
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# 3. 코드 clone
+git clone https://github.com/aw-birdgang/saiondo.git
+cd saiondo/backend
+
+# 4. (필요시 .env 등 환경설정)
+# vi .env
+
+# 5. 서비스 실행
+docker-compose up -d
+
+# 6. 컨테이너 확인
+docker ps
+```
