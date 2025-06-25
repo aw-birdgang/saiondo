@@ -1,9 +1,10 @@
 # Saiondo LLM Server
 
-FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버입니다.
+**FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버**
 
-## 📁 프로젝트 폴더 구조**
+## 📁 프로젝트 폴더 구조
 
+```
 llm/
 ├── src/
 │   ├── main.py                # FastAPI 앱 진입점
@@ -26,16 +27,17 @@ llm/
 │   └── __init__.py
 ├── requirements.txt
 ├── Dockerfile
+├── .env.example               # 환경변수 예시 파일
 └── README.md
-
+```
 
 ## 🏗️ 아키텍처 및 개발 패턴
 
 - **FastAPI 기반 REST API 서버**
 - **서비스 계층 분리**:  
-  - `routes.py`에서 엔드포인트 정의 → `llm.py`/`providers/`에서 실제 LLM 호출
+  - `api/`에서 엔드포인트 정의 → `services/`에서 실제 비즈니스 로직 처리
 - **LLM Provider 추상화**:  
-  - `src/providers/`에 OpenAI, Claude 등 다양한 LLM 연동 구현
+  - `services/llm_provider.py`에서 다양한 LLM(OpenAI, Claude 등) 연동
 - **Pydantic 기반 데이터 검증/직렬화**
 - **확장성 고려**:  
   - 새로운 LLM, 분석 그래프, context 관리 등 손쉽게 추가 가능
@@ -49,7 +51,7 @@ llm/
 - **graph/**: 관계 분석 그래프, 노드 등
 - **mcp/**: 대화 context 등 도메인별 유틸리티
 
-## ⚙️ 기술 스택 및 주요 의존성
+## ⚙️ 주요 기술 스택
 
 - **Python 3.11+**
 - **FastAPI**: 웹 프레임워크
@@ -61,136 +63,123 @@ llm/
 
 > 주요 의존성은 `requirements.txt` 참고
 
-## 🚀 개발/실행/배포
+## 🚀 실행 방법 (로컬 개발 환경)
 
-1. **가상환경 생성 및 의존성 설치**
-   ```sh
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-2. **개발 서버 실행**
-   ```sh
-   uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-   ```
-3. **Docker 빌드/실행**
-   ```sh
-   docker build -t saiondo-llm .
-   docker run -p 8000:8000 saiondo-llm
-   ```
-
-### Docker로 실행
-
-- **docker-compose 연동 예시**
-  ```sh
-  docker compose up -d llm
-  ```
-
-## 🧪 테스트
-
-- (별도 테스트 프레임워크/코드 미포함, FastAPI 엔드포인트 테스트 권장)
-- 예시:
-  ```sh
-  curl http://localhost:8000/health
-  curl -X POST http://localhost:8000/chat -H "Content-Type: application/json" -d '{"prompt": "안녕!", "model": "openai"}'
-  ```
-
-## 🛠️ 주요 명령어
-
-- **가상환경 생성**
-  ```sh
-  python3 -m venv venv
-  source venv/bin/activate
-  ```
-- **의존성 설치**
-  ```sh
-  pip install -r requirements.txt
-  ```
-- **개발 서버 실행**
-  ```sh
-  uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
-  ```
-- **Docker 빌드/실행**
-  ```sh
-  docker build -t saiondo-llm .
-  docker run -p 8000:8000 saiondo-llm
-  ```
-
-## 🛡️ Trouble Shooting
-
-- **환경변수 누락**: OPENAI_API_KEY 등은 .env 또는 docker-compose로 주입 필요
-- **포트 충돌**: 8000 포트 사용 중인지 확인
-- **외부 LLM API Key 오류**: 올바른 키/권한 확인
-- **패키지 설치 오류**: python, pip, venv 버전 확인
-
-## 🏗️ 기여/확장
-
-- 새로운 LLM Provider 추가: `src/providers/`에 구현 후, `llm.py`에 등록
-- 새로운 분석/그래프 기능 추가: `src/graph/`, `src/mcp/`에 모듈 추가
-- FastAPI 라우터 확장: `src/routes.py`에 엔드포인트 추가
-
-## 📚 기타
-
-- API 서버(`api/`)에서 HTTP로 호출하여 통합 사용
-- 환경변수, API Key 등은 .env 또는 docker-compose로 관리
-- 예시 curl 명령어 및 샘플 요청/응답은 README 상단 참고
-
-## 🧑‍🔬 LangSmith 실험/트레이싱 연동 가이드
-
-LLM 호출 및 체인 실행 과정을 [LangSmith](https://smith.langchain.com/)로 추적/시각화할 수 있습니다.
-
-### 1. LangSmith 계정 및 API Key 준비
-
-- [LangSmith 가입](https://smith.langchain.com/)
-- 프로젝트 생성 후, **API Key** 발급
-
-### 2. 의존성 설치
+### 1. **가상환경 생성 및 의존성 설치**
 
 ```sh
-pip install langsmith
+cd llm
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-> `requirements.txt`에 `langsmith` 추가 권장
+### 2. **환경변수(.env) 설정**
 
-### 3. 환경변수 설정
+- `.env.example` 파일을 참고하여 `.env` 파일을 생성하고, 필요한 API Key 및 환경변수를 입력하세요.
+  ```
+  cp .env.example .env
+  # .env 파일을 열어 OPENAI_API_KEY 등 값 입력
+  ```
 
-`.env` 파일 또는 환경에 아래 값 추가:
+### 3. **개발 서버 실행**
+
+```sh
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=your-langsmith-api-key
-LANGCHAIN_PROJECT=your-project-name
-```
+- 서버가 정상적으로 실행되면, [http://localhost:8000/docs](http://localhost:8000/docs)에서 Swagger UI로 API를 테스트할 수 있습니다.
 
-### 4. 코드에 LangSmith 트레이서 적용
+## 🐳 Docker로 실행
 
-`src/providers/openai_client.py` 등 LLM 객체 생성부에 아래 코드 추가:
+### 1. **Docker 이미지 빌드**
 
-```python
-from langchain.callbacks.tracers.langchain import LangChainTracer
-import os
-
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY", "")
-os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "default")
-
-tracer = LangChainTracer()
-
-openai_llm = ChatOpenAI(
-    temperature=0.7,
-    model_name="gpt-3.5-turbo",
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
-    callbacks=[tracer],  # LangSmith 트레이서 콜백 추가
-)
+```sh
+docker build -t saiondo-llm .
 ```
 
-> **다른 LLM/체인/에이전트에도 `callbacks=[tracer]` 추가 시 자동 추적**
+### 2. **컨테이너 실행**
 
-### 5. LangSmith 대시보드에서 실험 결과 확인
+```sh
+docker run --env-file .env -p 8000:8000 saiondo-llm
+```
 
-- [LangSmith 대시보드](https://smith.langchain.com/)에서 실험/트레이스 결과를 시각적으로 확인
+- 환경변수는 `.env` 파일로 주입하거나, `-e` 옵션으로 직접 전달할 수 있습니다.
 
----
+### 3. **docker-compose 사용 예시**
 
-**참고:**  
-- API Key 등 민감 정보는 안전하게 관리하세요.
-- 자세한 사용법은 [LangSmith 공식문서](https://docs.smith.langchain.com/) 참고
+```sh
+docker compose up -d llm
+```
+- `docker-compose.yml` 파일에서 환경변수, 볼륨, 포트 등을 관리할 수 있습니다.
+
+## �� API 테스트 예시
+
+### 1. **헬스체크**
+
+```sh
+curl http://localhost:8000/health
+```
+
+### 2. **채팅 LLM 응답**
+
+```sh
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "안녕!", "model": "openai"}'
+```
+
+- Swagger UI([http://localhost:8000/docs](http://localhost:8000/docs))에서도 직접 테스트 가능
+
+## 🛠️ Trouble Shooting
+
+- **환경변수 누락**:  
+  - `.env` 파일에 OPENAI_API_KEY 등 필수 값이 있는지 확인
+- **포트 충돌**:  
+  - 8000 포트가 이미 사용 중이면 다른 포트로 변경
+- **외부 LLM API Key 오류**:  
+  - 올바른 키/권한인지 확인
+- **패키지 설치 오류**:  
+  - python, pip, venv 버전 확인
+
+## 🏗️ 확장/기여 가이드
+
+- **새로운 LLM Provider 추가**:  
+  - `src/services/llm_provider.py`에 구현 후, 서비스에 등록
+- **새로운 분석/그래프 기능 추가**:  
+  - `src/graph/`, `src/mcp/`에 모듈 추가
+- **FastAPI 라우터 확장**:  
+  - `src/api/`에 엔드포인트 추가
+
+## 🧑‍🔬 LangSmith 실험/트레이싱 연동
+
+1. **LangSmith 계정 및 API Key 준비**  
+   - [LangSmith 가입](https://smith.langchain.com/) 후 API Key 발급
+
+2. **의존성 설치**  
+   ```sh
+   pip install langsmith
+   ```
+
+3. **환경변수 설정**  
+   - `.env`에 아래 값 추가:
+     ```
+     LANGCHAIN_TRACING_V2=true
+     LANGCHAIN_API_KEY=your-langsmith-api-key
+     LANGCHAIN_PROJECT=your-project-name
+     ```
+
+4. **코드에 LangSmith 트레이서 적용**  
+   - LLM 객체 생성 시 `callbacks=[tracer]` 추가
+
+5. **LangSmith 대시보드에서 실험 결과 확인**  
+   - [LangSmith 대시보드](https://smith.langchain.com/)에서 확인
+
+## 📚 기타 참고
+
+- API 서버(`api/`)에서 HTTP로 호출하여 통합 사용
+- 환경변수, API Key 등은 `.env` 또는 docker-compose로 관리
+- 예시 curl 명령어 및 샘플 요청/응답은 README 상단 참고
+
+## ��‍🔬 문의/이슈
+
+- 프로젝트 구조, 실행, 확장 관련 문의는 [GitHub Issues] 또는 팀 Slack 채널을 이용해 주세요.
