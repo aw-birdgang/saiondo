@@ -1,135 +1,128 @@
 @startuml
-entity "User" as User {
-  *id : String
-  name : String
-  email : String
-  password : String
-  birthDate : DateTime
-  gender : Gender
-  fcmToken : String
-  point : Int
-  walletId : String
-  isSubscribed : Boolean
-  subscriptionUntil : DateTime
+skinparam linetype ortho
+skinparam rectangle {
+  RoundCorner 10
 }
 
-entity "Wallet" as Wallet {
-  *id : String
-  address : String
-  mnemonic : String
-  privateKey : String
-  tokenBalance : String
-  derivationIndex : Int
+entity User {
+  * id : String
+  * email : String
+  * password : String
+  * gender : Gender
+  * birthDate : DateTime
 }
 
-entity "Channel" as Channel {
-  *id : String
-  inviteCode : String
-  status : String
-  startedAt : DateTime
-  endedAt : DateTime
-  anniversary : DateTime
-  keywords : String
+entity UserProfile {
+  * id : String
+  * userId : String
+  * name : String
+  * fcmToken : String
+  * point : Int
 }
 
-entity "ChannelMember" as ChannelMember {
-  *id : String
-  channelId : String
-  userId : String
-  role : String
-  joinedAt : DateTime
+entity UserSubscription {
+  * id : String
+  * userId : String
+  * isSubscribed : Boolean
+  * subscriptionUntil : DateTime
 }
 
-entity "Assistant" as Assistant {
-  *id : String
-  userId : String
-  channelId : String
+entity Wallet {
+  * id : String
+  * userId : String
+  * address : String
+  * privateKey : String
+  * tokenBalance : String
 }
 
-entity "Chat" as Chat {
-  *id : String
-  assistantId : String
-  channelId : String
-  userId : String
-  sender : String
-  message : String
-  createdAt : DateTime
+entity Channel {
+  * id : String
+  * inviteCode : String
+  * status : String
+  * startedAt : DateTime
 }
 
-entity "PersonaProfile" as PersonaProfile {
-  *id : String
-  userId : String
-  categoryCodeId : String
-  content : String
-  isStatic : Boolean
-  source : ProfileSource
-  confidenceScore : Float
+entity ChannelMember {
+  * id : String
+  * userId : String
+  * channelId : String
+  * role : String
+  * joinedAt : DateTime
 }
 
-entity "CategoryCode" as CategoryCode {
-  *id : String
-  code : String
-  description : String
+entity Chat {
+  * id : String
+  * channelId : String
+  * senderType : String << 'user' or 'assistant' >>
+  * senderId : String
+  * message : String
+  * createdAt : DateTime
 }
 
-entity "Advice" as Advice {
-  *id : String
-  channelId : String
-  advice : String
-  generatedById : String
+entity Assistant {
+  * id : String
+  * name : String
 }
 
-entity "CoupleAnalysis" as CoupleAnalysis {
-  *id : String
-  channelId : String
-  rawResult : String
+entity CoupleAnalysis {
+  * id : String
+  * channelId : String
+  * rawResult : String
 }
 
-entity "PushSchedule" as PushSchedule {
-  *id : String
-  userId : String
-  scheduledAt : DateTime
-  sentAt : DateTime
-  status : PushStatus
+entity PersonaProfile {
+  * id : String
+  * userId : String
+  * categoryCodeId : String
+  * content : String
+  * confidenceScore : Float
+  * isStatic : Boolean
 }
 
-entity "UserAnswer" as UserAnswer {
-  *id : String
-  pushScheduleId : String
-  answerText : String
-  createdAt : DateTime
+entity CategoryCode {
+  * id : String
+  * code : String
+  * description : String
 }
 
-' 관계 정의
-User ||--o{ Wallet : ""
-User ||--o{ ChannelMember : ""
-User ||--o{ Assistant : ""
-User ||--o{ Chat : ""
-User ||--o{ PersonaProfile : ""
-User ||--o{ PushSchedule : ""
-User ||--o{ Advice : "generatedReports"
-User ||--o{ UserAnswer : ""
-Wallet ||--|| User : ""
-Channel ||--o{ ChannelMember : ""
-Channel ||--o{ Assistant : ""
-Channel ||--o{ Chat : ""
-Channel ||--o{ Advice : ""
-Channel ||--o{ CoupleAnalysis : ""
-ChannelMember }o--|| Channel : ""
-ChannelMember }o--|| User : ""
-Assistant }o--|| User : ""
-Assistant }o--|| Channel : ""
-Assistant ||--o{ Chat : ""
-Chat }o--|| Assistant : ""
-Chat }o--|| Channel : ""
-Chat }o--|| User : ""
-PersonaProfile }o--|| User : ""
-PersonaProfile }o--|| CategoryCode : ""
-CategoryCode ||--o{ PersonaProfile : ""
-Advice }o--|| Channel : ""
-Advice }o--|| User : "generatedBy"
-CoupleAnalysis }o--|| Channel : ""
-PushSchedule }o--|| User : ""
-PushSchedule ||--o{ UserAnswer : ""
-UserAnswer }o--|| PushSchedule : ""
+entity PushSchedule {
+  * id : String
+  * userId : String
+  * scheduledAt : DateTime
+  * sentAt : DateTime
+  * status : PushStatus
+}
+
+entity UserAnswer {
+  * id : String
+  * pushScheduleId : String
+  * answerText : String
+  * createdAt : DateTime
+}
+
+entity Advice {
+  * id : String
+  * channelId : String
+  * advice : String
+  * generatedById : String
+}
+
+' 관계 설정
+User ||--o{ UserProfile
+User ||--o{ Wallet
+User ||--o{ ChannelMember
+User ||--o{ PushSchedule
+User ||--o{ UserSubscription
+User ||--o{ PersonaProfile
+
+Channel ||--o{ ChannelMember
+Channel ||--o{ Chat
+Channel ||--o{ CoupleAnalysis
+Channel ||--o{ Advice
+
+Assistant ||--o{ Chat
+
+PushSchedule ||--o{ UserAnswer
+PersonaProfile }o--|| CategoryCode
+
 @enduml

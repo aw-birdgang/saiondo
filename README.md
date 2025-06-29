@@ -10,101 +10,16 @@
 saiondo/
 ├── backend/
 │   ├── api/
-│   │   ├── prisma/
-│   │   ├── src/
-│   │   ├── test/
-│   │   ├── puml/
-│   │   ├── node_modules/
-│   │   ├── Dockerfile
-│   │   ├── Dockerfile.dev
-│   │   ├── docker-compose.yml
-│   │   ├── package.json
-│   │   ├── yarn.lock
-│   │   ├── README.md
-│   │   └── ... (기타 설정/환경 파일)
 │   ├── llm/
-│   │   ├── src/
-│   │   ├── venv/
-│   │   ├── puml/
-│   │   ├── docs/
-│   │   ├── Dockerfile
-│   │   ├── Dockerfile.dev
-│   │   ├── requirements.txt
-│   │   ├── README.md
-│   │   └── ... (기타 설정/환경 파일)
 │   ├── buildspec.yml
 │   ├── deploy.sh
 │   ├── docker-compose.yml
-│   └── README.md
 ├── frontend/
 │   └── app/
-│       ├── lib/
-│       ├── assets/
-│       ├── test/
-│       ├── android/
-│       ├── ios/
-│       ├── macos/
-│       ├── linux/
-│       ├── windows/
-│       ├── web/
-│       ├── pubspec.yaml
-│       ├── pubspec.lock
-│       ├── README.md
-│       └── ... (기타 설정/환경 파일)
 ├── infrastructure/
 │   ├── terraform/
-│   │   ├── environments/
-│   │   ├── global/
-│   │   ├── modules/
-│   │   ├── scripts/
-│   │   ├── puml/
-│   │   ├── docs/
-│   │   ├── README.md
-│   │   └── ... (기타 설정/환경 파일)
-│   ├── puml/
-│   ├── docs/
-│   ├── .idea/
-│   └── README.md
 ├── web3/
-│   ├── contracts/
-│   ├── scripts/
-│   ├── artifacts/
-│   ├── cache/
-│   ├── node_modules/
-│   ├── puml/
-│   ├── hardhat.config.js
-│   ├── package.json
-│   ├── package-lock.json
-│   ├── yarn.lock
-│   ├── README.md
-│   ├── env.sample
-│   └── ... (기타 설정/환경 파일)
 ├── docs/
-│   ├── images/
-│   │   ├── api/
-│   │   │   ├── architecture.png
-│   │   │   ├── domain_infra.png
-│   │   │   └── erd.png
-│   │   ├── llm/
-│   │   │   └── architecture.png
-│   │   ├── web3/
-│   │   │   └── architecture.png
-│   │   ├── infra/
-│   │   │   ├── dev-architecture-full.png
-│   │   │   └── prod-architecture-full.png
-│   │   └── app/
-│   │       ├── architecture_component.png
-│   │       ├── 4-6-1.webp
-│   │       ├── 4-6-2.webp
-│   │       ├── 4-6-3.webp
-│   │       ├── 4-6-4.webp
-│   │       ├── 4-6-5.webp
-│   │       ├── 4-6-6.webp
-│   │       └── 4-6-7.webp
-│   ├── readme_web3.md
-│   ├── readme_business.md
-│   ├── readme_dev.md
-│   └── ... (기타 문서)
 └── README.md
 ```
 
