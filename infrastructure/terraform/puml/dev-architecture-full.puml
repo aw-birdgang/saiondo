@@ -7,6 +7,7 @@ skinparam databaseRoundCorner 20
 skinparam cloudBorderStyle dashed
 skinparam defaultFontSize 14
 skinparam ArrowFontColor #333366
+skinparam ArrowFontSize 13
 
 actor "User" as user
 rectangle "GitHub\n<size:10>[Source/Trigger]" as github
@@ -38,21 +39,52 @@ cloud "AWS Cloud (Dev)" {
   }
 }
 
-user -down-> ecs_service : "<color:blue>1. HTTPS (Public IP)</color>"
-igw -right-> ecs_service : "<color:blue>2. IGW</color>"
-ecs_service -down-> ec2 : "<color:blue>3. On EC2</color>"
-ec2 -down-> rds : "<color:blue>4. DB</color>"
+' 사용자 → 서비스 흐름
+user -down-> ecs_service : "<b><color:blue>1. HTTPS (Public IP)</color></b>"
+igw -right-> ecs_service : "<b><color:blue>2. IGW</color></b>"
+ecs_service -down-> ec2 : "<b><color:blue>3. On EC2</color></b>"
+ec2 -down-> rds : "<b><color:blue>4. DB</color></b>"
 
-github --> codestar : "<color:darkgreen>1. PR/Push</color>"
-codestar -down-> pipeline : "<color:darkgreen>2. Webhook</color>"
-pipeline -down--> codebuild : "<color:darkgreen>3. Build</color>"
-codebuild --> s3 : "<color:darkgreen>4. Artifact</color>"
-codebuild -down-> ecr : "<color:darkgreen>5. Docker</color>"
-pipeline -right-> codedeploy : "<color:darkgreen>6. Deploy</color>"
-codedeploy -down-> ecs_service : "<color:darkgreen>7. ECS Deploy</color>"
+' CI/CD 파이프라인 흐름
+github --> codestar : "<b><color:darkgreen>1. PR/Push</color></b>"
+codestar -down-> pipeline : "<b><color:darkgreen>2. Webhook</color></b>"
+pipeline -down--> codebuild : "<b><color:darkgreen>3. Build</color></b>"
+codebuild --> s3 : "<b><color:darkgreen>4. Artifact</color></b>"
+codebuild -down-> ecr : "<b><color:darkgreen>5. Docker</color></b>"
+pipeline -right-> codedeploy : "<b><color:darkgreen>6. Deploy</color></b>"
+codedeploy -down-> ecs_service : "<b><color:darkgreen>7. ECS Deploy</color></b>"
 
-ecs_service --> sg_ecs : "<color:purple>1. SG</color>"
-rds -right-> sg_rds : "<color:purple>2. SG</color>"
-codebuild -up-> iam : "<color:orange>3. IAM</color>"
-ecs_service -up-> iam : "<color:orange>4. TaskRole</color>"
+' 보안 그룹/권한 흐름
+ecs_service --> sg_ecs : "<b><color:purple>1. SG</color></b>"
+rds -right-> sg_rds : "<b><color:purple>2. SG</color></b>"
+codebuild -up-> iam : "<b><color:orange>3. IAM</color></b>"
+ecs_service -up-> iam : "<b><color:orange>4. TaskRole</color></b>"
+
+' 설명 주석
+note right of pipeline
+  <b>CodePipeline</b>
+  - 전체 CI/CD 오케스트레이션
+end note
+
+note right of codebuild
+  <b>CodeBuild</b>
+  - 소스 빌드, 도커 이미지 생성
+end note
+
+note right of codedeploy
+  <b>CodeDeploy</b>
+  - ECS Blue/Green 배포
+end note
+
+note right of ecs_service
+  <b>ECS Service</b>
+  - 컨테이너 오케스트레이션
+  - 퍼블릭 IP 할당
+end note
+
+note right of rds
+  <b>RDS</b>
+  - PostgreSQL 등 관계형 DB
+end note
+
 @enduml

@@ -5,50 +5,93 @@ skinparam package {
   BorderColor #333366
   FontColor #222244
   FontSize 15
+  Shadowing true
 }
 skinparam rectangle {
   BackgroundColor #F0F8FF
   BorderColor #333366
   FontColor #222244
+  Shadowing true
 }
 skinparam ArrowColor #336699
 skinparam ArrowFontColor #336699
 skinparam ArrowFontSize 13
 
-' 주요 패키지
+' FastAPI 엔트리포인트
 package "FastAPI App" {
-  [main.py]
+  [main.py] <<entry>>
 }
 
+' API 라우터 계층
 package "API Routers" {
-  [prompt.py]
-  [chat_relationship_coach.py]
+  [prompt.py] <<router>>
+  [chat_relationship_coach.py] <<router>>
 }
 
+' 서비스 계층
 package "Services" {
-  [llm_provider.py]
-  [prompt_service.py]
-  [chat_relationship_coach_service.py]
+  [llm_provider.py] <<service>>
+  [prompt_service.py] <<service>>
+  [chat_relationship_coach_service.py] <<service>>
 }
 
+' LLM Provider 계층
 package "Providers" {
-  [openai_client.py]
-  [claude_client.py]
+  [openai_client.py] <<provider>>
+  [claude_client.py] <<provider>>
 }
 
+' 데이터 모델/스키마
 package "Schemas" {
-  [feedback.py]
-  [couple_analysis.py]
+  [feedback.py] <<schema>>
+  [couple_analysis.py] <<schema>>
 }
 
+' 환경설정
 package "Config" {
-  [config.py]
+  [config.py] <<config>>
 }
 
 ' 관계 및 설명
-[main.py] --> [API Routers] : "라우터 등록"
-[API Routers] --> [Services] : "비즈니스 로직 호출"
-[Services] --> [Providers] : "LLM API 연동"
-[API Routers] --> [Schemas] : "요청/응답 모델"
-[Services] --> [Config] : "환경설정/모델선택"
+[main.py] --> [prompt.py] : "라우터 등록"
+[main.py] --> [chat_relationship_coach.py] : "라우터 등록"
+
+[prompt.py] --> [prompt_service.py] : "비즈니스 로직 호출"
+[chat_relationship_coach.py] --> [chat_relationship_coach_service.py] : "비즈니스 로직 호출"
+
+[prompt_service.py] --> [llm_provider.py] : "LLM 연동"
+[chat_relationship_coach_service.py] --> [llm_provider.py] : "LLM 연동"
+
+[llm_provider.py] --> [openai_client.py] : "OpenAI 연동"
+[llm_provider.py] --> [claude_client.py] : "Claude 연동"
+
+[prompt.py] --> [feedback.py] : "요청/응답 모델"
+[chat_relationship_coach.py] --> [couple_analysis.py] : "요청/응답 모델"
+
+[llm_provider.py] --> [config.py] : "환경설정"
+[prompt_service.py] --> [config.py] : "환경설정"
+[chat_relationship_coach_service.py] --> [config.py] : "환경설정"
+
+' 설명 주석
+note right of [main.py]
+  <b>FastAPI Entry</b>
+  - 앱 진입점
+  - 라우터 등록
+end note
+
+note right of [llm_provider.py]
+  <b>LLM Provider</b>
+  - OpenAI, Claude 등 외부 LLM 연동
+end note
+
+note right of [prompt_service.py]
+  <b>Service Layer</b>
+  - 프롬프트 처리 비즈니스 로직
+end note
+
+note right of [feedback.py]
+  <b>Schema</b>
+  - 요청/응답 데이터 모델
+end note
+
 @enduml

@@ -5,11 +5,13 @@ skinparam package {
   BorderColor #333366
   FontColor #222244
   FontSize 15
+  Shadowing true
 }
 skinparam rectangle {
   BackgroundColor #F0F8FF
   BorderColor #333366
   FontColor #222244
+  Shadowing true
 }
 skinparam ArrowColor #336699
 skinparam ArrowFontColor #336699
@@ -19,71 +21,95 @@ skinparam ArrowFontSize 13
 
 package "lib/" {
 
-  package "main.dart" as main
+  rectangle "main.dart" as main
 
   package "core" {
-    [Extensions]
-    [UI Components]
+    rectangle "Extensions"
+    rectangle "UI Components"
   }
 
   package "data" {
-    [Repositories Impl]
-
+    rectangle "Repositories Impl"
     package "DataSources" {
-      [RemoteDataSource]
-      [LocalDataSource]
-      [Error Adapter]
-      [Network Client (Dio/http)]
+      rectangle "RemoteDataSource"
+      rectangle "LocalDataSource"
+      rectangle "Error Adapter"
+      rectangle "Network Client (Dio/http)"
     }
-
-    [Models (DTO)]
-    [Mappers (DTO <-> Entity)]
+    rectangle "Models (DTO)"
+    rectangle "Mappers (DTO <-> Entity)"
   }
 
   package "domain" {
-    [UseCases]
-    [Repositories (Abstraction)]
-    [Entities]
+    rectangle "UseCases"
+    rectangle "Repositories (Abstraction)"
+    rectangle "Entities"
   }
 
   package "presentation" {
-    [Screens]
-    [Stores (MobX/Riverpod)]
+    rectangle "Screens"
+    rectangle "Stores (MobX/Riverpod)"
   }
 
   package "di" {
-    [AppModule / FeatureModule]
+    rectangle "AppModule / FeatureModule"
   }
 }
 
 ' === 의존성 관계 ===
 
-main --> [AppModule / FeatureModule] : "앱 초기화 및 DI 구성"
-[AppModule / FeatureModule] --> [Repositories Impl]
-[AppModule / FeatureModule] --> [UseCases]
-[AppModule / FeatureModule] --> [Stores (MobX/Riverpod)]
+main --> "AppModule / FeatureModule" : "앱 초기화 및 DI 구성"
+"AppModule / FeatureModule" --> "Repositories Impl"
+"AppModule / FeatureModule" --> "UseCases"
+"AppModule / FeatureModule" --> "Stores (MobX/Riverpod)"
 
-[Screens] --> [Stores (MobX/Riverpod)]
-[Screens] --> [UseCases]
-[Stores (MobX/Riverpod)] --> [UseCases]
+"Screens" --> "Stores (MobX/Riverpod)"
+"Screens" --> "UseCases"
+"Stores (MobX/Riverpod)" --> "UseCases"
 
-[UseCases] --> [Repositories (Abstraction)]
-[Repositories (Abstraction)] <.. [Repositories Impl]
+"UseCases" --> "Repositories (Abstraction)"
+"Repositories (Abstraction)" <.. "Repositories Impl"
 
-[Repositories Impl] --> [RemoteDataSource]
-[Repositories Impl] --> [LocalDataSource]
-[Repositories Impl] --> [Mappers (DTO <-> Entity)]
+"Repositories Impl" --> "RemoteDataSource"
+"Repositories Impl" --> "LocalDataSource"
+"Repositories Impl" --> "Mappers (DTO <-> Entity)"
 
-[RemoteDataSource] --> [Network Client (Dio/http)]
-[RemoteDataSource] --> [Error Adapter] : "예외 처리"
-[RemoteDataSource] --> [Models (DTO)]
+"RemoteDataSource" --> "Network Client (Dio/http)"
+"RemoteDataSource" --> "Error Adapter" : "예외 처리"
+"RemoteDataSource" --> "Models (DTO)"
 
-[LocalDataSource] --> [Models (DTO)]
+"LocalDataSource" --> "Models (DTO)"
 
-[Mappers (DTO <-> Entity)] --> [Models (DTO)]
-[Mappers (DTO <-> Entity)] --> [Entities]
+"Mappers (DTO <-> Entity)" --> "Models (DTO)"
+"Mappers (DTO <-> Entity)" --> "Entities"
 
-[UI Components] --> [Screens]
-[Extensions] --> [Screens]
+"UI Components" --> "Screens"
+"Extensions" --> "Screens"
+
+' 설명 주석
+note top of main
+  <b>앱 진입점</b>
+  - 의존성 주입, DI 초기화
+end note
+
+note right of "UseCases"
+  <b>비즈니스 로직</b>
+  - 도메인 중심 유스케이스
+end note
+
+note right of "Repositories (Abstraction)"
+  <b>도메인 추상화</b>
+  - 데이터 접근 인터페이스
+end note
+
+note right of "Repositories Impl"
+  <b>구현체</b>
+  - 실제 데이터 접근 (API, DB 등)
+end note
+
+note right of "Stores (MobX/Riverpod)"
+  <b>상태관리</b>
+  - 프레젠테이션 계층 상태
+end note
 
 @enduml
