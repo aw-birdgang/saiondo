@@ -5,11 +5,13 @@ skinparam package {
   BorderColor #333366
   FontColor #222244
   FontSize 15
+  Shadowing true
 }
 skinparam rectangle {
   BackgroundColor #F0F8FF
   BorderColor #333366
   FontColor #222244
+  Shadowing true
 }
 skinparam ArrowColor #336699
 skinparam ArrowFontColor #336699
@@ -17,49 +19,49 @@ skinparam ArrowFontSize 13
 
 ' 서버/엔드포인트
 package "NestJS Server" {
-  [ChannelService]
+  [ChannelService] <<service>>
 }
 
 ' 도메인 계층
 package "Domain" {
-  [Channel (domain model)]
+  [Channel (domain model)] <<entity>>
 }
 
 ' 인프라 계층
 package "Infrastructure" {
   package "Persistence" {
-    [ChannelRepository (abstract)]
+    [ChannelRepository (abstract)] <<interface>>
     package "Relational" {
-      [RelationalChannelRepository]
-      [ChannelEntity]
-      [ChannelMapper]
-      [PrismaService]
+      [RelationalChannelRepository] <<repository>>
+      [ChannelEntity] <<entity>>
+      [ChannelMapper] <<mapper>>
+      [PrismaService] <<service>>
     }
     package "Document" {
-      [DocumentChannelRepository]
-      [DocumentChannelEntity]
-      [DocumentChannelMapper]
-      [DocumentDbService]
+      [DocumentChannelRepository] <<repository>>
+      [DocumentChannelEntity] <<entity>>
+      [DocumentChannelMapper] <<mapper>>
+      [DocumentDbService] <<service>>
     }
   }
 }
 
 ' ORM/DB
 package "Prisma ORM" {
-  [@prisma/client.Channel]
-  [PrismaClient]
-  [DB (Postgres)]
+  [@prisma/client.Channel] <<entity>>
+  [PrismaClient] <<service>>
+  [DB (Postgres)] <<database>>
 }
 
 ' Document DB
 package "DocumentDB" {
-  [DocumentDbClient]
-  [DB (Document)]
+  [DocumentDbClient] <<service>>
+  [DB (Document)] <<database>>
 }
 
 ' 관계
-[ChannelService] --> [ChannelRepository (abstract)]
-[ChannelService] --> [Channel (domain model)]
+[ChannelService] --> [ChannelRepository (abstract)] : "의존성 주입"
+[ChannelService] --> [Channel (domain model)] : "비즈니스 로직"
 
 [ChannelRepository (abstract)] <|-- [RelationalChannelRepository]
 [ChannelRepository (abstract)] <|-- [DocumentChannelRepository]
@@ -84,5 +86,33 @@ package "DocumentDB" {
 [DocumentChannelEntity] <..> [Channel (domain model)] : "Entity ↔ Domain"
 [DocumentDbService] --> [DocumentDbClient]
 [DocumentDbClient] --> [DB (Document)]
+
+' 설명 주석
+note top of [ChannelService]
+  <b>Application Service</b>
+  - 도메인/인프라 계층 의존
+  - 비즈니스 로직 처리
+end note
+
+note right of [ChannelRepository (abstract)]
+  <b>Persistence Interface</b>
+  - 저장소 추상화
+  - 구현체 DI
+end note
+
+note right of [RelationalChannelRepository]
+  <b>RDB 구현체</b>
+  - Prisma 기반
+end note
+
+note right of [DocumentChannelRepository]
+  <b>DocumentDB 구현체</b>
+  - NoSQL 기반
+end note
+
+note bottom of [Channel (domain model)]
+  <b>Domain Model</b>
+  - 핵심 비즈니스 엔티티
+end note
 
 @enduml

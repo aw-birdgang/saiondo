@@ -1,52 +1,76 @@
 @startuml
-' 스타일
 skinparam package {
   BackgroundColor #F8F8FF
   BorderColor #333366
   FontColor #222244
   FontSize 15
+  Shadowing true
 }
 skinparam rectangle {
   BackgroundColor #F0F8FF
   BorderColor #333366
   FontColor #222244
+  Shadowing true
 }
 skinparam ArrowColor #336699
 skinparam ArrowFontColor #336699
 skinparam ArrowFontSize 13
+skinparam defaultTextAlignment center
 
-' 주요 패키지
-package "NestJS App" {
-  [main.ts]
-  [app.module.ts]
+package "NestJS App" as nestjs #F8F8FF {
+  [main.ts] as main
+  [app.module.ts] as appmod
 }
 
-package "Core" {
-  [PrismaModule]
-  [ConfigModule]
-  [LoggingInterceptor]
+package "Core" as core #F0F8FF {
+  [PrismaModule] as prisma
+  [ConfigModule] as config
+  [LoggingInterceptor] as logging
 }
 
-package "Domain Modules" {
-  [UserModule]
-  [ChannelModule]
-  [Web3Module]
-  [LlmModule]
+package "Domain Modules" as domain #F8F8FF {
+  [UserModule] as user
+  [ChannelModule] as channel
+  [Web3Module] as web3
+  [LlmModule] as llm
 }
 
-package "Swagger" {
-  [SwaggerModuleConfig]
+package "Swagger" as swagger #F0F8FF {
+  [SwaggerModuleConfig] as swaggerconf
 }
 
-' 관계 및 설명
-[main.ts] --> [app.module.ts] : "앱 부트스트랩"
-[app.module.ts] --> [ConfigModule] : "환경설정/DI"
-[app.module.ts] --> [PrismaModule] : "DB(Prisma ORM)"
-[app.module.ts] --> [Domain Modules] : "도메인별 모듈 DI"
-[main.ts] --> [SwaggerModuleConfig] : "API 문서화"
-[main.ts] --> [LoggingInterceptor] : "글로벌 로깅"
-[Domain Modules] --> [PrismaModule] : "DB 접근"
-[Domain Modules] --> [ConfigModule] : "환경설정"
-[Domain Modules] --> [Web3Module] : "스마트컨트랙트 연동"
-[Domain Modules] --> [LlmModule] : "LLM 연동"
+main --> appmod : "앱 부트스트랩"
+appmod --> config : "환경설정/DI"
+appmod --> prisma : "DB(Prisma ORM)"
+appmod --> domain : "도메인별 모듈 DI"
+main --> swaggerconf : "API 문서화"
+main --> logging : "글로벌 로깅"
+domain --> prisma : "DB 접근"
+domain --> config : "환경설정"
+domain --> web3 : "스마트컨트랙트 연동"
+domain --> llm : "LLM 연동"
+
+note right of main
+  <b>NestJS Entry</b>
+  - 서버 진입점
+  - 글로벌 설정/로깅
+end note
+
+note left of domain
+  <b>Domain Modules</b>
+  - User, Channel, Web3, LLM 등
+  - 각 도메인별 서비스/컨트롤러
+end note
+
+note right of prisma
+  <b>PrismaModule</b>
+  - DB ORM
+  - 트랜잭션/모델 관리
+end note
+
+note right of swaggerconf
+  <b>SwaggerModuleConfig</b>
+  - API 문서 자동화
+end note
+
 @enduml

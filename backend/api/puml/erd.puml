@@ -1,10 +1,21 @@
 @startuml
+' 스타일 개선
 skinparam linetype ortho
 skinparam rectangle {
   RoundCorner 10
+  BackgroundColor #F8F8FF
+  BorderColor #333366
+  FontColor #222244
 }
+skinparam entity {
+  BackgroundColor #F0F8FF
+  BorderColor #333366
+  FontColor #222244
+}
+hide circle
 
-entity User {
+' 엔티티 정의
+entity "User" as User {
   * id : String
   * email : String
   * password : String
@@ -12,7 +23,7 @@ entity User {
   * birthDate : DateTime
 }
 
-entity UserProfile {
+entity "UserProfile" as UserProfile {
   * id : String
   * userId : String
   * name : String
@@ -20,14 +31,14 @@ entity UserProfile {
   * point : Int
 }
 
-entity UserSubscription {
+entity "UserSubscription" as UserSubscription {
   * id : String
   * userId : String
   * isSubscribed : Boolean
   * subscriptionUntil : DateTime
 }
 
-entity Wallet {
+entity "Wallet" as Wallet {
   * id : String
   * userId : String
   * address : String
@@ -35,14 +46,14 @@ entity Wallet {
   * tokenBalance : String
 }
 
-entity Channel {
+entity "Channel" as Channel {
   * id : String
   * inviteCode : String
   * status : String
   * startedAt : DateTime
 }
 
-entity ChannelMember {
+entity "ChannelMember" as ChannelMember {
   * id : String
   * userId : String
   * channelId : String
@@ -50,27 +61,27 @@ entity ChannelMember {
   * joinedAt : DateTime
 }
 
-entity Chat {
+entity "Chat" as Chat {
   * id : String
   * channelId : String
-  * senderType : String << 'user' or 'assistant' >>
+  * senderType : String <<'user' or 'assistant'>>
   * senderId : String
   * message : String
   * createdAt : DateTime
 }
 
-entity Assistant {
+entity "Assistant" as Assistant {
   * id : String
   * name : String
 }
 
-entity CoupleAnalysis {
+entity "CoupleAnalysis" as CoupleAnalysis {
   * id : String
   * channelId : String
   * rawResult : String
 }
 
-entity PersonaProfile {
+entity "PersonaProfile" as PersonaProfile {
   * id : String
   * userId : String
   * categoryCodeId : String
@@ -79,13 +90,13 @@ entity PersonaProfile {
   * isStatic : Boolean
 }
 
-entity CategoryCode {
+entity "CategoryCode" as CategoryCode {
   * id : String
   * code : String
   * description : String
 }
 
-entity PushSchedule {
+entity "PushSchedule" as PushSchedule {
   * id : String
   * userId : String
   * scheduledAt : DateTime
@@ -93,14 +104,14 @@ entity PushSchedule {
   * status : PushStatus
 }
 
-entity UserAnswer {
+entity "UserAnswer" as UserAnswer {
   * id : String
   * pushScheduleId : String
   * answerText : String
   * createdAt : DateTime
 }
 
-entity Advice {
+entity "Advice" as Advice {
   * id : String
   * channelId : String
   * advice : String
@@ -108,21 +119,42 @@ entity Advice {
 }
 
 ' 관계 설정
-User ||--o{ UserProfile
-User ||--o{ Wallet
-User ||--o{ ChannelMember
-User ||--o{ PushSchedule
-User ||--o{ UserSubscription
-User ||--o{ PersonaProfile
+User ||--o{ UserProfile : "has"
+User ||--o{ Wallet : "has"
+User ||--o{ ChannelMember : "joins"
+User ||--o{ PushSchedule : "receives"
+User ||--o{ UserSubscription : "subscribes"
+User ||--o{ PersonaProfile : "has"
 
-Channel ||--o{ ChannelMember
-Channel ||--o{ Chat
-Channel ||--o{ CoupleAnalysis
-Channel ||--o{ Advice
+Channel ||--o{ ChannelMember : "has"
+Channel ||--o{ Chat : "has"
+Channel ||--o{ CoupleAnalysis : "analyzes"
+Channel ||--o{ Advice : "provides"
 
-Assistant ||--o{ Chat
+Assistant ||--o{ Chat : "writes"
 
-PushSchedule ||--o{ UserAnswer
-PersonaProfile }o--|| CategoryCode
+PushSchedule ||--o{ UserAnswer : "triggers"
+PersonaProfile }o--|| CategoryCode : "categorized"
+
+' 엔티티 설명 주석
+note right of User
+  <b>User</b>
+  - 회원 기본 정보
+end note
+
+note right of Channel
+  <b>Channel</b>
+  - 커플/그룹 대화방
+end note
+
+note right of PersonaProfile
+  <b>PersonaProfile</b>
+  - 성향/프로필 분석
+end note
+
+note right of Advice
+  <b>Advice</b>
+  - AI 맞춤형 조언
+end note
 
 @enduml
