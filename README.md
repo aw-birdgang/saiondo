@@ -113,10 +113,12 @@ saiondo/
 
 ## 📱 메인 화면 스크린샷
 
-![SAIONDO 메인 화면](docs/images/screenshot-main.png)
+![SAIONDO 메인 화면1](docs/images/app/4-6-1.webp)
+![SAIONDO 메인 화면2](docs/images/app/4-6-2.webp)
+![SAIONDO 메인 화면3](docs/images/app/4-6-3.webp)
 
 > **설명:**  
-> 실제 앱의 메인 화면 예시입니다.  
+> 위 이미지는 실제 앱의 메인 화면 예시입니다.  
 > - 커플 대화방, 성향 분석 리포트, 맞춤형 조언 등 주요 기능을 한눈에 볼 수 있습니다.  
 > - Flutter 기반의 직관적 UI/UX를 제공합니다.
 
