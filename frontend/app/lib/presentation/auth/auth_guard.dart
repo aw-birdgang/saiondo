@@ -1,7 +1,7 @@
-import 'package:app/di/service_locator.dart';
-import 'package:app/presentation/user/store/user_store.dart';
+import 'package:saiondo/di/service_locator.dart';
+import 'package:saiondo/presentation/user/store/user_store.dart';
 import 'package:flutter/material.dart';
-import 'package:app/presentation/auth/store/auth_store.dart';
+import 'package:saiondo/presentation/auth/store/auth_store.dart';
 
 class AuthGuard extends StatelessWidget {
   final Widget child;

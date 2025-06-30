@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:app/data/repository/setting_repository_impl.dart';
-import 'package:app/data/sharedpref/shared_preference_helper.dart';
-import 'package:app/di/service_locator.dart';
-import 'package:app/domain/repository/setting_repository.dart';
+import 'package:saiondo/data/repository/setting_repository_impl.dart';
+import 'package:saiondo/data/sharedpref/shared_preference_helper.dart';
+import 'package:saiondo/di/service_locator.dart';
+import 'package:saiondo/domain/repository/setting_repository.dart';
 
 import '../../../domain/repository/advice_repository.dart';
 import '../../../domain/repository/analysis_repository.dart';

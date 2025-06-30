@@ -1,8 +1,8 @@
-import 'package:app/presentation/category/store/category_code_store.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:collection/collection.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:saiondo/presentation/category/store/category_code_store.dart';
 
 import '../../di/service_locator.dart';
 import '../../domain/entry/persona_profile.dart';

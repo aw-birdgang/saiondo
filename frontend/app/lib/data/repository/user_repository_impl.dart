@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app/domain/entry/assistant.dart';
+import 'package:saiondo/domain/entry/assistant.dart';
 
 import '../../domain/entry/persona_profile.dart';
 import '../../domain/entry/user.dart';

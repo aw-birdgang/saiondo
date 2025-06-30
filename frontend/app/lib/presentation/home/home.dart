@@ -1,6 +1,6 @@
-import 'package:app/presentation/auth/store/auth_store.dart';
-import 'package:app/presentation/home/store/home_store.dart';
-import 'package:app/presentation/home/tabs/channel_tab.dart';
+import 'package:saiondo/presentation/auth/store/auth_store.dart';
+import 'package:saiondo/presentation/home/store/home_store.dart';
+import 'package:saiondo/presentation/home/tabs/channel_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:logger/logger.dart';

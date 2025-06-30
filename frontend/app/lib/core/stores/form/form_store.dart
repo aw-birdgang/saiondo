@@ -1,4 +1,4 @@
-import 'package:app/core/stores/error/error_store.dart';
+import 'package:saiondo/core/stores/error/error_store.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validators/validators.dart';
 

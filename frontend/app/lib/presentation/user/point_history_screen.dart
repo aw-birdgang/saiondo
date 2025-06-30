@@ -1,4 +1,4 @@
-import 'package:app/presentation/user/store/point_history_store.dart';
+import 'package:saiondo/presentation/user/store/point_history_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';

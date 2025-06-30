@@ -6,6 +6,7 @@ build/
 .flutter-plugins
 .flutter-plugins-dependencies
 .melos_tool/
+.melos_workspace/
 
 # 🚫 Flutter generated files
 ios/Flutter/Flutter.framework
@@ -58,3 +59,43 @@ coverage/
 .env
 .env.*
 assets/.env
+
+# Android 관련
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+android/app/key.jks
+android/app/my-release-key.jks
+*.keystore
+*.jks
+
+# iOS 관련
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/engine/
+ios/Flutter/ephemeral/
+ios/Pods/
+ios/Runner.xcworkspace
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcworkspace/xcuserdata/
+ios/Podfile.lock
+
+# macOS 관련
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/Podfile.lock
+
+# 기타
+*.tmp
+*.swo
+
+# 환경설정 및 민감정보
+*.secret
+*.bak
+
+# Xcode 자동 생성 파일
+*.xcuserstate
+*.xcworkspace
+*.xcuserdata

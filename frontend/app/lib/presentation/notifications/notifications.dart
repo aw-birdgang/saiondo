@@ -1,4 +1,4 @@
-import 'package:app/presentation/auth/store/auth_store.dart';
+import 'package:saiondo/presentation/auth/store/auth_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 

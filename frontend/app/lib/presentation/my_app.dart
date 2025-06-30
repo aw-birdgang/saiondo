@@ -1,5 +1,5 @@
-import 'package:app/constants/app_theme.dart';
-import 'package:app/presentation/home/store/theme_store.dart';
+import 'package:saiondo/constants/app_theme.dart';
+import 'package:saiondo/presentation/home/store/theme_store.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

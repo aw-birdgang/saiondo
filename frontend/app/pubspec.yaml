@@ -1,4 +1,4 @@
-name: app
+name: saiondo
 description: 사랑을 이어주는 커플 앱
 publish_to: 'none'
 
@@ -44,6 +44,9 @@ dependencies:
 
   # I
   intl: ^0.19.0
+  in_app_purchase: ^3.1.11
+  in_app_purchase_storekit: ^0.3.7+1  # iOS용
+  in_app_purchase_android: ^0.3.0+13  # Android용
 
   # J
   json_serializable: ^6.6.1
@@ -78,11 +81,6 @@ dependencies:
 
   # X
   xxtea: ^2.1.0
-
-  # New dependencies
-  in_app_purchase: ^3.1.11
-  in_app_purchase_storekit: ^0.3.7+1  # iOS용
-  in_app_purchase_android: ^0.3.0+13  # Android용
 
 dev_dependencies:
   analyzer: ^5.10.0

@@ -5,9 +5,15 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
-    namespace = "com.example.app"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.saiondo.sample"
+    compileSdk = 34
     ndkVersion = "25.1.8937393"
 
     compileOptions {
@@ -20,16 +26,60 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.mcp_app"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        applicationId = "com.saiondo.sample"
+        minSdk = 24           // Flutter 3.10 이상 기본 minSdkVersion
+        targetSdk = 34        // 최신 Android SDK 버전
+        versionCode = 1       // 원하는 버전코드
+        versionName = "1.0.0" // 원하는 버전네임
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    flavorDimensions "app"
+    productFlavors {
+        dev {
+            dimension "app"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+        prod {
+            dimension "app"
+        }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def flavor = variant.flavorName
+            def buildType = variant.buildType.name
+            def newApkName = "saiondo_${flavor}_${buildType}.apk"
+            output.outputFileName = newApkName
+        }
+    }
+}
+
+// 아래 코드는 선택사항: flavor별 google-services.json 누락시 경고 출력
+afterEvaluate {
+    android.productFlavors.all { flavor ->
+        def flavorDir = "src/${flavor.name}"
+        def googleServices = file("${flavorDir}/google-services.json")
+        if (!googleServices.exists()) {
+            println "WARNING: google-services.json not found for flavor '${flavor.name}' in ${flavorDir}"
         }
     }
 }

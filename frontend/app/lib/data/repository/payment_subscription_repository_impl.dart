@@ -1,4 +1,4 @@
-import 'package:app/data/network/apis/payment_subscription_api.dart';
+import 'package:saiondo/data/network/apis/payment_subscription_api.dart';
 
 import '../../domain/entry/payment_subscription.dart';
 import '../../domain/entry/payment_subscription_history.dart';

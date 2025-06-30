@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:app/di/service_locator.dart';
-import 'package:app/domain/usecase/home/get_menu_items_usecase.dart';
-import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
-import 'package:app/domain/usecase/user/update_fcm_token_usecase.dart';
+import 'package:saiondo/di/service_locator.dart';
+import 'package:saiondo/domain/usecase/home/get_menu_items_usecase.dart';
+import 'package:saiondo/domain/usecase/navigation/navigation_screen_usecase.dart';
+import 'package:saiondo/domain/usecase/user/update_fcm_token_usecase.dart';
 
 import '../../../data/network/apis/category_code_api.dart';
 import '../../../data/network/apis/user_api.dart';

@@ -1,4 +1,4 @@
-import 'package:app/presentation/user/store/user_store.dart';
+import 'package:saiondo/presentation/user/store/user_store.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../../domain/entry/basic_question_category.dart';

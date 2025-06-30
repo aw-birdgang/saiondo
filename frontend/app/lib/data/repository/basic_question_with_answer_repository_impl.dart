@@ -1,5 +1,5 @@
-import 'package:app/domain/entry/basic_question_category.dart';
-import 'package:app/domain/entry/basic_question_with_answer.dart';
+import 'package:saiondo/domain/entry/basic_question_category.dart';
+import 'package:saiondo/domain/entry/basic_question_with_answer.dart';
 
 import '../../domain/entry/basic_answer.dart';
 import '../../domain/entry/basic_question.dart';

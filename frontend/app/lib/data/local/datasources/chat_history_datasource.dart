@@ -1,5 +1,5 @@
-import 'package:app/core/data/local/sembast/sembast_client.dart';
-import 'package:app/data/local/constants/db_constants.dart';
+import 'package:saiondo/core/data/local/sembast/sembast_client.dart';
+import 'package:saiondo/data/local/constants/db_constants.dart';
 import 'package:sembast/sembast.dart';
 
 import '../../../domain/entry/chat.dart';

@@ -1,7 +1,7 @@
-import 'package:app/core/stores/error/error_store.dart';
-import 'package:app/domain/entry/assistant.dart';
-import 'package:app/domain/usecase/assistant/fetch_assistants_usecase.dart';
-import 'package:app/presentation/home/home.dart';
+import 'package:saiondo/core/stores/error/error_store.dart';
+import 'package:saiondo/domain/entry/assistant.dart';
+import 'package:saiondo/domain/usecase/assistant/fetch_assistants_usecase.dart';
+import 'package:saiondo/presentation/home/home.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 

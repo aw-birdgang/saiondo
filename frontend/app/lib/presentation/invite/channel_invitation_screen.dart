@@ -1,4 +1,4 @@
-import 'package:app/presentation/invite/store/channel_invitation_store.dart';
+import 'package:saiondo/presentation/invite/store/channel_invitation_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 

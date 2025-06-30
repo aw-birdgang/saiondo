@@ -1,5 +1,5 @@
-import 'package:app/domain/usecase/navigation/navigation_screen_usecase.dart';
-import 'package:app/presentation/home/home.dart';
+import 'package:saiondo/domain/usecase/navigation/navigation_screen_usecase.dart';
+import 'package:saiondo/presentation/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 

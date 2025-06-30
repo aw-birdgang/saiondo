@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:app/core/data/local/sembast/sembast_client.dart';
-import 'package:app/data/local/constants/db_constants.dart';
-import 'package:app/data/local/datasources/faq_datasource.dart';
-import 'package:app/data/sharedpref/shared_preference_helper.dart';
+import 'package:saiondo/core/data/local/sembast/sembast_client.dart';
+import 'package:saiondo/data/local/constants/db_constants.dart';
+import 'package:saiondo/data/local/datasources/faq_datasource.dart';
+import 'package:saiondo/data/sharedpref/shared_preference_helper.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

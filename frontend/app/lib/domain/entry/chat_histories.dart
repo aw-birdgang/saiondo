@@ -1,4 +1,4 @@
-import 'package:app/domain/entry/chat.dart';
+import 'package:saiondo/domain/entry/chat.dart';
 
 class ChatHistories {
   final List<Chat>? chats;

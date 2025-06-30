@@ -1,4 +1,4 @@
-import 'package:app/data/network/apis/user_api.dart';
+import 'package:saiondo/data/network/apis/user_api.dart';
 
 class UpdateFcmTokenUseCase {
   final UserApi _userApi;

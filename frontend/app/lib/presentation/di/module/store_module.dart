@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:app/core/stores/form/form_store.dart';
-import 'package:app/domain/repository/user_repository.dart';
-import 'package:app/domain/usecase/assistant/fetch_assistants_usecase.dart';
-import 'package:app/domain/usecase/auth/login_usecase.dart';
-import 'package:app/domain/usecase/auth/register_usecase.dart';
-import 'package:app/domain/usecase/category/fetch_category_codes_usecase.dart';
-import 'package:app/domain/usecase/chat/send_message_usecase.dart';
-import 'package:app/presentation/analysis/store/analysis_store.dart';
-import 'package:app/presentation/home/store/home_store.dart';
-import 'package:app/presentation/home/store/theme_store.dart';
+import 'package:saiondo/core/stores/form/form_store.dart';
+import 'package:saiondo/domain/repository/user_repository.dart';
+import 'package:saiondo/domain/usecase/assistant/fetch_assistants_usecase.dart';
+import 'package:saiondo/domain/usecase/auth/login_usecase.dart';
+import 'package:saiondo/domain/usecase/auth/register_usecase.dart';
+import 'package:saiondo/domain/usecase/category/fetch_category_codes_usecase.dart';
+import 'package:saiondo/domain/usecase/chat/send_message_usecase.dart';
+import 'package:saiondo/presentation/analysis/store/analysis_store.dart';
+import 'package:saiondo/presentation/home/store/home_store.dart';
+import 'package:saiondo/presentation/home/store/theme_store.dart';
 
 import '../../../core/stores/error/error_store.dart';
 import '../../../data/network/apis/payment_subscription_api.dart';

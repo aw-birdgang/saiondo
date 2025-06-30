@@ -1,4 +1,4 @@
-import 'package:app/domain/entry/assistant.dart';
+import 'package:saiondo/domain/entry/assistant.dart';
 
 import '../../data/network/apis/assistant_api.dart';
 import '../../domain/repository/assitant_repository.dart';

@@ -1,4 +1,4 @@
-import 'package:app/data/network/constants/endpoints.dart';
+import 'package:saiondo/data/network/constants/endpoints.dart';
 
 import '../../../core/data/network/dio/dio_client.dart';
 import '../../adapter/event_adapter.dart';
