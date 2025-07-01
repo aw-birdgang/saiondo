@@ -1,5 +1,7 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '12.0'
+platform :ios, '12.0'
+use_frameworks! :linkage => :static
+# use_modular_headers!  # ← 이 줄이 있다면 반드시 주석 처리 또는 삭제
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -28,8 +30,7 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
+  # use_modular_headers!  # ← 이 줄이 있다면 주석 처리
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
@@ -40,5 +41,16 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+  end
+end
+
+$static_framework = ['FirebaseCore', 'FirebaseMessaging']
+pre_install do |installer|
+  installer.pod_targets.each do |pod|
+    if pod.name.eql?('FirebaseCore')
+      def pod.build_type;
+        Pod::BuildType.static_library
+      end
+    end
   end
 end

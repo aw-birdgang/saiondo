@@ -30,7 +30,7 @@ dependencies:
   event_bus: ^2.0.0
 
   # F
-  firebase_core: ^2.25.4
+  firebase_core: ^2.24.2
   firebase_messaging: ^14.7.10
   flutter_mobx: ^2.2.1+1
   flutter_slider_drawer: ^2.1.3
