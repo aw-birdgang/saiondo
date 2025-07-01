@@ -1,36 +1,11 @@
-# build
-````
-fvm flutter build web
+# Saiondo Flutter App
 
-fvm flutter pub run build_runner build
-fvm dart run build_runner build --delete-conflicting-outputs
+**Flutter 기반의 커플 케어 서비스 프론트엔드**  
+웹/모바일/데스크탑을 지원하며, 실시간 채팅, 성향 분석, 리포트 등 다양한 기능을 제공합니다.
 
-````
+---
 
-## build for firebase hosting deploy
-````
-./build_web_env.sh
-ex) flutter build web --dart-define=webApiKey=AIzaSyDxxxx --dart-define=webAppId=... ...
-````
-
-## build & run local
-````
-./run_web_with_env.sh
-````
-
-## deploy on firebase hosting
-````
-./build_web_env.sh
-firebase deploy --only hosting
-````
-
-
-#
-````
-fvm flutter run -d chrome
-````
-
-## 📁 프로젝트 폴더 구조**
+## 📁 프로젝트 폴더 구조
 
 app/
 ├── lib/
@@ -38,14 +13,14 @@ app/
 │ ├── presentation/ # UI, 화면, 위젯
 │ │ └── chat/ # 채팅 화면, 위젯, 상태관리
 │ ├── domain/ # 비즈니스 로직, 엔티티, 유스케이스, 리포지토리
-│ │ └── repository/ # 데이터 접근 추상화
-│ │ └── usecase/ # 실제 비즈니스 유스케이스
+│ │ ├── repository/ # 데이터 접근 추상화
+│ │ ├── usecase/ # 실제 비즈니스 유스케이스
 │ │ └── entry/ # 엔티티(도메인 모델)
 │ ├── data/ # 데이터 소스, API, 모델, 네트워크
-│ │ └── network/ # API 연동, 모델, 엔드포인트
-│ │ └── apis/ # 실제 API 호출 클래스
-│ │ └── model/ # API 응답/요청 모델
-│ │ └── constants/ # API 엔드포인트 상수
+│ │ ├── network/ # API 연동, 모델, 엔드포인트
+│ │ ├── apis/ # 실제 API 호출 클래스
+│ │ ├── model/ # API 응답/요청 모델
+│ │ ├── constants/ # API 엔드포인트 상수
 │ │ └── dio_client.dart # Dio 기반 HTTP 클라이언트
 │ ├── core/ # 공통 유틸, 에러, 상수 등
 │ ├── di/ # 의존성 주입
@@ -91,7 +66,7 @@ app/
 - **로컬저장소**: shared_preferences, sembast
 - **UI/UX**: google_fonts, awesome_dialog, curved_navigation_bar 등
 - **유틸/기타**: get_it(의존성), intl(다국어), uuid, logger, validators
-- **코드 생성**: build_runner, json_serializable, mobx_codegen
+- **코드 생성**: build_runner, json_serializable, mobx_codegen, freezed
 - **테스트**: flutter_test
 
 > 주요 의존성은 `pubspec.yaml` 참고
@@ -102,7 +77,7 @@ app/
 
 1. **의존성 설치**
    ```sh
-   flutter pub get
+   fvm flutter pub get
    ```
 2. **로컬 실행(웹)**
    ```sh
@@ -163,17 +138,19 @@ app/
 ## 🛡️ Trouble Shooting
 
 - **빌드/런타임 에러**: 의존성 충돌 시 `flutter clean`, `pub get` 재실행
-- **코드 생성 오류**: build_runner, json_serializable 버전 확인, --delete-conflicting-outputs 옵션 활용
+- **코드 생성 오류**: build_runner, json_serializable, freezed 버전 확인, --delete-conflicting-outputs 옵션 활용
 - **환경변수 미적용**: --dart-define 옵션 확인, .env 파일/스크립트 활용
 - **웹소켓/네트워크 오류**: API 서버 주소, CORS, 네트워크 상태 확인
+- **플랫폼별 이슈**: 각 플랫폼별 폴더/설정/권한 확인
 
 ---
 
 ## 🏗️ 기여/확장
 
 - 새로운 도메인/화면 추가: `lib/presentation/`, `lib/domain/`, `lib/data/`에 구조 맞춰 추가
-- 모델/DTO 추가: `json_serializable` 기반으로 생성
+- 모델/DTO 추가: `json_serializable`, `freezed` 기반으로 생성
 - 상태관리/의존성: MobX, get_it 등 활용
+- 테스트 코드 작성: `test/` 폴더에 단위/위젯 테스트 추가
 
 ---
 
@@ -183,5 +160,6 @@ app/
 - 커스텀 폰트: assets/fonts, google_fonts
 - 환경별 빌드/배포: --dart-define, build_web_env.sh 등 활용
 - 문서/설명: `lib/docs/` 참고
+- [iOS/Android 빌드 및 실행 가이드](./docs/) 참고
 
 ---

@@ -13,7 +13,7 @@
 ## 🖼️ 프로젝트 전체 구조
 
 <p align="center">
-  <img src="docs/images/architecture_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="700" style="margin: 12px;"/>
+  <img src="assets/images/architecture_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="700"/>
 </p>
 
 > **설명:**  
@@ -26,6 +26,7 @@
 
 ```
 saiondo/
+├── assets/
 ├── backend/
 │   ├── api/
 │   ├── llm/
@@ -45,23 +46,22 @@ saiondo/
 
 ## 🚀 주요 기능
 
-- **AI 기반 커플 대화 분석 및 맞춤형 조언**
-- **1:1 대화방, 성향 분석, 리포트 제공**
-- **OpenAI/Claude 등 LLM 연동**
-- **Flutter 기반 모바일/웹 앱**
-- **REST API, 인증, 결제 등 지원**
+- AI 기반 커플 대화 분석 및 맞춤형 조언
+- 1:1 대화방, 성향 분석, 리포트 제공
+- OpenAI/Claude 등 LLM 연동
+- Flutter 기반 모바일/웹 앱
+- REST API, 인증, 결제 등 지원
 
 ---
 
 ## 🗃️ 데이터베이스 ERD
 
 <p align="center">
-  <img src="docs/images/api/erd.png" alt="SAIONDO ERD" width="800" style="margin: 8px;"/>
+  <img src="assets/images/api/erd.png" alt="SAIONDO ERD" width="800"/>
 </p>
 
 > **설명:**  
-> 주요 데이터베이스 테이블(User, Channel, Chat, PersonaProfile, Advice 등) 간의 관계를 시각화한 ERD입니다.  
-> 각 엔티티는 커플 관리, 대화 기록, 성향 분석, 리포트 제공 등 핵심 기능을 담당합니다.
+> 주요 데이터베이스 테이블(User, Channel, Chat, PersonaProfile, Advice 등) 간의 관계를 시각화한 ERD입니다.
 
 <details>
 <summary>ERD PlantUML 예시 보기</summary>
@@ -96,7 +96,7 @@ Channel ||--o{ Chat : ""
 ### API 서버 아키텍처
 
 <p align="center">
-  <img src="docs/images/api/architecture.png" alt="API 아키텍처" width="600" style="margin: 8px;"/>
+  <img src="assets/images/api/architecture.png" alt="API 아키텍처" width="600"/>
 </p>
 > NestJS 기반 REST API의 도메인 분리 및 LLM 연동 구조
 
@@ -105,7 +105,7 @@ Channel ||--o{ Chat : ""
 ### 도메인 & 인프라 구조
 
 <p align="center">
-  <img src="docs/images/api/domain_infra.png" alt="도메인/인프라 구조" width="600" style="margin: 8px;"/>
+  <img src="assets/images/api/domain_infra.png" alt="도메인/인프라 구조" width="600"/>
 </p>
 > API 서버의 주요 도메인(사용자, 관계, 채팅 등)과 인프라(데이터베이스, 외부 연동 등) 구성
 
@@ -114,7 +114,7 @@ Channel ||--o{ Chat : ""
 ### LLM 서버 아키텍처
 
 <p align="center">
-  <img src="docs/images/llm/architecture.png" alt="LLM 서버 아키텍처" width="600" style="margin: 8px;"/>
+  <img src="assets/images/llm/architecture.png" alt="LLM 서버 아키텍처" width="600"/>
 </p>
 > FastAPI 기반 LLM 서버와 다양한 LLM Provider(OpenAI, Claude 등) 연동 구조
 
@@ -123,7 +123,7 @@ Channel ||--o{ Chat : ""
 ### Web3 구조
 
 <p align="center">
-  <img src="docs/images/web3/architecture.png" alt="Web3 아키텍처" width="600" style="margin: 8px;"/>
+  <img src="assets/images/web3/architecture.png" alt="Web3 아키텍처" width="600"/>
 </p>
 > 스마트컨트랙트, 배포, 검증 등 Web3 관련 주요 컴포넌트와 상호작용 구조
 
@@ -133,12 +133,12 @@ Channel ||--o{ Chat : ""
 
 **개발 환경**
 <p align="center">
-  <img src="docs/images/infra/dev-architecture-full.png" alt="개발 인프라 아키텍처" width="600" style="margin: 8px;"/>
+  <img src="assets/images/infra/dev-architecture-full.png" alt="개발 인프라 아키텍처" width="600"/>
 </p>
 
 **운영 환경**
 <p align="center">
-  <img src="docs/images/infra/prod-architecture-full.png" alt="운영 인프라 아키텍처" width="600" style="margin: 8px;"/>
+  <img src="assets/images/infra/prod-architecture-full.png" alt="운영 인프라 아키텍처" width="600"/>
 </p>
 > Terraform으로 관리되는 AWS 인프라의 전체 구조(개발/운영 환경)
 
@@ -147,7 +147,7 @@ Channel ||--o{ Chat : ""
 ### 앱 주요 컴포넌트
 
 <p align="center">
-  <img src="docs/images/app/architecture_component.png" alt="앱 컴포넌트" width="600" style="margin: 8px;"/>
+  <img src="assets/images/app/architecture_component.png" alt="앱 컴포넌트" width="600"/>
 </p>
 > Flutter 기반 앱의 주요 컴포넌트 구조와 데이터 흐름
 
@@ -156,13 +156,13 @@ Channel ||--o{ Chat : ""
 ## 📱 메인 화면 스크린샷
 
 <p align="center">
-  <img src="docs/images/app/4-6-1.webp" alt="SAIONDO 메인 화면1" width="180" height="360" style="margin: 4px;"/>
-  <img src="docs/images/app/4-6-2.webp" alt="SAIONDO 메인 화면2" width="180" height="360" style="margin: 4px;"/>
-  <img src="docs/images/app/4-6-3.webp" alt="SAIONDO 메인 화면3" width="180" height="360" style="margin: 4px;"/>
-  <img src="docs/images/app/4-6-4.webp" alt="SAIONDO 메인 화면4" width="180" height="360" style="margin: 4px;"/>
-  <img src="docs/images/app/4-6-5.webp" alt="SAIONDO 메인 화면5" width="180" height="360" style="margin: 4px;"/>
-  <img src="docs/images/app/4-6-6.webp" alt="SAIONDO 메인 화면6" width="180" height="360" style="margin: 4px;"/>
-  <img src="docs/images/app/4-6-7.webp" alt="SAIONDO 메인 화면7" width="180" height="360" style="margin: 4px;"/>
+  <img src="assets/images/app/4-6-1.webp" alt="SAIONDO 메인 화면1" width="180" height="360"/>
+  <img src="assets/images/app/4-6-2.webp" alt="SAIONDO 메인 화면2" width="180" height="360"/>
+  <img src="assets/images/app/4-6-3.webp" alt="SAIONDO 메인 화면3" width="180" height="360"/>
+  <img src="assets/images/app/4-6-4.webp" alt="SAIONDO 메인 화면4" width="180" height="360"/>
+  <img src="assets/images/app/4-6-5.webp" alt="SAIONDO 메인 화면5" width="180" height="360"/>
+  <img src="assets/images/app/4-6-6.webp" alt="SAIONDO 메인 화면6" width="180" height="360"/>
+  <img src="assets/images/app/4-6-7.webp" alt="SAIONDO 메인 화면7" width="180" height="360"/>
 </p>
 
 <p align="center">
@@ -191,8 +191,51 @@ fvm flutter run             # 모바일 실행
 
 ---
 
-## 📚 참고
+## 📄 하위 모듈별 문서/가이드
 
-- 각 디렉토리별 README 및 코드 주석 참고
+### Backend
+- [backend/llm/README.md](./backend/llm/README.md)
+- [backend/llm/docs/README-SMITH.md](./backend/llm/docs/langsmith-guide.md)
+- [backend/api/README.md](./backend/api/README.md)
+- [backend/api/README-MESSAGES.md](backend/api/docs/fcm-message-guide.md)
+- [backend/api/README-POSTGRES.md](backend/api/docs/postgres-guide.md)
+
+### Frontend
+- [frontend/app/README.md](./frontend/app/README.md)
+- [frontend/app/docs/ios-build-run.md](./frontend/app/docs/ios-build-run.md)
+- [frontend/app/docs/aos-build-run.md](./frontend/app/docs/aos-build-run.md)
+
+### Infrastructure
+- [infrastructure/README.md](./infrastructure/README.md)
+- [infrastructure/terraform/README.md](./infrastructure/terraform/README.md)
+
+### Web3
+- [web3/README.md](./web3/README.md)
+
+### Docs
+- [docs/readme_web3.md](./docs/readme_web3.md)
+- [docs/readme_business.md](./docs/readme_business.md)
+- [docs/readme_dev.md](./docs/readme_dev.md)
+
+---
+
+## 📚 참고 및 문서 작성 제안
+
+- 각 모듈별 상세한 사용법, 개발/배포 가이드 등은 위의 README 및 문서 파일을 참고하세요.
+- 추가 문서가 필요하면 각 디렉토리의 `docs/` 폴더를 확인하세요.
+
+### 📌 **추가로 있으면 좋은 문서**
+1. **CONTRIBUTING.md**  
+   - 오픈소스 협업을 염두에 둔다면, 기여 방법/PR 규칙/코딩 컨벤션 등 안내
+2. **CHANGELOG.md**  
+   - 주요 릴리즈/변경 이력 관리
+3. **docs/architecture.md**  
+   - 아키텍처 상세 설명, 의사결정 근거, 기술스택 선정 이유 등
+4. **docs/faq.md**  
+   - 자주 묻는 질문 및 문제 해결법
+5. **docs/security.md**  
+   - 인증/보안 정책, 개인정보 처리방침 등
+6. **docs/deployment.md**  
+   - 실제 배포/운영 환경 세팅, CI/CD, 인프라 관리 가이드
 
 ---

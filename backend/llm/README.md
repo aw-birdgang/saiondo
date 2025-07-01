@@ -1,33 +1,35 @@
 # Saiondo LLM Server
 
-**FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버**
+**FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버**  
+Saiondo의 LLM 서버는 OpenAI, Claude 등 다양한 LLM Provider와 연동하여  
+커플 대화 분석, 프롬프트 응답, 성향 리포트 등 핵심 AI 기능을 제공합니다.
 
 ## 📁 프로젝트 폴더 구조
 
 ```
 llm/
 ├── src/
-│   ├── main.py                # FastAPI 앱 진입점
-│   ├── api/                   # 모든 라우터(엔드포인트) 모듈
-│   │   ├── chat.py
-│   │   ├── feedback.py
-│   │   ├── couple_analysis.py
-│   │   └── health.py
-│   ├── services/              # 비즈니스 로직(서비스) 모듈
-│   │   ├── chat_service.py
-│   │   ├── feedback_service.py
-│   │   ├── couple_analysis_service.py
-│   │   └── llm_provider.py    # LLM 추상화/Provider
-│   ├── schemas/               # Pydantic 데이터 모델
-│   │   ├── chat.py
-│   │   ├── feedback.py
-│   │   ├── couple_analysis.py
-│   │   └── __init__.py
-│   ├── config.py              # 환경설정/DI
-│   └── __init__.py
+│ ├── main.py # FastAPI 앱 진입점
+│ ├── api/ # 엔드포인트(라우터) 모듈
+│ │ ├── chat.py
+│ │ ├── feedback.py
+│ │ ├── couple_analysis.py
+│ │ └── health.py
+│ ├── services/ # 비즈니스 로직(서비스) 모듈
+│ │ ├── chat_service.py
+│ │ ├── feedback_service.py
+│ │ ├── couple_analysis_service.py
+│ │ └── llm_provider.py # LLM 추상화/Provider
+│ ├── schemas/ # Pydantic 데이터 모델
+│ │ ├── chat.py
+│ │ ├── feedback.py
+│ │ ├── couple_analysis.py
+│ │ └── init.py
+│ ├── config.py # 환경설정/DI
+│ └── init.py
 ├── requirements.txt
 ├── Dockerfile
-├── .env.example               # 환경변수 예시 파일
+├── .env.example # 환경변수 예시 파일
 └── README.md
 ```
 
@@ -41,11 +43,14 @@ llm/
 - **Pydantic 기반 데이터 검증/직렬화**
 - **확장성 고려**:  
   - 새로운 LLM, 분석 그래프, context 관리 등 손쉽게 추가 가능
+- **LangSmith 연동**:  
+  - LangChain 기반 LLM 호출의 실시간 트레이싱/디버깅/평가 지원
 
 ## 🧩 주요 도메인
 
 - **/chat**: 프롬프트 기반 LLM 응답 API (OpenAI, Claude 등 선택)
 - **/analyze**: 사용자/파트너 프롬프트, 메타데이터 기반 관계 분석
+- **/feedback**: 사용자 피드백 수집/저장
 - **/health**: 헬스체크
 - **providers/**: LLM API 연동(OpenAI, Claude 등)
 - **graph/**: 관계 분석 그래프, 노드 등
@@ -60,6 +65,7 @@ llm/
 - **langchain, langgraph**: LLM 워크플로우/그래프
 - **openai, requests**: 외부 LLM API 연동
 - **python-dotenv**: 환경변수 관리
+- **langsmith**: LLM 트레이싱/실험/평가 (옵션)
 
 > 주요 의존성은 `requirements.txt` 참고
 
@@ -149,6 +155,8 @@ curl -X POST http://localhost:8000/chat \
   - `src/graph/`, `src/mcp/`에 모듈 추가
 - **FastAPI 라우터 확장**:  
   - `src/api/`에 엔드포인트 추가
+- **테스트 코드 작성**:  
+  - `test/` 폴더에 단위/통합 테스트 추가
 
 ## 🧑‍🔬 LangSmith 실험/트레이싱 연동
 
@@ -165,7 +173,7 @@ curl -X POST http://localhost:8000/chat \
      ```
      LANGCHAIN_TRACING_V2=true
      LANGCHAIN_API_KEY=your-langsmith-api-key
-     LANGCHAIN_PROJECT=your-project-name
+     LANGCHAIN_PROJECT=saiondo-llm
      ```
 
 4. **코드에 LangSmith 트레이서 적용**  
@@ -174,12 +182,13 @@ curl -X POST http://localhost:8000/chat \
 5. **LangSmith 대시보드에서 실험 결과 확인**  
    - [LangSmith 대시보드](https://smith.langchain.com/)에서 확인
 
+> **운영/보안 팁**:  
+> - API Key 등 민감 정보는 환경변수(.env)로 관리  
+> - 개인정보/민감정보는 트레이스에 포함되지 않도록 주의
+
 ## 📚 기타 참고
 
 - API 서버(`api/`)에서 HTTP로 호출하여 통합 사용
-- 환경변수, API Key 등은 `.env` 또는 docker-compose로 관리
+- 환경 변수, API Key 등은 `.env` 또는 docker-compose로 관리
 - 예시 curl 명령어 및 샘플 요청/응답은 README 상단 참고
-
-## ��‍🔬 문의/이슈
-
-- 프로젝트 구조, 실행, 확장 관련 문의는 [GitHub Issues] 또는 팀 Slack 채널을 이용해 주세요.
+- [LangSmith 활용 가이드](./docs/README-SMITH.md) 참고
