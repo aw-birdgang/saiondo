@@ -98,7 +98,8 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/api/architecture.png" alt="API 아키텍처" width="600"/>
 </p>
-> NestJS 기반 REST API의 도메인 분리 및 LLM 연동 구조
+> NestJS 기반 REST API의 도메인 분리 및 LLM 연동 구조  
+> [API 서버 상세 가이드](./backend/api/README.md) 참고
 
 ---
 
@@ -107,7 +108,8 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/api/domain_infra.png" alt="도메인/인프라 구조" width="600"/>
 </p>
-> API 서버의 주요 도메인(사용자, 관계, 채팅 등)과 인프라(데이터베이스, 외부 연동 등) 구성
+> API 서버의 주요 도메인(사용자, 관계, 채팅 등)과 인프라(데이터베이스, 외부 연동 등) 구성  
+> [PostgreSQL 명령어 가이드](./backend/api/docs/postgres-guide.md) 참고
 
 ---
 
@@ -116,7 +118,8 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/llm/architecture.png" alt="LLM 서버 아키텍처" width="600"/>
 </p>
-> FastAPI 기반 LLM 서버와 다양한 LLM Provider(OpenAI, Claude 등) 연동 구조
+> FastAPI 기반 LLM 서버와 다양한 LLM Provider(OpenAI, Claude 등) 연동 구조  
+> [LLM 서버 상세 가이드](./backend/llm/README.md), [LangSmith 활용법](./backend/llm/docs/langsmith-guide.md) 참고
 
 ---
 
@@ -125,7 +128,8 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/web3/architecture.png" alt="Web3 아키텍처" width="600"/>
 </p>
-> 스마트컨트랙트, 배포, 검증 등 Web3 관련 주요 컴포넌트와 상호작용 구조
+> 스마트컨트랙트, 배포, 검증 등 Web3 관련 주요 컴포넌트와 상호작용 구조  
+> [Web3 빌드/배포/검증 가이드](./web3/README.md) 참고
 
 ---
 
@@ -140,7 +144,8 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/infra/prod-architecture-full.png" alt="운영 인프라 아키텍처" width="600"/>
 </p>
-> Terraform으로 관리되는 AWS 인프라의 전체 구조(개발/운영 환경)
+> Terraform으로 관리되는 AWS 인프라의 전체 구조(개발/운영 환경)  
+> [Terraform 인프라 가이드](./infrastructure/terraform/README.md) 참고
 
 ---
 
@@ -149,7 +154,8 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/app/architecture_component.png" alt="앱 컴포넌트" width="600"/>
 </p>
-> Flutter 기반 앱의 주요 컴포넌트 구조와 데이터 흐름
+> Flutter 기반 앱의 주요 컴포넌트 구조와 데이터 흐름  
+> [Flutter 앱 구조/실행 가이드](./frontend/app/README.md) 참고
 
 ---
 
@@ -171,51 +177,31 @@ Channel ||--o{ Chat : ""
 </p>
 
 ---
-
-## 🛠️ 개발/실행
-
-### 백엔드
-```sh
-cd backend/api && yarn install
-cd backend/llm && pip install -r requirements.txt
-cd backend && docker compose up -d
-```
-
-### 프론트엔드
-```sh
-cd frontend/app
-fvm flutter pub get
-fvm flutter run -d chrome   # 웹 실행
-fvm flutter run             # 모바일 실행
-```
-
----
-
 ## 📄 하위 모듈별 문서/가이드
 
 ### Backend
-- [backend/llm/README.md](./backend/llm/README.md)
-- [backend/llm/docs/README-SMITH.md](./backend/llm/docs/langsmith-guide.md)
-- [backend/api/README.md](./backend/api/README.md)
-- [backend/api/README-MESSAGES.md](backend/api/docs/fcm-message-guide.md)
-- [backend/api/README-POSTGRES.md](backend/api/docs/postgres-guide.md)
+- [API 서버](./backend/api/README.md)  
+  - [PostgreSQL 명령어 가이드](./backend/api/docs/postgres-guide.md)
+  - [FCM 메시지 연동 가이드](./backend/api/docs/fcm-message-guide.md)
+- [LLM 서버](./backend/llm/README.md)  
+  - [LangSmith 활용 가이드](./backend/llm/docs/langsmith-guide.md)
 
 ### Frontend
-- [frontend/app/README.md](./frontend/app/README.md)
-- [frontend/app/docs/ios-build-run.md](./frontend/app/docs/ios-build-run.md)
-- [frontend/app/docs/aos-build-run.md](./frontend/app/docs/aos-build-run.md)
+- [Flutter 앱](./frontend/app/README.md)
+  - [iOS 빌드/배포 가이드](./frontend/app/docs/ios-build-run.md)
+  - [Android 빌드/배포 가이드](./frontend/app/docs/aos-build-run.md)
 
 ### Infrastructure
-- [infrastructure/README.md](./infrastructure/README.md)
-- [infrastructure/terraform/README.md](./infrastructure/terraform/README.md)
+- [Terraform 인프라 가이드](./infrastructure/README.md)
+- [Terraform 환경별 상세 가이드](./infrastructure/terraform/README.md)
 
 ### Web3
-- [web3/README.md](./web3/README.md)
+- [Web3 빌드/배포/검증 가이드](./web3/README.md)
 
 ### Docs
-- [docs/readme_web3.md](./docs/readme_web3.md)
-- [docs/readme_business.md](./docs/readme_business.md)
-- [docs/readme_dev.md](./docs/readme_dev.md)
+- [Web3 설계/운영 참고](./docs/readme_web3.md)
+- [비즈니스/기획 참고](./docs/readme_business.md)
+- [개발 환경/팁](./docs/readme_dev.md)
 
 ---
 
@@ -239,3 +225,5 @@ fvm flutter run             # 모바일 실행
    - 실제 배포/운영 환경 세팅, CI/CD, 인프라 관리 가이드
 
 ---
+
+**문의/기여/개선 제안은 [Issues](https://github.com/your-repo/issues) 또는 각 모듈별 README의 안내를 참고하세요!**
