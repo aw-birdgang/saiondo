@@ -6,7 +6,7 @@
 ---
 
 ## 📁 프로젝트 폴더 구조
-
+```
 app/
 ├── lib/
 │ ├── main.dart # 앱 진입점
@@ -33,7 +33,7 @@ app/
 ├── pubspec.yaml # 의존성/설정
 ├── analysis_options.yaml # 린트/코드 스타일
 └── README.md
-
+```
 ---
 
 ## 🏗️ 아키텍처 및 개발 패턴

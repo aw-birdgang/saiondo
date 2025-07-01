@@ -189,20 +189,6 @@ Channel ||--o{ Chat : ""
 - 각 모듈별 상세한 사용법, 개발/배포 가이드 등은 위의 README 및 문서 파일을 참고하세요.
 - 추가 문서가 필요하면 각 디렉토리의 <kbd>docs/</kbd> 폴더를 확인하세요.
 
-### 📌 <span style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:6px;">추가로 있으면 좋은 문서</span>
-1. <kbd>CONTRIBUTING.md</kbd>  
-   오픈소스 협업을 염두에 둔다면, 기여 방법/PR 규칙/코딩 컨벤션 등 안내
-2. <kbd>CHANGELOG.md</kbd>  
-   주요 릴리즈/변경 이력 관리
-3. <kbd>docs/architecture.md</kbd>  
-   아키텍처 상세 설명, 의사결정 근거, 기술스택 선정 이유 등
-4. <kbd>docs/faq.md</kbd>  
-   자주 묻는 질문 및 문제 해결법
-5. <kbd>docs/security.md</kbd>  
-   인증/보안 정책, 개인정보 처리방침 등
-6. <kbd>docs/deployment.md</kbd>  
-   실제 배포/운영 환경 세팅, CI/CD, 인프라 관리 가이드
-
 ---
 
 > 문의/기여/개선 제안은 <kbd>Issues</kbd> 또는 각 모듈별 README의 안내를 참고하세요!
