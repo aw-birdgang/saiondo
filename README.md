@@ -1,12 +1,13 @@
-# Saiondo
+# 🌱 Saiondo
 
 > ⚠️ **이 프로젝트는 개인 프로젝트이며, 현재 진행중입니다.**
->  
+>
 > 기능, 구조, 문서 등은 개발 상황에 따라 언제든 변경될 수 있습니다.
 
 ---
 
-**Saiondo**는 연인/커플의 대화와 성향을 분석하여 맞춤형 조언을 제공하는 AI 기반 커플 케어 서비스입니다.
+**Saiondo**는 연인/커플의 대화와 성향을 분석하여 맞춤형 조언을 제공하는  
+**AI 기반 커플 케어 서비스**입니다.
 
 ---
 
@@ -16,15 +17,16 @@
   <img src="assets/images/architecture_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="700"/>
 </p>
 
-> **설명:**  
-> SAIONDO의 전체 시스템 아키텍처.  
+> <span style="background:#f3f3f3; padding:2px 8px; border-radius:6px;">
+> <b>설명:</b> SAIONDO의 전체 시스템 아키텍처.<br>
 > 백엔드, 프론트엔드, 인프라, Web3, LLM 등 모든 주요 컴포넌트와 상호작용 구조를 한눈에 볼 수 있습니다.
+> </span>
 
 ---
 
 ## 🏗️ 프로젝트 디렉토리 구조
 
-```
+```plaintext
 saiondo/
 ├── assets/
 ├── backend/
@@ -46,11 +48,11 @@ saiondo/
 
 ## 🚀 주요 기능
 
-- AI 기반 커플 대화 분석 및 맞춤형 조언
-- 1:1 대화방, 성향 분석, 리포트 제공
-- OpenAI/Claude 등 LLM 연동
-- Flutter 기반 모바일/웹 앱
-- REST API, 인증, 결제 등 지원
+- <kbd>AI 기반 커플 대화 분석 및 맞춤형 조언</kbd>
+- <kbd>1:1 대화방, 성향 분석, 리포트 제공</kbd>
+- <kbd>OpenAI/Claude 등 LLM 연동</kbd>
+- <kbd>Flutter 기반 모바일/웹 앱</kbd>
+- <kbd>REST API, 인증, 결제 등 지원</kbd>
 
 ---
 
@@ -60,11 +62,12 @@ saiondo/
   <img src="assets/images/api/erd.png" alt="SAIONDO ERD" width="800"/>
 </p>
 
-> **설명:**  
-> 주요 데이터베이스 테이블(User, Channel, Chat, PersonaProfile, Advice 등) 간의 관계를 시각화한 ERD입니다.
+> <span style="background:#f3f3f3; padding:2px 8px; border-radius:6px;">
+> <b>설명:</b> 주요 데이터베이스 테이블(User, Channel, Chat, PersonaProfile, Advice 등) 간의 관계를 시각화한 ERD입니다.
+> </span>
 
 <details>
-<summary>ERD PlantUML 예시 보기</summary>
+<summary><b>ERD PlantUML 예시 보기</b></summary>
 
 ```puml
 @startuml
@@ -93,47 +96,38 @@ Channel ||--o{ Chat : ""
 
 ## 🖼️ 시스템 아키텍처 및 주요 컴포넌트
 
-### API 서버 아키텍처
+### 🛠️ Backend
 
 <p align="center">
   <img src="assets/images/api/architecture.png" alt="API 아키텍처" width="600"/>
 </p>
-> NestJS 기반 REST API의 도메인 분리 및 LLM 연동 구조  
-> [API 서버 상세 가이드](./backend/api/README.md) 참고
+
+- <kbd><a href="./backend/api/README.md">API 서버 (NestJS/Prisma)</a></kbd>
+  &nbsp;
+  <kbd><a href="./backend/api/docs/postgres-guide.md">PostgreSQL 명령어 가이드</a></kbd>
+  &nbsp;
+  <kbd><a href="./backend/api/docs/fcm-message-guide.md">FCM 메시지 연동 가이드</a></kbd>
+- <kbd><a href="./backend/llm/README.md">LLM 서버 (FastAPI/LangChain)</a></kbd>
+  &nbsp;
+  <kbd><a href="./backend/llm/docs/langsmith-guide.md">LangSmith 활용 가이드</a></kbd>
 
 ---
 
-### 도메인 & 인프라 구조
+### 💻 Frontend
 
 <p align="center">
-  <img src="assets/images/api/domain_infra.png" alt="도메인/인프라 구조" width="600"/>
+  <img src="assets/images/app/architecture_component.png" alt="앱 컴포넌트" width="600"/>
 </p>
-> API 서버의 주요 도메인(사용자, 관계, 채팅 등)과 인프라(데이터베이스, 외부 연동 등) 구성  
-> [PostgreSQL 명령어 가이드](./backend/api/docs/postgres-guide.md) 참고
+
+- <kbd><a href="./frontend/app/README.md">Flutter 앱</a></kbd>
+  &nbsp;
+  <kbd><a href="./frontend/app/docs/ios-build-run.md">iOS 빌드/배포 가이드</a></kbd>
+  &nbsp;
+  <kbd><a href="./frontend/app/docs/aos-build-run.md">Android 빌드/배포 가이드</a></kbd>
 
 ---
 
-### LLM 서버 아키텍처
-
-<p align="center">
-  <img src="assets/images/llm/architecture.png" alt="LLM 서버 아키텍처" width="600"/>
-</p>
-> FastAPI 기반 LLM 서버와 다양한 LLM Provider(OpenAI, Claude 등) 연동 구조  
-> [LLM 서버 상세 가이드](./backend/llm/README.md), [LangSmith 활용법](./backend/llm/docs/langsmith-guide.md) 참고
-
----
-
-### Web3 구조
-
-<p align="center">
-  <img src="assets/images/web3/architecture.png" alt="Web3 아키텍처" width="600"/>
-</p>
-> 스마트컨트랙트, 배포, 검증 등 Web3 관련 주요 컴포넌트와 상호작용 구조  
-> [Web3 빌드/배포/검증 가이드](./web3/README.md) 참고
-
----
-
-### 인프라 전체 아키텍처
+### ☁️ Infrastructure
 
 **개발 환경**
 <p align="center">
@@ -144,18 +138,30 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/infra/prod-architecture-full.png" alt="운영 인프라 아키텍처" width="600"/>
 </p>
-> Terraform으로 관리되는 AWS 인프라의 전체 구조(개발/운영 환경)  
-> [Terraform 인프라 가이드](./infrastructure/terraform/README.md) 참고
+
+- <kbd><a href="./infrastructure/README.md">Terraform 인프라 가이드</a></kbd>
+  &nbsp;
+  <kbd><a href="./infrastructure/terraform/README.md">Terraform 환경별 상세 가이드</a></kbd>
 
 ---
 
-### 앱 주요 컴포넌트
+### 🔗 Web3
 
 <p align="center">
-  <img src="assets/images/app/architecture_component.png" alt="앱 컴포넌트" width="600"/>
+  <img src="assets/images/web3/architecture.png" alt="Web3 아키텍처" width="600"/>
 </p>
-> Flutter 기반 앱의 주요 컴포넌트 구조와 데이터 흐름  
-> [Flutter 앱 구조/실행 가이드](./frontend/app/README.md) 참고
+
+- <kbd><a href="./web3/README.md">Web3 빌드/배포/검증 가이드</a></kbd>
+
+---
+
+### 📚 Docs
+
+- <kbd><a href="./docs/readme_web3.md">Web3 설계/운영 참고</a></kbd>
+  &nbsp;
+  <kbd><a href="./docs/readme_business.md">비즈니스/기획 참고</a></kbd>
+  &nbsp;
+  <kbd><a href="./docs/readme_dev.md">개발 환경/팁</a></kbd>
 
 ---
 
@@ -177,53 +183,26 @@ Channel ||--o{ Chat : ""
 </p>
 
 ---
-## 📄 하위 모듈별 문서/가이드
-
-### Backend
-- [API 서버](./backend/api/README.md)  
-  - [PostgreSQL 명령어 가이드](./backend/api/docs/postgres-guide.md)
-  - [FCM 메시지 연동 가이드](./backend/api/docs/fcm-message-guide.md)
-- [LLM 서버](./backend/llm/README.md)  
-  - [LangSmith 활용 가이드](./backend/llm/docs/langsmith-guide.md)
-
-### Frontend
-- [Flutter 앱](./frontend/app/README.md)
-  - [iOS 빌드/배포 가이드](./frontend/app/docs/ios-build-run.md)
-  - [Android 빌드/배포 가이드](./frontend/app/docs/aos-build-run.md)
-
-### Infrastructure
-- [Terraform 인프라 가이드](./infrastructure/README.md)
-- [Terraform 환경별 상세 가이드](./infrastructure/terraform/README.md)
-
-### Web3
-- [Web3 빌드/배포/검증 가이드](./web3/README.md)
-
-### Docs
-- [Web3 설계/운영 참고](./docs/readme_web3.md)
-- [비즈니스/기획 참고](./docs/readme_business.md)
-- [개발 환경/팁](./docs/readme_dev.md)
-
----
 
 ## 📚 참고 및 문서 작성 제안
 
 - 각 모듈별 상세한 사용법, 개발/배포 가이드 등은 위의 README 및 문서 파일을 참고하세요.
-- 추가 문서가 필요하면 각 디렉토리의 `docs/` 폴더를 확인하세요.
+- 추가 문서가 필요하면 각 디렉토리의 <kbd>docs/</kbd> 폴더를 확인하세요.
 
-### 📌 **추가로 있으면 좋은 문서**
-1. **CONTRIBUTING.md**  
-   - 오픈소스 협업을 염두에 둔다면, 기여 방법/PR 규칙/코딩 컨벤션 등 안내
-2. **CHANGELOG.md**  
-   - 주요 릴리즈/변경 이력 관리
-3. **docs/architecture.md**  
-   - 아키텍처 상세 설명, 의사결정 근거, 기술스택 선정 이유 등
-4. **docs/faq.md**  
-   - 자주 묻는 질문 및 문제 해결법
-5. **docs/security.md**  
-   - 인증/보안 정책, 개인정보 처리방침 등
-6. **docs/deployment.md**  
-   - 실제 배포/운영 환경 세팅, CI/CD, 인프라 관리 가이드
+### 📌 <span style="background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:6px;">추가로 있으면 좋은 문서</span>
+1. <kbd>CONTRIBUTING.md</kbd>  
+   오픈소스 협업을 염두에 둔다면, 기여 방법/PR 규칙/코딩 컨벤션 등 안내
+2. <kbd>CHANGELOG.md</kbd>  
+   주요 릴리즈/변경 이력 관리
+3. <kbd>docs/architecture.md</kbd>  
+   아키텍처 상세 설명, 의사결정 근거, 기술스택 선정 이유 등
+4. <kbd>docs/faq.md</kbd>  
+   자주 묻는 질문 및 문제 해결법
+5. <kbd>docs/security.md</kbd>  
+   인증/보안 정책, 개인정보 처리방침 등
+6. <kbd>docs/deployment.md</kbd>  
+   실제 배포/운영 환경 세팅, CI/CD, 인프라 관리 가이드
 
 ---
 
-**문의/기여/개선 제안은 [Issues](https://github.com/your-repo/issues) 또는 각 모듈별 README의 안내를 참고하세요!**
+> 문의/기여/개선 제안은 <kbd>Issues</kbd> 또는 각 모듈별 README의 안내를 참고하세요!
