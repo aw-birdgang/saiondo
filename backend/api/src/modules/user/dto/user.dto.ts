@@ -9,31 +9,31 @@ export enum Gender {
 }
 
 export class CreateUserDto {
-  @ApiProperty({ example: '홍길동', description: '유저 이름' })
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @ApiProperty({ example: 'MALE', description: '성별(MALE/FEMALE/OTHER)' })
-  @IsEnum(Gender)
-  gender: Gender;
-
-  @ApiProperty({ example: 'test@example.com', description: '이메일' })
+  @ApiProperty({ example: 'test@example.com' })
   @IsString()
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: 'password123', description: '비밀번호' })
+  @ApiProperty({ example: '홍길동' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ example: 'MALE', enum: ['MALE', 'FEMALE', 'OTHER'] })
+  @IsEnum(Gender)
+  gender: Gender;
+
+  @ApiProperty({ example: '1990-01-01' })
+  @IsDateString()
+  @IsNotEmpty()
+  birthDate: string;
+
+  @ApiProperty({ example: 'password1234' })
   @IsString()
   @IsNotEmpty()
   password: string;
 
-  @ApiProperty({ example: '1990-01-01', description: '생년월일', required: false })
-  @IsOptional()
-  @IsDateString()
-  birthDate?: string;
-
-  @ApiProperty({ example: 'fcm_token_example', description: 'FCM 토큰', required: false })
+  @ApiProperty({ example: 'fcm_token_example', required: false })
   @IsOptional()
   @IsString()
   fcmToken?: string;

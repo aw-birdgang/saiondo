@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './config/config.type';
 import { useContainer } from 'class-validator';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,8 +17,11 @@ async function bootstrap() {
   const port = configService.getOrThrow('common', { infer: true }).port;
   console.log(`app > bootstrap > apiPrefix::${llmApiUrl}, port::${port} `);
 
+  app.use(helmet());
   app.enableCors({
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production'
+      ? ['https://your-domain.com']
+      : '*',
     credentials: true,
   });
   SwaggerModuleConfig.setupSwagger(app);

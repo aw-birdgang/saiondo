@@ -77,4 +77,11 @@ export class RelationalUserRepository extends UserRepository {
     return user ? UserMapper.fromPrisma(user) : null;
   }
 
+  async softRemove(id: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
 }

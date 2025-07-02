@@ -21,6 +21,7 @@ import {BasicQuestionWithAnswerModule} from "@modules/basic-question-with-answer
 import {WalletModule} from "@modules/wallet/wallet.module";
 import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-subscription.module";
 import {LabelModule} from "@modules/label/label.module";
+import {HealthModule} from "@modules/health/health.module";
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import {LabelModule} from "@modules/label/label.module";
       envFilePath: ['.env'],
     }),
     PrismaModule,
+    HealthModule,
     AuthModule,
     UserModule,
     ChannelModule,
