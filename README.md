@@ -11,16 +11,14 @@
 
 ---
 
-## 🖼️ 프로젝트 전체 구조
+## 🖼️ 시스템 아키텍처 전체 구조
 
 <p align="center">
   <img src="assets/images/architecture_full_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="1200"/>
 </p>
 
-> <span style="background:#f3f3f3; padding:2px 8px; border-radius:6px;">
-> <b>설명:</b> SAIONDO의 전체 시스템 아키텍처.<br>
+> **설명:** SAIONDO의 전체 시스템 아키텍처.  
 > 백엔드, 프론트엔드, 인프라, Web3, LLM 등 모든 주요 컴포넌트와 상호작용 구조를 한눈에 볼 수 있습니다.
-> </span>
 
 ---
 
@@ -62,9 +60,7 @@ saiondo/
   <img src="assets/images/api/erd.png" alt="SAIONDO ERD" width="800"/>
 </p>
 
-> <span style="background:#f3f3f3; padding:2px 8px; border-radius:6px;">
-> <b>설명:</b> 주요 데이터베이스 테이블(User, Channel, Chat, PersonaProfile, Advice 등) 간의 관계를 시각화한 ERD입니다.
-> </span>
+> **설명:** 주요 데이터베이스 테이블(User, Channel, Chat, PersonaProfile, Advice 등) 간의 관계를 시각화한 ERD입니다.
 
 <details>
 <summary><b>ERD PlantUML 예시 보기</b></summary>
@@ -102,6 +98,9 @@ Channel ||--o{ Chat : ""
   <img src="assets/images/api/architecture.png" alt="API 아키텍처" width="600"/>
 </p>
 
+> **설명:** NestJS 기반 REST API 서버와 Prisma ORM을 사용한 데이터베이스 관리.  
+> 사용자 인증, 채팅 관리, 결제 처리, FCM 푸시 알림 등 핵심 비즈니스 로직을 처리합니다.
+
 - <kbd><a href="./backend/api/README.md">API 서버 (NestJS/Prisma)</a></kbd>
   &nbsp;
   <kbd><a href="./backend/api/docs/postgres-guide.md">PostgreSQL 명령어 가이드</a></kbd>
@@ -119,6 +118,9 @@ Channel ||--o{ Chat : ""
   <img src="assets/images/app/architecture_component.png" alt="앱 컴포넌트" width="600"/>
 </p>
 
+> **설명:** Flutter 기반 크로스 플랫폼 앱으로 iOS, Android, Web을 지원.  
+> Riverpod 상태관리, 커스텀 위젯, 실시간 채팅, 성향 분석 리포트 등 사용자 인터페이스를 제공합니다.
+
 - <kbd><a href="./frontend/app/README.md">Flutter 앱</a></kbd>
   &nbsp;
   <kbd><a href="./frontend/app/docs/ios-build-run.md">iOS 빌드/배포 가이드</a></kbd>
@@ -134,10 +136,16 @@ Channel ||--o{ Chat : ""
   <img src="assets/images/infra/dev-architecture-full.png" alt="개발 인프라 아키텍처" width="600"/>
 </p>
 
+> **설명:** 개발 환경용 AWS 인프라 구성.  
+> ECS Fargate, RDS, ElastiCache, S3, CloudFront 등을 사용하여 확장 가능한 개발 환경을 구축합니다.
+
 **운영 환경**
 <p align="center">
   <img src="assets/images/infra/prod-architecture-full.png" alt="운영 인프라 아키텍처" width="600"/>
 </p>
+
+> **설명:** 운영 환경용 고가용성 AWS 인프라 구성.  
+> Auto Scaling, Load Balancer, Multi-AZ 배포, CloudWatch 모니터링 등으로 안정적인 서비스를 제공합니다.
 
 - <kbd><a href="./infrastructure/README.md">Terraform 인프라 가이드</a></kbd>
   &nbsp;
@@ -150,6 +158,9 @@ Channel ||--o{ Chat : ""
 <p align="center">
   <img src="assets/images/web3/architecture.png" alt="Web3 아키텍처" width="600"/>
 </p>
+
+> **설명:** 블록체인 기반 커플 토큰 및 NFT 시스템.  
+> Solidity 스마트 컨트랙트, IPFS 메타데이터 저장, 커플 전용 토큰 발행 및 거래 기능을 제공 합니다.
 
 - <kbd><a href="./web3/README.md">Web3 빌드/배포/검증 가이드</a></kbd>
 
