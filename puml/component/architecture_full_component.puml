@@ -1,0 +1,158 @@
+@startuml
+!theme plain
+title SAIONDO - Full Stack Architecture (AWS + Web3 + LLM + Vector Store)
+
+' === 스타일 설정 ===
+skinparam defaultFontSize 12
+skinparam defaultFontName Arial
+
+' 패키지 스타일
+skinparam package {
+  BackgroundColor #F8F9FA
+  BorderColor #6C757D
+  FontColor #495057
+}
+
+' 클라우드 스타일
+skinparam cloud {
+  BackgroundColor #E3F2FD
+  BorderColor #2196F3
+  FontColor #1565C0
+}
+
+' 데이터베이스 스타일
+skinparam database {
+  BackgroundColor #FFF3E0
+  BorderColor #FF9800
+  FontColor #E65100
+}
+
+' 스토리지 스타일
+skinparam storage {
+  BackgroundColor #E8F5E8
+  BorderColor #4CAF50
+  FontColor #2E7D32
+}
+
+' 노드 스타일
+skinparam node {
+  BackgroundColor #F3E5F5
+  BorderColor #9C27B0
+  FontColor #6A1B9A
+}
+
+' 큐 스타일
+skinparam queue {
+  BackgroundColor #FFEBEE
+  BorderColor #F44336
+  FontColor #C62828
+}
+
+' === Frontend ===
+package "📱 Frontend (Flutter)" as frontend {
+  [Presentation Layer] as presentation #E3F2FD
+  [Domain Layer] as domain #E8F5E8
+  [Data Layer] as data #FFF3E0
+  [DI Container] as di #F3E5F5
+
+  presentation -down-> domain : UseCase 호출
+  domain -down-> data : Repository 구현체
+  di -right-> presentation : Store 주입
+  di -right-> domain : UseCase 주입
+  di -right-> data : Repository 주입
+}
+
+' === AWS Cloud ===
+cloud "☁️ AWS Cloud" as aws {
+  ' === Load Balancer Layer ===
+  [Application Load Balancer] as alb #E3F2FD
+
+  ' === Backend Services ===
+  node "🚀 NestJS Backend (ECS)" as backend {
+    [REST API Controllers] as api #E3F2FD
+    [WebSocket Gateway] as ws #E3F2FD
+    [Domain Services] as services #E8F5E8
+    [LLM Proxy Service] as llm_proxy #E8F5E8
+    [Web3 Service] as web3_service #E8F5E8
+    [Prisma ORM] as prisma #FFF3E0
+    [Redis Service] as redis_service #FFF3E0
+
+    api -down-> services : Service 호출
+    ws -down-> services : 실시간 처리
+    services -down-> llm_proxy : LLM 요청
+    services -down-> web3_service : Web3 연동
+    services -down-> prisma : DB 접근
+    services -down-> redis_service : 캐싱
+  }
+
+  ' === LLM Server ===
+  node "🤖 LLM Server (ECS)" as llm_server {
+    [Provider Base] as provider_base #E3F2FD
+    [OpenAI Provider] as openai #E3F2FD
+    [Claude Provider] as claude #E3F2FD
+    [Chat Service] as chat_service #E8F5E8
+    [Analysis Service] as analysis_service #E8F5E8
+    [LangSmith Tracing] as tracing #FFEBEE
+
+    provider_base -down-> openai : Provider 패턴
+    provider_base -down-> claude : Provider 패턴
+    openai -down-> chat_service : AI 처리
+    claude -down-> analysis_service : AI 처리
+    chat_service -down-> tracing : 추적
+  }
+
+  ' === Infrastructure Management ===
+  node "��️ Infrastructure (Terraform)" as infra {
+    [VPC + Subnets] as vpc #E3F2FD
+    [ECS Cluster] as ecs #E8F5E8
+    [ECR Registry] as ecr #FFF3E0
+    [CodePipeline] as pipeline #FFEBEE
+    [Security Groups] as sg #FFEBEE
+
+    vpc -down-> ecs : 네트워킹
+    pipeline -down-> ecr : 이미지 푸시
+    pipeline -down-> ecs : 배포
+    sg -down-> alb : ALB 보안
+    sg -down-> backend : Backend 보안
+    sg -down-> llm_server : LLM 보안
+  }
+
+  ' === Data Storage ===
+  database "��️ RDS (PostgreSQL)" as rds
+  queue "⚡ ElastiCache (Redis)" as redis
+  storage "🔍 Vector Store" as vector_store
+
+  backend --> rds : Prisma ORM
+  backend --> redis : 캐싱/세션
+  llm_server --> vector_store : 벡터 검색
+}
+
+' === Blockchain ===
+cloud "⛓️ Blockchain Network" as blockchain {
+  [Ethereum Mainnet] as eth #E3F2FD
+  [Klaytn Network] as klaytn #E8F5E8
+}
+
+' === Web3 Development ===
+package "�� Web3 Development (Hardhat)" as web3_dev {
+  [Smart Contracts] as contracts #E3F2FD
+  [Deploy Scripts] as deploy #E8F5E8
+  [Test Suite] as tests #FFF3E0
+
+  contracts -down-> deploy : 배포
+  contracts -down-> tests : 테스트
+}
+
+' === 주요 데이터 흐름 ===
+frontend -down-> alb : HTTPS/WebSocket
+alb -down-> backend : 로드밸런싱
+backend -down-> llm_server : 내부 통신 (Service Discovery)
+llm_server -right-> vector_store : 벡터 검색
+backend -down-> blockchain : Web3 연동
+web3_dev -down-> blockchain : 컨트랙트 배포
+
+' === 캐싱 및 성능 ===
+redis -up-> backend : 실시간 데이터
+vector_store -up-> llm_server : 유사도 검색
+
+@enduml
