@@ -5,12 +5,14 @@ import {User} from "../../database/user/domain/user";
 import {
   RelationalUserRepository
 } from "../../database/user/infrastructure/persistence/relational/repositories/user.repository";
+import { RedisService } from '@common/redis/redis.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: RelationalUserRepository,
     private readonly walletService: WalletService,
+    private readonly redisService: RedisService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -41,7 +43,18 @@ export class UserService {
   }
 
   async findById(userId: string): Promise<User | null> {
-    return this.userRepository.findById(userId);
+    const client = this.redisService;
+    const redisKey = `user:${userId}`;
+
+    const cached = await client.get(redisKey);
+    if (cached) return JSON.parse(cached);
+
+    const user = await this.userRepository.findById(userId);
+    if (user) {
+      await client.set(redisKey, JSON.stringify(user), 'EX', 60 * 10); // 10분 캐시
+      // await client.del(redisKey);
+    }
+    return user;
   }
 
   async findAssistantsByUserId(userId: string): Promise<User | null> {
@@ -50,7 +63,10 @@ export class UserService {
   }
 
   async updateFcmToken(userId: string, fcmToken: string): Promise<User> {
-    return this.userRepository.update(userId, { fcmToken });
+    const updated = await this.userRepository.update(userId, { fcmToken });
+    const client = this.redisService;
+    await client.del(`user:${userId}`);
+    return updated;
   }
 
   async findUserWithPointHistory(userId: string): Promise<User | null> {

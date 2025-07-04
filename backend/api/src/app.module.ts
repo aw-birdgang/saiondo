@@ -22,6 +22,7 @@ import {WalletModule} from "@modules/wallet/wallet.module";
 import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-subscription.module";
 import {LabelModule} from "@modules/label/label.module";
 import {HealthModule} from "@modules/health/health.module";
+import {RedisModule} from './common/redis/redis.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import {HealthModule} from "@modules/health/health.module";
     PushScheduleModule,
     UserAnswerModule,
     LabelModule,
+    RedisModule,
     // Web3Module,
   ],
 })

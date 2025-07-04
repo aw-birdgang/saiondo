@@ -49,6 +49,22 @@ class EnvironmentVariablesValidator {
   @Max(65535)
   @IsOptional()
   WS_PORT: number;
+
+  @IsString()
+  @IsOptional()
+  REDIS_HOST: string;
+
+  @IsInt()
+  @IsOptional()
+  REDIS_PORT: number;
+
+  @IsString()
+  @IsOptional()
+  REDIS_PASSWORD: string;
+
+  @IsInt()
+  @IsOptional()
+  REDIS_DB: number;
 }
 
 export default registerAs<CommonConfig>('common', () => {
@@ -70,5 +86,11 @@ export default registerAs<CommonConfig>('common', () => {
     headerLanguage: process.env.APP_HEADER_LANGUAGE || 'x-custom-lang',
     llmApiUrl: process.env.LLM_API_URL || 'http://localhost:8000',
     wsPort: process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10) : 3000,
+    redis: {
+      host: process.env.REDIS_HOST || 'localhost',
+      port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT, 10) : 6379,
+      password: process.env.REDIS_PASSWORD || undefined,
+      db: process.env.REDIS_DB ? parseInt(process.env.REDIS_DB, 10) : 0,
+    },
   };
 });

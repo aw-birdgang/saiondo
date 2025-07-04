@@ -6,6 +6,7 @@ import {Channel} from './../../database/channel/domain/channel';
 import {
   RelationalChannelRepository
 } from "../../database/channel/infrastructure/persistence/relational/repositories/channel.repository";
+import { RedisService } from '@common/redis/redis.service';
 
 /**
  * ChannelService
@@ -17,7 +18,8 @@ export class ChannelService {
   private readonly logger = new Logger(ChannelService.name);
 
   constructor(
-    private readonly channelRepo: RelationalChannelRepository
+    private readonly channelRepo: RelationalChannelRepository,
+    private readonly redisService: RedisService,
   ) {}
 
   // =========================
@@ -83,9 +85,22 @@ export class ChannelService {
     }
   }
 
-  /** 초대코드로 채널 조회 (멤버 및 유저 정보 포함) */
+  /** 초대코드로 채널 조회 (캐시 적용, 로그 포함) */
   async getChannelByInviteCode(inviteCode: string) {
-    return this.channelRepo.findByInviteCodeWithMembers(inviteCode);
+    const redisKey = `channel:invite:${inviteCode}`;
+
+    // 1. Redis에서 먼저 조회 (로그 자동 출력)
+    const cached = await this.redisService.get(redisKey);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+
+    // 2. 없으면 DB 조회 후 캐시 저장
+    const channel = await this.channelRepo.findByInviteCodeWithMembers(inviteCode);
+    if (!channel) throw new NotFoundException('초대코드에 해당하는 채널이 없습니다.');
+
+    await this.redisService.set(redisKey, JSON.stringify(channel), 'EX', 60 * 5); // 5분 캐시
+    return channel;
   }
 
   /** 현재 참여 중인 채널 조회 (상태: PENDING, ACTIVE) */
@@ -111,22 +126,33 @@ export class ChannelService {
   // ===== 초대코드 관련 메서드 =====
   // =========================
 
-  /** 초대코드 재발급 */
+  /** 초대코드 재발급 (캐시 삭제 로그 포함) */
   async inviteCode(dto: InviteCodeChannelDto) {
     const channelId = dto.channelId;
     const inviteCode = generateInviteCode();
     const channel = await this.channelRepo.findById(channelId);
     if (!channel) throw new NotFoundException('채널을 찾을 수 없습니다.');
+
+    // 기존 캐시 삭제 (로그 자동 출력)
+    await this.redisService.del(`channel:invite:${channel.inviteCode}`);
+
     return this.channelRepo.updateInviteCode(channelId, inviteCode);
   }
 
-  /** 초대코드로 채널 참가 (MEMBER로 추가, 상태 ACTIVE로 변경) */
+  /** 초대코드로 채널 참가 (MEMBER로 추가, 상태 ACTIVE로 변경, 중복 방지 로그 포함) */
   async joinByInviteCode(inviteCode: string, participantId: string) {
+    const redisKey = `invite:used:${inviteCode}`;
+
+    // 이미 사용된 초대코드인지 체크 (로그 자동 출력)
+    const used = await this.redisService.get(redisKey);
+    if (used) throw new BadRequestException('이미 사용된 초대코드입니다.');
+
     const channel = await this.channelRepo.findByInviteCodeWithMembers(inviteCode);
     if (!channel) throw new NotFoundException('초대 코드를 찾을 수 없습니다.');
     const participant = channel.members.find(m => m.role === 'MEMBER');
     if (participant) throw new BadRequestException('이미 참여한 채널입니다.');
     await this.channelRepo.addMember(channel.id, participantId, 'MEMBER');
+    await this.redisService.set(redisKey, '1', 'EX', 60 * 10); // 10분간 재사용 방지 (로그 자동 출력)
     return this.channelRepo.updateStatus(channel.id, 'ACTIVE');
   }
 

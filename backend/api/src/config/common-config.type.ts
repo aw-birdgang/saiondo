@@ -10,4 +10,10 @@ export type CommonConfig = {
   headerLanguage: string;
   llmApiUrl: string;
   wsPort: number;
+  redis: {
+    host: string;
+    port: number;
+    password?: string;
+    db: number;
+  };
 };
