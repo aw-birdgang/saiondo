@@ -14,7 +14,7 @@
 ## 🖼️ 프로젝트 전체 구조
 
 <p align="center">
-  <img src="assets/images/architecture_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="700"/>
+  <img src="assets/images/architecture_full_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="1200"/>
 </p>
 
 > <span style="background:#f3f3f3; padding:2px 8px; border-radius:6px;">
