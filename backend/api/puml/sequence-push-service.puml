@@ -1,0 +1,122 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+skinparam participant {
+  BackgroundColor #E3F2FD
+  BorderColor #1976D2
+  FontColor #0D47A1
+  FontSize 14
+  FontStyle bold
+}
+
+skinparam actor {
+  BackgroundColor #F3E5F5
+  BorderColor #7B1FA2
+  FontColor #4A148C
+  FontSize 14
+  FontStyle bold
+}
+
+skinparam arrow {
+  Color #424242
+  FontColor #424242
+  FontSize 11
+  FontStyle italic
+}
+
+skinparam group {
+  BackgroundColor #FFF3E0
+  BorderColor #F57C00
+  FontColor #E65100
+  FontSize 12
+  FontStyle bold
+}
+
+skinparam note {
+  BackgroundColor #E8F5E8
+  BorderColor #388E3C
+  FontColor #1B5E20
+  FontSize 10
+}
+
+title <color:#1976D2><size:20><b>NestJS + Flutter + Firebase 푸시 알림 서비스 흐름도</b></size></color>
+
+actor "👤 User" as User
+participant " Flutter App" as Flutter
+participant "⚙️ NestJS Backend" as Nest
+participant "☁️ Firebase Cloud Messaging\n(FCM)" as Firebase
+
+== 초기 설정 ==
+
+User -[#4CAF50]-> Flutter : 앱 실행 및 로그인
+activate Flutter
+
+Flutter -[#2196F3]-> Firebase : 🔧 Firebase.initializeApp()
+activate Firebase
+
+Flutter -[#2196F3]-> Firebase : 🔑 FirebaseMessaging.getToken()
+Firebase -[#4CAF50]--> Flutter : 🎫 FCM Token
+deactivate Firebase
+
+note right of Flutter
+  <b>FCM 토큰 획득</b>
+  • 앱별 고유 식별자
+  • 푸시 수신용 주소
+  • 서버에 전송 필요
+end note
+
+Flutter -[#FF9800]-> Nest : POST /push/send\n<color:#666666>{token, title, message}</color>
+activate Nest
+
+Nest -[#9C27B0]-> Nest : ⚙️ Firebase Admin SDK 초기화
+note right of Nest
+  <b>서버 초기화</b>
+  • 서비스 계정 키 로드
+  • Admin SDK 설정
+  • 환경 검증
+end note
+
+Nest -[#F44336]-> Firebase :  send({token, title, message})
+activate Firebase
+
+Firebase -[#4CAF50]--> Nest : ✅ 메시지 전송 결과
+deactivate Firebase
+
+deactivate Nest
+deactivate Flutter
+
+== 푸시 수신 ==
+
+Firebase -[#4CAF50]-> Flutter : 📢 Push 알림 전달
+activate Flutter
+
+note right of Flutter
+  <b>푸시 수신 처리</b>
+  • 백그라운드/포그라운드
+  • 알림 UI 표시
+  • 사용자 인터랙션
+end note
+
+Flutter -[#4CAF50]-> User : 🎯 알림 UI 표시
+activate User
+
+note right of User
+  <b>사용자 경험</b>
+  • 알림 배너 표시
+  • 소리/진동
+  • 탭 시 앱 실행
+end note
+
+deactivate User
+deactivate Flutter
+deactivate Firebase
+
+@enduml

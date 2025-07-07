@@ -6,7 +6,8 @@ import {AllConfigType} from './config/config.type';
 import {useContainer} from 'class-validator';
 import {LoggingInterceptor} from './common/interceptors/logging.interceptor';
 import helmet from 'helmet';
-import {ValidationPipe as CustomValidationPipe} from './common/pipes/validation.pipe';
+import {ValidationPipe} from '@nestjs/common';
+import validationOptions from "@common/utils/validation-options";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,18 +31,15 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   // 커스텀 ValidationPipe 사용 (로그 포함)
-  app.useGlobalPipes(new CustomValidationPipe());
-
-  // 또는 기본 ValidationPipe + 로그 옵션
-  // app.useGlobalPipes(new ValidationPipe({
-  //   ...validationOptions,
-  //   transform: true,
-  //   whitelist: true,
-  //   forbidNonWhitelisted: true,
-  //   transformOptions: {
-  //     enableImplicitConversion: true,
-  //   },
-  // }));
+  app.useGlobalPipes(new ValidationPipe({
+    ...validationOptions,
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+  }));
 
   await app.listen(process.env.PORT ?? 3000);
 }

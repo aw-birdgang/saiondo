@@ -3,6 +3,7 @@ import {FirebaseService} from '../../common/firebase/firebase.service';
 import {PrismaService} from '../../common/prisma/prisma.service';
 import {MessageSender} from '@prisma/client';
 import {ChatService} from "@modules/chat/chat.service";
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class PushService {
@@ -67,6 +68,35 @@ export class PushService {
       sender: MessageSender.AI,
       message,
     });
+  }
+
+  /**
+   * FCM 환경이 정상적으로 초기화되어 있는지 체크
+   */
+  public async validateFcmEnvironment(): Promise<{ ok: boolean; reason?: string }> {
+    try {
+      // 1. Firebase App이 초기화되어 있는지
+      if (!admin.apps.length) {
+        return { ok: false, reason: 'Firebase app is not initialized.' };
+      }
+
+      // 2. 기본 앱 인스턴스 사용 (올바른 방법)
+      const app = admin.app();
+      if (!app) {
+        return { ok: false, reason: 'Firebase app instance is null.' };
+      }
+
+      // 3. credential이 존재하는지 확인
+      if (!app.options.credential) {
+        return { ok: false, reason: 'Firebase credential is not configured.' };
+      }
+
+      // 4. 인증 객체가 유효한지 (access token 발급 시도)
+      await app.options.credential.getAccessToken();
+      return { ok: true };
+    } catch (err: any) {
+      return { ok: false, reason: err.message || String(err) };
+    }
   }
 
   // 외부에서 호출하는 메인 함수
