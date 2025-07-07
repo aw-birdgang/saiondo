@@ -49,6 +49,22 @@ enum PointType {
   CONVERT_TO_TOKEN
 }
 
+// (선택) 애착 패턴 등 enum 정의
+enum AttachmentPattern {
+  SECURE
+  ANXIOUS
+  AVOIDANT
+}
+
+// 알림 타입 enum 추가
+enum NotificationType {
+  ANALYSIS_COMPLETE
+  NEW_MESSAGE
+  RELATIONSHIP_TIP
+  MISSION_REMINDER
+  REPORT
+}
+
 // ===== MODELS =====
 
 model User {
@@ -89,6 +105,9 @@ model User {
   subscriptionHistories SubscriptionHistory[]
   pointPurchaseHistories PointPurchaseHistory[]
   subscription        Subscription?  // 1:1 관계
+  
+  // 추가된 관계
+  notifications    Notification[]
 }
 
 model Channel {
@@ -110,6 +129,9 @@ model Channel {
   coupleAnalyses  CoupleAnalysis[]
   members         ChannelMember[]
   invitations     Invitation[]
+  
+  // 추가된 관계
+  reports         Report[]
 }
 
 model ChannelMember {
@@ -418,9 +440,34 @@ model MessageLabel {
   // message  Chat?  @relation(fields: [messageId], references: [id]) // 필요시 주석 해제
 }
 
-// (선택) 애착 패턴 등 enum 정의
-enum AttachmentPattern {
-  SECURE
-  ANXIOUS
-  AVOIDANT
+// 알림 모델 추가
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  title     String
+  body      String
+  type      NotificationType
+  data      String?          @db.Text // JSON string
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // 관계
+  user      User             @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+// 리포트 모델 추가
+model Report {
+  id        String   @id @default(uuid())
+  channelId String
+  content   String   @db.Text // JSON string
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 관계
+  channel   Channel  @relation(fields: [channelId], references: [id])
+
+  @@map("reports")
 }

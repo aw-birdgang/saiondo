@@ -1,11 +1,12 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModuleConfig } from './modules/swagger/swagger.module';
-import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from './config/config.type';
-import { useContainer } from 'class-validator';
-import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import {NestFactory} from '@nestjs/core';
+import {AppModule} from './app.module';
+import {SwaggerModuleConfig} from './modules/swagger/swagger.module';
+import {ConfigService} from '@nestjs/config';
+import {AllConfigType} from './config/config.type';
+import {useContainer} from 'class-validator';
+import {LoggingInterceptor} from './common/interceptors/logging.interceptor';
 import helmet from 'helmet';
+import {ValidationPipe as CustomValidationPipe} from './common/pipes/validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,6 +28,21 @@ async function bootstrap() {
   SwaggerModuleConfig.setupSwagger(app);
   // app.useWebSocketAdapter(new WsAdapter(app));
   app.useGlobalInterceptors(new LoggingInterceptor());
+
+  // 커스텀 ValidationPipe 사용 (로그 포함)
+  app.useGlobalPipes(new CustomValidationPipe());
+
+  // 또는 기본 ValidationPipe + 로그 옵션
+  // app.useGlobalPipes(new ValidationPipe({
+  //   ...validationOptions,
+  //   transform: true,
+  //   whitelist: true,
+  //   forbidNonWhitelisted: true,
+  //   transformOptions: {
+  //     enableImplicitConversion: true,
+  //   },
+  // }));
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

@@ -1,17 +1,28 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { Observable, tap } from 'rxjs';
-import { logger } from '../logger/winston.logger';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(LoggingInterceptor.name);
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const req = context.switchToHttp().getRequest();
-    const { method, originalUrl, body } = req;
-    logger.info(`[${method}] ${originalUrl} - body: ${JSON.stringify(body)}`);
+    const request = context.switchToHttp().getRequest();
+    const { method, url, body, user } = request;
+    const now = Date.now();
+
+    this.logger.log(`[REQUEST] ${method} ${url} - User: ${user?.id || 'anonymous'}`);
 
     return next.handle().pipe(
-      tap((data) => {
-        // logger.info(`[${method}] ${originalUrl} - response: ${JSON.stringify(data)}`);
+      tap({
+        next: (data) => {
+          const responseTime = Date.now() - now;
+          this.logger.log(`[RESPONSE] ${method} ${url} - ${responseTime}ms`);
+        },
+        error: (error) => {
+          const responseTime = Date.now() - now;
+          this.logger.error(`[ERROR] ${method} ${url} - ${responseTime}ms - ${error.message}`);
+        },
       }),
     );
   }

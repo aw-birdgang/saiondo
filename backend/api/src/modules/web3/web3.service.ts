@@ -45,7 +45,7 @@ export class Web3Service implements OnModuleInit {
   // 개선: 이벤트 구독 대신 polling 방식으로 Transfer 이벤트 동기화
   async onModuleInit() {
     this.logger.log('Web3Service polling for Transfer events...');
-    this.startPollingTransferEvents();
+    //this.startPollingTransferEvents();
   }
 
   private async startPollingTransferEvents() {

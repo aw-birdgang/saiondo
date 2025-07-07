@@ -23,6 +23,8 @@ import {PaymentSubscriptionModule} from "@modules/payment-subscription/payment-s
 import {LabelModule} from "@modules/label/label.module";
 import {HealthModule} from "@modules/health/health.module";
 import {RedisModule} from './common/redis/redis.module';
+import {ReportModule} from './modules/report/report.module';
+import {NotificationModule} from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -52,6 +54,8 @@ import {RedisModule} from './common/redis/redis.module';
     UserAnswerModule,
     LabelModule,
     RedisModule,
+    NotificationModule,
+    ReportModule,
     // Web3Module,
   ],
 })
