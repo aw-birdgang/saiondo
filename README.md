@@ -452,8 +452,9 @@ terraform apply
 
 - <kbd><a href="./docs/security.md">보안 가이드</a></kbd>
 - <kbd><a href="./docs/api-reference.md">API 레퍼런스</a></kbd>
-- <kbd><a href="./docs/deployment-guide.md">배포 가이드</a></kbd>
+- <kbd><a href="./docs/deployment.md">배포 가이드</a></kbd>
 - <kbd><a href="./backend/llm/docs/langsmith-guide.md">LangSmith 활용 가이드</a></kbd>
+- <kbd><a href="./docs/point-erc20-nft-system.md">포인트-ERC20-NFT 연계 시스템</a></kbd>
 
 ---
 

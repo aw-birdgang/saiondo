@@ -1,0 +1,78 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title SAIONDO 포인트-ERC20-NFT 연계 시스템 아키텍처
+
+actor User as U
+
+package "Frontend (Flutter App/Web)" as FE {
+  [포인트 적립/전환 UI]
+  [NFT 발급/조회 UI]
+  [Web3 지갑 연동]
+}
+
+package "API 서버 (NestJS)" as API {
+  [포인트 API]
+  [ERC20 API]
+  [NFT API]
+  [DB 연동]
+  [Web3 연동]
+}
+
+database "DB (PostgreSQL)" as DB
+
+package "Web3 서버/스크립트" as W3 {
+  [ERC20 컨트랙트 연동]
+  [NFT 컨트랙트 연동]
+  [Tx 서명/전송]
+}
+
+cloud "블록체인 (Ethereum/Polygon)" as BC {
+  [ERC20 스마트컨트랙트]
+  [NFT 스마트컨트랙트]
+}
+
+' 사용자 → 프론트엔드
+U --> FE : 앱/웹 사용
+
+' 프론트엔드 내부 흐름
+FE --> [포인트 적립/전환 UI] : 활동/미션/결제
+FE --> [NFT 발급/조회 UI] : 커플 인증/기념일
+FE --> [Web3 지갑 연동] : 온체인 Tx 서명/조회
+
+' 프론트엔드 → API 서버
+[포인트 적립/전환 UI] --> [포인트 API] : 포인트 적립/차감/전환 요청
+[NFT 발급/조회 UI] --> [NFT API] : NFT 발급/조회 요청
+[Web3 지갑 연동] --> [ERC20 API] : 온체인 잔액/Tx 조회
+
+' API 서버 ↔ DB
+[포인트 API] <--> DB : 포인트/트랜잭션 기록
+[NFT API] <--> DB : NFT/Tx 기록
+[ERC20 API] <--> DB : 온체인 Tx 기록
+
+' API 서버 → Web3 서버
+[포인트 API] --> [Web3 연동] : 포인트→ERC20 전환
+[NFT API] --> [Web3 연동] : NFT 발급
+[ERC20 API] --> [Web3 연동] : 온체인 잔액/Tx 조회
+
+' Web3 서버 내부
+[Web3 연동] --> [ERC20 컨트랙트 연동] : mint/transfer
+[Web3 연동] --> [NFT 컨트랙트 연동] : mint
+
+' Web3 서버 → 블록체인
+[ERC20 컨트랙트 연동] --> [ERC20 스마트컨트랙트]
+[NFT 컨트랙트 연동] --> [NFT 스마트컨트랙트]
+
+' 블록체인 → Web3 서버 (이벤트/Tx 결과)
+[ERC20 스마트컨트랙트] --> [ERC20 컨트랙트 연동] : Tx 결과/이벤트
+[NFT 스마트컨트랙트] --> [NFT 컨트랙트 연동] : Tx 결과/이벤트
+
+@enduml
