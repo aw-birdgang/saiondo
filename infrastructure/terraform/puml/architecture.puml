@@ -1,5 +1,14 @@
 @startuml
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
 
 skinparam linetype ortho
 

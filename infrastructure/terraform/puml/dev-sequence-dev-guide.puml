@@ -1,16 +1,13 @@
 @startuml
-' 스타일 설정
-skinparam sequenceParticipant underline
-skinparam sequenceLifeLineBorderColor #8888AA
-skinparam sequenceLifeLineBackgroundColor #F8F8FF
-skinparam sequenceBoxBorderColor #A3C1DA
-skinparam sequenceBoxBackgroundColor #F0F6FA
-skinparam participantBorderColor #3B5998
-skinparam participantBackgroundColor #EAF3FB
-skinparam actorBorderColor #3B5998
-skinparam actorBackgroundColor #F5F5F5
-skinparam noteBackgroundColor #FFFBEA
-skinparam noteBorderColor #E1C699
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
 
 actor Developer as Dev #F5F5F5
 

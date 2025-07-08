@@ -1,4 +1,5 @@
 @startuml
+!theme plain
 skinparam linetype ortho
 skinparam rectangleRoundCorner 10
 skinparam packageRoundCorner 10
@@ -8,6 +9,15 @@ skinparam cloudBorderStyle dashed
 skinparam defaultFontSize 14
 skinparam ArrowFontColor #333366
 skinparam ArrowFontSize 13
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
 
 actor "User" as user
 rectangle "GitHub\n<size:10>[Source/Trigger]" as github

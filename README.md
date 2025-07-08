@@ -11,26 +11,26 @@
 
 ---
 
-## �� 목차
+## 📑 목차
 
 - [🚀 빠른 시작](#-빠른-시작)
-- [��️ 시스템 아키텍처](#️-시스템-아키텍처-전체-구조)
-- [��️ 프로젝트 구조](#️-프로젝트-디렉토리-구조)
-- [��️ 기술 스택](#️-기술-스택)
-- [🚀 주요 기능](#-주요-기능)
-- [��️ 데이터베이스](#️-데이터베이스-erd)
-- [�� 개발 환경 설정](#-개발-환경-설정)
+- [🖼️ 시스템 아키텍처](#️-시스템-아키텍처-전체-구조)
+- [📁 프로젝트 구조](#️-프로젝트-디렉토리-구조)
+- [🛠️ 기술 스택](#️-기술-스택)
+- [✨ 주요 기능](#-주요-기능)
+- [🗃️ 데이터베이스](#️-데이터베이스-erd)
+- [⚙️ 개발 환경 설정](#-개발-환경-설정)
 - [🧪 테스트](#-테스트)
-- [�� 배포](#-배포)
+- [🚀 배포](#-배포)
 - [🔒 보안](#-보안)
-- [�� 앱 스크린샷](#-메인-화면-스크린샷)
-- [�� 문서](#-문서)
+- [📱 앱 스크린샷](#-메인-화면-스크린샷)
+- [📚 문서](#-문서)
 - [🤝 기여하기](#-기여하기)
 - [📄 라이선스](#-라이선스)
 
 ---
 
-## �� 빠른 시작
+## 🚀 빠른 시작
 
 ### 필수 요구사항
 
@@ -107,46 +107,46 @@ flutter run  # Flutter 앱 실행
 
 ---
 
-## ��️ 프로젝트 디렉토리 구조
+## 📁 프로젝트 디렉토리 구조
 
 ```plaintext
 saiondo/
-├── 📁 assets/                    # 이미지, 아이콘 등 정적 리소스
-├── 📁 backend/                   # 백엔드 서비스
-│   ├── 📁 api/                  # NestJS API 서버
+├── assets/                    # 이미지, 아이콘 등 정적 리소스
+├── backend/                   # 백엔드 서비스
+│   ├── api/                  # NestJS API 서버
 │   │   ├── src/
-│   │   ├── prisma/              # 데이터베이스 스키마
-│   │   ├── test/                # 테스트 파일
+│   │   ├── prisma/           # 데이터베이스 스키마
+│   │   ├── test/             # 테스트 파일
 │   │   └── package.json
-│   ├── 📁 llm/                  # FastAPI LLM 서버
+│   ├── llm/                  # FastAPI LLM 서버
 │   │   ├── src/
 │   │   ├── tests/
 │   │   └── requirements.txt
-│   ├── docker-compose.yml       # 로컬 개발 환경
-│   ├── buildspec.yml           # AWS CodeBuild 설정
-│   └── deploy.sh               # 배포 스크립트
-├── 📁 frontend/                 # 프론트엔드 앱
-│   └── 📁 app/                 # Flutter 앱
+│   ├── docker-compose.yml    # 로컬 개발 환경
+│   ├── buildspec.yml         # AWS CodeBuild 설정
+│   └── deploy.sh             # 배포 스크립트
+├── frontend/                 # 프론트엔드 앱
+│   └── app/                 # Flutter 앱
 │       ├── lib/
 │       ├── test/
 │       ├── android/
 │       ├── ios/
 │       └── pubspec.yaml
-├── 📁 infrastructure/           # 인프라 관리
-│   ├── 📁 terraform/           # Terraform 설정
+├── infrastructure/           # 인프라 관리
+│   ├── terraform/           # Terraform 설정
 │   │   ├── modules/
 │   │   └── environments/
-│   └── 📁 puml/               # 아키텍처 다이어그램
-├── 📁 web3/                    # 블록체인 관련
-│   ├── 📁 contracts/          # 스마트 컨트랙트
-│   ├── 📁 scripts/            # 배포 스크립트
+│   └── puml/                # 아키텍처 다이어그램
+├── web3/                    # 블록체인 관련
+│   ├── contracts/           # 스마트 컨트랙트
+│   ├── scripts/             # 배포 스크립트
 │   └── hardhat.config.js
-├── 📁 docs/                    # 프로젝트 문서
-├── 📁 puml/                    # PlantUML 다이어그램
-├── LICENSE                     # MIT 라이선스
-├── CHANGELOG.md               # 변경 이력
-├── CONTRIBUTING.md            # 기여 가이드
-└── README.md                  # 프로젝트 개요
+├── docs/                    # 프로젝트 문서
+├── puml/                    # PlantUML 다이어그램
+├── LICENSE                  # MIT 라이선스
+├── CHANGELOG.md             # 변경 이력
+├── CONTRIBUTING.md          # 기여 가이드
+└── README.md                # 프로젝트 개요
 ```
 
 ---
@@ -185,7 +185,7 @@ saiondo/
 
 ---
 
-## �� 주요 기능
+## ✨ 주요 기능
 
 - <kbd>AI 기반 커플 대화 분석 및 맞춤형 조언</kbd>
 - <kbd>1:1 대화방, 성향 분석, 리포트 제공</kbd>
@@ -234,83 +234,7 @@ Channel ||--o{ Chat : ""
 
 ---
 
-## ��️ 시스템 아키텍처 및 주요 컴포넌트
-
-### ��️ Backend
-
-<p align="center">
-  <img src="assets/images/api/architecture.png" alt="API 아키텍처" width="600"/>
-</p>
-
-> **설명:** NestJS 기반 REST API 서버와 Prisma ORM을 사용한 데이터베이스 관리.  
-> 사용자 인증, 채팅 관리, 결제 처리, FCM 푸시 알림 등 핵심 비즈니스 로직을 처리합니다.
-
-- <kbd><a href="./backend/api/README.md">API 서버 (NestJS/Prisma)</a></kbd>
-  &nbsp;
-  <kbd><a href="./backend/api/docs/postgres-guide.md">PostgreSQL 명령어 가이드</a></kbd>
-  &nbsp;
-  <kbd><a href="./backend/api/docs/fcm-message-guide.md">FCM 메시지 연동 가이드</a></kbd>
-- <kbd><a href="./backend/llm/README.md">LLM 서버 (FastAPI/LangChain)</a></kbd>
-  &nbsp;
-  <kbd><a href="./backend/llm/docs/langsmith-guide.md">LangSmith 활용 가이드</a></kbd>
-
----
-
-### �� Frontend
-
-<p align="center">
-  <img src="assets/images/app/architecture_component.png" alt="앱 컴포넌트" width="600"/>
-</p>
-
-> **설명:** Flutter 기반 크로스 플랫폼 앱으로 iOS, Android, Web을 지원.  
-> Riverpod 상태관리, 커스텀 위젯, 실시간 채팅, 성향 분석 리포트 등 사용자 인터페이스를 제공합니다.
-
-- <kbd><a href="./frontend/app/README.md">Flutter 앱</a></kbd>
-  &nbsp;
-  <kbd><a href="./frontend/app/docs/ios-build-run.md">iOS 빌드/배포 가이드</a></kbd>
-  &nbsp;
-  <kbd><a href="./frontend/app/docs/aos-build-run.md">Android 빌드/배포 가이드</a></kbd>
-
----
-
-### ☁️ Infrastructure
-
-**개발 환경**
-<p align="center">
-  <img src="assets/images/infra/dev-architecture-full.png" alt="개발 인프라 아키텍처" width="600"/>
-</p>
-
-> **설명:** 개발 환경용 AWS 인프라 구성.  
-> ECS Fargate, RDS, ElastiCache, S3, CloudFront 등을 사용하여 확장 가능한 개발 환경을 구축합니다.
-
-**운영 환경**
-<p align="center">
-  <img src="assets/images/infra/prod-architecture-full.png" alt="운영 인프라 아키텍처" width="600"/>
-</p>
-
-> **설명:** 운영 환경용 고가용성 AWS 인프라 구성.  
-> Auto Scaling, Load Balancer, Multi-AZ 배포, CloudWatch 모니터링 등으로 안정적인 서비스를 제공합니다.
-
-- <kbd><a href="./infrastructure/README.md">Terraform 인프라 가이드</a></kbd>
-  &nbsp;
-  <kbd><a href="./infrastructure/terraform/README.md">Terraform 환경별 상세 가이드</a></kbd>
-
----
-
-### 🔗 Web3
-
-<p align="center">
-  <img src="assets/images/web3/architecture.png" alt="Web3 아키텍처" width="600"/>
-</p>
-
-> **설명:** 블록체인 기반 커플 토큰 및 NFT 시스템.  
-> Solidity 스마트 컨트랙트, IPFS 메타데이터 저장, 커플 전용 토큰 발행 및 거래 기능을 제공합니다.
-
-- <kbd><a href="./web3/README.md">Web3 빌드/배포/검증 가이드</a></kbd>
-
----
-
-## �� 개발 환경 설정
+## ⚙️ 개발 환경 설정
 
 ### 환경 변수 설정
 
@@ -351,6 +275,15 @@ FIREBASE_PROJECT_ID="your-project-id"
 FIREBASE_MESSAGING_SENDER_ID="your-sender-id"
 ```
 
+#### LLM 서버 (.env)
+```bash
+OPENAI_API_KEY="your-openai-key"
+CLAUDE_API_KEY="your-claude-key"
+DEFAULT_MODEL="openai"
+LANGCHAIN_API_KEY="your-langsmith-key"
+LANGCHAIN_PROJECT="saiondo-llm"
+```
+
 ### 데이터베이스 설정
 
 ```bash
@@ -370,7 +303,7 @@ npx prisma generate
 
 ---
 
-## �� 테스트
+## 🧪 테스트
 
 ### Backend 테스트
 
@@ -384,7 +317,7 @@ npm run test:cov          # 커버리지 포함 테스트
 # LLM 서버 테스트
 cd backend/llm
 pytest                    # Python 테스트
-pytest --cov=src         # 커버리지 포함
+pytest --cov=src          # 커버리지 포함
 ```
 
 ### Frontend 테스트
@@ -408,7 +341,7 @@ npx hardhat coverage      # 커버리지 포함
 
 ---
 
-## �� 배포
+## 🚀 배포
 
 ### 개발 환경 배포
 
@@ -444,7 +377,7 @@ terraform apply
 
 ---
 
-## �� 보안
+## 🔒 보안
 
 ### 인증 및 권한 관리
 
@@ -478,7 +411,7 @@ terraform apply
 
 ---
 
-## 📱 메인 화면 스크린샷
+## 📱 앱 스크린샷
 
 <p align="center">
   <img src="assets/images/app/4-6-1.webp" alt="SAIONDO 메인 화면1" width="180" height="360"/>
@@ -497,7 +430,7 @@ terraform apply
 
 ---
 
-## �� 문서
+## 📚 문서
 
 ### 📖 상세 문서
 
@@ -520,10 +453,11 @@ terraform apply
 - <kbd><a href="./docs/security.md">보안 가이드</a></kbd>
 - <kbd><a href="./docs/api-reference.md">API 레퍼런스</a></kbd>
 - <kbd><a href="./docs/deployment-guide.md">배포 가이드</a></kbd>
+- <kbd><a href="./backend/llm/docs/langsmith-guide.md">LangSmith 활용 가이드</a></kbd>
 
 ---
 
-## �� 기여하기
+## 🤝 기여하기
 
 SAIONDO 프로젝트에 기여하고 싶으시다면 [기여 가이드](./CONTRIBUTING.md)를 참고해주세요.
 
@@ -543,6 +477,19 @@ SAIONDO 프로젝트에 기여하고 싶으시다면 [기여 가이드](./CONTRI
 
 ---
 
-## �� 라이선스
+## 📄 라이선스
 
 이 프로젝트는 [MIT 라이선스](./LICENSE) 하에 배포됩니다.
+
+---
+
+<p align="center">
+  <img src="assets/images/architecture_full_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="600"/>
+  <br>
+  <b>SAIONDO - 커플을 위한 AI 기반 케어 플랫폼</b>
+</p>
+
+---
+
+**이 파일을 프로젝트 루트(최상위)에 `README.md`로 저장하면,  
+구조, 실행법, 문서, 보안, 기여 등 모든 정보를 한눈에 볼 수 있습니다!**

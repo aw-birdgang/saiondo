@@ -1,5 +1,14 @@
 @startuml
-' 스타일
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
 skinparam package {
   BackgroundColor #F8F8FF
   BorderColor #333366
