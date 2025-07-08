@@ -1,4 +1,4 @@
-# Saiondo Flutter App - iOS 빌드 & 배포 가이드
+# 🍏 Saiondo Flutter App - iOS 빌드 & 배포 가이드
 
 이 문서는 `frontend/app` Flutter 프로젝트의 iOS 앱을  
 **빌드, TestFlight/앱스토어 배포, flavor(dev/prod) 관리, 에뮬레이터 실행**까지  
@@ -6,14 +6,31 @@
 
 ---
 
+## 📋 목차
+
+1. [사전 준비](#1-사전-준비)
+2. [프로젝트 설정 확인](#2-프로젝트-설정-확인)
+3. [빌드 환경 설정](#3-빌드-환경-설정)
+4. [iOS 빌드](#4-ios-빌드)
+5. [TestFlight/앱스토어 배포](#5-testflight앱스토어-배포)
+6. [기타 참고사항](#6-기타-참고사항)
+7. [자주 발생하는 이슈 & Trouble Shooting](#7-자주-발생하는-이슈--trouble-shooting)
+8. [참고 명령어](#8-참고-명령어)
+9. [참고 파일 구조](#9-참고-파일-구조)
+10. [에뮬레이터에서 실행하기](#10-에뮬레이터에서-실행하기)
+11. [공식 문서/참고](#11-공식-문서참고)
+12. [Best Practice & 운영 팁](#12-best-practice--운영-팁)
+
+---
+
 ## 1. 사전 준비
 
 ### 1.1. 필수 도구 설치
-- macOS (최신)
-- Xcode (최신, App Store 또는 [공식](https://developer.apple.com/xcode/))
-- CocoaPods (`sudo gem install cocoapods`)
-- Flutter & FVM (`brew install fvm`)
-- Apple Developer 계정 (앱 배포용)
+- **macOS** (최신)
+- **Xcode** (최신, App Store 또는 [공식](https://developer.apple.com/xcode/))
+- **CocoaPods** (`sudo gem install cocoapods`)
+- **Flutter & FVM** (`brew install fvm`)
+- **Apple Developer 계정** (앱 배포용, 유료)
 
 ### 1.2. 인증서 및 프로비저닝 프로파일
 - [Apple Developer Center](https://developer.apple.com/account/resources/certificates/list)에서
@@ -96,21 +113,25 @@ fvm flutter build ios --flavor dev -t lib/main_dev.dart
 
 ## 6. 기타 참고사항
 
-- 앱 아이콘/런치 이미지: `ios/Runner/Assets.xcassets`에서 관리
-- 권한 설정: `Info.plist`에서 필요 권한 추가
-- Firebase 등 외부 서비스 연동: 관련 파일/설정 누락 주의
-- 배포 전, 실제 디바이스에서 테스트 권장
-- flavor별 환경변수: [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) 등으로 `.env.dev`, `.env.prod` 관리 추천
+- **앱 아이콘/런치 이미지**: `ios/Runner/Assets.xcassets`에서 관리
+- **권한 설정**: `Info.plist`에서 필요 권한 추가
+- **Firebase 등 외부 서비스 연동**: 관련 파일/설정 누락 주의
+- **배포 전, 실제 디바이스에서 테스트 권장**
+- **flavor별 환경변수**: [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) 등으로 `.env.dev`, `.env.prod` 관리 추천
+- **.gitignore**: 민감 정보, 빌드 산출물, 환경변수 파일 반드시 제외
 
 ---
 
 ## 7. 자주 발생하는 이슈 & Trouble Shooting
 
-- **코드사인 오류**: 인증서/프로비저닝 프로파일 확인, Xcode에서 Team/Certificate/Provisioning Profile 올바르게 선택
-- **앱 아이콘/스플래시 누락**: Assets.xcassets 확인
-- **푸시/딥링크 등 동작 안함**: Info.plist, Firebase 설정 확인
-- **빌드 실패**: `pod install`, Xcode Clean Build Folder 후 재시도
-- **flavor 실행 오류**: Xcode Scheme과 flutter --flavor 옵션 이름 일치 확인
+| 이슈/오류 | 해결 방법 |
+|-----------|-----------|
+| 코드사인 오류 | 인증서/프로비저닝 프로파일 확인, Xcode에서 Team/Certificate/Provisioning Profile 올바르게 선택 |
+| 앱 아이콘/스플래시 누락 | Assets.xcassets 확인 |
+| 푸시/딥링크 등 동작 안함 | Info.plist, Firebase 설정 확인 |
+| 빌드 실패 | `pod install`, Xcode Clean Build Folder 후 재시도 |
+| flavor 실행 오류 | Xcode Scheme과 flutter --flavor 옵션 이름 일치 확인 |
+| 빌드/배포 중 "No profiles for ..." | Apple Developer Center에서 Provisioning Profile 재확인/재생성 |
 
 ---
 
@@ -127,13 +148,19 @@ fvm flutter build ios --release
 # flavor 빌드
 fvm flutter build ios --flavor prod -t lib/main_prod.dart
 fvm flutter build ios --flavor dev -t lib/main_dev.dart
+
+# 시뮬레이터 실행
+open -a Simulator
+
+# flavor로 실행
+fvm flutter run --flavor dev -t lib/main_dev.dart
 ```
 
 ---
 
 ## 9. 참고 파일 구조
 
-```
+```plaintext
 frontend/app/
   ├── ios/
   │    ├── Runner/
@@ -186,5 +213,21 @@ fvm flutter run --flavor dev -t lib/main_dev.dart
 - [Apple Developer Center](https://developer.apple.com/account/)
 - [App Store Connect](https://appstoreconnect.apple.com/)
 - [flutter_dotenv 패키지](https://pub.dev/packages/flutter_dotenv)
+
+---
+
+## 12. Best Practice & 운영 팁
+
+- **인증서/프로비저닝 파일은 안전하게 백업** (팀 내 공유는 별도 보안 채널 사용)
+- **빌드/배포 자동화**: GitHub Actions, Codemagic 등 CI/CD에서 빌드, 테스트, 배포 자동화 추천
+- **환경별 앱 아이콘/이름/설정 분리**: dev/prod 구분 명확히
+- **릴리즈 전 실제 디바이스 테스트 필수**
+- **Apple/Flutter 정책 및 버전 최신화 주기적 확인**
+- **.gitignore**에 민감 정보, 빌드 산출물, 환경변수 파일 반드시 추가
+
+---
+
+> **문의/피드백:**  
+> 문서 개선, 빌드/배포 이슈 등은 팀 Slack 또는 GitHub Issue로 공유해주세요.
 
 ---

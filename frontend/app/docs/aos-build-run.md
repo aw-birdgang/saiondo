@@ -1,8 +1,20 @@
-# Saiondo Flutter 앱 - Android 빌드, 배포, Flavor(dev/prod) 관리 가이드
+# 📦 Saiondo Flutter 앱 - Android/iOS 빌드, 배포, Flavor(dev/prod) 관리 가이드
 
 이 문서는 **Saiondo Flutter 앱**을 실제 서비스로 배포하기 위한  
 **키 생성, 빌드, 릴리즈, flavor(dev/prod) 관리** 전 과정을 안내합니다.  
 (프로젝트 구조, 환경변수, 빌드 스크립트, 실전 운영 경험을 반영)
+
+---
+
+## 📋 목차
+
+1. [Android 앱 키 생성 및 사이닝](#1-android-앱-키-생성-및-사이닝)
+2. [Android Flavor(dev/prod) 관리](#2-android-flavordevprod-관리)
+3. [Android 릴리즈 빌드 및 배포](#3-android-릴리즈-빌드-및-배포)
+4. [iOS 앱 키 사이닝 및 릴리즈 빌드](#4-ios-앱-키-사이닝-및-릴리즈-빌드)
+5. [환경변수/스크립트/자동화](#5-환경변수스크립트자동화)
+6. [Trouble Shooting & 운영 팁](#6-trouble-shooting--운영-팁)
+7. [공식 문서/참고](#7-공식-문서참고)
 
 ---
 
@@ -19,8 +31,6 @@ keytool -genkey -v -keystore android/app/saiondo-release-key.jks -keyalg RSA -ke
 - **키 파일은 절대 외부에 유출 금지!**
 - 비밀번호, 별칭(alias), 경로는 반드시 기록
 
----
-
 ### 1-2. `key.properties` 파일 작성
 
 `android/key.properties` 파일을 아래와 같이 작성:
@@ -31,8 +41,6 @@ keyPassword=키 비밀번호 (동일하면 같은 값)
 keyAlias=saiondo-release
 storeFile=../app/saiondo-release-key.jks
 ```
-
----
 
 ### 1-3. `build.gradle` 사이닝 설정
 
@@ -65,8 +73,6 @@ android {
     }
 }
 ```
-
----
 
 ### 1-4. `.gitignore`에 키 관련 파일 추가
 
@@ -188,22 +194,33 @@ fvm flutter build ipa --flavor prod -t lib/main_prod.dart --release
   - `build_web_env.sh`, `run_web_with_env.sh` 등 활용
 - **CI/CD**:  
   - GitHub Actions, Codemagic 등으로 자동화 가능
+  - 시크릿/환경변수는 CI 환경에 안전하게 등록
 
 ---
 
 ## 6. Trouble Shooting & 운영 팁
 
-- **Android**
-    - 비밀번호/별칭 오류: `key.properties`와 키스토어 생성 시 입력값 일치 확인
-    - 키스토어 파일 손상: 새로 생성 필요
-    - JDK 11 권장
-- **iOS**
-    - 인증서/프로비저닝 프로파일 만료 또는 미등록 시 빌드/업로드 불가
-    - Xcode에서 Team, Profile, Certificate 올바르게 선택
+### Android
+
+- **비밀번호/별칭 오류**: `key.properties`와 키스토어 생성 시 입력값 일치 확인
+- **키스토어 파일 손상**: 새로 생성 필요
+- **JDK 11 권장**: JDK 버전 불일치로 인한 빌드 오류 주의
+
+### iOS
+
+- **인증서/프로비저닝 프로파일 만료 또는 미등록 시**: 빌드/업로드 불가
+- **Xcode에서 Team, Profile, Certificate 올바르게 선택**
+- **flavor별 Info.plist, Scheme 분리**: 앱 이름, 번들ID, 아이콘 등 분리 관리
+
+### 공통
+
 - **flavor별 환경변수**:  
     - `.env.dev`, `.env.prod` + `flutter_dotenv` + `--dart-define` 조합 추천
 - **.gitignore**:  
     - 민감 파일, 빌드 산출물, 환경변수 파일 반드시 제외
+- **릴리즈 빌드 전**:  
+    - `flutter clean` 후 빌드 권장
+    - `pubspec.yaml` 의존성 최신화
 
 ---
 
@@ -215,5 +232,20 @@ fvm flutter build ipa --flavor prod -t lib/main_prod.dart --release
 - [Apple Developer Center](https://developer.apple.com/account/)
 - [App Store Connect](https://appstoreconnect.apple.com/)
 - [flutter_dotenv 패키지](https://pub.dev/packages/flutter_dotenv)
+
+---
+
+## 📝 Best Practice & 추가 팁
+
+- **키스토어/프로비저닝 파일은 안전하게 백업** (팀 내 공유는 별도 보안 채널 사용)
+- **빌드/배포 자동화**: CI/CD에서 flavor별 빌드, 테스트, 배포 자동화 추천
+- **환경별 앱 아이콘/이름/설정 분리**: dev/prod 구분 명확히
+- **릴리즈 전 실제 디바이스 테스트 필수**
+- **Google Play/App Store 정책 최신화 주기적 확인**
+
+---
+
+> **문의/피드백:**  
+> 문서 개선, 빌드/배포 이슈 등은 팀 Slack 또는 GitHub Issue로 공유해주세요.
 
 ---

@@ -1,39 +1,47 @@
-# Saiondo Flutter App
+# 💑 Saiondo Flutter App
 
 **Flutter 기반의 커플 케어 서비스 프론트엔드**  
 웹/모바일/데스크탑을 지원하며, 실시간 채팅, 성향 분석, 리포트 등 다양한 기능을 제공합니다.
 
 ---
 
+<p align="center">
+  <img src="../../assets/images/app/full_architecture_component.png" alt="Saiondo Flutter App Architecture" width="800"/>
+</p>
+
+---
+
 ## 📁 프로젝트 폴더 구조
-```
+
+```plaintext
 app/
 ├── lib/
-│ ├── main.dart # 앱 진입점
-│ ├── presentation/ # UI, 화면, 위젯
-│ │ └── chat/ # 채팅 화면, 위젯, 상태관리
-│ ├── domain/ # 비즈니스 로직, 엔티티, 유스케이스, 리포지토리
-│ │ ├── repository/ # 데이터 접근 추상화
-│ │ ├── usecase/ # 실제 비즈니스 유스케이스
-│ │ └── entry/ # 엔티티(도메인 모델)
-│ ├── data/ # 데이터 소스, API, 모델, 네트워크
-│ │ ├── network/ # API 연동, 모델, 엔드포인트
-│ │ ├── apis/ # 실제 API 호출 클래스
-│ │ ├── model/ # API 응답/요청 모델
-│ │ ├── constants/ # API 엔드포인트 상수
-│ │ └── dio_client.dart # Dio 기반 HTTP 클라이언트
-│ ├── core/ # 공통 유틸, 에러, 상수 등
-│ ├── di/ # 의존성 주입
-│ ├── utils/ # 유틸리티 함수
-│ ├── constants/ # 앱 전역 상수
-│ └── docs/ # 문서/설명
-├── assets/ # 이미지, 폰트, 번역 등 리소스
-├── test/ # 단위/위젯 테스트
+│   ├── main.dart                  # 앱 진입점
+│   ├── presentation/              # UI, 화면, 위젯
+│   │   └── chat/                  # 채팅 화면, 위젯, 상태관리
+│   ├── domain/                    # 비즈니스 로직, 엔티티, 유스케이스, 리포지토리
+│   │   ├── repository/            # 데이터 접근 추상화
+│   │   ├── usecase/               # 실제 비즈니스 유스케이스
+│   │   └── entry/                 # 엔티티(도메인 모델)
+│   ├── data/                      # 데이터 소스, API, 모델, 네트워크
+│   │   ├── network/               # API 연동, 모델, 엔드포인트
+│   │   ├── apis/                  # 실제 API 호출 클래스
+│   │   ├── model/                 # API 응답/요청 모델
+│   │   ├── constants/             # API 엔드포인트 상수
+│   │   └── dio_client.dart        # Dio 기반 HTTP 클라이언트
+│   ├── core/                      # 공통 유틸, 에러, 상수 등
+│   ├── di/                        # 의존성 주입
+│   ├── utils/                     # 유틸리티 함수
+│   ├── constants/                 # 앱 전역 상수
+│   └── docs/                      # 문서/설명
+├── assets/                        # 이미지, 폰트, 번역 등 리소스
+├── test/                          # 단위/위젯 테스트
 ├── android/ ios/ macos/ linux/ windows/ web/ # 플랫폼별 코드
-├── pubspec.yaml # 의존성/설정
-├── analysis_options.yaml # 린트/코드 스타일
+├── pubspec.yaml                   # 의존성/설정
+├── analysis_options.yaml           # 린트/코드 스타일
 └── README.md
 ```
+
 ---
 
 ## 🏗️ 아키텍처 및 개발 패턴
@@ -69,7 +77,7 @@ app/
 - **코드 생성**: build_runner, json_serializable, mobx_codegen, freezed
 - **테스트**: flutter_test
 
-> 주요 의존성은 `pubspec.yaml` 참고
+> 주요 의존성은 [`pubspec.yaml`](./pubspec.yaml) 참고
 
 ---
 
@@ -137,11 +145,13 @@ app/
 
 ## 🛡️ Trouble Shooting
 
-- **빌드/런타임 에러**: 의존성 충돌 시 `flutter clean`, `pub get` 재실행
-- **코드 생성 오류**: build_runner, json_serializable, freezed 버전 확인, --delete-conflicting-outputs 옵션 활용
-- **환경변수 미적용**: --dart-define 옵션 확인, .env 파일/스크립트 활용
-- **웹소켓/네트워크 오류**: API 서버 주소, CORS, 네트워크 상태 확인
-- **플랫폼별 이슈**: 각 플랫폼별 폴더/설정/권한 확인
+| 문제/이슈 | 해결 방법 |
+|-----------|-----------|
+| 빌드/런타임 에러 | 의존성 충돌 시 `flutter clean`, `pub get` 재실행 |
+| 코드 생성 오류 | build_runner, json_serializable, freezed 버전 확인, --delete-conflicting-outputs 옵션 활용 |
+| 환경변수 미적용 | --dart-define 옵션 확인, .env 파일/스크립트 활용 |
+| 웹소켓/네트워크 오류 | API 서버 주소, CORS, 네트워크 상태 확인 |
+| 플랫폼별 이슈 | 각 플랫폼별 폴더/설정/권한 확인 |
 
 ---
 
@@ -154,12 +164,31 @@ app/
 
 ---
 
-## 📚 기타
+## 📚 문서 & 운영 가이드
 
-- 다국어 지원: assets/lang, intl 패키지 활용
-- 커스텀 폰트: assets/fonts, google_fonts
-- 환경별 빌드/배포: --dart-define, build_web_env.sh 등 활용
-- 문서/설명: `lib/docs/` 참고
-- [iOS/Android 빌드 및 실행 가이드](./docs/) 참고
+- [Android 빌드/배포/Flavor 가이드](./docs/aos-build-run.md)
+- [iOS 빌드/배포/Flavor 가이드](./docs/ios-build-run.md)
+
+> **운영/배포/플랫폼별 상세 가이드는 위 docs/ 하위 md 파일들을 참고하세요!**
+
+---
+
+## 🌍 기타
+
+- **다국어 지원**: assets/lang, intl 패키지 활용
+- **커스텀 폰트**: assets/fonts, google_fonts
+- **환경별 빌드/배포**: --dart-define, build_web_env.sh 등 활용
+- **문서/설명**: `lib/docs/` 참고
+
+---
+
+## 📝 Best Practice & 운영 팁
+
+- **환경변수/시크릿 관리**: `.env.dev`, `.env.prod` 등 분리, `.gitignore`에 반드시 추가
+- **빌드/배포 자동화**: GitHub Actions, Codemagic 등 CI/CD 활용 추천
+- **플랫폼별 앱 아이콘/이름/설정 분리**: dev/prod 구분 명확히
+- **릴리즈 전 실제 디바이스/브라우저 테스트 필수**
+- **Flutter, 패키지, 정책 최신화 주기적 확인**
+- **문서/스크립트 최신화**: 운영 중 발견된 이슈/팁은 docs/에 바로 반영
 
 ---
