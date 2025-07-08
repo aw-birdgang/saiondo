@@ -1,12 +1,19 @@
-# Saiondo API Server
+# 🛡️ Saiondo API Server
 
-**Saiondo**의 메인 백엔드 API 서버는 **NestJS(Typescript)**와 **Prisma ORM** 기반으로, 커플 대화/분석/리포트 등 핵심 비즈니스 로직을 제공합니다.
+**Saiondo**의 메인 백엔드 API 서버는 **NestJS(Typescript)**와 **Prisma ORM** 기반으로  
+커플 대화/분석/리포트 등 핵심 비즈니스 로직을 제공합니다.
+
+---
+
+<p align="center">
+  <img src="../../assets/images/api/architecture.png" alt="API 아키텍처" width="600"/>
+</p>
 
 ---
 
 ## 📁 프로젝트 폴더 구조
 
-```
+```plaintext
 api/
 ├── src/
 │   ├── modules/      # 도메인별 controller, service, dto, prisma repository
@@ -56,23 +63,23 @@ api/
 
 ## 🚀 개발/실행/배포
 
-1. **의존성 설치**
-   ```sh
-   yarn install
-   ```
-2. **개발 서버 실행**
-   ```sh
-   yarn dev
-   ```
-3. **빌드**
-   ```sh
-   yarn build
-   ```
-4. **Prisma 마이그레이션/시드**
-   ```sh
-   yarn prisma:migrate
-   yarn prisma:seed
-   ```
+### 1. 의존성 설치
+```sh
+yarn install
+```
+### 2. 개발 서버 실행
+```sh
+yarn dev
+```
+### 3. 빌드
+```sh
+yarn build
+```
+### 4. Prisma 마이그레이션/시드
+```sh
+yarn prisma:migrate
+yarn prisma:seed
+```
 
 ### Docker로 실행
 
@@ -127,7 +134,7 @@ docker compose up -d
 
 ## 🔗 관련 문서
 
-- [CONTRIBUTING.md](../CONTRIBUTING.md) - 기여 가이드
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) - 기여 가이드
 - [PostgreSQL 명령어 가이드](../README-POSTGRES.md)
 - [FCM 푸시 연동 가이드](../README-MESSAGES.md)
 - [기타 인프라/운영 문서](../../docs/)

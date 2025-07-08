@@ -1,4 +1,4 @@
-# LangSmith (smith.langchain.com) 활용 가이드 - Saiondo LLM 서버 기준
+# 🧑‍🔬 LangSmith (smith.langchain.com) 활용 가이드 - Saiondo LLM 서버 기준
 
 [smith.langchain.com](https://smith.langchain.com/)의 **LangSmith**는  
 **LangChain 기반 LLM 애플리케이션의 실시간 트레이싱, 디버깅, 평가, 데이터셋 관리**를 위한 SaaS 플랫폼입니다.
@@ -8,7 +8,7 @@ LangSmith 연동을 통해 개발/운영/품질 개선 전 과정에서 LLM 체�
 
 ---
 
-## 주요 기능 및 Saiondo에서의 활용
+## 📌 주요 기능 및 Saiondo에서의 활용
 
 ### 1. 트레이싱(Tracing)
 - LLM 호출, 체인 실행, 에이전트 동작 등 **모든 과정을 시각화**하여 보여줍니다.
@@ -34,7 +34,7 @@ LangSmith 연동을 통해 개발/운영/품질 개선 전 과정에서 LLM 체�
 
 ---
 
-## Saiondo LLM 서버에서의 실제 활용 시나리오
+## 🛠️ Saiondo LLM 서버에서의 실제 활용 시나리오
 
 ### 개발 단계
 - 프롬프트/체인/에이전트 설계 시,  
@@ -56,7 +56,7 @@ LangSmith 연동을 통해 개발/운영/품질 개선 전 과정에서 LLM 체�
 
 ---
 
-## LangSmith 대시보드 주요 화면
+## 🖥️ LangSmith 대시보드 주요 화면
 
 - **Traces**:  
   각 LLM 호출/체인 실행의 상세 내역(입력, 출력, 토큰, 에러 등) 리스트 및 상세 페이지
@@ -67,9 +67,13 @@ LangSmith 연동을 통해 개발/운영/품질 개선 전 과정에서 LLM 체�
 - **Projects**:  
   여러 프로젝트(서비스/모델/프롬프트 버전 등)별로 트레이스/데이터셋/평가를 분리 관리
 
+<p align="center">
+  <img src="../../assets/images/llm/langsmith-dashboard.png" alt="LangSmith 대시보드 예시" width="700"/>
+</p>
+
 ---
 
-## Saiondo LLM 서버에서 LangSmith 연동 방법
+## 🚀 Saiondo LLM 서버에서 LangSmith 연동 방법
 
 **Python(LangChain)에서 환경변수와 콜백만 추가하면 자동 연동됩니다.**
 
@@ -96,15 +100,37 @@ response = llm.invoke("안녕!")
 
 ---
 
-## 운영/보안 팁
+## 🔒 운영/보안 팁
 
 - **API Key 등 민감 정보는 환경변수(.env)로 관리**하고, 코드에 직접 노출하지 마세요.
 - 프로젝트별로 `LANGCHAIN_PROJECT`를 구분하면 여러 서비스/버전의 트레이스를 분리 관리할 수 있습니다.
 - 트레이스 데이터는 개인정보/민감정보가 포함될 수 있으니, 필요시 마스킹/필터링 처리 권장
+- 운영 환경에서는 **불필요한 트레이싱을 비활성화**하거나, 민감 데이터가 노출되지 않도록 주의하세요.
 
 ---
 
-## 참고 자료
+## 🧑‍💻 실전 운영/개발 팁
+
+- **트레이스 필터링**: LangSmith 대시보드에서 프로젝트/날짜/에러/토큰 사용량 등으로 필터링 가능
+- **체인/프롬프트 개선**: 트레이스와 평가 데이터를 기반으로 프롬프트/체인 구조를 반복적으로 개선
+- **자동화**: CI/CD 파이프라인에서 LangSmith 평가 API를 활용해 자동 품질 테스트 가능
+
+---
+
+## ❓ FAQ
+
+- **Q. LangSmith 연동이 안 될 때?**  
+  → 환경변수(`LANGCHAIN_TRACING_V2`, `LANGCHAIN_API_KEY`, `LANGCHAIN_PROJECT`)가 올바르게 설정되어 있는지 확인하세요.
+
+- **Q. 트레이스에 민감 정보가 남지 않게 하려면?**  
+  → 프롬프트/입력 데이터에서 개인정보를 마스킹하거나, LangChain 콜백에서 커스텀 필터링 로직을 추가하세요.
+
+- **Q. 여러 프로젝트/서비스를 분리 관리하려면?**  
+  → `LANGCHAIN_PROJECT` 값을 서비스/환경별로 다르게 지정하세요.
+
+---
+
+## 📚 참고 자료
 
 - 공식 사이트: [https://smith.langchain.com/](https://smith.langchain.com/)
 - 공식 문서: [LangSmith Docs](https://docs.smith.langchain.com/)
@@ -112,7 +138,7 @@ response = llm.invoke("안녕!")
 
 ---
 
-## 정리
+## 📝 정리
 
 - **LangSmith**는 Saiondo LLM 서버의 **트레이싱, 디버깅, 평가, 데이터 관리**를 위한 강력한 SaaS 플랫폼입니다.
 - 개발/운영/품질 개선 전 과정에서 **실시간 가시성**과 **데이터 기반 개선**을 지원합니다.

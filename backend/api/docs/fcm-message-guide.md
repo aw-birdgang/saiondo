@@ -1,17 +1,19 @@
 # 📲 Saiondo API - FCM(푸시) 메시지 연동 가이드
 
 Saiondo API는 **Firebase Cloud Messaging(FCM)**을 이용해 모바일 클라이언트에 푸시 알림을 전송합니다.  
-실제 프로젝트 구조와 코드에 기반한 FCM 연동 방식, 데이터 흐름, API 사용법을 정리한 가이드입니다.
+이 문서는 실제 프로젝트 구조와 코드를 기반으로 FCM 연동 방식, 데이터 흐름, API 사용법, 실전 팁을 정리한 가이드입니다.
 
 ---
 
 ## 📋 목차
 - [1. 전체 연동 구조](#1-전체-연동-구조)
-- [2. 주요 컴포넌트](#2-주요-컴포넌트)
+- [2. 주요 컴포넌트 및 역할](#2-주요-컴포넌트-및-역할)
 - [3. 데이터 흐름](#3-데이터-흐름)
 - [4. API 사용법](#4-api-사용법)
-- [5. 실전 예시](#5-실전-예시)
-- [6. Best Practices](#6-best-practices)
+- [5. 실전 예시/코드](#5-실전-예시코드)
+- [6. Best Practices & 운영 팁](#6-best-practices--운영-팁)
+- [7. FAQ & 문제 해결](#7-faq--문제-해결)
+- [8. 참고 자료](#8-참고-자료)
 
 ---
 
@@ -32,12 +34,13 @@ Saiondo API는 **Firebase Cloud Messaging(FCM)**을 이용해 모바일 클라�
 
 ---
 
-## 2. 주요 컴포넌트
+## 2. 주요 컴포넌트 및 역할
 
 ### 2.1 📤 FirebaseService
 **위치:** `src/common/firebase/firebase.service.ts`
 
-**역할:** Firebase Admin SDK 초기화 및 메시징 객체 제공
+- **역할:** Firebase Admin SDK 초기화 및 메시징 객체 제공
+- **보안:** 서비스 계정 키는 `.gitignore`에 추가, 환경변수/CI로 관리
 
 ```typescript
 @Injectable()
@@ -49,7 +52,6 @@ export class FirebaseService implements OnModuleInit {
       });
     }
   }
-  
   get messaging() {
     return admin.messaging();
   }
@@ -59,27 +61,26 @@ export class FirebaseService implements OnModuleInit {
 ### 2.2 📤 PushService
 **위치:** `src/modules/push-schedule/push.service.ts`
 
-**주요 메서드:**
-- `sendFcmMessage()` - FCM 메시지 전송 (내부)
-- `getUserFcmToken()` - 유저의 FCM 토큰 조회 (내부)
-- `sendPushToUser()` - 유저ID로 푸시 발송 (토큰 자동 조회)
-- `sendPush()` - 토큰 직접 지정하여 푸시 발송 (외부 API용)
+- **역할:** 실제 FCM 메시지 전송, 토큰 관리, 유저별/직접 푸시 발송
+- **주요 메서드:**
+  - `sendFcmMessage(token, title, body, data?)`
+  - `getUserFcmToken(userId)`
+  - `sendPushToUser(userId, title, body, data?)`
+  - `sendPush(token, title, body, data?)`
 
 ```typescript
 async sendPushToUser(userId: string, title: string, body: string, data?: Record<string, string>) {
   const fcmToken = await this.getUserFcmToken(userId);
-  const pushResult = await this.sendFcmMessage(fcmToken, title, body, data);
-  // 채팅 히스토리 저장 등 부가 로직
-  return pushResult;
+  return await this.sendFcmMessage(fcmToken, title, body, data);
 }
 ```
 
 ### 2.3 📤 PushController
 **위치:** `src/modules/push-schedule/push.controller.ts`
 
-**API 엔드포인트:**
-- `POST /push/send` - 토큰 직접 지정하여 푸시 발송
-- `POST /push/send/user/:userId/message` - 유저ID로 푸시 발송
+- **API 엔드포인트:**
+  - `POST /push/send` - 토큰 직접 지정하여 푸시 발송
+  - `POST /push/send/user/:userId/message` - 유저ID로 푸시 발송
 
 ```typescript
 @Post('send/user/:userId/message')
@@ -113,7 +114,7 @@ async sendPushToUser(@Param('userId') userId: string, @Body() dto: SendPushToUse
 
 ### 4.1 유저별 푸시 발송
 
-```bash
+```http
 POST /api/push/send/user/{userId}/message
 Content-Type: application/json
 
@@ -129,7 +130,7 @@ Content-Type: application/json
 
 ### 4.2 🔑 FCM 토큰 업데이트
 
-```bash
+```http
 PATCH /api/users/{userId}/fcm-token
 Content-Type: application/json
 
@@ -140,7 +141,7 @@ Content-Type: application/json
 
 ### 4.3 직접 토큰으로 푸시 발송
 
-```bash
+```http
 POST /api/push/send
 Content-Type: application/json
 
@@ -156,7 +157,7 @@ Content-Type: application/json
 
 ---
 
-## 5. 실전 예시
+## 5. 실전 예시/코드
 
 ### 5.1 🚀 기본 사용 시나리오
 
@@ -191,22 +192,20 @@ try {
 
 ---
 
-## 6. Best Practices
+## 6. Best Practices & 운영 팁
 
 ### 🎨 보안
 - ❌ **절대 GitHub에 서비스 계정 키 업로드 금지**
-- ✅ **환경변수로 키 파일 경로 관리**
+- ✅ **환경변수/CI로 키 파일 경로 관리**
 - ✅ **서비스 계정 키는 정기적으로 갱신**
 
-### 🚀 성능
+### 🚀 성능/운영
 - ✅ **토큰 캐싱**: 자주 사용하는 토큰은 Redis에 캐시
 - ✅ **배치 처리**: 대량 푸시는 배치로 처리
 - ✅ **에러 재시도**: 일시적 실패 시 재시도 로직 구현
-
-### �� 모니터링
-- ✅ **푸시 전송 성공률 추적**
-- ✅ **토큰 만료/갱신 로그**
-- ✅ **FCM 환경 상태 체크**
+- ✅ **푸시 전송 성공률/실패율 모니터링**
+- ✅ **토큰 만료/갱신 로그 관리**
+- ✅ **FCM 환경 상태 체크 및 알림**
 
 ### 🔧 테스트
 - ✅ **개발 환경**: 실제 푸시 대신 로그/모킹 처리
@@ -215,15 +214,7 @@ try {
 
 ---
 
-## 7. 참고 자료
-
-- [Firebase Cloud Messaging 공식 문서](https://firebase.google.com/docs/cloud-messaging)
-- [Firebase Admin SDK 문서](https://firebase.google.com/docs/admin/setup)
-- [NestJS 공식 문서](https://docs.nestjs.com/)
-
----
-
-## 8. 문제 해결
+## 7. FAQ & 문제 해결
 
 ### 자주 발생하는 문제
 
@@ -236,5 +227,17 @@ try {
 
 3. **FCM 환경 문제**
    - `validateFcmEnvironment()` 메서드로 사전 체크
+
+4. **빌드/배포 시 서비스 계정 키 누락**
+   - `.gitignore`에 의해 키 파일이 누락될 수 있음
+   - CI/CD에서 환경변수 또는 시크릿으로 주입
+
+---
+
+## 8. 참고 자료
+
+- [Firebase Cloud Messaging 공식 문서](https://firebase.google.com/docs/cloud-messaging)
+- [Firebase Admin SDK 문서](https://firebase.google.com/docs/admin/setup)
+- [NestJS 공식 문서](https://docs.nestjs.com/)
 
 ---
