@@ -24,7 +24,7 @@
 ## 1. 전체 아키텍처
 
 <p align="center">
-  <img src="../assets/images/web3/point-erc20-nft-architecture.png" alt="포인트-ERC20-NFT 연계 아키텍처" width="900"/>
+  <img src="../assets/images/architecture-component-point-erc20-nft.png" alt="포인트-ERC20-NFT 연계 아키텍처" width="900"/>
 </p>
 
 - **앱/웹(Flutter)**: 포인트 적립/사용, NFT 발급 UI
