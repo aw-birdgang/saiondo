@@ -482,14 +482,3 @@ SAIONDO 프로젝트에 기여하고 싶으시다면 [기여 가이드](./CONTRI
 이 프로젝트는 [MIT 라이선스](./LICENSE) 하에 배포됩니다.
 
 ---
-
-<p align="center">
-  <img src="assets/images/architecture_full_component_saiondo.png" alt="SAIONDO 전체 아키텍처" width="600"/>
-  <br>
-  <b>SAIONDO - 커플을 위한 AI 기반 케어 플랫폼</b>
-</p>
-
----
-
-**이 파일을 프로젝트 루트(최상위)에 `README.md`로 저장하면,  
-구조, 실행법, 문서, 보안, 기여 등 모든 정보를 한눈에 볼 수 있습니다!**
