@@ -2,10 +2,16 @@ from fastapi import APIRouter
 from schemas.feedback import FeedbackRequest, FeedbackResponse, FeedbackHistoryRequest
 from services.feedback_service import feedback_service
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Feedback"],
+)
 
-@router.post("/feedback", response_model=FeedbackResponse, summary="LLM 피드백 요청")
-def feedback(request: FeedbackRequest):
+@router.post(
+    "/feedback",
+    summary="피드백 제출",
+    description="사용자 피드백(만족도, 개선점 등)을 수집하고 저장하는 API입니다."
+)
+def submit_feedback(request: FeedbackRequest):
     response = feedback_service.feedback(request.message, request.roomId, request.model)
     return FeedbackResponse(response=response)
 

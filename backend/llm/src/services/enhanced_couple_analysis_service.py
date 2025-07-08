@@ -1,8 +1,9 @@
 import json
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 from services.llm_provider import llm_provider
+from services.analysis_validator import AnalysisValidator
 
 logger = logging.getLogger(__name__)
 
@@ -18,12 +19,13 @@ class CoupleAnalysisResult:
     summary: str
     advice: str
     compatibility_score: float
-    personality_analysis: Dict[str, PersonalityTrait]
+    personality_analysis: Dict[str, Any]
     relationship_insights: List[str]
     improvement_suggestions: List[str]
 
 class EnhancedCoupleAnalysisService:
     def __init__(self):
+        self.validator = AnalysisValidator()
         self.analysis_templates = {
             'mbti_compatibility': self._get_mbti_compatibility_prompt,
             'communication_style': self._get_communication_style_prompt,
@@ -34,6 +36,9 @@ class EnhancedCoupleAnalysisService:
     def analyze_couple(self, user_data: Dict, partner_data: Dict) -> CoupleAnalysisResult:
         """향상된 커플 분석"""
         try:
+            # 입력 데이터 검증
+            self.validator.validate_couple_data(user_data, partner_data)
+            
             # 1. 기본 성향 분석
             basic_analysis = self._analyze_basic_personality(user_data, partner_data)
             
@@ -56,6 +61,20 @@ class EnhancedCoupleAnalysisService:
         except Exception as e:
             logger.error(f"커플 분석 중 오류 발생: {str(e)}")
             return self._get_fallback_analysis()
+    
+    def analyze_multiple_couples(self, couples_data: List[Dict]) -> List[CoupleAnalysisResult]:
+        """여러 커플 동시 분석"""
+        results = []
+        for couple_data in couples_data:
+            try:
+                user_data = couple_data.get('user_data', {})
+                partner_data = couple_data.get('partner_data', {})
+                result = self.analyze_couple(user_data, partner_data)
+                results.append(result)
+            except Exception as e:
+                logger.error(f"커플 분석 실패: {str(e)}")
+                results.append(self._get_fallback_analysis())
+        return results
     
     def _analyze_basic_personality(self, user_data: Dict, partner_data: Dict) -> Dict:
         """기본 성향 분석"""
@@ -81,7 +100,7 @@ class EnhancedCoupleAnalysisService:
         """
         
         response = llm_provider.ask(prompt)
-        return json.loads(response)
+        return self._parse_json_response(response)
     
     def _analyze_mbti_compatibility(self, user_data: Dict, partner_data: Dict) -> Dict:
         """MBTI 궁합 분석"""
@@ -104,7 +123,7 @@ class EnhancedCoupleAnalysisService:
         """
         
         response = llm_provider.ask(prompt)
-        return json.loads(response)
+        return self._parse_json_response(response)
     
     def _analyze_communication_style(self, user_data: Dict, partner_data: Dict) -> Dict:
         """소통 스타일 분석"""
@@ -123,7 +142,7 @@ class EnhancedCoupleAnalysisService:
         """
         
         response = llm_provider.ask(prompt)
-        return json.loads(response)
+        return self._parse_json_response(response)
     
     def _analyze_love_language(self, user_data: Dict, partner_data: Dict) -> Dict:
         """사랑의 언어 분석"""
@@ -148,7 +167,7 @@ class EnhancedCoupleAnalysisService:
         """
         
         response = llm_provider.ask(prompt)
-        return json.loads(response)
+        return self._parse_json_response(response)
     
     def _generate_comprehensive_analysis(self, *analyses) -> CoupleAnalysisResult:
         """종합 분석 생성"""
@@ -178,7 +197,7 @@ class EnhancedCoupleAnalysisService:
         """
         
         response = llm_provider.ask(prompt)
-        result_data = json.loads(response)
+        result_data = self._parse_json_response(response)
         
         return CoupleAnalysisResult(
             summary=result_data.get('summary', ''),
@@ -188,6 +207,14 @@ class EnhancedCoupleAnalysisService:
             relationship_insights=result_data.get('relationship_insights', []),
             improvement_suggestions=result_data.get('improvement_suggestions', [])
         )
+    
+    def _parse_json_response(self, response: str) -> Dict:
+        """LLM 응답을 JSON으로 파싱"""
+        try:
+            return json.loads(response)
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON 파싱 실패: {str(e)}, 응답: {response}")
+            return {}
     
     def _get_fallback_analysis(self) -> CoupleAnalysisResult:
         """오류 시 기본 분석 반환"""
@@ -199,6 +226,19 @@ class EnhancedCoupleAnalysisService:
             relationship_insights=["서로를 이해하는 시간이 필요합니다."],
             improvement_suggestions=["정기적인 대화 시간을 가지세요."]
         )
+    
+    # 템플릿 메서드들 (미사용 코드 정리)
+    def _get_mbti_compatibility_prompt(self, user_mbti: str, partner_mbti: str) -> str:
+        return f"MBTI 궁합 분석: {user_mbti} vs {partner_mbti}"
+    
+    def _get_communication_style_prompt(self, user_data: Dict, partner_data: Dict) -> str:
+        return "소통 스타일 분석"
+    
+    def _get_love_language_prompt(self, user_data: Dict, partner_data: Dict) -> str:
+        return "사랑의 언어 분석"
+    
+    def _get_conflict_resolution_prompt(self, user_data: Dict, partner_data: Dict) -> str:
+        return "갈등 해결 스타일 분석"
 
 # 싱글턴 인스턴스
 enhanced_couple_analysis_service = EnhancedCoupleAnalysisService()

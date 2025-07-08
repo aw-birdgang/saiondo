@@ -5,7 +5,9 @@ from schemas.labeling import (
 )
 from services.labeling_service import LabelingService
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Labeling"],
+)
 
 @router.post("/label/single", response_model=SingleLabelingResult, tags=["Labeling"])
 def label_single_message(request: SingleMessageRequest):

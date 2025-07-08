@@ -11,3 +11,17 @@ langchain-openai
 langchain-community
 openai
 requests
+
+# 테스트 관련
+pytest
+pytest-asyncio
+pytest-mock
+
+# 캐싱 (선택사항)
+redis
+
+# 로깅
+structlog
+
+# 유효성 검증
+email-validator
