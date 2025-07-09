@@ -11,5 +11,6 @@ import {LlmModule} from '../llm/llm.module';
   ],
   controllers: [CoupleAnalysisController],
   providers: [CoupleAnalysisService],
+  exports: [CoupleAnalysisService],
 })
 export class CoupleAnalysisModule {}

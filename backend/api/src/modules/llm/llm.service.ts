@@ -85,6 +85,7 @@ export class LlmService {
   async analyze(data: AnalyzeRequestDto | AnalyzeAnswerDto): Promise<any> {
     try {
       const { data: res } = await axios.post(`${this.llmApiUrl}/analyze`, data);
+      this.logger.log('[LLM][analyze] > res:', res);
       return res;
     } catch (error: any) {
       this.logger.error('LLM 분석 요청 실패:', error.message);

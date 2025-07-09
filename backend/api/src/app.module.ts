@@ -25,6 +25,7 @@ import {HealthModule} from "@modules/health/health.module";
 import {RedisModule} from './common/redis/redis.module';
 import {ReportModule} from './modules/report/report.module';
 import {NotificationModule} from './modules/notification/notification.module';
+import {PersonalityModule} from "@modules/personality/personality.module";
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import {NotificationModule} from './modules/notification/notification.module';
     RedisModule,
     NotificationModule,
     ReportModule,
+    PersonalityModule,
     // Web3Module,
   ],
 })

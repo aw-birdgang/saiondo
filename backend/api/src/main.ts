@@ -30,7 +30,7 @@ async function bootstrap() {
   // app.useWebSocketAdapter(new WsAdapter(app));
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // 커스텀 ValidationPipe 사용 (로그 포함)
+  // ValidationPipe 다시 활성화
   app.useGlobalPipes(new ValidationPipe({
     ...validationOptions,
     transform: true,

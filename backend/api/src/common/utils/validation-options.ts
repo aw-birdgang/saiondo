@@ -23,6 +23,7 @@ const validationOptions: ValidationPipeOptions = {
   whitelist: true,
   errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
   exceptionFactory: (errors: ValidationError[]) => {
+    console.error('Validation errors:', JSON.stringify(errors, null, 2));
     return new UnprocessableEntityException({
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errors: generateErrors(errors),
