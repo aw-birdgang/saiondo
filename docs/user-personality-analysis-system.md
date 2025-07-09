@@ -5,8 +5,6 @@ SAIONDO 프로젝트에서 **유저의 성향을 파악하기 위한 모든 기�
 AI 기반 분석, MBTI, 소통 스타일, 사랑의 언어 등 다양한 관점에서 유저의 성향을 종합적으로 분석하여  
 개인화된 커플 케어 서비스를 제공하는 시스템을 설명합니다.
 
-![SAIONDO Personality Analysis System](../assets/images/personality/ai-conversation-analysis-seq.png)
-
 ---
 
 ## 📖 목차
