@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [행동 패턴 분석 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+database "DB" as DB
+participant "분석 엔진" as Analyzer
+
+User -> FE : 앱 사용/활동
+FE -> API : 행동 데이터 전송
+API -> DB : 행동 데이터 저장
+API -> Analyzer : 행동 패턴 분석 요청
+Analyzer --> API : 분석 결과
+API --> FE : 분석 결과/추천
+FE --> User : 행동 패턴/추천 표시
+@enduml

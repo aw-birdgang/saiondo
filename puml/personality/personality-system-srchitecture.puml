@@ -1,0 +1,117 @@
+@startuml SAIONDO Personality Analysis System Architecture
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title SAIONDO Personality Analysis System - 통합 아키텍처
+
+package "Frontend Layer" {
+    [Flutter App] as Flutter #LightBlue
+    note right of Flutter
+        - 사용자 인터페이스
+        - 성향 분석 요청
+        - 결과 표시
+        - 프로필 관리
+    end note
+}
+
+package "API Gateway Layer" {
+    [API Server\n(NestJS)] as API #LightGreen
+    note right of API
+        - 요청 라우팅
+        - 인증/인가
+        - 데이터 검증
+        - 응답 포맷팅
+    end note
+}
+
+package "AI Analysis Layer" {
+    [LLM Server\n(FastAPI)] as LLM #LightYellow
+    note right of LLM
+        - 프롬프트 생성
+        - LLM 호출 관리
+        - 결과 파싱
+        - 에러 처리
+    end note
+
+    package "Personality Analysis Modules" {
+        [MBTI Analysis] as MBTI #Pink
+        [Communication Style\nAnalysis] as Comm #Orange
+        [Love Language\nAnalysis] as Love #Purple
+        [Emotion Analysis] as Emotion #Red
+        [Behavior Pattern\nAnalysis] as Behavior #Brown
+        [AI Chatbot\nPersonality Detection] as Chatbot #Cyan
+    }
+}
+
+package "External AI Services" {
+    [OpenAI GPT] as OpenAI #LightGray
+    [Claude AI] as Claude #LightGray
+    [LangChain] as LangChain #LightGray
+}
+
+package "Data Layer" {
+    database "PostgreSQL DB" as DB #LightCyan
+    note right of DB
+        - 사용자 프로필
+        - 분석 결과
+        - 대화 이력
+        - 피드백 데이터
+    end note
+}
+
+package "Feedback System" {
+    [Real-time\nFeedback Engine] as RealTime #LightPink
+    [Periodic Report\nGenerator] as Periodic #LightSalmon
+    [Recommendation\nEngine] as Recommend #LightCoral
+}
+
+' Main data flow
+Flutter --> API : HTTP Requests
+API --> LLM : Analysis Requests
+LLM --> OpenAI : LLM API Calls
+LLM --> Claude : LLM API Calls
+LLM --> LangChain : Framework Integration
+
+' Personality analysis flow
+API --> MBTI : MBTI Analysis Request
+API --> Comm : Communication Analysis Request
+API --> Love : Love Language Analysis Request
+API --> Emotion : Emotion Analysis Request
+API --> Behavior : Behavior Analysis Request
+API --> Chatbot : Chatbot Detection Request
+
+' Data persistence
+API --> DB : Save Analysis Results
+API --> DB : Retrieve User Profiles
+API --> DB : Store Feedback Data
+
+' Feedback system flow
+API --> RealTime : Trigger Real-time Feedback
+API --> Periodic : Generate Periodic Reports
+API --> Recommend : Generate Recommendations
+
+RealTime --> Flutter : Push Notifications
+Periodic --> Flutter : Email/App Reports
+Recommend --> Flutter : Personalized Suggestions
+
+' Analysis modules to LLM
+MBTI --> LLM : MBTI Analysis Prompt
+Comm --> LLM : Communication Analysis Prompt
+Love --> LLM : Love Language Analysis Prompt
+Emotion --> LLM : Emotion Analysis Prompt
+Behavior --> LLM : Behavior Analysis Prompt
+Chatbot --> LLM : Chatbot Interaction Prompt
+
+' External services integration
+LLM --> OpenAI : GPT-4 API
+LLM --> Claude : Claude API
+LLM --> LangChain : LangChain Framework
+
+@enduml

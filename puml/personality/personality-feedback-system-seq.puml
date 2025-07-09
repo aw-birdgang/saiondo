@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [성향 기반 피드백 시스템 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+database "DB" as DB
+participant "피드백 엔진" as Feedback
+
+User -> FE : 대화/활동/리포트 요청
+FE -> API : 피드백 요청
+API -> Feedback : 실시간/정기 피드백 생성
+Feedback --> API : 피드백 결과
+API -> DB : 피드백 저장
+API --> FE : 피드백/추천
+FE --> User : 피드백/성장 추천 표시
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [감정 상태 분석 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+participant "LLM 서버" as LLM
+database "DB" as DB
+
+User -> FE : 대화/상담 입력
+FE -> API : 감정 분석 요청
+API -> LLM : 감정 상태 분석 프롬프트
+LLM --> API : 감정 상태 결과
+API -> DB : 결과 저장
+API --> FE : 감정 상태/지원
+FE --> User : 감정 피드백/조언 표시
+@enduml

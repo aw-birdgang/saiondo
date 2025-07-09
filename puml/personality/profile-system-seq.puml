@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [성향 프로필 시스템 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+database "DB" as DB
+
+User -> FE : 프로필 조회/수정
+FE -> API : 성향 프로필 요청/업데이트
+API <-> DB : 성향 프로필 데이터 저장/조회
+API --> FE : 프로필 정보 반환
+FE --> User : 성향 프로필 표시
+@enduml

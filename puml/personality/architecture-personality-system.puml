@@ -1,0 +1,53 @@
+@startuml SAIONDO Personality Analysis System Architecture
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title SAIONDO Personality Analysis System - 통합 아키텍처
+
+package "Frontend" {
+    [Flutter App] as Flutter #LightBlue
+}
+
+package "Backend" {
+    [API Server\n(NestJS)] as API #LightGreen
+    [LLM Server\n(FastAPI)] as LLM #LightYellow
+}
+
+package "Analysis Modules" as AnalysisModule #LightYellow {
+}
+
+package "External Services" {
+    [OpenAI GPT] as OpenAI #LightGray
+    [Claude AI] as Claude #LightGray
+}
+
+package "Data & Feedback" {
+    database "PostgreSQL DB" as DB #LightCyan
+    [Feedback Engine] as Feedback #LightPink
+}
+
+' Main flow
+Flutter --> API : HTTP Requests
+API --> LLM : Analysis Requests
+LLM --> OpenAI : API Calls
+LLM --> Claude : API Calls
+
+' Analysis modules
+API --> AnalysisModule : Analysis Request
+
+' Data & feedback
+API --> DB : Save Results
+API --> Feedback : Generate Feedback
+Feedback --> Flutter : Notifications
+
+' Analysis to LLM
+AnalysisModule --> LLM : Prompts
+
+@enduml

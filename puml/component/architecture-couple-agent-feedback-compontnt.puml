@@ -1,0 +1,35 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title SAIONDO 커플남-에이전트 대화 기반 커플녀 성향 분석 및 피드백 시스템
+
+actor "커플남" as Male
+actor "커플녀" as Female
+actor "에이전트(AI)" as Agent
+
+package "SAIONDO 시스템" {
+  [Frontend (Flutter App)]
+  [API 서버 (NestJS)]
+  [LLM 서버 (FastAPI)]
+  [DB (PostgreSQL)]
+}
+
+Male -> [Frontend (Flutter App)] : 커플녀 관련 고민/상담 입력
+[Frontend (Flutter App)] -> [API 서버 (NestJS)] : 대화/상담 데이터 전송
+[API 서버 (NestJS)] -> [LLM 서버 (FastAPI)] : 커플녀 성향 분석 프롬프트 생성 및 요청
+[LLM 서버 (FastAPI)] --> Agent : 대화/상담 내용 기반 커플녀 성향 분석
+Agent --> [LLM 서버 (FastAPI)] : 커플녀 성향/특징/피드백 생성
+[LLM 서버 (FastAPI)] --> [API 서버 (NestJS)] : 커플녀 성향 분석 결과/피드백
+[API 서버 (NestJS)] -> [DB (PostgreSQL)] : 분석 결과/피드백 저장
+[API 서버 (NestJS)] --> [Frontend (Flutter App)] : 커플녀 성향/피드백 응답
+[Frontend (Flutter App)] --> Male : 커플녀 성향 분석 결과/피드백 제공
+
+@enduml

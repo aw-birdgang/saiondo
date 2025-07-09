@@ -1,0 +1,62 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title SAIONDO 유저 성향 분석 시스템 (단순화 버전)
+
+actor "유저" as User
+
+package "Frontend (Flutter App)" as FE {
+  [대화 입력/분석 요청]
+  [분석 결과 표시]
+}
+
+package "API 서버 (NestJS)" as API {
+  [성향 분석 API]
+}
+
+package "LLM 서버 (FastAPI)" as LLM {
+  [성향 분석 엔진]
+}
+
+database "DB" as DB
+
+cloud "AI 서비스" as AI {
+  [OpenAI/Claude]
+}
+
+' 유저 → 프론트엔드
+User -> [대화 입력/분석 요청] : 대화/상담 입력
+
+' 프론트엔드 → API 서버
+[대화 입력/분석 요청] -> [성향 분석 API] : 분석 요청
+
+' API 서버 → LLM 서버
+[성향 분석 API] -> [성향 분석 엔진] : 분석 프롬프트 전달
+
+' LLM 서버 → AI 서비스
+[성향 분석 엔진] -> [OpenAI/Claude] : 자연어 처리/분석
+
+' AI 서비스 → LLM 서버
+[OpenAI/Claude] --> [성향 분석 엔진] : 분석 결과
+
+' LLM 서버 → API 서버
+[성향 분석 엔진] --> [성향 분석 API] : 분석 결과
+
+' API 서버 → DB
+[성향 분석 API] --> DB : 결과 저장 (옵션)
+
+' API 서버 → 프론트엔드
+[성향 분석 API] --> [분석 결과 표시] : 분석 결과 전달
+
+' 프론트엔드 → 유저
+[분석 결과 표시] --> User : 성향 분석 결과/피드백
+
+@enduml

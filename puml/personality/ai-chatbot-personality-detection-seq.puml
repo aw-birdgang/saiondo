@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [AI 챗봇 기반 성향 탐지 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+participant "LLM 서버" as LLM
+database "DB" as DB
+
+User -> FE : 챗봇 대화 시작
+FE -> API : 대화 메시지 전송
+API -> LLM : 성향 탐지 프롬프트
+LLM --> API : 성향 추론 결과
+API -> DB : 결과 저장
+API --> FE : 성향/조언 응답
+FE --> User : 챗봇 피드백 표시
+@enduml

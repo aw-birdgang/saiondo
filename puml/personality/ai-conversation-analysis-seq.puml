@@ -1,0 +1,37 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [AI 기반 대화 분석 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+participant "LLM 서버" as LLM
+participant "OpenAI/Claude" as AI
+database "DB" as DB
+
+== 대화 입력 및 분석 요청 ==
+User -> FE : 대화 입력
+FE -> API : 대화 분석 요청 (대화 내용)
+
+== 분석 프롬프트 생성 및 전달 ==
+API -> LLM : 대화 분석 프롬프트 생성/전달
+
+== LLM → AI 분석 ==
+LLM -> AI : 자연어 처리/성향 분석 요청
+AI --> LLM : 분석 결과(성향, 패턴 등)
+
+== 결과 저장 및 응답 ==
+LLM --> API : 분석 결과 반환
+API -> DB : 분석 결과 저장
+API --> FE : 분석 결과/피드백 응답
+FE --> User : 분석 결과/피드백 표시
+@enduml

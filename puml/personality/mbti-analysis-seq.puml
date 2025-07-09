@@ -1,0 +1,30 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [MBTI 성향 분석 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+participant "LLM 서버" as LLM
+participant "MBTI 엔진" as MBTI
+database "DB" as DB
+
+User -> FE : MBTI 설문/대화 입력
+FE -> API : MBTI 분석 요청
+API -> LLM : MBTI 분석 프롬프트 전달
+LLM -> MBTI : MBTI 유형/궁합 분석
+MBTI --> LLM : MBTI 결과(유형, 궁합, 팁)
+LLM --> API : 분석 결과 반환
+API -> DB : MBTI 결과 저장
+API --> FE : MBTI 결과/조언 응답
+FE --> User : 결과/소통 팁 표시
+@enduml

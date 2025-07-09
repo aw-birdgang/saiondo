@@ -196,6 +196,33 @@ saiondo/
 - <kbd>블록체인 기반 커플 토큰/NFT</kbd>
 - <kbd>포인트 시스템 및 결제 연동</kbd>
 
+### 성향 분석 시스템
+
+SAIONDO는 **10가지 종합 성향 분석 모듈**을 통해 개인화된 커플 케어를 제공합니다:
+
+#### **AI 기반 분석**
+- <kbd>AI 대화 분석</kbd> - 실시간 채팅에서 LLM 기반 성향 추출
+- <kbd>MBTI 성향 분석</kbd> - 16가지 MBTI 유형 분류 및 궁합 분석
+- <kbd>소통 스타일 분석</kbd> - 직접/간접, 논리/감정 등 소통 패턴 분석
+- <kbd>사랑의 언어 분석</kbd> - 5가지 사랑의 언어(말, 행동, 선물, 시간, 스킨십) 분석
+
+#### **행동 및 감정 분석**
+- <kbd>행동 패턴 분석</kbd> - 앱 사용 데이터 기반 간접 성향 분석
+- <kbd>감정 상태 분석</kbd> - 대화에서 감정 상태 및 변화 추적
+- <kbd>AI 챗봇 성향 탐지</kbd> - 자연스러운 대화로 성향 탐지
+
+#### **통합 관리 시스템**
+- <kbd>성향 프로필 시스템</kbd> - 유저별 성향 정보 통합 관리
+- <kbd>관계 분석 리포트</kbd> - 종합 분석 및 궁합 점수 제공
+- <kbd>성향 기반 피드백</kbd> - 실시간/정기 맞춤형 조언 제공
+
+![SAIONDO Personality Analysis System](../assets/images/personality/personality-analysis-system-architecture.png)
+
+> **성향 분석 시스템 아키텍처**: 각 분석 모듈이 독립적으로 동작하며,  
+> LLM 서버를 통해 OpenAI/Claude와 연동하여 정확한 분석 결과를 제공합니다.
+
+자세한 성향 분석 시스템 가이드는 [성향 분석 시스템 문서](./docs/user-personality-analysis-system.md)를 참고하세요.
+
 ---
 
 ## 🗃️ 데이터베이스 ERD
@@ -447,6 +474,10 @@ terraform apply
 - <kbd><a href="./frontend/app/README.md">Flutter 앱 문서</a></kbd>
 - <kbd><a href="./infrastructure/README.md">인프라 문서</a></kbd>
 - <kbd><a href="./web3/README.md">Web3 문서</a></kbd>
+
+### 성향 분석 시스템 문서
+
+- <kbd><a href="./docs/user-personality-analysis-system.md">성향 분석 시스템 가이드</a></kbd>
 
 ### 📋 추가 문서
 

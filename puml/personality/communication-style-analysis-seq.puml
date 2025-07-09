@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [소통 스타일 분석 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+participant "LLM 서버" as LLM
+database "DB" as DB
+
+User -> FE : 대화/상담 입력
+FE -> API : 소통 스타일 분석 요청
+API -> LLM : 소통 패턴 분석 프롬프트
+LLM --> API : 소통 스타일 결과(직접/간접, 논리/감정 등)
+API -> DB : 결과 저장
+API --> FE : 분석 결과/개선 팁
+FE --> User : 소통 스타일/피드백 표시
+@enduml

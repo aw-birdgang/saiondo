@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+skinparam componentStyle uml2
+skinparam shadowing false
+skinparam roundcorner 15
+skinparam monochrome true
+skinparam backgroundColor #F9F9F9
+skinparam ArrowColor Black
+skinparam ArrowFontColor Black
+skinparam defaultFontName "Nanum Gothic"
+
+title [관계 분석 리포트 시퀀스]
+
+actor User
+participant "Flutter App" as FE
+participant "API 서버" as API
+participant "LLM 서버" as LLM
+database "DB" as DB
+
+User -> FE : 리포트 요청
+FE -> API : 관계 분석 리포트 요청
+API -> LLM : 종합 분석 프롬프트
+LLM --> API : 리포트 결과(궁합/강점/개선점)
+API -> DB : 리포트 저장
+API --> FE : 리포트 결과
+FE --> User : 리포트/조언 표시
+@enduml
