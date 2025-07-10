@@ -7,7 +7,7 @@ import {useContainer} from 'class-validator';
 import {LoggingInterceptor} from './common/interceptors/logging.interceptor';
 import helmet from 'helmet';
 import {ValidationPipe} from '@nestjs/common';
-import validationOptions from "@common/utils/validation-options";
+import { validationOptions } from "@common/utils/validation-options";
 import { createWinstonLogger } from './common/logger/winston.logger';
 
 async function bootstrap() {

@@ -6,7 +6,6 @@ import {ChannelService} from '@modules/channel/channel.service';
 import {UserService} from "@modules/user/user.services";
 import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
-import {extractJsonFromCodeBlock} from "@common/utils/chat.util";
 import {ProfileFeatureDto, SimpleProfileDto, TraitQnADto} from './dto/simple-profile.dto';
 import {
   RelationalChatRepository
@@ -18,6 +17,7 @@ import { randomUUID } from 'crypto';
 import { PointService } from '../point/point.service';
 import { PointType } from '@prisma/client';
 import { createWinstonLogger } from '@common/logger/winston.logger';
+import { extractJsonFromCodeBlock } from '@common/utils/json.util';
 
 /**
  * ChatService
@@ -31,11 +31,11 @@ export class ChatService {
   private readonly logger = createWinstonLogger(ChatService.name);
 
   constructor(
-    private readonly chatRepo: RelationalChatRepository,
+    private readonly chatRepository: RelationalChatRepository,
     private readonly llmService: LlmService,
     private readonly channelService: ChannelService,
     private readonly userService: UserService,
-    private readonly basicQnAService: BasicQuestionWithAnswerService,
+    private readonly basicQuestionWithAnswerService: BasicQuestionWithAnswerService,
     private readonly prisma: PrismaService,
     private readonly pointService: PointService,
   ) {}
@@ -55,7 +55,7 @@ export class ChatService {
     chat.message = dto.message;
     chat.sender = dto.sender;
     chat.createdAt = dto.createdAt ?? new Date();
-    return this.chatRepo.save(chat);
+    return this.chatRepository.save(chat);
   }
 
   /** LLM 피드백과 함께 채팅 저장 */
@@ -67,12 +67,12 @@ export class ChatService {
   }
 
   async findChatsByChannelWithAssistantId(assistantId: string): Promise<DomainChat[]> {
-    const allChats = await this.chatRepo.findAll();
+    const allChats = await this.chatRepository.findAll();
     return allChats.filter(chat => chat.assistantId === assistantId);
   }
 
   async findManyByChannelAndAssistant(channelId: string, assistantId: string, limit = 10): Promise<DomainChat[]> {
-    const allChats = await this.chatRepo.findAll();
+    const allChats = await this.chatRepository.findAll();
     return allChats
       .filter(chat => chat.channelId === channelId && chat.assistantId === assistantId)
       .sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0))
@@ -88,7 +88,7 @@ export class ChatService {
     prompt: string,
   ): Promise<any> {
     await this.validateUser(userId);
-    return await this.llmService.getFeedback(prompt, assistantId);
+    return await this.llmService.getFeedback(message, channelId);
   }
 
   /** 채팅 메시지 저장 (ChatService 사용) */
@@ -135,78 +135,113 @@ export class ChatService {
     message: string,
     model: 'openai' | 'claude' = 'openai'
   ) {
-    // 1. 구독자라면 포인트 차감 없이 통과
-    const user = await this.userService.findById(userId);
-    const now = new Date();
-    if (!user) throw new BadRequestException('존재하지 않는 사용자입니다.');
-    const isActiveSub = user.isSubscribed && user.subscriptionUntil && user.subscriptionUntil > now;
-    if (!isActiveSub) {
-      // 비구독자는 포인트 차감
-      const POINT_COST = 5;
-      await this.pointService.usePoint(
-        userId,
-        POINT_COST,
-        PointType.CHAT_USE,
-        'AI 대화 시도'
-      );
-    }
-
-    // 병렬로 가져올 수 있는 데이터는 동시에 처리
-    const [memorySchema, profileWithPartner, chatHistoryText] = await Promise.all([
-      this.getMemorySchema(channelId, userId, assistantId),
-      this.getProfileWithPartner(userId, channelId),
-      this.chatHistoryToText(channelId, assistantId, 10),
-    ]);
-
-    // 유저 메시지 저장
-    const userChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      message,
-      MessageSender.USER,
-    );
-
-    // 프롬프트 요청 객체 생성
-    const relationshipCoachRequest: ChatQARelationshipCoachRequestDto = <ChatQARelationshipCoachRequestDto>{
-      memory_schema: memorySchema,
-      profile: profileWithPartner,
-      chat_history: chatHistoryText,
-      messages: [{role: 'user', content: message}],
-      model,
-    };
-
-    // LLM 호출 및 응답 파싱
-    let reply = '';
-    let llmResponse = '';
     try {
-      llmResponse = await this.llmService.forwardToLLMQAForChatRelationshipCoach(relationshipCoachRequest);
-      this.logger.log(`[ChatService] LLM 관계코치 응답: ${llmResponse}`);
-      const parsed = extractJsonFromCodeBlock(llmResponse);
-      reply = parsed?.reply || '';
-    } catch (e) {
-      this.logger.error('LLM 응답 파싱 실패:', e);
-      reply = '';
+      this.logger.log(
+        `AI 코칭 메시지 처리 시작: userId=${userId}, assistantId=${assistantId}, channelId=${channelId}, model=${model}`
+      );
+
+      // 1. 구독자 체크 및 포인트 차감
+      const user = await this.userService.findById(userId);
+      if (!user) {
+        throw new BadRequestException('존재하지 않는 사용자입니다.');
+      }
+
+      const now = new Date();
+      const isActiveSub = user.isSubscribed && user.subscriptionUntil && user.subscriptionUntil > now;
+
+      if (!isActiveSub) {
+        const POINT_COST = 5;
+        await this.pointService.usePoint(
+          userId,
+          POINT_COST,
+          PointType.CHAT_USE,
+          'AI 대화 시도'
+        );
+        this.logger.log(`포인트 차감 완료: userId=${userId}, pointCost=${POINT_COST}`);
+      } else {
+        this.logger.log(`구독자 - 포인트 차감 없음: userId=${userId}`);
+      }
+
+      // 2. 병렬 데이터 조회
+      const [memorySchema, profileWithPartner, chatHistoryText] = await Promise.all([
+        this.getMemorySchema(channelId, userId, assistantId),
+        this.getProfileWithPartner(userId, channelId),
+        this.chatHistoryToText(channelId, assistantId, 10),
+      ]);
+
+      // 3. 유저 메시지 저장
+      const userChat = await this.saveChatMessage(
+        userId,
+        assistantId,
+        channelId,
+        message,
+        MessageSender.USER,
+      );
+
+      // 4. LLM 요청 객체 생성
+      const relationshipCoachRequest: ChatQARelationshipCoachRequestDto = <ChatQARelationshipCoachRequestDto>{
+        memory_schema: memorySchema,
+        profile: profileWithPartner,
+        chat_history: chatHistoryText,
+        messages: [{role: 'user', content: message}],
+        model,
+      };
+
+      // 5. LLM 호출 및 응답 파싱
+      let reply = '';
+      let llmResponse = '';
+
+      try {
+        this.logger.log(`[Chat] LLM 호출 시작: model=${model}`);
+        
+        const response = await this.llmService.forwardToLLMQAForChatRelationshipCoach(relationshipCoachRequest);
+        llmResponse = response;
+
+        this.logger.log(`[Chat] LLM 원본 응답: ${llmResponse}`);
+        this.logger.log(`[Chat] LLM 응답 타입: ${typeof llmResponse}, 응답 길이: ${llmResponse.length}`);
+
+        // JSON 응답 파싱
+        const parsedResponse = extractJsonFromCodeBlock(llmResponse);
+        
+        this.logger.log(`[Chat] JSON 파싱 결과: ${JSON.stringify(parsedResponse)}`);
+        this.logger.log(`[Chat] 파싱 성공 여부: ${!!parsedResponse}`);
+        
+        if (parsedResponse && parsedResponse.reply) {
+          reply = parsedResponse.reply;
+          this.logger.log(`[Chat] 파싱된 reply 사용: ${reply}`);
+        } else {
+          reply = llmResponse;
+          this.logger.log(`[Chat] 원본 응답 사용: ${reply}`);
+        }
+
+        this.logger.log(`[Chat] LLM 응답 파싱 완료: hasParsedResponse=${!!parsedResponse}, reply 길이=${reply.length}`);
+      } catch (llmError) {
+        this.logger.error(`[Chat] LLM 호출 실패: ${llmError}`, llmError);
+        reply = '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      }
+
+      // 6. 어시스턴트 응답 저장
+      const assistantChat = await this.saveChatMessage(
+        assistantId,
+        assistantId,
+        channelId,
+        reply,
+        MessageSender.AI,
+      );
+
+      this.logger.log(
+        `AI 코칭 메시지 처리 완료: userId=${userId}, assistantId=${assistantId}, channelId=${channelId}, userMessageLength=${message.length}, assistantMessageLength=${reply.length}`
+      );
+
+      return {
+        userMessage: userChat,
+        assistantMessage: assistantChat,
+        llmResponse,
+      };
+    } catch (error) {
+      this.logger.error('AI 코칭 메시지 처리 실패:', error);
+      throw error;
     }
-
-    // AI 메시지 저장
-    const aiChat = await this.saveChatMessage(
-      userId,
-      assistantId,
-      channelId,
-      reply,
-      MessageSender.AI,
-    );
-
-    return {
-      userId,
-      assistantId,
-      channelId,
-      message,
-      userChat,
-      aiChat,
-      llmResponse,
-    };
   }
 
   // =========================
@@ -306,10 +341,10 @@ export class ChatService {
 
   /** 유저 trait QnA 분석 */
   async analyzeTraitsForUser(userId: string) {
-    const answered = await this.basicQnAService.getAnsweredQAPairs(userId);
+    const answered = await this.basicQuestionWithAnswerService.getAnsweredQAPairs(userId);
 
     // 기존 getCategories 함수 사용
-    const categories = await this.basicQnAService.getCategories();
+    const categories = await this.basicQuestionWithAnswerService.getCategories();
     const categoryIdToName = Object.fromEntries(categories.map(cat => [cat.id, cat.name]));
 
     const map: Record<string, { question: string; answer: string }[]> = {};

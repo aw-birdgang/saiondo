@@ -26,6 +26,10 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:unit": "jest --testPathPattern=test/.*\\.spec\\.ts",
+    "clean": "rm -rf dist node_modules/.cache",
+    "clean:all": "rm -rf dist node_modules package-lock.json yarn.lock",
     "migrate-and-start": "yarn prisma migrate deploy && yarn prisma generate && yarn build && yarn start:prod"
   },
   "prisma": {

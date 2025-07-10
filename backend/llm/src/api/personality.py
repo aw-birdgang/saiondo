@@ -53,7 +53,19 @@ def analyze(request: Dict[str, Any] = Body(...)):
         logger.info(f"분석 프롬프트: {prompt}")
         response = personality_service.analyze(prompt)
         logger.info(f"분석 응답: {response}")
-        return {"response": response}
+        
+        # 응답이 JSON 문자열인지 확인
+        if isinstance(response, str):
+            try:
+                # JSON 파싱 시도
+                parsed_response = json.loads(response)
+                return {"response": parsed_response}
+            except json.JSONDecodeError:
+                # JSON이 아니면 문자열 그대로 반환
+                return {"response": response}
+        else:
+            return {"response": response}
+            
     except Exception as e:
         logger.error(f"분석 중 오류 발생: {str(e)}")
         raise HTTPException(status_code=500, detail=f"분석 중 오류 발생: {str(e)}")

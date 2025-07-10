@@ -26,7 +26,8 @@ openai_llm = ChatOpenAI(
 
 def ask_openai(prompt: str) -> str:
     try:
-        response = openai_llm([HumanMessage(content=prompt)])
+        # __call__ 대신 invoke 사용 (deprecation warning 해결)
+        response = openai_llm.invoke([HumanMessage(content=prompt)])
         return response.content
     except Exception as e:
         return f"❌ OpenAI 오류: {e}"
@@ -43,7 +44,8 @@ def ask_openai_history(messages) -> str:
         elif role == "system":
             lc_messages.append(SystemMessage(content=content))
     try:
-        response = openai_llm(lc_messages)
+        # __call__ 대신 invoke 사용
+        response = openai_llm.invoke(lc_messages)
         return response.content
     except Exception as e:
         return f"❌ OpenAI 오류: {e}"

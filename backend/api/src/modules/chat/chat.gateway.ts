@@ -81,7 +81,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       );
       this.log(`[API][WebSocket] processUserMessage response`, response);
       this.server.emit('receive_message', response);
-      this.log(`[API][WebSocket] Sent feedback to all clients:`, response.aiChat);
+      this.log(`[API][WebSocket] Sent feedback to all clients:`, JSON.stringify(response));
     } catch (error) {
       this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
 

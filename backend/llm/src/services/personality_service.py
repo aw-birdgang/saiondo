@@ -11,12 +11,76 @@ class PersonalityService:
         일반적인 분석 엔드포인트 (NestJS에서 호출)
         """
         try:
-            response = llm_provider.ask(prompt, model)
-            logger.info(f"LLM 응답: {response}")
+            # 프롬프트 개선: 명확한 지시사항 추가
+            enhanced_prompt = self._enhance_prompt(prompt)
+            logger.info(f"개선된 프롬프트: {enhanced_prompt}")
+            
+            response = llm_provider.ask(enhanced_prompt, model)
+            logger.info(f"LLM 원본 응답: {response}")
+            
+            # 응답 검증: 프롬프트와 유사한지 확인
+            if self._is_response_similar_to_prompt(prompt, response):
+                logger.warning("LLM 응답이 프롬프트와 유사함 - 프롬프트 개선 필요")
+                # fallback 응답 반환
+                return self._generate_fallback_response(prompt)
+            
             return response
         except Exception as e:
             logger.error(f"LLM 분석 실패: {str(e)}")
             raise e
+    
+    def _enhance_prompt(self, original_prompt: str) -> str:
+        """
+        프롬프트에 명확한 지시사항과 출력 형식 추가
+        """
+        enhanced_prompt = f"""
+당신은 전문적인 성향 분석가입니다. 다음 요청을 분석하고 JSON 형식으로 응답해주세요.
+
+[분석 요청]
+{original_prompt}
+
+[응답 형식]
+다음 JSON 형식으로만 응답해주세요:
+{{
+    "personalityTraits": {{"trait": "분석된 성향", "score": 0.8}},
+    "feedback": "개선을 위한 피드백",
+    "score": 0.87
+}}
+
+[중요]
+- 반드시 JSON 형식으로만 응답하세요
+- 프롬프트를 반복하지 마세요
+- 실제 분석 결과만 제공하세요
+"""
+        return enhanced_prompt
+    
+    def _is_response_similar_to_prompt(self, prompt: str, response: str) -> bool:
+        """
+        응답이 프롬프트와 유사한지 확인
+        """
+        prompt_words = set(prompt.lower().split())
+        response_words = set(response.lower().split())
+        
+        # 공통 단어 비율 계산
+        common_words = prompt_words.intersection(response_words)
+        similarity_ratio = len(common_words) / len(prompt_words) if prompt_words else 0
+        
+        # 프롬프트 시작 부분과 응답이 유사한지 확인
+        prompt_start = prompt[:50].lower().strip()
+        response_start = response[:50].lower().strip()
+        
+        return similarity_ratio > 0.7 or prompt_start in response_start
+    
+    def _generate_fallback_response(self, prompt: str) -> str:
+        """
+        프롬프트와 유사한 응답이 나올 때 fallback 응답 생성
+        """
+        return json.dumps({
+            "personalityTraits": {"trait": "분석 중", "score": 0.5},
+            "feedback": "분석을 완료할 수 없습니다. 다시 시도해주세요.",
+            "score": 0.5,
+            "error": "LLM 응답이 프롬프트와 유사하여 fallback 응답을 반환합니다."
+        }, ensure_ascii=False)
     
     def analyze_conversation(self, request) -> Dict[str, Any]:
         """
@@ -32,10 +96,22 @@ class PersonalityService:
             "personalityTraits": {{"trait": "외향적", "score": 0.8}},
             "feedback": "더 자주 감정을 표현해보세요.",
             "score": 0.87
-        }}"""
+        }}
+        
+        [중요] 반드시 JSON 형식으로만 응답하고, 프롬프트를 반복하지 마세요."""
         
         response = llm_provider.ask(prompt)
-        return json.loads(response)
+        
+        # 응답 검증
+        if self._is_response_similar_to_prompt(prompt, response):
+            logger.warning("대화 분석 응답이 프롬프트와 유사함")
+            return self._generate_fallback_response(prompt)
+        
+        try:
+            return json.loads(response)
+        except json.JSONDecodeError:
+            logger.error(f"JSON 파싱 실패: {response}")
+            return self._generate_fallback_response(prompt)
     
     def analyze_mbti(self, request) -> Dict[str, Any]:
         """
@@ -52,18 +128,26 @@ class PersonalityService:
             "match": {{"best": "ENFJ", "worst": "ESTJ"}}
         }}
         
-        반드시 유효한 JSON 형식으로만 응답해주세요."""
+        [중요] 반드시 유효한 JSON 형식으로만 응답하고, 프롬프트를 반복하지 마세요."""
         
         try:
             response = llm_provider.ask(prompt)
             logger.info(f"MBTI 분석 응답: {response}")
+            
+            # 응답 검증
+            if self._is_response_similar_to_prompt(prompt, response):
+                logger.warning("MBTI 분석 응답이 프롬프트와 유사함")
+                return {
+                    "mbti": "분석 실패",
+                    "description": "LLM 응답이 프롬프트와 유사하여 분석을 완료할 수 없습니다.",
+                    "match": {}
+                }
             
             # JSON 파싱 시도
             try:
                 result = json.loads(response)
                 return result
             except json.JSONDecodeError:
-                # JSON 파싱 실패 시 기본 응답
                 logger.error(f"JSON 파싱 실패: {response}")
                 return {
                     "mbti": "분석 실패",
