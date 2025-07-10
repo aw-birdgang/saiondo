@@ -1,15 +1,16 @@
-import {Injectable, Logger, NotFoundException, BadRequestException} from '@nestjs/common';
+import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
 import {LlmService} from '@modules/llm/llm.service';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class CoupleAnalysisService {
+  private readonly logger = createWinstonLogger(CoupleAnalysisService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly llmService: LlmService,
   ) {}
-
-  private readonly logger = new Logger(CoupleAnalysisService.name);
 
   async getAllAnalyses(channelId: string) {
     const analyses = await this.prisma.coupleAnalysis.findMany({

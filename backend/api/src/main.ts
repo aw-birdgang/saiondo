@@ -8,6 +8,7 @@ import {LoggingInterceptor} from './common/interceptors/logging.interceptor';
 import helmet from 'helmet';
 import {ValidationPipe} from '@nestjs/common';
 import validationOptions from "@common/utils/validation-options";
+import { createWinstonLogger } from './common/logger/winston.logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,7 +18,9 @@ async function bootstrap() {
     infer: true,
   }).llmApiUrl;
   const port = configService.getOrThrow('common', { infer: true }).port;
-  console.log(`app > bootstrap > apiPrefix::${llmApiUrl}, port::${port} `);
+  
+  const logger = createWinstonLogger('Bootstrap');
+  logger.log(`app > bootstrap > apiPrefix::${llmApiUrl}, port::${port} `);
 
   app.use(helmet());
   app.enableCors({
@@ -43,5 +46,6 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();
 //ecr-sample-dev-branch

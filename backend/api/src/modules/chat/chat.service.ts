@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, Logger} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
 import {CategoryCode, MessageSender, PersonaProfile, User} from '@prisma/client';
 import {LlmService} from '@modules/llm/llm.service';
@@ -6,7 +6,7 @@ import {ChannelService} from '@modules/channel/channel.service';
 import {UserService} from "@modules/user/user.services";
 import {BasicQuestionWithAnswerService} from '../basic-question-with-answer/basic-question-with-answer.service';
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
-import {extractJsonFromCodeBlock} from "@common/utils/json.util";
+import {extractJsonFromCodeBlock} from "@common/utils/chat.util";
 import {ProfileFeatureDto, SimpleProfileDto, TraitQnADto} from './dto/simple-profile.dto';
 import {
   RelationalChatRepository
@@ -17,6 +17,7 @@ import {PrismaService} from "@common/prisma/prisma.service";
 import { randomUUID } from 'crypto';
 import { PointService } from '../point/point.service';
 import { PointType } from '@prisma/client';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 /**
  * ChatService
@@ -27,7 +28,7 @@ import { PointType } from '@prisma/client';
  */
 @Injectable()
 export class ChatService {
-  private readonly logger = new Logger(ChatService.name);
+  private readonly logger = createWinstonLogger(ChatService.name);
 
   constructor(
     private readonly chatRepo: RelationalChatRepository,

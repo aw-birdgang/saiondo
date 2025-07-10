@@ -5,6 +5,7 @@ import {Server} from 'socket.io';
 import {NotificationRepository} from '../../database/notification/infrastructure/persistence/notification.repository';
 import {CreateNotificationDto} from '../../database/notification/dto/create-notification.dto';
 import {QueryNotificationDto} from '../../database/notification/dto/query-notification.dto';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 @WebSocketGateway({ cors: { origin: '*' } })
@@ -12,7 +13,7 @@ export class NotificationService {
   @WebSocketServer()
   server: Server;
 
-  private readonly logger = new Logger(NotificationService.name);
+  private readonly logger = createWinstonLogger(NotificationService.name);
 
   constructor(
     private readonly notificationRepo: NotificationRepository,

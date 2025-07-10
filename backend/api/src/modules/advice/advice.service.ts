@@ -1,19 +1,20 @@
-import {Injectable, Logger, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {PrismaService} from "@common/prisma/prisma.service";
 import {Advice} from '@prisma/client';
 import {UpdateAdviceDto} from './dto/update-advice.dto';
 import {LlmService} from "@modules/llm/llm.service";
 import {ChannelService} from "@modules/channel/channel.service";
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class AdviceService {
+  private readonly logger = createWinstonLogger(AdviceService.name);
+
   constructor(
       private readonly prisma: PrismaService,
       private readonly llmService: LlmService,
       private readonly channelService: ChannelService,
   ) {}
-
-  private readonly logger = new Logger(AdviceService.name);
 
   /**
    * 커플(채널) 정보 기반으로 AI 조언 생성 및 저장

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
 import {ChatService} from './chat.service';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 interface SendMessagePayload {
   userId: string;
@@ -20,6 +21,8 @@ interface SendMessagePayload {
 
 @WebSocketGateway({ cors: { origin: '*' }, namespace: '/' })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  private readonly logger = createWinstonLogger(ChatGateway.name);
+
   constructor(
     private readonly chatService: ChatService,
   ) {}
@@ -98,6 +101,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   private log(...args: any[]) {
-    console.log(...args);
+    this.logger.log(args.join(' '));
   }
 }

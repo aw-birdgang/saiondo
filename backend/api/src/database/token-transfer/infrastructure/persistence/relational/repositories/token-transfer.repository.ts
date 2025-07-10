@@ -3,10 +3,11 @@ import { PrismaService } from '@common/prisma/prisma.service';
 import { TokenTransferRepository } from '../../token-transfer.repository';
 import { TokenTransfer } from '../../../../domain/token-transfer';
 import { TokenTransferMapper } from '../mappers/token-transfer.mapper';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class RelationalTokenTransferRepository extends TokenTransferRepository {
-  private readonly logger = new Logger(RelationalTokenTransferRepository.name);
+  private readonly logger = createWinstonLogger(RelationalTokenTransferRepository.name);
 
   constructor(private readonly prisma: PrismaService) {
     super();

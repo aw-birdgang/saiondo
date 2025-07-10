@@ -5,10 +5,11 @@ import { NotificationMapper } from '../mappers/notification.mapper';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { NotificationRepository } from '../../notification.repository';
 import { QueryNotificationDto } from '../../../../dto/query-notification.dto';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class RelationalNotificationRepository extends NotificationRepository {
-  private readonly logger = new Logger(RelationalNotificationRepository.name);
+  private readonly logger = createWinstonLogger(RelationalNotificationRepository.name);
 
   constructor(private readonly prisma: PrismaService) {
     super();

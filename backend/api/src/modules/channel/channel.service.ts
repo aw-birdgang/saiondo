@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, Logger, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
 import {generateInviteCode} from "@common/utils/invite-code.util";
 import {CreateChannelDto} from './dto/create-channel.dto';
@@ -7,6 +7,7 @@ import {
   RelationalChannelRepository
 } from "../../database/channel/infrastructure/persistence/relational/repositories/channel.repository";
 import { RedisService } from '@common/redis/redis.service';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 /**
  * ChannelService
@@ -15,7 +16,7 @@ import { RedisService } from '@common/redis/redis.service';
  */
 @Injectable()
 export class ChannelService {
-  private readonly logger = new Logger(ChannelService.name);
+  private readonly logger = createWinstonLogger(ChannelService.name);
 
   constructor(
     private readonly channelRepo: RelationalChannelRepository,

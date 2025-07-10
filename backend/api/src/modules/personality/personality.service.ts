@@ -1,4 +1,4 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {LlmService} from '../llm/llm.service';
 import {PersonaProfileService} from '../persona-profile/persona-profile.service';
 import {CoupleAnalysisService} from '../couple-analysis/couple-analysis.service';
@@ -22,10 +22,11 @@ import {
   FeedbackResponseDto,
 } from './dto';
 import {LLMResponseUtil} from "../../common/utils/llm-response.util";
+import {createWinstonLogger} from "@common/logger/winston.logger";
 
 @Injectable()
 export class PersonalityService {
-  private readonly logger = new Logger(PersonalityService.name);
+  private readonly logger = createWinstonLogger(PersonalityService.name);
 
   constructor(
     private readonly llmService: LlmService,

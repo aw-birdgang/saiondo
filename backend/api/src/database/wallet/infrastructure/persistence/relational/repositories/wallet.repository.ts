@@ -1,13 +1,14 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {NullableType} from '../../../../../../common/utils/types/nullable.type';
 import {Wallet} from '../../../../domain/wallet';
 import {WalletMapper} from '../mappers/wallet.mapper';
 import {PrismaService} from '@common/prisma/prisma.service';
 import {WalletRepository} from '../../wallet.repository';
+import {createWinstonLogger} from "@common/logger/winston.logger";
 
 @Injectable()
 export class RelationalWalletRepository extends WalletRepository {
-  private readonly logger = new Logger(RelationalWalletRepository.name);
+  private readonly logger = createWinstonLogger(RelationalWalletRepository.name);
 
   constructor(private readonly prisma: PrismaService) {
     super();

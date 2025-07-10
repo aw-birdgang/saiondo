@@ -3,10 +3,11 @@ import {PrismaService} from '@common/prisma/prisma.service';
 import {CategoryCodeMapper} from '../mappers/category-code.mapper';
 import {CategoryCodeRepository} from "../../category-code.repository";
 import {CategoryCode} from "../../../../domain/category-code";
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class RelationalCategoryCodeRepository extends CategoryCodeRepository {
-  private readonly logger = new Logger(RelationalCategoryCodeRepository.name);
+  private readonly logger = createWinstonLogger(RelationalCategoryCodeRepository.name);
 
   constructor(private readonly prisma: PrismaService) {
     super();

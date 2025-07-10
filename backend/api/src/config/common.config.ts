@@ -1,7 +1,7 @@
-import { registerAs } from '@nestjs/config';
-import { IsEnum, IsInt, IsOptional, IsString, IsUrl, Max, Min } from 'class-validator';
-import validateConfig from '../common/utils/validate-config';
-import { CommonConfig } from './common-config.type';
+import {registerAs} from '@nestjs/config';
+import {IsInt, IsOptional, IsString, IsUrl, Max, Min} from 'class-validator';
+import {validateConfig} from "@common/utils/validation.util";
+import {CommonConfig} from './common-config.type';
 
 enum Environment {
   Development = 'development',

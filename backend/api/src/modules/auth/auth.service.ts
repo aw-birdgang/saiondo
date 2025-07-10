@@ -1,18 +1,19 @@
-import {BadRequestException, Injectable, Logger, UnauthorizedException} from '@nestjs/common';
+import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {PrismaService} from '@common/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import {JwtService} from '@nestjs/jwt';
 import {RegisterDto} from './dto/register.dto';
 import {LoginDto} from './dto/login.dto';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = createWinstonLogger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
   ) {}
-
-  private readonly logger = new Logger(AuthService.name);
 
   async register(data: RegisterDto) {
     const exists = await this.prisma.user.findUnique({

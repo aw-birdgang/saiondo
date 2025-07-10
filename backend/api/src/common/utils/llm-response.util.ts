@@ -1,4 +1,7 @@
-// backend/api/src/common/utils/llm-response.util.ts
+import { createWinstonLogger } from '@common/logger/winston.logger';
+
+const logger = createWinstonLogger('LLMResponseUtil');
+
 export class LLMResponseUtil {
   /**
    * LLM 응답을 안전하게 JSON으로 파싱
@@ -13,7 +16,7 @@ export class LLMResponseUtil {
         throw new Error('Invalid response format');
       }
     } catch (error) {
-      console.error('JSON 파싱 실패:', error);
+      logger.error('JSON 파싱 실패:', error);
       return {};
     }
   }
@@ -32,11 +35,11 @@ export class LLMResponseUtil {
   static getFields(response: any, fields: Record<string, any>): Record<string, any> {
     const parsed = this.parseResponse(response);
     const result: Record<string, any> = {};
-    
+
     for (const [field, defaultValue] of Object.entries(fields)) {
       result[field] = parsed[field] ?? defaultValue;
     }
-    
+
     return result;
   }
 }

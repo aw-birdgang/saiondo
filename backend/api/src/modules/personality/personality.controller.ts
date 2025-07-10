@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Put, Query, Logger, RawBodyRequest, Req } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
+import {Body, Controller, Get, Post, Put, Query, Req} from '@nestjs/common';
+import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {Request} from 'express';
 import {
   AnalyzeBehaviorRequestDto,
   AnalyzeBehaviorResponseDto,
@@ -19,12 +19,13 @@ import {
   FeedbackRequestDto,
   FeedbackResponseDto,
 } from './dto';
-import { PersonalityService } from './personality.service';
+import {PersonalityService} from './personality.service';
+import {createWinstonLogger} from "@common/logger/winston.logger";
 
 @ApiTags('Personality')
 @Controller('personality')
 export class PersonalityController {
-  private readonly logger = new Logger(PersonalityController.name);
+  private readonly logger = createWinstonLogger(PersonalityController.name);
 
   constructor(private readonly personalityService: PersonalityService) {}
 

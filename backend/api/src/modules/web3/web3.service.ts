@@ -3,13 +3,14 @@ import { ethers } from 'ethers';
 import * as fs from 'fs';
 import * as path from 'path';
 import { PrismaService } from '@common/prisma/prisma.service';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class Web3Service implements OnModuleInit {
   private provider: ethers.JsonRpcProvider;
   private tokenContract: ethers.Contract;
   private ownerWallet: ethers.Wallet;
-  private readonly logger = new Logger(Web3Service.name);
+  private readonly logger = createWinstonLogger(Web3Service.name);
 
   // 폴링 주기(ms)
   private readonly POLL_INTERVAL = 60 * 1000; // 1분

@@ -4,10 +4,11 @@ import {User} from '../../../../domain/user';
 import {UserMapper} from '../mappers/user.mapper';
 import {PrismaService} from '@common/prisma/prisma.service';
 import {UserRepository} from "../../user.repository";
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class RelationalUserRepository extends UserRepository {
-  private readonly logger = new Logger(RelationalUserRepository.name);
+  private readonly logger = createWinstonLogger(RelationalUserRepository.name);
 
   constructor(private readonly prisma: PrismaService) {
     super();

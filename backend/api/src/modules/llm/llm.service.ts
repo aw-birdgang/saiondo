@@ -1,13 +1,17 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import axios from 'axios';
 import {ConfigService} from '@nestjs/config';
 import {AllConfigType} from '../../config/config.type';
 import {AnalyzeRequestDto} from './dto/analyze.dto';
 import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
-import {summarizeChatHistory} from "@common/utils/chat_history.util";
+import { 
+  loadPromptTemplate, 
+  fillPromptTemplate 
+} from "@common/utils/prompt.util";
+import { summarizeChatHistory } from "@common/utils/chat.util";
 import {SuggestedFieldsService} from '../suggested-fields/suggested-fields.service';
-import {loadPromptTemplate} from "@common/utils/prompt-loader.util";
 import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 /**
  * LlmService는 API 서버에서 LLM 서버(FastAPI)로의 모든 연동을 담당합니다.
@@ -19,7 +23,7 @@ import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relat
 @Injectable()
 export class LlmService {
   private readonly llmApiUrl: string;
-  private readonly logger = new Logger(LlmService.name);
+  private readonly logger = createWinstonLogger(LlmService.name);
 
   constructor(
     private readonly configService: ConfigService<AllConfigType>,

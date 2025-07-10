@@ -4,10 +4,11 @@ import {Chat} from '../../../../domain/chat';
 import {ChatMapper} from '../mappers/chat.mapper';
 import {ChatRepository} from "../../chat.repository";
 import { randomUUID } from 'crypto';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class RelationalChatRepository extends ChatRepository {
-  private readonly logger = new Logger(RelationalChatRepository.name);
+  private readonly logger = createWinstonLogger(RelationalChatRepository.name);
 
   constructor(private readonly prisma: PrismaService) {
     super();

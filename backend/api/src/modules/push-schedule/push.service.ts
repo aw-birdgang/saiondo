@@ -1,13 +1,14 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {FirebaseService} from '../../common/firebase/firebase.service';
 import {PrismaService} from '../../common/prisma/prisma.service';
 import {MessageSender} from '@prisma/client';
 import {ChatService} from "@modules/chat/chat.service";
 import * as admin from 'firebase-admin';
+import {createWinstonLogger} from "@common/logger/winston.logger";
 
 @Injectable()
 export class PushService {
-  private readonly logger = new Logger(PushService.name);
+  private readonly logger = createWinstonLogger(PushService.name);
 
   constructor(
     private readonly firebaseService: FirebaseService,
