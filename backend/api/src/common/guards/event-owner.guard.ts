@@ -1,5 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import {EventService} from "@modules/event/event.service";
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { EventService } from '@modules/event/event.service';
 
 @Injectable()
 export class EventOwnerGuard implements CanActivate {
@@ -16,6 +22,7 @@ export class EventOwnerGuard implements CanActivate {
     const event = await this.eventService.findRawById(eventId);
     if (!event) throw new NotFoundException('Event not found');
     if (event.userId !== user.id) throw new ForbiddenException('No permission for this event');
+
     return true;
   }
 }
