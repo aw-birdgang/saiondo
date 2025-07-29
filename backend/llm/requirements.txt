@@ -25,3 +25,14 @@ structlog
 
 # 유효성 검증
 email-validator
+
+# 코드 품질 및 포맷팅
+flake8
+black
+isort
+mypy
+pre-commit
+pylint
+
+# 타입 스텁
+types-requests

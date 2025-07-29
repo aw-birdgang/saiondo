@@ -1,5 +1,13 @@
-from .labels import *
-from typing import Dict, List
+from typing import Any, Dict
+
+from .labels import (
+    AttachmentPattern,
+    CommunicationStyle,
+    EmotionExpression,
+    RelationshipAttitude,
+    SelfAssertion,
+    TopicContext,
+)
 
 # 각 카테고리별 키워드 사전
 KEYWORDS = {
@@ -24,7 +32,11 @@ KEYWORDS = {
     "relationship_attitude": {
         RelationshipAttitude.accommodating: ["네 입장도 알겠어", "이해해"],
         RelationshipAttitude.withdrawing: ["회피", "말 안 할래", "됐고"],
-        RelationshipAttitude.confronting: ["직면", "문제 제기", "반드시 하고 넘어가야 해"],
+        RelationshipAttitude.confronting: [
+            "직면",
+            "문제 제기",
+            "반드시 하고 넘어가야 해",
+        ],
         RelationshipAttitude.reconnecting: ["다시 잘 해보자", "관계 회복"],
         RelationshipAttitude.testing: ["시험", "넌 어떻게 생각해", "그냥 해봤어"],
     },
@@ -50,15 +62,17 @@ KEYWORDS = {
         TopicContext.jealousy_related: ["제3자", "걔랑", "다른 사람이랑"],
         TopicContext.emotional_needs: ["안아줬으면", "위로", "지지"],
         TopicContext.routine_checkin: ["밥은 먹었어", "잘 자", "일상"],
-    }
+    },
 }
+
 
 def label_message(message: str) -> dict:
     """
     입력 메시지에서 각 카테고리별로 키워드가 포함되어 있으면 해당 라벨을 반환
     """
     result = {}
-    for category, label_dict in KEYWORDS.items():
+    keywords_dict: Dict[str, Any] = dict(KEYWORDS)
+    for category, label_dict in keywords_dict.items():
         matched = []
         for label, keywords in label_dict.items():
             for kw in keywords:

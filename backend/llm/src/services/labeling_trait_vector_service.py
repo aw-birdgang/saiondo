@@ -1,16 +1,27 @@
-from core.labeling.rule_engine import KEYWORDS
+import json
+import logging
+from collections import Counter
+from typing import Any, Dict
+
+from schemas.labeling import ChatMessage
 from schemas.labeling_trait_vector import (
-    ChatMessage, LabeledMessage, TraitVector, LabelingTraitVectorRequest, LabelingTraitVectorResponse
+    LabeledMessage,
+    LabelingTraitVectorRequest,
+    LabelingTraitVectorResponse,
+    TraitVector,
 )
 from services.llm_provider import llm_provider
-from collections import Counter
-import json
 
-def build_labeling_and_summary_prompt(categories: dict, messages: list[ChatMessage]) -> str:
+logger = logging.getLogger(__name__)
+
+
+def build_labeling_and_summary_prompt(
+    categories: dict, messages: list[ChatMessage]
+) -> str:
     """
     카테고리, 키워드, 메시지 목록을 LLM이 이해하기 쉽게 프롬프트로 만듦
     """
-    prompt = "다음은 채팅 메시지 라벨링 및 성향 해석 작업입니다.\n"
+    prompt = "다음은 채팅 메시지 라벨링 및 요약 작업입니다.\n"
     prompt += "카테고리와 키워드:\n"
     for cat, label_dict in categories.items():
         prompt += f"- {cat}:\n"
@@ -20,86 +31,89 @@ def build_labeling_and_summary_prompt(categories: dict, messages: list[ChatMessa
     for i, msg in enumerate(messages):
         prompt += f"{i+1}. ({msg.sender}) {msg.text}\n"
     prompt += (
-        "\n1. 각 메시지에 대해 아래와 같은 JSON 리스트 형식으로 라벨링 결과를 반환해 주세요:\n"
-        "[\n"
-        "  {\"sender\": \"male\", \"text\": \"...\", \"labels\": { ... }},\n"
-        "  ...\n"
-        "]\n"
-        "2. 위 라벨링 결과를 바탕으로, 감정/의사소통/애착/특징을 3~5문장으로 한국어로 요약해 주세요.\n"
-        "응답은 아래와 같은 JSON 형식으로 해주세요:\n"
-        "{\n"
-        "  \"labeled_messages\": [ ... ],\n"
-        "  \"llm_summary\": \"...\"\n"
-        "}\n"
+        "\n각 메시지에 대해 해당되는 카테고리별 라벨을 JSON 형식으로 반환해 주세요."
+    )
+    prompt += "\n응답 형식:"
+    prompt += (
+        '\n{"messages": [{"sender": "user1", "text": "메시지 내용", '
+        '"labels": {"emotion_expression": ["affection"], '
+        '"self_assertion": ["request"]}}]}'
     )
     return prompt
 
+
 class LabelingTraitVectorService:
     @staticmethod
-    def label_trait_vector(request: LabelingTraitVectorRequest) -> LabelingTraitVectorResponse:
+    def label_trait_vector(
+        request: LabelingTraitVectorRequest,
+    ) -> LabelingTraitVectorResponse:
         # 1. LLM을 통한 메시지 라벨링 + 요약 (한 번에)
-        prompt = build_labeling_and_summary_prompt(KEYWORDS, request.messages)
-        llm_response = llm_provider.ask(prompt)
+        prompt = build_labeling_and_summary_prompt(request.categories, request.messages)
+        llm_response = llm_provider.ask(prompt, model=request.model)
+
         try:
-            llm_result = json.loads(llm_response)
-            labeled_messages_raw = llm_result.get("labeled_messages", [])
-            llm_summary = llm_result.get("llm_summary", "")
-        except Exception:
-            # fallback: 라벨링 실패시 빈 라벨로 채움
-            labeled_messages_raw = [
-                {
-                    "sender": msg.sender,
-                    "text": msg.text,
-                    "labels": {}
-                } for msg in request.messages
-            ]
-            llm_summary = "LLM 요약 생성 실패"
+            result = json.loads(llm_response)
+            labeled_messages = []
+            for msg_data in result.get("messages", []):
+                labeled_messages.append(
+                    LabeledMessage(
+                        sender=msg_data["sender"],
+                        text=msg_data["text"],
+                        labels=msg_data["labels"],
+                    )
+                )
+        except Exception as e:
+            logger.error(f"LLM 응답 파싱 실패: {e}")
+            # fallback: 룰 기반 라벨링
+            labeled_messages = []
+            for msg in request.messages:
+                labels: Dict[str, Any] = {}  # 룰 기반 라벨링 로직 구현 필요
+                labeled_messages.append(
+                    LabeledMessage(sender=msg.sender, text=msg.text, labels=labels)
+                )
 
-        # LabeledMessage 객체로 변환
-        labeled_messages = [
-            LabeledMessage(
-                sender=msg.get("sender", ""),
-                text=msg.get("text", ""),
-                labels=msg.get("labels", {})
-            )
-            for msg in labeled_messages_raw
-        ]
-
-        # 2. TraitVector 산출 (코드로 계산)
+        # 2. 특성 벡터 계산
         trait_vector = LabelingTraitVectorService.compute_trait_vector(
-            user_id=request.user_id,
-            labeled_messages=labeled_messages
+            request.user_id, labeled_messages
         )
 
-        # 3. summary는 LLM 결과 사용
-        summary = {"llm_summary": llm_summary}
-
         return LabelingTraitVectorResponse(
+            user_id=request.user_id,
             labeled_messages=labeled_messages,
             trait_vector=trait_vector,
-            summary=summary
         )
 
     @staticmethod
-    def compute_trait_vector(user_id: str, labeled_messages: list[LabeledMessage]) -> TraitVector:
+    def compute_trait_vector(
+        user_id: str, labeled_messages: list[LabeledMessage]
+    ) -> TraitVector:
+        """
+        라벨된 메시지들을 기반으로 특성 벡터를 계산
+        """
         n = len(labeled_messages)
         if n == 0:
             raise ValueError("No messages to analyze.")
 
         # 카운터 초기화
-        emotion_counter = Counter()
-        assertion_counter = Counter()
-        attitude_counter = Counter()
-        comm_counter = Counter()
-        attach_counter = Counter()
+        emotion_counter: Counter[str] = Counter()
+        assertion_counter: Counter[str] = Counter()
+        attitude_counter: Counter[str] = Counter()
+        comm_counter: Counter[str] = Counter()
+        attach_counter: Counter[str] = Counter()
         reconnection_attempts = 0
 
         for msg in labeled_messages:
             labels = msg.labels
             # 감정 표현
             for k in [
-                "affection", "gratitude", "frustration", "anxiety",
-                "jealousy", "loneliness", "sadness", "resentment"
+                "affection",
+                "gratitude",
+                "frustration",
+                "anxiety",
+                "jealousy",
+                "loneliness",
+                "sadness",
+                "resentment",
             ]:
                 if k in labels.get("emotion_expression", []):
                     emotion_counter[k] += 1
@@ -143,7 +157,8 @@ class LabelingTraitVectorService:
                 if k in labels.get("attachment_pattern", []):
                     attach_counter[k] += 1
 
-        def ratio(cnt): return cnt / n if n else 0.0
+        def ratio(cnt: int) -> float:
+            return cnt / n if n else 0.0
 
         affection_level = ratio(emotion_counter["affection"])
         gratitude_level = ratio(emotion_counter["gratitude"])
@@ -181,17 +196,36 @@ class LabelingTraitVectorService:
             "anxious": anxious_ratio,
             "avoidant": avoidant_ratio,
             "fearful": fearful_ratio,
-            "ambivalent": ambivalent_ratio
+            "ambivalent": ambivalent_ratio,
         }
-        attachment_style = max(attach_types, key=attach_types.get) if n else "unknown"
+        attachment_style = (
+            max(attach_types, key=lambda k: attach_types[k]) if n else "unknown"
+        )
 
-        dominant_emotion = max(emotion_counter, key=emotion_counter.get) if emotion_counter else "none"
-        dominant_communication = max(comm_counter, key=comm_counter.get) if comm_counter else "none"
+        dominant_emotion = (
+            max(emotion_counter, key=lambda k: emotion_counter[k])
+            if emotion_counter
+            else "none"
+        )
+        dominant_communication = (
+            max(comm_counter, key=lambda k: comm_counter[k]) if comm_counter else "none"
+        )
 
-        emotion_values = [affection_level, gratitude_level, frustration_level, anxiety_level,
-                          jealousy_level, loneliness_level, sadness_level, resentment_level]
+        emotion_values = [
+            affection_level,
+            gratitude_level,
+            frustration_level,
+            anxiety_level,
+            jealousy_level,
+            loneliness_level,
+            sadness_level,
+            resentment_level,
+        ]
         emotional_stability_score = 1.0 - (max(emotion_values) - min(emotion_values))
-        expression_openness_score = min(1.0, affection_level + request_tendency + explanation_ratio + questioning_rate)
+        expression_openness_score = min(
+            1.0,
+            affection_level + request_tendency + explanation_ratio + questioning_rate,
+        )
 
         return TraitVector(
             user_id=user_id,
@@ -228,5 +262,5 @@ class LabelingTraitVectorService:
             dominant_emotion=dominant_emotion,
             dominant_communication=dominant_communication,
             emotional_stability_score=emotional_stability_score,
-            expression_openness_score=expression_openness_score
+            expression_openness_score=expression_openness_score,
         )

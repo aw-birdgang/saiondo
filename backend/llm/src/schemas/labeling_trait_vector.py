@@ -1,20 +1,25 @@
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
+
 
 # 입력 메시지
 class ChatMessage(BaseModel):
     sender: str  # "male", "female", "other"
     text: str
 
+
 class LabelingTraitVectorRequest(BaseModel):
     user_id: Optional[str] = None
     messages: List[ChatMessage]
+
 
 # 메시지별 라벨링 결과
 class LabeledMessage(BaseModel):
     sender: str
     text: str
     labels: Dict[str, Any]
+
 
 # TraitVector (성향 벡터)
 class TraitVector(BaseModel):
@@ -58,6 +63,7 @@ class TraitVector(BaseModel):
     dominant_communication: str
     emotional_stability_score: float
     expression_openness_score: float
+
 
 # 최종 API 응답
 class LabelingTraitVectorResponse(BaseModel):

@@ -1,16 +1,22 @@
-from fastapi import APIRouter
-from schemas.prompt import PromptRequest, PromptResponse
-from services.prompt_service import prompt_service
+from typing import Any, Dict
 
-router = APIRouter(
-    tags=["Prompt"],
-)
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-@router.post(
-    "/prompt",
-    summary="프롬프트 관리",
-    description="프롬프트 등록, 조회 등 프롬프트 관리를 위한 API입니다."
-)
-def prompt(request: PromptRequest):
-    response = prompt_service.prompt(request.prompt, request.model)
-    return PromptResponse(response=response)
+from services.llm_provider import llm_provider
+
+router = APIRouter(prefix="/prompt", tags=["prompt"])
+
+
+class PromptRequest(BaseModel):
+    prompt: str
+    model: str = "openai"
+
+
+@router.post("/ask")
+async def ask_prompt(request: PromptRequest) -> Dict[str, Any]:
+    try:
+        response = llm_provider.ask(request.prompt, request.model)
+        return {"response": response, "model": request.model}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,7 +1,7 @@
 # 🤖 SAIONDO LLM Server
 
-**FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버**  
-SAIONDO의 LLM 서버는 OpenAI, Claude 등 다양한 LLM Provider와 연동하여  
+**FastAPI(Python) 기반의 LLM(대형 언어 모델) 연동 서버**
+SAIONDO의 LLM 서버는 OpenAI, Claude 등 다양한 LLM Provider와 연동하여
 커플 대화 분석, AI 챗봇, 성향 분석, 피드백 수집 등 핵심 AI 기능을 제공합니다.
 
 ---
@@ -70,7 +70,7 @@ llm/
 - **/graph/**: 관계 분석 그래프, 노드 등
 - **/mcp/**: 대화 context 등 도메인별 유틸리티
 
-> **API 상세 문서:** [Swagger UI (localhost:8000/docs)](http://localhost:8000/docs)  
+> **API 상세 문서:** [Swagger UI (localhost:8000/docs)](http://localhost:8000/docs)
 > **ReDoc:** [localhost:8000/redoc](http://localhost:8000/redoc)
 
 ## ⚙️ 주요 기술 스택
@@ -97,7 +97,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. 환경변수(.env) 설정
+### 2. 개발 도구 설정 (선택사항)
+
+```sh
+# pre-commit hooks 설치
+pre-commit install
+
+# 또는 Makefile 사용
+make install
+```
+
+### 3. 환경변수(.env) 설정
 
 - `.env.example` 파일을 참고하여 `.env` 파일을 생성하고, 필요한 API Key 및 환경변수를 입력하세요.
   ```sh
@@ -117,13 +127,13 @@ PYTHONPATH=src uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ### 1. Docker 이미지 빌드
 
 ```sh
-docker build -t saiondo-llm .
+docker build -t llm .
 ```
 
 ### 2. 컨테이너 실행
 
 ```sh
-docker run --env-file .env -p 8000:8000 saiondo-llm
+docker run --env-file .env -p 8000:8000 llm
 ```
 
 ## 🧪 테스트
@@ -134,9 +144,60 @@ docker run --env-file .env -p 8000:8000 saiondo-llm
   ```
 - 테스트 커버리지, 구조 등은 `src/tests/` 참고
 
+## 🛠️ 개발 도구
+
+### 코드 품질 관리
+
+프로젝트에는 다음과 같은 개발 도구들이 설정되어 있습니다:
+
+- **Black**: 코드 포맷팅
+- **isort**: import 정렬
+- **Flake8**: 코드 스타일 검사
+- **MyPy**: 타입 체크
+- **pre-commit**: Git hooks
+
+### 사용법
+
+```sh
+# 모든 검사 실행
+make check
+
+# 코드 포맷팅
+make format
+
+# 린팅 검사
+make lint
+
+# 테스트 실행
+make test
+
+# 캐시 파일 정리
+make clean
+```
+
+### 개별 도구 사용
+
+```sh
+# Black으로 포맷팅
+black src/
+
+# isort로 import 정렬
+isort src/
+
+# Flake8으로 스타일 검사
+flake8 src/
+
+# MyPy로 타입 체크
+mypy src/
+
+# pre-commit hooks 수동 실행
+pre-commit run --all-files
+pre-commit run --files src/**/*.py
+```
+
 ## 📊 모니터링 및 트레이싱
 
-- **LangSmith** 연동으로 LLM 체인 트레이싱/디버깅/평가 지원  
+- **LangSmith** 연동으로 LLM 체인 트레이싱/디버깅/평가 지원
   → [LangSmith 가이드](./docs/langsmith-guide.md) 참고
 
 - **구조화 로깅**: `structlog` 등 활용

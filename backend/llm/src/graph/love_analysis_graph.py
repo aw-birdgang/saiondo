@@ -1,6 +1,8 @@
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
+
+from graph.nodes import generate_advice, match_analysis, trait_analysis
 from mcp.context import MCPContext
-from graph.nodes import trait_analysis, match_analysis, generate_advice
+
 
 def build_graph():
     builder = StateGraph(MCPContext)

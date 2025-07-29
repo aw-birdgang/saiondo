@@ -1,10 +1,11 @@
-from mcp.context import MCPContext
-from langchain_openai import ChatOpenAI
-from langchain.schema import HumanMessage
-from langchain.callbacks.tracers.langchain import LangChainTracer
+import os
 
 from dotenv import load_dotenv
-import os
+from langchain.callbacks.tracers.langchain import LangChainTracer
+from langchain.schema import HumanMessage
+from langchain_openai import ChatOpenAI
+
+from mcp.context import MCPContext
 
 load_dotenv()
 
@@ -15,7 +16,8 @@ os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "default")
 
 tracer = LangChainTracer()  # 트레이서 인스턴스 생성
 
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", callbacks=[tracer])  # 콜백에 트레이서 추가
+llm = ChatOpenAI(model="gpt-3.5-turbo", callbacks=[tracer])  # 콜백에 트레이서 추가
+
 
 def trait_analysis(ctx: MCPContext) -> MCPContext:
     mbti = ctx.metadata.get("user_mbti", "알 수 없음")
@@ -32,9 +34,12 @@ def trait_analysis(ctx: MCPContext) -> MCPContext:
     ctx.metadata["user_traits"] = result.content
     return ctx
 
+
 def match_analysis(ctx: MCPContext) -> MCPContext:
     partner_mbti = ctx.metadata.get("partner_mbti", "알 수 없음")
-    relationship_duration = ctx.metadata.get("relationship_duration_months", "알 수 없음")
+    relationship_duration = ctx.metadata.get(
+        "relationship_duration_months", "알 수 없음"
+    )
     prompt = (
         f"사용자 성향: {ctx.metadata['user_traits']}\n"
         f"상대방 성향: {ctx.partner_prompt}\n"
@@ -45,6 +50,7 @@ def match_analysis(ctx: MCPContext) -> MCPContext:
     result = llm.invoke([HumanMessage(content=prompt)])
     ctx.metadata["match_result"] = result.content
     return ctx
+
 
 def generate_advice(ctx: MCPContext) -> MCPContext:
     session_id = ctx.metadata.get("sessionId", "N/A")

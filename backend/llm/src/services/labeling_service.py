@@ -1,7 +1,10 @@
-from services.llm_provider import llm_provider
-from schemas.labeling import SingleMessageRequest, HistoryMessage
-from core.labeling.rule_engine import label_message, KEYWORDS
 import json
+from typing import Optional
+
+from core.labeling.rule_engine import KEYWORDS, label_message
+from schemas.labeling import HistoryMessage, SingleMessageRequest
+from services.llm_provider import llm_provider
+
 
 def build_labeling_prompt(categories: dict, messages: list) -> str:
     """
@@ -16,12 +19,15 @@ def build_labeling_prompt(categories: dict, messages: list) -> str:
     prompt += "\n메시지 목록:\n"
     for i, msg in enumerate(messages):
         prompt += f"{i+1}. ({msg.sender}) {msg.text}\n"
-    prompt += "\n각 메시지에 대해 해당되는 카테고리별 라벨을 JSON 형식으로 반환해 주세요."
+    prompt += (
+        "\n각 메시지에 대해 해당되는 카테고리별 라벨을 JSON 형식으로 반환해 주세요."
+    )
     return prompt
+
 
 class LabelingService:
     @staticmethod
-    def label_with_llm(messages: list, model: str = None) -> dict:
+    def label_with_llm(messages: list, model: Optional[str] = None) -> dict:
         """
         LLM을 이용한 메시지(히스토리) 라벨링
         """
@@ -39,11 +45,7 @@ class LabelingService:
         단일 메시지 룰 기반 라벨링
         """
         labels = label_message(request.text)
-        return {
-            "sender": request.sender,
-            "text": request.text,
-            "labels": labels
-        }
+        return {"sender": request.sender, "text": request.text, "labels": labels}
 
     @staticmethod
     def label_message_history(messages: list[HistoryMessage]) -> list:
@@ -53,15 +55,13 @@ class LabelingService:
         results = []
         for msg in messages:
             labels = label_message(msg.text)
-            results.append({
-                "sender": msg.sender,
-                "text": msg.text,
-                "labels": labels
-            })
+            results.append({"sender": msg.sender, "text": msg.text, "labels": labels})
         return results
 
     @staticmethod
-    def label_single_message_llm(request: SingleMessageRequest, model: str = None) -> dict:
+    def label_single_message_llm(
+        request: SingleMessageRequest, model: Optional[str] = None
+    ) -> dict:
         """
         단일 메시지 LLM 기반 라벨링
         """
@@ -74,7 +74,9 @@ class LabelingService:
         return result
 
     @staticmethod
-    def label_message_history_llm(messages: list[HistoryMessage], model: str = None) -> dict:
+    def label_message_history_llm(
+        messages: list[HistoryMessage], model: Optional[str] = None
+    ) -> dict:
         """
         메시지 히스토리 LLM 기반 라벨링
         """

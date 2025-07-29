@@ -1,13 +1,17 @@
 from fastapi import APIRouter
+
 from schemas.labeling import (
-    SingleMessageRequest, HistoryRequest,
-    SingleLabelingResult, HistoryLabelingResult
+    HistoryLabelingResult,
+    HistoryRequest,
+    SingleLabelingResult,
+    SingleMessageRequest,
 )
 from services.labeling_service import LabelingService
 
 router = APIRouter(
     tags=["Labeling"],
 )
+
 
 @router.post("/label/single", response_model=SingleLabelingResult, tags=["Labeling"])
 def label_single_message(request: SingleMessageRequest):
@@ -17,6 +21,7 @@ def label_single_message(request: SingleMessageRequest):
     result = LabelingService.label_single_message(request)
     return result
 
+
 @router.post("/label/history", response_model=HistoryLabelingResult, tags=["Labeling"])
 def label_message_history(request: HistoryRequest):
     """
@@ -25,7 +30,10 @@ def label_message_history(request: HistoryRequest):
     results = LabelingService.label_message_history(request.messages)
     return {"results": results}
 
-@router.post("/label/llm/history", response_model=HistoryLabelingResult, tags=["Labeling"])
+
+@router.post(
+    "/label/llm/history", response_model=HistoryLabelingResult, tags=["Labeling"]
+)
 def label_with_llm_history(request: HistoryRequest):
     """
     LLM을 이용한 메시지(히스토리) 라벨링
@@ -35,7 +43,10 @@ def label_with_llm_history(request: HistoryRequest):
         return {"results": results}
     return results
 
-@router.post("/label/llm/single", response_model=SingleLabelingResult, tags=["Labeling"])
+
+@router.post(
+    "/label/llm/single", response_model=SingleLabelingResult, tags=["Labeling"]
+)
 def label_with_llm_single(request: SingleMessageRequest):
     """
     LLM을 이용한 단일 메시지 라벨링
@@ -46,21 +57,9 @@ def label_with_llm_single(request: SingleMessageRequest):
         result = results[0]
         # 만약 result에 sender/text가 없으면 추가
         if "sender" not in result or "text" not in result or "labels" not in result:
-            return {
-                "sender": request.sender,
-                "text": request.text,
-                "labels": result
-            }
+            return {"sender": request.sender, "text": request.text, "labels": result}
         return result
     elif isinstance(results, dict):
         # dict만 올 경우
-        return {
-            "sender": request.sender,
-            "text": request.text,
-            "labels": results
-        }
-    return {
-        "sender": request.sender,
-        "text": request.text,
-        "labels": {}
-    }
+        return {"sender": request.sender, "text": request.text, "labels": results}
+    return {"sender": request.sender, "text": request.text, "labels": {}}
