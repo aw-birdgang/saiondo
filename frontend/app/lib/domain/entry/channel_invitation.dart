@@ -29,10 +29,10 @@ class ChannelInvitation {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'channelId': channelId,
-    'inviterId': inviterId,
-    'inviteeId': inviteeId,
-    'status': status.name,
-  };
+        'id': id,
+        'channelId': channelId,
+        'inviterId': inviterId,
+        'inviteeId': inviteeId,
+        'status': status.name,
+      };
 }

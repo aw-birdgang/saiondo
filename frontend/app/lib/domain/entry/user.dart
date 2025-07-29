@@ -18,7 +18,10 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    if (json['id'] == null || json['name'] == null || json['email'] == null || json['gender'] == null) {
+    if (json['id'] == null ||
+        json['name'] == null ||
+        json['email'] == null ||
+        json['gender'] == null) {
       throw Exception('User JSON에 필수 필드가 없습니다: $json');
     }
     return User(
@@ -33,12 +36,12 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'email': email,
-    'gender': gender,
-    'assistantId': assistantId,
-    'fcmToken': fcmToken,
-    'point': point,
-  };
+        'id': id,
+        'name': name,
+        'email': email,
+        'gender': gender,
+        'assistantId': assistantId,
+        'fcmToken': fcmToken,
+        'point': point,
+      };
 }

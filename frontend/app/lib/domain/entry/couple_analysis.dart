@@ -27,7 +27,9 @@ class CoupleAnalysis {
   // LLM 결과 파싱 (rawResult는 JSON string)
   Map<String, dynamic> get parsedResult {
     try {
-      return rawResult.isNotEmpty ? Map<String, dynamic>.from(jsonDecode(rawResult)) : {};
+      return rawResult.isNotEmpty
+          ? Map<String, dynamic>.from(jsonDecode(rawResult))
+          : {};
     } catch (_) {
       return {'summary': rawResult}; // 혹시 JSON이 아니면 원문 출력
     }

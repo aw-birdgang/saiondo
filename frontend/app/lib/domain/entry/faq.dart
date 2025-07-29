@@ -27,11 +27,11 @@ class Faq {
   }
 
   Map<String, dynamic> toMap() => {
-    'faqIdx': faqIdx,
-    'category': category,
-    'categoryCode': categoryCode,
-    'question': question,
-    'answer': answer,
-    'createdAt': createdAt.toIso8601String(),
-  };
+        'faqIdx': faqIdx,
+        'category': category,
+        'categoryCode': categoryCode,
+        'question': question,
+        'answer': answer,
+        'createdAt': createdAt.toIso8601String(),
+      };
 }

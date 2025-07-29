@@ -6,19 +6,22 @@ import '../../../domain/repository/basic_question_repository.dart';
 
 part 'basic_question_category_store.g.dart';
 
-class BasicQuestionCategoryStore = _BasicQuestionCategoryStore with _$BasicQuestionCategoryStore;
+class BasicQuestionCategoryStore = _BasicQuestionCategoryStore
+    with _$BasicQuestionCategoryStore;
 
 abstract class _BasicQuestionCategoryStore with Store {
   final BasicQuestionCategoryRepository _categoryRepository;
   final BasicQuestionRepository _questionRepository;
 
-  _BasicQuestionCategoryStore(this._categoryRepository, this._questionRepository);
+  _BasicQuestionCategoryStore(
+      this._categoryRepository, this._questionRepository);
 
   @observable
   ObservableList<BasicQuestionCategory> categories = ObservableList();
 
   @observable
-  ObservableMap<String, List<BasicQuestion>> questionsByCategory = ObservableMap();
+  ObservableMap<String, List<BasicQuestion>> questionsByCategory =
+      ObservableMap();
 
   @observable
   String? selectedCategoryId;
@@ -41,7 +44,8 @@ abstract class _BasicQuestionCategoryStore with Store {
   Future<void> loadQuestionsForCategory(String categoryId) async {
     isLoading = true;
     try {
-      final result = await _questionRepository.fetchQuestionsByCategory(categoryId);
+      final result =
+          await _questionRepository.fetchQuestionsByCategory(categoryId);
       questionsByCategory[categoryId] = result;
       selectedCategoryId = categoryId;
     } finally {

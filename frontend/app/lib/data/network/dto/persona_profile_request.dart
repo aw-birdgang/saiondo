@@ -16,11 +16,11 @@ class PersonaProfileRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'categoryCodeId': categoryCodeId,
-    'content': content,
-    'isStatic': isStatic,
-    'source': source,
-    'confidenceScore': confidenceScore,
-  };
+        'userId': userId,
+        'categoryCodeId': categoryCodeId,
+        'content': content,
+        'isStatic': isStatic,
+        'source': source,
+        'confidenceScore': confidenceScore,
+      };
 }

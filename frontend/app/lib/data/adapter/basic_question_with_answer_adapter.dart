@@ -3,7 +3,8 @@ import '../network/dto/basic_question_with_answer_response.dart';
 import 'basic_answer_adapter.dart';
 
 class BasicQuestionWithAnswerAdapter {
-  static BasicQuestionWithAnswer fromResponse(BasicQuestionWithAnswerResponse res) {
+  static BasicQuestionWithAnswer fromResponse(
+      BasicQuestionWithAnswerResponse res) {
     return BasicQuestionWithAnswer(
       id: res.id,
       categoryId: res.categoryId,

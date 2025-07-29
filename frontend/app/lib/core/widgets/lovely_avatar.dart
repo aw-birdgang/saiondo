@@ -18,7 +18,9 @@ class LovelyAvatar extends StatelessWidget {
         backgroundImage: NetworkImage(imageUrl),
         backgroundColor: Colors.transparent,
         radius: 36,
-        child: imageUrl.isEmpty ? const Icon(Icons.person, color: Colors.white) : null,
+        child: imageUrl.isEmpty
+            ? const Icon(Icons.person, color: Colors.white)
+            : null,
       ),
     );
   }

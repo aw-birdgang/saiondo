@@ -13,7 +13,8 @@ class ChatHistoryDataSource {
 
   // DB functions:--------------------------------------------------------------
   Future<int> insert(Chat chatHistory) async {
-    return await _chatHistoryStore.add(_sembastClient.database, chatHistory.toMap());
+    return await _chatHistoryStore.add(
+        _sembastClient.database, chatHistory.toMap());
   }
 
   Future<int> count() async {
@@ -41,5 +42,4 @@ class ChatHistoryDataSource {
       _sembastClient.database,
     );
   }
-
 }

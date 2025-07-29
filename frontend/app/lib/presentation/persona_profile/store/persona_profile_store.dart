@@ -40,7 +40,8 @@ abstract class _PersonaProfileStore with Store {
     isLoading = true;
     error = null;
     try {
-      final newProfile = await _userRepository.createPersonaProfile(userId, profile);
+      final newProfile =
+          await _userRepository.createPersonaProfile(userId, profile);
       profiles.add(newProfile);
     } catch (e) {
       error = e.toString();
@@ -54,8 +55,10 @@ abstract class _PersonaProfileStore with Store {
     isLoading = true;
     error = null;
     try {
-      final updated = await _userRepository.updatePersonaProfile(userId, profile);
-      final idx = profiles.indexWhere((p) => p.categoryCodeId == updated.categoryCodeId);
+      final updated =
+          await _userRepository.updatePersonaProfile(userId, profile);
+      final idx = profiles
+          .indexWhere((p) => p.categoryCodeId == updated.categoryCodeId);
       if (idx != -1) profiles[idx] = updated;
     } catch (e) {
       error = e.toString();

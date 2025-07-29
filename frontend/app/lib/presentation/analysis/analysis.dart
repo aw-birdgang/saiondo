@@ -58,7 +58,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
             return Center(
               child: Text(
                 local!.translate('analysis_load_fail'),
-                style: const TextStyle(fontSize: 16, color: Color(0xFFD81B60), fontFamily: 'Nunito'),
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFFD81B60),
+                    fontFamily: 'Nunito'),
               ),
             );
           }
@@ -97,7 +100,8 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 18, horizontal: 18),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -124,57 +128,92 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                   const SizedBox(height: 24),
                   Text(
                     local.translate('couple_mbti_match'),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Nunito'),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       Chip(
-                        label: Text(user1Mbti, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD81B60))),
+                        label: Text(user1Mbti,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFD81B60))),
                         backgroundColor: Colors.pink[50],
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       Icon(Icons.compare_arrows, color: Colors.pink),
                       Chip(
-                        label: Text(user2Mbti, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFD81B60))),
+                        label: Text(user2Mbti,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFD81B60))),
                         backgroundColor: Colors.pink[50],
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       const SizedBox(width: 12),
                       if (matchPercent.toString().isNotEmpty)
                         Text(
                           '$matchPercent% ${local.translate('good_match')}',
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.pink, fontFamily: 'Nunito'),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.pink,
+                              fontFamily: 'Nunito'),
                         ),
                     ],
                   ),
                   const SizedBox(height: 24),
                   Text(
                     local.translate('main_keywords'),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Nunito'),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
-                    children: keywords.map((k) => Chip(
-                      label: Text(k, style: const TextStyle(color: Color(0xFF1976D2))),
-                      backgroundColor: Colors.blue[50],
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    )).toList(),
+                    children: keywords
+                        .map((k) => Chip(
+                              label: Text(k,
+                                  style: const TextStyle(
+                                      color: Color(0xFF1976D2))),
+                              backgroundColor: Colors.blue[50],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                            ))
+                        .toList(),
                   ),
                   const SizedBox(height: 24),
                   Text(
                     local.translate('analysis_summary'),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Nunito'),
                   ),
                   const SizedBox(height: 8),
-                  Text(result['summary'] ?? '', style: const TextStyle(fontSize: 15, fontFamily: 'Nunito')),
+                  Text(result['summary'] ?? '',
+                      style:
+                          const TextStyle(fontSize: 15, fontFamily: 'Nunito')),
                   if (result['advice'] != null)
-                    Text('${local.translate('advice')}: ${result['advice']}', style: const TextStyle(fontSize: 15, fontFamily: 'Nunito')),
+                    Text('${local.translate('advice')}: ${result['advice']}',
+                        style: const TextStyle(
+                            fontSize: 15, fontFamily: 'Nunito')),
                   if (result['persona1'] != null)
-                    Text('${local.translate('user1_persona')}: ${result['persona1']}', style: const TextStyle(fontSize: 15, fontFamily: 'Nunito')),
+                    Text(
+                        '${local.translate('user1_persona')}: ${result['persona1']}',
+                        style: const TextStyle(
+                            fontSize: 15, fontFamily: 'Nunito')),
                   if (result['persona2'] != null)
-                    Text('${local.translate('user2_persona')}: ${result['persona2']}', style: const TextStyle(fontSize: 15, fontFamily: 'Nunito')),
+                    Text(
+                        '${local.translate('user2_persona')}: ${result['persona2']}',
+                        style: const TextStyle(
+                            fontSize: 15, fontFamily: 'Nunito')),
                   const SizedBox(height: 80),
                 ],
               ),

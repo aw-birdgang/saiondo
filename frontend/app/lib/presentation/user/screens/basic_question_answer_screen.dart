@@ -12,10 +12,12 @@ class BasicQuestionAnswerSection extends StatefulWidget {
   const BasicQuestionAnswerSection({super.key, required this.userId});
 
   @override
-  State<BasicQuestionAnswerSection> createState() => _BasicQuestionAnswerSectionState();
+  State<BasicQuestionAnswerSection> createState() =>
+      _BasicQuestionAnswerSectionState();
 }
 
-class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection> {
+class _BasicQuestionAnswerSectionState
+    extends State<BasicQuestionAnswerSection> {
   final _store = getIt<BasicQuestionAnswerStore>();
 
   @override
@@ -27,7 +29,9 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
   _CategoryProgress getCategoryProgress(String categoryId) {
     final questions = _store.categoryQuestionsMap[categoryId] ?? [];
     final total = questions.length;
-    final answered = questions.where((q) => q.answer != null && q.answer!.answer.trim().isNotEmpty).length;
+    final answered = questions
+        .where((q) => q.answer != null && q.answer!.answer.trim().isNotEmpty)
+        .length;
     final ratio = total == 0 ? 0.0 : answered / total;
     return _CategoryProgress(total: total, answered: answered, ratio: ratio);
   }
@@ -77,7 +81,8 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
                   );
                 },
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Colors.pink[50]!, Colors.purple[50]!],
@@ -97,7 +102,8 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
                       width: 1.2,
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
                   child: Row(
                     children: [
                       Container(
@@ -112,7 +118,8 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
                         child: const CircleAvatar(
                           backgroundColor: Colors.transparent,
                           radius: 22,
-                          child: Icon(Icons.category, color: Colors.white, size: 26),
+                          child: Icon(Icons.category,
+                              color: Colors.white, size: 26),
                         ),
                       ),
                       const SizedBox(width: 18),
@@ -168,7 +175,8 @@ class _BasicQuestionAnswerSectionState extends State<BasicQuestionAnswerSection>
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Icon(Icons.arrow_forward_ios, size: 20, color: Colors.pink[200]),
+                      Icon(Icons.arrow_forward_ios,
+                          size: 20, color: Colors.pink[200]),
                     ],
                   ),
                 ),
@@ -186,5 +194,6 @@ class _CategoryProgress {
   final int total;
   final int answered;
   final double ratio;
-  _CategoryProgress({required this.total, required this.answered, required this.ratio});
+  _CategoryProgress(
+      {required this.total, required this.answered, required this.ratio});
 }

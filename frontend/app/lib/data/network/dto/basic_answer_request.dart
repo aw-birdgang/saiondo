@@ -10,8 +10,8 @@ class BasicAnswerRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'questionId': questionId,
-    'answer': answer,
-  };
+        'userId': userId,
+        'questionId': questionId,
+        'answer': answer,
+      };
 }

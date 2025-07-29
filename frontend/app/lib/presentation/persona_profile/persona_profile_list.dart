@@ -18,7 +18,8 @@ class PersonaProfileListScreen extends StatelessWidget {
 
   PersonaProfileListScreen({required this.userId, super.key});
 
-  Future<void> _editProfile(BuildContext context, PersonaProfile profile) async {
+  Future<void> _editProfile(
+      BuildContext context, PersonaProfile profile) async {
     final updated = await Navigator.push<PersonaProfile>(
       context,
       MaterialPageRoute(
@@ -45,7 +46,8 @@ class PersonaProfileListScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _deleteProfile(BuildContext context, PersonaProfile profile) async {
+  Future<void> _deleteProfile(
+      BuildContext context, PersonaProfile profile) async {
     final local = AppLocalizations.of(context);
     final confirm = await showDialog<bool>(
       context: context,
@@ -59,7 +61,8 @@ class PersonaProfileListScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(local.translate('delete'), style: const TextStyle(color: Colors.red)),
+            child: Text(local.translate('delete'),
+                style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -68,7 +71,9 @@ class PersonaProfileListScreen extends StatelessWidget {
       await _personaProfileStore.deleteProfile(userId, profile.categoryCodeId);
       if (_personaProfileStore.error != null && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${local!.translate('delete_failed')}: ${_personaProfileStore.error}')),
+          SnackBar(
+              content: Text(
+                  '${local!.translate('delete_failed')}: ${_personaProfileStore.error}')),
         );
       }
     }
@@ -94,7 +99,8 @@ class PersonaProfileListScreen extends StatelessWidget {
 
   Widget _buildProfileCard(BuildContext context, PersonaProfile profile) {
     final local = AppLocalizations.of(context);
-    final category = _categoryCodeStore.codes.firstWhereOrNull((c) => c.id == profile.categoryCodeId);
+    final category = _categoryCodeStore.codes
+        .firstWhereOrNull((c) => c.id == profile.categoryCodeId);
     final categoryDesc = category?.description ?? local!.translate('unknown');
 
     return Container(
@@ -140,7 +146,8 @@ class PersonaProfileListScreen extends StatelessWidget {
                         if (categoryDesc.isNotEmpty)
                           Text(
                             profile.content,
-                            style: TextStyle(fontSize: 12, color: Colors.blue[300]),
+                            style: TextStyle(
+                                fontSize: 12, color: Colors.blue[300]),
                             overflow: TextOverflow.ellipsis,
                           ),
                       ],
@@ -153,7 +160,8 @@ class PersonaProfileListScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit_rounded, color: Color(0xFF64B5F6)),
+                          icon: const Icon(Icons.edit_rounded,
+                              color: Color(0xFF64B5F6)),
                           iconSize: 16,
                           constraints: const BoxConstraints(
                             minWidth: 18,
@@ -164,7 +172,8 @@ class PersonaProfileListScreen extends StatelessWidget {
                           onPressed: () => _editProfile(context, profile),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete_rounded, color: Color(0xFFE57373)),
+                          icon: const Icon(Icons.delete_rounded,
+                              color: Color(0xFFE57373)),
                           iconSize: 16,
                           constraints: const BoxConstraints(
                             minWidth: 18,

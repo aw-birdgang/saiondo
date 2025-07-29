@@ -50,11 +50,12 @@ class _MyAppState extends State<MyApp> {
     final userId = data['userId'];
     final channelId = data['channelId'];
     final assistantId = data['assistantId'];
-    
+
     // Null check
     if (userId == null || channelId == null || assistantId == null) {
       print('[_handlePushNavigation] Error: Missing required parameters');
-      print('userId: $userId, channelId: $channelId, assistantId: $assistantId');
+      print(
+          'userId: $userId, channelId: $channelId, assistantId: $assistantId');
       return;
     }
 
@@ -63,7 +64,7 @@ class _MyAppState extends State<MyApp> {
 
     // Routes.chat 상수를 사용
     navigatorKey.currentState?.pushNamed(
-      Routes.chat,  // '/chat' 대신 Routes.chat 사용
+      Routes.chat, // '/chat' 대신 Routes.chat 사용
       arguments: {
         'userId': userId,
         'channelId': channelId,
@@ -100,8 +101,10 @@ class _MyAppState extends State<MyApp> {
           initialRoute: Routes.splash,
           routes: Routes.routes,
           onGenerateRoute: (settings) {
-            final isLoggedIn = _userStore.userId != null && _userStore.selectedUser != null;
-            print('[MyApp] isLoggedIn :: ${isLoggedIn} , settings.name :: ${settings.name}');
+            final isLoggedIn =
+                _userStore.userId != null && _userStore.selectedUser != null;
+            print(
+                '[MyApp] isLoggedIn :: ${isLoggedIn} , settings.name :: ${settings.name}');
             return null;
           },
         );

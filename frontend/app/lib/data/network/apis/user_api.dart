@@ -9,12 +9,15 @@ import '../rest_client.dart';
 
 class UserApi {
   final DioClient _dioClient;
-  final RestClient _restClient;
-  UserApi(this._dioClient, this._restClient);
+  // final RestClient _restClient;
+
+  UserApi(this._dioClient);
 
   Future<List<UserResponse>> fetchUsers() async {
     final response = await _dioClient.dio.get(Endpoints.users);
-    return (response.data as List).map((e) => UserResponse.fromJson(e)).toList();
+    return (response.data as List)
+        .map((e) => UserResponse.fromJson(e))
+        .toList();
   }
 
   Future<UserResponse> fetchUserById(String id) async {
@@ -40,7 +43,8 @@ class UserApi {
     return UserResponse.fromJson(response.data);
   }
 
-  Future<List<PersonaProfileResponse>> fetchPersonaProfiles(String userId) async {
+  Future<List<PersonaProfileResponse>> fetchPersonaProfiles(
+      String userId) async {
     final url = Endpoints.personaProfiles(userId);
     print('[UserApi] fetchPersonaProfiles 요청 URL: $url');
     final response = await _dioClient.dio.get(url);
@@ -49,7 +53,8 @@ class UserApi {
         .toList();
   }
 
-  Future<PersonaProfileResponse> createPersonaProfile(String userId, PersonaProfileRequest req) async {
+  Future<PersonaProfileResponse> createPersonaProfile(
+      String userId, PersonaProfileRequest req) async {
     final response = await _dioClient.dio.post(
       Endpoints.createPersonaProfile(userId),
       data: req.toJson(),
@@ -57,7 +62,8 @@ class UserApi {
     return PersonaProfileResponse.fromJson(response.data);
   }
 
-  Future<PersonaProfileResponse> updatePersonaProfile(String userId, String categoryCodeId, PersonaProfileRequest req) async {
+  Future<PersonaProfileResponse> updatePersonaProfile(
+      String userId, String categoryCodeId, PersonaProfileRequest req) async {
     final response = await _dioClient.dio.patch(
       Endpoints.updatePersonaProfile(userId, categoryCodeId),
       data: req.toJson(),
@@ -65,8 +71,11 @@ class UserApi {
     return PersonaProfileResponse.fromJson(response.data);
   }
 
-  Future<void> deletePersonaProfile(String userId, String categoryCodeId) async {
-    await _dioClient.dio.delete(Endpoints.deletePersonaProfile(userId, categoryCodeId),);
+  Future<void> deletePersonaProfile(
+      String userId, String categoryCodeId) async {
+    await _dioClient.dio.delete(
+      Endpoints.deletePersonaProfile(userId, categoryCodeId),
+    );
   }
 
   Future<void> updateFcmToken(String userId, String fcmToken) async {
@@ -75,5 +84,4 @@ class UserApi {
       data: {'fcmToken': fcmToken},
     );
   }
-
 }

@@ -9,13 +9,14 @@ import '../rest_client.dart';
 
 class PaymentSubscriptionApi {
   final DioClient _dioClient;
-  final RestClient _restClient;
+  // final RestClient _restClient;
 
-  PaymentSubscriptionApi(this._dioClient, this._restClient);
+  PaymentSubscriptionApi(this._dioClient);
 
   Future<Subscription?> getCurrentSubscription() async {
     try {
-      final response = await _dioClient.dio.get(Endpoints.paymentSubscriptionCurrent);
+      final response =
+          await _dioClient.dio.get(Endpoints.paymentSubscriptionCurrent);
       print('getCurrentSubscription response: ${response.data}');
       if (response.statusCode == 204 || response.data == null) {
         return null;
@@ -27,14 +28,18 @@ class PaymentSubscriptionApi {
     }
   }
 
-  Future<List<SubscriptionHistory>> getSubscriptionHistory({String? userId}) async {
+  Future<List<SubscriptionHistory>> getSubscriptionHistory(
+      {String? userId}) async {
     try {
       final endpoint = userId == null
           ? Endpoints.paymentSubscriptionHistories
           : Endpoints.paymentSubscriptionHistoriesByUser(userId);
       final response = await _dioClient.dio.get(endpoint);
       final List data = response.data;
-      return data.map<SubscriptionHistory>((e) => SubscriptionHistoryAdapter.fromJson(e)).toList();
+      return data
+          .map<SubscriptionHistory>(
+              (e) => SubscriptionHistoryAdapter.fromJson(e))
+          .toList();
     } catch (e) {
       print('getSubscriptionHistory error: $e');
       return [];

@@ -21,14 +21,17 @@ class BasicQuestionWithAnswer {
     this.answer,
   });
 
-  factory BasicQuestionWithAnswer.fromJson(Map<String, dynamic> json) => BasicQuestionWithAnswer(
-    id: json['id'],
-    categoryId: json['categoryId'],
-    question: json['question'],
-    description: json['description'],
-    options: (json['options'] as List<dynamic>?)?.cast<String>() ?? [],
-    createdAt: DateTime.parse(json['createdAt']),
-    updatedAt: DateTime.parse(json['updatedAt']),
-    answer: json['answer'] != null ? BasicAnswer.fromJson(json['answer']) : null,
-  );
+  factory BasicQuestionWithAnswer.fromJson(Map<String, dynamic> json) =>
+      BasicQuestionWithAnswer(
+        id: json['id'],
+        categoryId: json['categoryId'],
+        question: json['question'],
+        description: json['description'],
+        options: (json['options'] as List<dynamic>?)?.cast<String>() ?? [],
+        createdAt: DateTime.parse(json['createdAt']),
+        updatedAt: DateTime.parse(json['updatedAt']),
+        answer: json['answer'] != null
+            ? BasicAnswer.fromJson(json['answer'])
+            : null,
+      );
 }

@@ -47,7 +47,8 @@ class LovelyChatInputBar extends StatelessWidget {
                     hintText: local?.translate('enter_message') ?? '메시지를 입력하세요',
                     hintStyle: const TextStyle(color: Colors.grey),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 12),
                   ),
                   style: const TextStyle(fontFamily: 'Nunito'),
                   onSubmitted: (text) {
@@ -77,10 +78,10 @@ class LovelyChatInputBar extends StatelessWidget {
                 tooltip: local?.translate('send') ?? '전송',
                 onPressed: enabled
                     ? () {
-                  if (controller.text.trim().isNotEmpty) {
-                    onSend(controller.text.trim());
-                  }
-                }
+                        if (controller.text.trim().isNotEmpty) {
+                          onSend(controller.text.trim());
+                        }
+                      }
                     : null,
               ),
             ),

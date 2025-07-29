@@ -68,10 +68,12 @@ abstract class _ChannelStore with Store {
     error = null;
     successMessage = null;
     try {
-      final channelsResult = await _channelRepository.fetchChannelsByUserId(userId); // Channels 객체 반환
+      final channelsResult = await _channelRepository
+          .fetchChannelsByUserId(userId); // Channels 객체 반환
       userChannels = ObservableList.of(channelsResult.channels);
       currentChannel = userChannels.isNotEmpty ? userChannels.first : null;
-      print('[ChannelStore] response > fetchChannelsByUserId > userChannels :: $userChannels');
+      print(
+          '[ChannelStore] response > fetchChannelsByUserId > userChannels :: $userChannels');
     } catch (e) {
       error = e.toString();
     } finally {
@@ -118,7 +120,8 @@ abstract class _ChannelStore with Store {
     isLoading = true;
     error = null;
     try {
-      currentChannel = await _channelRepository.joinByInvite(inviteCode, userId);
+      currentChannel =
+          await _channelRepository.joinByInvite(inviteCode, userId);
       successMessage = '채널에 참여하였습니다!';
       return true;
     } catch (e) {

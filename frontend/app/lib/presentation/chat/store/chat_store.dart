@@ -60,7 +60,8 @@ abstract class _ChatStore with Store {
       onStatus: _onStatusChanged,
       onError: _onErrorReceived,
     );
-    print('[ChatStore] 소켓 연결 시도: userId=$_userId, assistantId=$_assistantId, channelId=$_channelId');
+    print(
+        '[ChatStore] 소켓 연결 시도: userId=$_userId, assistantId=$_assistantId, channelId=$_channelId');
   }
 
   @action

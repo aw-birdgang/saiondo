@@ -13,7 +13,8 @@ class PaymentSubscriptionScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<PaymentSubscriptionScreen> createState() => _PaymentSubscriptionScreenState();
+  State<PaymentSubscriptionScreen> createState() =>
+      _PaymentSubscriptionScreenState();
 }
 
 class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
@@ -40,7 +41,9 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         if (paymentSubscriptionStore.error != null) {
-          return Center(child: Text(paymentSubscriptionStore.error!, style: const TextStyle(color: Colors.red)));
+          return Center(
+              child: Text(paymentSubscriptionStore.error!,
+                  style: const TextStyle(color: Colors.red)));
         }
         if (!paymentSubscriptionStore.isAvailable) {
           return Center(
@@ -69,7 +72,8 @@ class _PaymentSubscriptionScreenState extends State<PaymentSubscriptionScreen> {
                 title: Text(product.title),
                 subtitle: Text(product.description),
                 trailing: ElevatedButton(
-                  onPressed: () => paymentSubscriptionStore.buySubscription(product),
+                  onPressed: () =>
+                      paymentSubscriptionStore.buySubscription(product),
                   child: Text(product.price),
                 ),
               ),

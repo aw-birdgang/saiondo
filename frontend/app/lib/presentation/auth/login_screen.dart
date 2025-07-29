@@ -64,7 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success) {
         _navigateToHome();
       } else {
-        setState(() => _error = AppLocalizations.of(context)!.translate('login_error'));
+        setState(() =>
+            _error = AppLocalizations.of(context)!.translate('login_error'));
       }
     } catch (e) {
       if (!mounted) return;
@@ -164,7 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: _maleColor),
               padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
           ),
         ),
@@ -180,7 +182,8 @@ class _LoginScreenState extends State<LoginScreen> {
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: _femaleColor),
               padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
           ),
         ),
@@ -195,7 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
         icon: const Icon(Icons.person_add_alt_1, color: _mainColor),
         label: Text(
           AppLocalizations.of(context)!.translate('register'),
-          style: const TextStyle(color: _mainColor, fontWeight: FontWeight.w600),
+          style:
+              const TextStyle(color: _mainColor, fontWeight: FontWeight.w600),
         ),
         onPressed: _isLoading
             ? null
@@ -224,7 +228,8 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
           child: Card(
             elevation: 10,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
               padding: const EdgeInsets.all(28.0),
               child: Observer(
@@ -238,14 +243,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 28),
                         _buildTextField(
                           controller: _emailController,
-                          label: AppLocalizations.of(context)!.translate('email'),
+                          label:
+                              AppLocalizations.of(context)!.translate('email'),
                           icon: Icons.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context)!.translate('enter_email');
+                              return AppLocalizations.of(context)!
+                                  .translate('enter_email');
                             }
                             if (!value.contains('@')) {
-                              return AppLocalizations.of(context)!.translate('invalid_email_format');
+                              return AppLocalizations.of(context)!
+                                  .translate('invalid_email_format');
                             }
                             return null;
                           },
@@ -253,15 +261,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 18),
                         _buildTextField(
                           controller: _passwordController,
-                          label: AppLocalizations.of(context)!.translate('password'),
+                          label: AppLocalizations.of(context)!
+                              .translate('password'),
                           icon: Icons.lock,
                           obscure: true,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context)!.translate('enter_password');
+                              return AppLocalizations.of(context)!
+                                  .translate('enter_password');
                             }
                             if (value.length < 6) {
-                              return AppLocalizations.of(context)!.translate('password_min_length');
+                              return AppLocalizations.of(context)!
+                                  .translate('password_min_length');
                             }
                             return null;
                           },

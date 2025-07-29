@@ -3,7 +3,8 @@ import '../../domain/repository/basic_question_category_repository.dart';
 import '../adapter/basic_question_category_adapter.dart';
 import '../network/apis/basic_question_with_answer_api.dart';
 
-class BasicQuestionCategoryRepositoryImpl implements BasicQuestionCategoryRepository {
+class BasicQuestionCategoryRepositoryImpl
+    implements BasicQuestionCategoryRepository {
   final BasicQuestionWithAnswerApi _api;
   BasicQuestionCategoryRepositoryImpl(this._api);
 

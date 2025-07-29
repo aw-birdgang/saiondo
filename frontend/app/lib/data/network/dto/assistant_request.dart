@@ -5,10 +5,10 @@ class AssistantCreateRequest {
   AssistantCreateRequest({required this.userId, required this.channelId});
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'channelId': channelId,
-    // 기타 필드
-  };
+        'userId': userId,
+        'channelId': channelId,
+        // 기타 필드
+      };
 }
 
 class AssistantUpdateRequest {
@@ -19,7 +19,7 @@ class AssistantUpdateRequest {
   AssistantUpdateRequest({this.channelId});
 
   Map<String, dynamic> toJson() => {
-    if (channelId != null) 'channelId': channelId,
-    // 기타 필드
-  };
+        if (channelId != null) 'channelId': channelId,
+        // 기타 필드
+      };
 }

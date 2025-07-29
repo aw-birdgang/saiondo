@@ -75,8 +75,12 @@ class _ChatScreenState extends State<ChatScreen> {
               AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: Icon(
-                  _chatStore.isConnected ? Icons.favorite : Icons.favorite_border,
-                  color: _chatStore.isConnected ? AppColors.shadow : AppColors.grey,
+                  _chatStore.isConnected
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: _chatStore.isConnected
+                      ? AppColors.shadow
+                      : AppColors.grey,
                   size: 22,
                   key: ValueKey(_chatStore.isConnected),
                 ),
@@ -84,9 +88,10 @@ class _ChatScreenState extends State<ChatScreen> {
               const SizedBox(width: 8),
               Text(
                 _chatStore.isConnected
-                  ? (local?.translate('chat_connected') ?? '채팅 (연결됨)')
-                  : (local?.translate('chat_disconnected') ?? '채팅 (연결끊김)'),
-                style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
+                    ? (local?.translate('chat_connected') ?? '채팅 (연결됨)')
+                    : (local?.translate('chat_disconnected') ?? '채팅 (연결끊김)'),
+                style: AppTextStyles.sectionTitle
+                    .copyWith(color: AppColors.heartAccent),
               ),
             ],
           ),
@@ -114,14 +119,17 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: Observer(
               builder: (_) {
-                WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => _scrollToBottom());
                 return ListView.builder(
                   controller: _scrollController,
                   reverse: true,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   itemCount: _chatStore.messages.length,
                   itemBuilder: (context, index) {
-                    final reversedIndex = _chatStore.messages.length - 1 - index;
+                    final reversedIndex =
+                        _chatStore.messages.length - 1 - index;
                     final Chat msg = _chatStore.messages[reversedIndex];
                     return ChatMessageWidget(chat: msg);
                   },

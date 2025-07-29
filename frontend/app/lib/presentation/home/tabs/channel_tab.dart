@@ -19,7 +19,8 @@ class ChannelTabScreen extends StatefulWidget {
 class _ChannelTabScreenState extends State<ChannelTabScreen> {
   late final UserStore userStore = getIt<UserStore>();
   late final ChannelStore channelStore = getIt<ChannelStore>();
-  late final ChannelInvitationStore invitationStore = getIt<ChannelInvitationStore>();
+  late final ChannelInvitationStore invitationStore =
+      getIt<ChannelInvitationStore>();
   late final AdviceStore adviceStore = getIt<AdviceStore>();
 
   @override
@@ -89,30 +90,34 @@ class _ChannelTabScreenState extends State<ChannelTabScreen> {
             children: [
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('참여 가능한 채널 목록', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                child: Text('참여 가능한 채널 목록',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               ...channelStore.availableChannels.map((channel) => Card(
-                child: ListTile(
-                  title: Text('채널 코드: ${channel.inviteCode ?? "없음"}'),
-                  subtitle: Text('상태: ${channel.status}'),
-                  trailing: ElevatedButton(
-                    child: const Text('참여'),
-                    onPressed: channel.inviteCode == null
-                        ? null
-                        : () async {
-                            final success = await channelStore.joinByInvite(channel.inviteCode!, user.id);
-                            if (success) {
-                              await channelStore.fetchCurrentChannel(user.id);
-                              await channelStore.fetchAvailableChannels();
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('채널 참여 실패')),
-                              );
-                            }
-                          },
-                  ),
-                ),
-              )),
+                    child: ListTile(
+                      title: Text('채널 코드: ${channel.inviteCode ?? "없음"}'),
+                      subtitle: Text('상태: ${channel.status}'),
+                      trailing: ElevatedButton(
+                        child: const Text('참여'),
+                        onPressed: channel.inviteCode == null
+                            ? null
+                            : () async {
+                                final success = await channelStore.joinByInvite(
+                                    channel.inviteCode!, user.id);
+                                if (success) {
+                                  await channelStore
+                                      .fetchCurrentChannel(user.id);
+                                  await channelStore.fetchAvailableChannels();
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('채널 참여 실패')),
+                                  );
+                                }
+                              },
+                      ),
+                    ),
+                  )),
             ],
           ),
         );

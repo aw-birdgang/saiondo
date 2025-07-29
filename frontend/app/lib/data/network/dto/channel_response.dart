@@ -5,7 +5,8 @@ class ChannelResponse {
   final String inviteCode;
   final Channel channel;
 
-  ChannelResponse({required this.id, required this.inviteCode, required this.channel});
+  ChannelResponse(
+      {required this.id, required this.inviteCode, required this.channel});
 
   factory ChannelResponse.fromJson(Map<String, dynamic> json) {
     // API 응답이 {"channel": {...}} 형태일 때

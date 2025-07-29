@@ -15,7 +15,8 @@ class InvitePartnerScreen extends StatefulWidget {
 
 class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
   final ChannelStore _channelStore = getIt<ChannelStore>();
-  final ChannelInvitationStore _channelInvitationStore = getIt<ChannelInvitationStore>();
+  final ChannelInvitationStore _channelInvitationStore =
+      getIt<ChannelInvitationStore>();
   final AuthStore _authStore = getIt<AuthStore>();
   final TextEditingController _partnerEmailController = TextEditingController();
   String? _error;
@@ -27,7 +28,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
     final local = AppLocalizations.of(context);
 
     if (partnerEmail.isEmpty) {
-      setState(() => _error = local?.translate('enter_email') ?? '이메일을 입력해주세요.');
+      setState(
+          () => _error = local?.translate('enter_email') ?? '이메일을 입력해주세요.');
       return;
     }
     if (userId == null) {
@@ -40,9 +42,11 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
     });
     try {
       // 1. 이메일로 초대받을 유저의 id를 조회 (예시, 실제 구현 필요)
-      final inviteeId = await _channelInvitationStore.getUserIdByEmail(partnerEmail);
+      final inviteeId =
+          await _channelInvitationStore.getUserIdByEmail(partnerEmail);
       if (inviteeId == null) {
-        setState(() => _error = local?.translate('user_not_found') ?? '해당 이메일의 유저를 찾을 수 없습니다.');
+        setState(() => _error =
+            local?.translate('user_not_found') ?? '해당 이메일의 유저를 찾을 수 없습니다.');
         return;
       }
       // 2. 현재 참여 중인 채널이 없으면 채널을 생성
@@ -56,7 +60,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
         return;
       }
       // 3. 초대장 생성
-      await _channelInvitationStore.createInvitation(channelId, userId, inviteeId);
+      await _channelInvitationStore.createInvitation(
+          channelId, userId, inviteeId);
       setState(() => _error = null);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +69,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
             content: Text(local?.translate('invite_sent') ?? '초대가 발송되었습니다!'),
             backgroundColor: AppColors.heartLight,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
         );
       }
@@ -86,7 +92,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
         backgroundColor: AppColors.backgroundLight,
         elevation: 0,
         iconTheme: IconThemeData(color: AppColors.heartAccent),
-        titleTextStyle: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
+        titleTextStyle:
+            AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
       ),
       backgroundColor: AppColors.background,
       body: Center(
@@ -111,7 +118,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                 Icon(Icons.favorite, color: AppColors.heartLight, size: 48),
                 const SizedBox(height: 12),
                 Text(
-                  local?.translate('invite_partner_desc') ?? '연인/파트너의 이메일을 입력해 초대해보세요!',
+                  local?.translate('invite_partner_desc') ??
+                      '연인/파트너의 이메일을 입력해 초대해보세요!',
                   style: AppTextStyles.body.copyWith(
                     color: AppColors.heartAccent,
                     fontWeight: FontWeight.w600,
@@ -124,7 +132,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: local?.translate('partner_email') ?? '초대할 이메일',
-                    prefixIcon: Icon(Icons.mail_outline, color: AppColors.heartLight),
+                    prefixIcon:
+                        Icon(Icons.mail_outline, color: AppColors.heartLight),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide(color: AppColors.heartLight),
@@ -163,7 +172,8 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.shadow,
                       minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
                       elevation: 4,
                       shadowColor: AppColors.shadow.withOpacity(0.2),
                     ),

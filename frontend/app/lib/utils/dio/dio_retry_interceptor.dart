@@ -29,19 +29,23 @@ class RetryInterceptor extends Interceptor {
       ..addAll(extra.toExtra());
 
     if (shouldLog) {
-      print('[${err.requestOptions.uri}] An error occurred during request, trying again (remaining tries: ${extra.retries}, error: ${err.error})');
+      print(
+          '[${err.requestOptions.uri}] An error occurred during request, trying again (remaining tries: ${extra.retries}, error: ${err.error})');
     }
 
     // We retry with the updated options
-    await dio.request(
-      err.requestOptions.path,
-      cancelToken: err.requestOptions.cancelToken,
-      data: err.requestOptions.data,
-      onReceiveProgress: err.requestOptions.onReceiveProgress,
-      onSendProgress: err.requestOptions.onSendProgress,
-      queryParameters: err.requestOptions.queryParameters,
-      options: err.requestOptions.toOptions(),
-    ).then((value) => handler.resolve(value), onError: (error) => handler.reject(error));
+    await dio
+        .request(
+          err.requestOptions.path,
+          cancelToken: err.requestOptions.cancelToken,
+          data: err.requestOptions.data,
+          onReceiveProgress: err.requestOptions.onReceiveProgress,
+          onSendProgress: err.requestOptions.onSendProgress,
+          queryParameters: err.requestOptions.queryParameters,
+          options: err.requestOptions.toOptions(),
+        )
+        .then((value) => handler.resolve(value),
+            onError: (error) => handler.reject(error));
   }
 }
 
@@ -72,14 +76,15 @@ class RetryOptions {
   final int retries;
   final Duration retryInterval;
 
-  RetryEvaluator get retryEvaluator => this._retryEvaluator ?? defaultRetryEvaluator;
+  RetryEvaluator get retryEvaluator =>
+      this._retryEvaluator ?? defaultRetryEvaluator;
 
   final RetryEvaluator? _retryEvaluator;
 
   const RetryOptions(
       {this.retries = 3,
-        RetryEvaluator? retryEvaluator,
-        this.retryInterval = const Duration(seconds: 1)})
+      RetryEvaluator? retryEvaluator,
+      this.retryInterval = const Duration(seconds: 1)})
       : this._retryEvaluator = retryEvaluator;
 
   factory RetryOptions.noRetry() {
@@ -96,7 +101,8 @@ class RetryOptions {
     return shouldRetry;
   }
 
-  factory RetryOptions.fromExtra(RequestOptions request, RetryOptions defaultOptions) {
+  factory RetryOptions.fromExtra(
+      RequestOptions request, RetryOptions defaultOptions) {
     return request.extra[extraKey] ?? defaultOptions;
   }
 

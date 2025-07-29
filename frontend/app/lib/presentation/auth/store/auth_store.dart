@@ -26,12 +26,12 @@ abstract class _AuthStore with Store {
   final UserStore _userStore;
 
   _AuthStore(
-      this._loginUseCase,
-      this._registerUseCase,
-      this._authRepository,
-      this._userRepository,
-      this.updateFcmTokenUseCase,
-      this._userStore,
+    this._loginUseCase,
+    this._registerUseCase,
+    this._authRepository,
+    this._userRepository,
+    this.updateFcmTokenUseCase,
+    this._userStore,
   ) {
     _setupDisposers();
     _initFcm();
@@ -124,7 +124,8 @@ abstract class _AuthStore with Store {
   }
 
   @action
-  Future<void> register(String email, String password, String name, String gender) async {
+  Future<void> register(
+      String email, String password, String name, String gender) async {
     try {
       final result = await _registerUseCase(email, password, name, gender);
       logger.i('회원 가입 응답: $result');
@@ -248,5 +249,4 @@ abstract class _AuthStore with Store {
     fcmToken = null;
     fcmRegistered = false;
   }
-
 }

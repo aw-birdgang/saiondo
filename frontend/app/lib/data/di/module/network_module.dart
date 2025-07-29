@@ -39,7 +39,7 @@ class NetworkModule {
       DioConfigs(
         baseUrl: Endpoints.baseUrl,
         connectionTimeout: Endpoints.connectionTimeout,
-        receiveTimeout:Endpoints.receiveTimeout,
+        receiveTimeout: Endpoints.receiveTimeout,
       ),
     );
     getIt.registerSingleton<DioClient>(
@@ -54,24 +54,24 @@ class NetworkModule {
 
     // service's:-------------------------------------------------------------------
     getIt.registerLazySingleton<SocketIoService>(
-          () => SocketIoService(url: 'http://10.0.2.2:3000'),
+      () => SocketIoService(url: 'http://10.0.2.2:3000'),
     );
 
     // api's:-------------------------------------------------------------------
-    getIt.registerSingleton(UserApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(AuthApi(getIt<DioClient>(), getIt<RestClient>()));
+    getIt.registerSingleton(UserApi(getIt<DioClient>()));
+    getIt.registerSingleton(AuthApi(getIt<DioClient>()));
 
-    getIt.registerSingleton(ChannelApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(AssistantApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(ChatApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(ChatHistoryApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(PointApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(BasicQuestionWithAnswerApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(EventApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(AnalysisApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(AdviceApi(getIt<DioClient>(), getIt<RestClient>()));
-    getIt.registerSingleton(CategoryCodeApi(getIt<DioClient>(), getIt<RestClient>()));
+    getIt.registerSingleton(ChannelApi(getIt<DioClient>()));
+    getIt.registerSingleton(AssistantApi(getIt<DioClient>()));
+    getIt.registerSingleton(ChatApi(getIt<DioClient>()));
+    getIt.registerSingleton(ChatHistoryApi(getIt<DioClient>()));
+    getIt.registerSingleton(PointApi(getIt<DioClient>()));
+    getIt.registerSingleton(BasicQuestionWithAnswerApi(getIt<DioClient>()));
+    getIt.registerSingleton(EventApi(getIt<DioClient>()));
+    getIt.registerSingleton(AnalysisApi(getIt<DioClient>()));
+    getIt.registerSingleton(AdviceApi(getIt<DioClient>()));
+    getIt.registerSingleton(CategoryCodeApi(getIt<DioClient>()));
     //
-    getIt.registerSingleton(PaymentSubscriptionApi(getIt<DioClient>(), getIt<RestClient>()));
+    getIt.registerSingleton(PaymentSubscriptionApi(getIt<DioClient>()));
   }
 }

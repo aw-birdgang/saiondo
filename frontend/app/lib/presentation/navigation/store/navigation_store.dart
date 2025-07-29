@@ -8,10 +8,9 @@ part 'navigation_store.g.dart';
 class NavigationStore = _NavigationStore with _$NavigationStore;
 
 abstract class _NavigationStore with Store {
-
   _NavigationStore(
     this.navigationScreenUseCase,
-    ) {
+  ) {
     currentScreen = navigationScreenUseCase.call(0);
   }
 

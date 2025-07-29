@@ -34,10 +34,8 @@ class TextFieldWidget extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyLarge,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(color: hintColor),
+          hintStyle:
+              Theme.of(context).textTheme.bodyLarge!.copyWith(color: hintColor),
           errorText: errorText,
           counterText: '',
           icon: isIcon ? Icon(icon, color: iconColor) : null,

@@ -8,7 +8,8 @@ import '../../../domain/repository/point_repository.dart';
 
 part 'basic_question_answer_store.g.dart';
 
-class BasicQuestionAnswerStore = _BasicQuestionAnswerStore with _$BasicQuestionAnswerStore;
+class BasicQuestionAnswerStore = _BasicQuestionAnswerStore
+    with _$BasicQuestionAnswerStore;
 
 abstract class _BasicQuestionAnswerStore with Store {
   final PointRepository _pointRepository;
@@ -22,13 +23,15 @@ abstract class _BasicQuestionAnswerStore with Store {
   );
 
   @observable
-  ObservableList<BasicQuestionCategory> categories = ObservableList<BasicQuestionCategory>();
+  ObservableList<BasicQuestionCategory> categories =
+      ObservableList<BasicQuestionCategory>();
 
   @observable
   String? selectedCategoryId;
 
   @observable
-  ObservableList<BasicQuestionWithAnswer> questions = ObservableList<BasicQuestionWithAnswer>();
+  ObservableList<BasicQuestionWithAnswer> questions =
+      ObservableList<BasicQuestionWithAnswer>();
 
   @observable
   ObservableMap<String, String> answers = ObservableMap<String, String>();
@@ -47,7 +50,8 @@ abstract class _BasicQuestionAnswerStore with Store {
 
   // 카테고리별 질문/답변 리스트
   @observable
-  ObservableMap<String, List<BasicQuestionWithAnswer>> categoryQuestionsMap = ObservableMap.of({});
+  ObservableMap<String, List<BasicQuestionWithAnswer>> categoryQuestionsMap =
+      ObservableMap.of({});
 
   String? get userId => _userStore.selectedUser?.id;
 
@@ -55,8 +59,9 @@ abstract class _BasicQuestionAnswerStore with Store {
   int get totalQuestions => questions.length;
 
   @computed
-  int get answeredCount =>
-      questions.where((q) => (answers[q.id]?.trim().isNotEmpty ?? false)).length;
+  int get answeredCount => questions
+      .where((q) => (answers[q.id]?.trim().isNotEmpty ?? false))
+      .length;
 
   @computed
   double get answerRatio =>
@@ -66,7 +71,9 @@ abstract class _BasicQuestionAnswerStore with Store {
   _CategoryProgress getCategoryProgress(String categoryId) {
     final questions = categoryQuestionsMap[categoryId] ?? [];
     final total = questions.length;
-    final answered = questions.where((q) => q.answer != null && q.answer!.answer.trim().isNotEmpty).length;
+    final answered = questions
+        .where((q) => q.answer != null && q.answer!.answer.trim().isNotEmpty)
+        .length;
     final ratio = total == 0 ? 0.0 : answered / total;
     return _CategoryProgress(total: total, answered: answered, ratio: ratio);
   }
@@ -97,7 +104,8 @@ abstract class _BasicQuestionAnswerStore with Store {
     try {
       final uid = userId;
       final catId = selectedCategoryId;
-      if (uid == null || catId == null) throw Exception('로그인 또는 카테고리 정보가 없습니다.');
+      if (uid == null || catId == null)
+        throw Exception('로그인 또는 카테고리 정보가 없습니다.');
 
       if (!forceRefresh && categoryQuestionsMap.containsKey(catId)) {
         questions = ObservableList.of(categoryQuestionsMap[catId]!);
@@ -186,7 +194,8 @@ abstract class _BasicQuestionAnswerStore with Store {
       for (final cat in categories) {
         // 캐시가 있으면 API 호출 없이 사용
         if (!forceRefresh && categoryQuestionsMap.containsKey(cat.id)) continue;
-        final result = await _repository.fetchCategoryQAndAByUserId(uid, cat.id);
+        final result =
+            await _repository.fetchCategoryQAndAByUserId(uid, cat.id);
         categoryQuestionsMap[cat.id] = result;
         for (final q in result) {
           if (q.answer != null && q.answer!.answer != null) {
@@ -208,5 +217,6 @@ class _CategoryProgress {
   final int total;
   final int answered;
   final double ratio;
-  _CategoryProgress({required this.total, required this.answered, required this.ratio});
+  _CategoryProgress(
+      {required this.total, required this.answered, required this.ratio});
 }

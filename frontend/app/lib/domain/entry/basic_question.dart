@@ -12,9 +12,9 @@ class BasicQuestion {
   });
 
   factory BasicQuestion.fromJson(Map<String, dynamic> json) => BasicQuestion(
-    id: json['id'],
-    question: json['question'],
-    description: json['description'],
-    categoryId: json['categoryId'],
-  );
+        id: json['id'],
+        question: json['question'],
+        description: json['description'],
+        categoryId: json['categoryId'],
+      );
 }

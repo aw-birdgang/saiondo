@@ -16,6 +16,7 @@ class PaymentSubscriptionUseCases {
   Future<bool> isSubscriptionActive() async {
     final subscription = await repository.getCurrentSubscription();
     if (subscription == null) return false;
-    return subscription.isValid && subscription.expiresAt.isAfter(DateTime.now());
+    return subscription.isValid &&
+        subscription.expiresAt.isAfter(DateTime.now());
   }
 }

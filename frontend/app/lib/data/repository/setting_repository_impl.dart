@@ -25,5 +25,4 @@ class SettingRepositoryImpl extends SettingRepository {
 
   @override
   String? get currentLanguage => _sharedPrefsHelper.currentLanguage;
-
 }

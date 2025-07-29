@@ -60,7 +60,7 @@ abstract class _LanguageStore with Store {
   @action
   String? getLanguage() {
     return supportedLanguages[supportedLanguages
-        .indexWhere((language) => language.locale == _locale)]
+            .indexWhere((language) => language.locale == _locale)]
         .language;
   }
 

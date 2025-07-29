@@ -61,7 +61,8 @@ class SocketIoService {
     _socket.connect();
   }
 
-  void sendMessage(String userId, String assistantId, String channelId, String message) {
+  void sendMessage(
+      String userId, String assistantId, String channelId, String message) {
     print('[Socket.io] sendMessage: $userId, $assistantId, $message');
     _socket.emit('send_message', {
       'userId': userId,

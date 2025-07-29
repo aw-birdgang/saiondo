@@ -29,7 +29,8 @@ class PersonaProfileCard extends StatelessWidget {
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         leading: CircleAvatar(
           backgroundColor: Colors.blue[100],
           child: Icon(Icons.person, color: Colors.blue[700]),

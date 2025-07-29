@@ -8,7 +8,8 @@ class BasicQuestionRepositoryImpl implements BasicQuestionRepository {
   BasicQuestionRepositoryImpl(this._api);
 
   @override
-  Future<List<BasicQuestion>> fetchQuestionsByCategory(String categoryId) async {
+  Future<List<BasicQuestion>> fetchQuestionsByCategory(
+      String categoryId) async {
     final res = await _api.fetchQuestionsByCategory(categoryId);
     return res.map(BasicQuestionAdapter.fromResponse).toList();
   }

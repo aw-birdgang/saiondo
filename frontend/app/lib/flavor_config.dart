@@ -10,11 +10,17 @@ class FlavorConfig {
     required Flavor flavor,
     required String name,
   }) {
-    _instance = FlavorConfig._internal(flavor, name,);
+    _instance = FlavorConfig._internal(
+      flavor,
+      name,
+    );
     return _instance;
   }
 
-  FlavorConfig._internal(this.flavor, this.name,);
+  FlavorConfig._internal(
+    this.flavor,
+    this.name,
+  );
 
   static FlavorConfig get instance => _instance;
 }

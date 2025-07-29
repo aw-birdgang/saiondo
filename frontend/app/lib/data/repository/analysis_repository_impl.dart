@@ -9,7 +9,9 @@ class AnalysisRepositoryImpl implements AnalysisRepository {
 
   Future<List<CoupleAnalysis>> fetchAnalyses(String channelId) async {
     final responseList = await _api.fetchAnalysisByChannelId(channelId);
-    return responseList.map((res) => CoupleAnalysisAdapter.fromResponse(res)).toList();
+    return responseList
+        .map((res) => CoupleAnalysisAdapter.fromResponse(res))
+        .toList();
   }
 
   Future<CoupleAnalysis> fetchAnalysisLatest(String channelId) async {

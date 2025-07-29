@@ -29,6 +29,5 @@ abstract class _AdviceStore with Store {
   }
 
   @computed
-  Advice? get latestAdvice =>
-      adviceList.isNotEmpty ? adviceList.first : null;
+  Advice? get latestAdvice => adviceList.isNotEmpty ? adviceList.first : null;
 }

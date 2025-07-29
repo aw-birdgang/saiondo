@@ -17,10 +17,12 @@ class CategoryQuestionListScreen extends StatefulWidget {
   });
 
   @override
-  State<CategoryQuestionListScreen> createState() => _CategoryQuestionListScreenState();
+  State<CategoryQuestionListScreen> createState() =>
+      _CategoryQuestionListScreenState();
 }
 
-class _CategoryQuestionListScreenState extends State<CategoryQuestionListScreen> {
+class _CategoryQuestionListScreenState
+    extends State<CategoryQuestionListScreen> {
   final _store = getIt<BasicQuestionAnswerStore>();
 
   @override

@@ -14,7 +14,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   final AuthStore _authStore = getIt<AuthStore>();
   final UserStore _userStore = getIt<UserStore>();
   late AnimationController _controller;
@@ -44,8 +45,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     while (_userStore.isLoading) {
       await Future.delayed(const Duration(milliseconds: 50));
     }
-    final isLoggedIn = _authStore.isAuthenticated && _userStore.selectedUser != null;
-    print('[AuthGuard] isLoggedIn :: ${isLoggedIn} , _authStore.isAuthenticated :: ${_authStore.isAuthenticated} , _userStore.selectedUser : ${_userStore.selectedUser}');
+    final isLoggedIn =
+        _authStore.isAuthenticated && _userStore.selectedUser != null;
+    print(
+        '[AuthGuard] isLoggedIn :: ${isLoggedIn} , _authStore.isAuthenticated :: ${_authStore.isAuthenticated} , _userStore.selectedUser : ${_userStore.selectedUser}');
 
     Future.delayed(const Duration(milliseconds: 300), () {
       if (!mounted) return;
@@ -79,17 +82,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                     children: [
                       Transform.translate(
                         offset: Offset(-dx, 0),
-                        child: Icon(Icons.favorite, color: AppColors.heartLight, size: 60),
+                        child: Icon(Icons.favorite,
+                            color: AppColors.heartLight, size: 60),
                       ),
                       Transform.translate(
                         offset: Offset(dx, 0),
-                        child: Icon(Icons.favorite, color: AppColors.heartDark, size: 60),
+                        child: Icon(Icons.favorite,
+                            color: AppColors.heartDark, size: 60),
                       ),
                       // 두 하트가 겹칠 때 작은 하트가 튀어나오는 효과
                       if ((dx).abs() < 5)
                         Positioned(
                           bottom: 10,
-                          child: Icon(Icons.favorite, color: AppColors.heartAccent, size: 32),
+                          child: Icon(Icons.favorite,
+                              color: AppColors.heartAccent, size: 32),
                         ),
                     ],
                   );

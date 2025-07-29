@@ -6,8 +6,8 @@ class PointRequest {
   PointRequest({required this.amount, required this.type, this.description});
 
   Map<String, dynamic> toJson() => {
-    'amount': amount,
-    'type': type,
-    if (description != null) 'description': description,
-  };
+        'amount': amount,
+        'type': type,
+        if (description != null) 'description': description,
+      };
 }

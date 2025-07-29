@@ -15,7 +15,8 @@ class ChatHistoryRepositoryImpl implements ChatHistoryRepository {
   }
 
   @override
-  Future<Chat> sendMessage(String userId, String assistantId, String message) async {
+  Future<Chat> sendMessage(
+      String userId, String assistantId, String message) async {
     final req = ChatHistoryRequest(
       userId: userId,
       assistantId: assistantId,

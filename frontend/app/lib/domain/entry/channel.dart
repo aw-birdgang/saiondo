@@ -32,13 +32,22 @@ class Channel {
         id: json['id'],
         status: json['status'],
         startedAt: DateTime.parse(json['startedAt']),
-        endedAt: json['endedAt'] != null ? DateTime.tryParse(json['endedAt']) : null,
+        endedAt:
+            json['endedAt'] != null ? DateTime.tryParse(json['endedAt']) : null,
         inviteCode: json['inviteCode'],
-        anniversary: json['anniversary'] != null ? DateTime.tryParse(json['anniversary']) : null,
+        anniversary: json['anniversary'] != null
+            ? DateTime.tryParse(json['anniversary'])
+            : null,
         keywords: _parseKeywords(json['keywords']),
-        createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt']) : null,
-        updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt']) : null,
-        deletedAt: json['deletedAt'] != null ? DateTime.tryParse(json['deletedAt']) : null,
+        createdAt: json['createdAt'] != null
+            ? DateTime.tryParse(json['createdAt'])
+            : null,
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.tryParse(json['updatedAt'])
+            : null,
+        deletedAt: json['deletedAt'] != null
+            ? DateTime.tryParse(json['deletedAt'])
+            : null,
         members: (json['members'] as List<dynamic>?)
                 ?.map((m) => ChannelMember.fromJson(m))
                 .toList() ??

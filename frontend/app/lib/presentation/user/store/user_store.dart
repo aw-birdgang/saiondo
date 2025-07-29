@@ -11,7 +11,9 @@ class UserStore = _UserStore with _$UserStore;
 abstract class _UserStore with Store {
   final UserRepository _userRepository;
 
-  _UserStore(this._userRepository,) {
+  _UserStore(
+    this._userRepository,
+  ) {
     _setupDisposers();
     initUser();
   }
@@ -49,7 +51,6 @@ abstract class _UserStore with Store {
   @observable
   User? partnerUser;
 
-
   bool get isUserLoaded => !isLoading && selectedUser != null;
 
   @action
@@ -63,9 +64,11 @@ abstract class _UserStore with Store {
         return;
       }
       selectedUser = await _userRepository.fetchUserById(userId!);
-      print('[UserStore] selectedUser: ${selectedUser != null ? selectedUser!.toJson() : "null"}');
+      print(
+          '[UserStore] selectedUser: ${selectedUser != null ? selectedUser!.toJson() : "null"}');
 
-      List<Assistant> userAssistants = await _userRepository.fetchUserAssistants(userId!);
+      List<Assistant> userAssistants =
+          await _userRepository.fetchUserAssistants(userId!);
       if (userAssistants.isNotEmpty) {
         assistantId = userAssistants.first.id;
         channelId = userAssistants.first.channelId;
@@ -85,17 +88,16 @@ abstract class _UserStore with Store {
       if (selectedUser != null) {
         users = ObservableList.of([selectedUser!]);
       }
-    }
-    catch (e) {
+    } catch (e) {
       _userRepository.removeUser();
-    }
-    finally {
+    } finally {
       isLoading = false;
     }
   }
 
   // 현재 유저 id 반환 (selectedUser 우선, 없으면 users 첫번째)
-  String? get currentUserId => selectedUser?.id ?? (users.isNotEmpty ? users.first.id : null);
+  String? get currentUserId =>
+      selectedUser?.id ?? (users.isNotEmpty ? users.first.id : null);
 
   // 로그아웃
   @action
@@ -113,5 +115,4 @@ abstract class _UserStore with Store {
       isLoading = false;
     }
   }
-
 }

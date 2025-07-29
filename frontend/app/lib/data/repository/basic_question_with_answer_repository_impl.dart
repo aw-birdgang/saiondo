@@ -8,7 +8,8 @@ import '../adapter/basic_question_category_adapter.dart';
 import '../adapter/basic_question_with_answer_adapter.dart';
 import '../network/apis/basic_question_with_answer_api.dart';
 
-class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRepository {
+class BasicQuestionWithAnswerRepositoryImpl
+    implements BasicQuestionWithAnswerRepository {
   final BasicQuestionWithAnswerApi _api;
 
   BasicQuestionWithAnswerRepositoryImpl(this._api);
@@ -25,13 +26,15 @@ class BasicQuestionWithAnswerRepositoryImpl implements BasicQuestionWithAnswerRe
   }
 
   @override
-  Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswersOnCategory(String userId, String categoryId) async {
+  Future<List<BasicQuestionWithAnswer>> fetchQuestionsWithAnswersOnCategory(
+      String userId, String categoryId) async {
     final res = await _api.fetchQuestionsWithAnswers(userId, categoryId);
     return res.map(BasicQuestionWithAnswerAdapter.fromResponse).toList();
   }
 
   @override
-  Future<List<BasicQuestionWithAnswer>> fetchCategoryQAndAByUserId(String userId, String categoryId) async {
+  Future<List<BasicQuestionWithAnswer>> fetchCategoryQAndAByUserId(
+      String userId, String categoryId) async {
     final res = await _api.fetchCategoryQAndAByUserId(userId, categoryId);
     return res.map(BasicQuestionWithAnswerAdapter.fromResponse).toList();
   }

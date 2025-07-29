@@ -30,7 +30,9 @@ class AnalysisResponse {
     Map<String, dynamic> parsed = {};
     final rawResult = json['rawResult'] as String? ?? '';
     try {
-      parsed = rawResult.isNotEmpty ? Map<String, dynamic>.from(jsonDecode(rawResult)) : {};
+      parsed = rawResult.isNotEmpty
+          ? Map<String, dynamic>.from(jsonDecode(rawResult))
+          : {};
     } catch (_) {
       parsed = {'summary': rawResult};
     }

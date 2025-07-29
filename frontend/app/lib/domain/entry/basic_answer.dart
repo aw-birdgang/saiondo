@@ -16,11 +16,11 @@ class BasicAnswer {
   });
 
   factory BasicAnswer.fromJson(Map<String, dynamic> json) => BasicAnswer(
-    id: json['id'],
-    userId: json['userId'],
-    questionId: json['questionId'],
-    answer: json['answer'],
-    createdAt: DateTime.parse(json['createdAt']),
-    updatedAt: DateTime.parse(json['updatedAt']),
-  );
+        id: json['id'],
+        userId: json['userId'],
+        questionId: json['questionId'],
+        answer: json['answer'],
+        createdAt: DateTime.parse(json['createdAt']),
+        updatedAt: DateTime.parse(json['updatedAt']),
+      );
 }

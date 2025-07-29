@@ -6,5 +6,6 @@ class FetchAssistantsUseCase {
   final AssistantRepository repository;
   FetchAssistantsUseCase(this.repository);
 
-  Future<List<Assistant>> call(String userId) => repository.fetchAssistants(userId);
+  Future<List<Assistant>> call(String userId) =>
+      repository.fetchAssistants(userId);
 }

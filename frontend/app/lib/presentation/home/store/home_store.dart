@@ -14,7 +14,10 @@ abstract class _HomeStore with Store {
   final ErrorStore errorStore;
   final FetchAssistantsUseCase fetchAssistantsUseCase;
 
-  _HomeStore(this.fetchAssistantsUseCase, this.errorStore, ) {
+  _HomeStore(
+    this.fetchAssistantsUseCase,
+    this.errorStore,
+  ) {
     _setupDisposers();
   }
 
@@ -44,7 +47,6 @@ abstract class _HomeStore with Store {
 
   @observable
   String? selectedAssistantId;
-
 
   @action
   void setTitle(String newTitle) {

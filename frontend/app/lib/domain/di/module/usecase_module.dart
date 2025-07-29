@@ -21,42 +21,39 @@ import '../../usecase/payment_subscription/payment_subscription_usecases.dart';
 
 class UseCaseModule {
   static Future<void> configureUseCaseModuleInjection() async {
-
     // navigation:--------------------------------------------------------------------
     getIt.registerLazySingleton(() => NavigationScreenUseCase());
-    
+
     // home:--------------------------------------------------------------------
     getIt.registerLazySingleton(() => GetMenuItemsUseCase());
 
     // chat:--------------------------------------------------------------------
     getIt.registerLazySingleton<FetchChatHistoriesUseCase>(
-            () => FetchChatHistoriesUseCase(getIt<ChatHistoryRepositoryImpl>()));
+        () => FetchChatHistoriesUseCase(getIt<ChatHistoryRepositoryImpl>()));
 
     getIt.registerLazySingleton<SendMessageUseCase>(
-            () => SendMessageUseCase(getIt<ChatHistoryRepositoryImpl>()));
+        () => SendMessageUseCase(getIt<ChatHistoryRepositoryImpl>()));
 
     // auth:--------------------------------------------------------------------
     getIt.registerLazySingleton<LoginUseCase>(
-            () => LoginUseCase(getIt<AuthRepository>()));
+        () => LoginUseCase(getIt<AuthRepository>()));
     getIt.registerLazySingleton<RegisterUseCase>(
-            () => RegisterUseCase(getIt<AuthRepository>()));
+        () => RegisterUseCase(getIt<AuthRepository>()));
 
     // auth:--------------------------------------------------------------------
     getIt.registerLazySingleton<UpdateFcmTokenUseCase>(
-            () => UpdateFcmTokenUseCase(getIt<UserApi>()));
+        () => UpdateFcmTokenUseCase(getIt<UserApi>()));
 
     // category code:--------------------------------------------------------------------
     getIt.registerLazySingleton<FetchCategoryCodesUseCase>(
-            () => FetchCategoryCodesUseCase(getIt<CategoryCodeApi>()));
+        () => FetchCategoryCodesUseCase(getIt<CategoryCodeApi>()));
 
     // assistant:--------------------------------------------------------------------
     getIt.registerLazySingleton<FetchAssistantsUseCase>(
-            () => FetchAssistantsUseCase(getIt<AssistantRepository>()));
+        () => FetchAssistantsUseCase(getIt<AssistantRepository>()));
 
     // payment subscription:--------------------------------------------------------------------
-    getIt.registerLazySingleton<PaymentSubscriptionUseCases>(
-            () => PaymentSubscriptionUseCases(getIt<PaymentSubscriptionRepository>()));
-
-
+    getIt.registerLazySingleton<PaymentSubscriptionUseCases>(() =>
+        PaymentSubscriptionUseCases(getIt<PaymentSubscriptionRepository>()));
   }
 }

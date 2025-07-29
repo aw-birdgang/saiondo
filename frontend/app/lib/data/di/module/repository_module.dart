@@ -50,7 +50,8 @@ class RepositoryModule {
       getIt<SharedPreferenceHelper>(),
     ));
 
-    final chatHistoryRepoImpl = ChatHistoryRepositoryImpl(getIt<ChatHistoryApi>());
+    final chatHistoryRepoImpl =
+        ChatHistoryRepositoryImpl(getIt<ChatHistoryApi>());
     // 인터페이스와 구현체 모두 등록
     getIt.registerSingleton<ChatHistoryRepository>(chatHistoryRepoImpl);
     getIt.registerSingleton<ChatHistoryRepositoryImpl>(chatHistoryRepoImpl);
@@ -62,28 +63,29 @@ class RepositoryModule {
     ));
 
     // user repository 등록
-    getIt.registerSingleton<UserRepository>(UserRepositoryImpl(
-      getIt<UserApi>(),
-      getIt<SharedPreferenceHelper>()
-    ));
-    
+    getIt.registerSingleton<UserRepository>(
+        UserRepositoryImpl(getIt<UserApi>(), getIt<SharedPreferenceHelper>()));
+
     getIt.registerSingleton<ChannelRepository>(ChannelRepositoryImpl(
-        getIt<ChannelApi>(),
+      getIt<ChannelApi>(),
     ));
 
     getIt.registerSingleton<PointRepository>(PointRepositoryImpl(
       getIt<PointApi>(),
     ));
 
-    getIt.registerSingleton<BasicQuestionCategoryRepository>(BasicQuestionCategoryRepositoryImpl(
+    getIt.registerSingleton<BasicQuestionCategoryRepository>(
+        BasicQuestionCategoryRepositoryImpl(
       getIt<BasicQuestionWithAnswerApi>(),
     ));
 
-    getIt.registerSingleton<BasicQuestionRepository>(BasicQuestionRepositoryImpl(
+    getIt
+        .registerSingleton<BasicQuestionRepository>(BasicQuestionRepositoryImpl(
       getIt<BasicQuestionWithAnswerApi>(),
     ));
 
-    getIt.registerSingleton<BasicQuestionWithAnswerRepository>(BasicQuestionWithAnswerRepositoryImpl(
+    getIt.registerSingleton<BasicQuestionWithAnswerRepository>(
+        BasicQuestionWithAnswerRepositoryImpl(
       getIt<BasicQuestionWithAnswerApi>(),
     ));
 
@@ -92,7 +94,7 @@ class RepositoryModule {
     ));
 
     getIt.registerSingleton<AssistantRepository>(AssistantRepositoryImpl(
-        getIt<AssistantApi>(),
+      getIt<AssistantApi>(),
     ));
 
     getIt.registerSingleton<AnalysisRepository>(AnalysisRepositoryImpl(
@@ -103,9 +105,9 @@ class RepositoryModule {
       getIt<AdviceApi>(),
     ));
 
-    getIt.registerSingleton<PaymentSubscriptionRepository>(PaymentSubscriptionRepositoryImpl(
+    getIt.registerSingleton<PaymentSubscriptionRepository>(
+        PaymentSubscriptionRepositoryImpl(
       getIt<PaymentSubscriptionApi>(),
     ));
-
   }
 }

@@ -60,7 +60,8 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
           children: [
             Row(
               children: [
-                Icon(Icons.question_answer, color: AppColors.heartLight, size: 24),
+                Icon(Icons.question_answer,
+                    color: AppColors.heartLight, size: 24),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -77,7 +78,8 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
             if (widget.question.description != null)
               Padding(
                 padding: const EdgeInsets.only(top: 4.0, left: 34),
-                child: Text(widget.question.description!, style: AppTextStyles.label.copyWith(fontSize: 13)),
+                child: Text(widget.question.description!,
+                    style: AppTextStyles.label.copyWith(fontSize: 13)),
               ),
             const SizedBox(height: 14),
             ...widget.question.options.map((opt) => RadioListTile<String>(
@@ -85,7 +87,8 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
                   groupValue: selectedAnswer,
                   onChanged: (val) async {
                     if (val != null) {
-                      await widget.store.submitSingleAnswer(widget.question.id, val);
+                      await widget.store
+                          .submitSingleAnswer(widget.question.id, val);
                       // reaction이 해당 카드만 setState
                     }
                   },
@@ -96,7 +99,8 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
             if (selectedAnswer != null)
               Container(
                 margin: const EdgeInsets.only(top: 10),
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   borderRadius: BorderRadius.circular(12),
@@ -104,12 +108,14 @@ class _BasicQuestionCardState extends State<BasicQuestionCard> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.check_circle, color: AppColors.green, size: 18),
+                    const Icon(Icons.check_circle,
+                        color: AppColors.green, size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         selectedAnswer!,
-                        style: AppTextStyles.body.copyWith(fontSize: 15, color: AppColors.black87),
+                        style: AppTextStyles.body
+                            .copyWith(fontSize: 15, color: AppColors.black87),
                       ),
                     ),
                   ],

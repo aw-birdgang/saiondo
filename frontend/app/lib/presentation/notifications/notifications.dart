@@ -21,17 +21,20 @@ class NotificationsScreen extends StatelessWidget {
         elevation: 0,
         title: Row(
           children: [
-            Icon(Icons.notifications_active_rounded, color: AppColors.heartDark),
+            Icon(Icons.notifications_active_rounded,
+                color: AppColors.heartDark),
             const SizedBox(width: 8),
             Text(
               local!.translate('notification_box'),
-              style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
+              style: AppTextStyles.sectionTitle
+                  .copyWith(color: AppColors.heartAccent),
             ),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_forever_rounded, color: AppColors.heartLight),
+            icon:
+                Icon(Icons.delete_forever_rounded, color: AppColors.heartLight),
             tooltip: local!.translate('delete_all_notifications'),
             onPressed: () {
               _authStore.clearAllPushMessages();
@@ -46,11 +49,14 @@ class NotificationsScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.notifications_off_rounded, size: 64, color: AppColors.backgroundLight),
+                  Icon(Icons.notifications_off_rounded,
+                      size: 64, color: AppColors.backgroundLight),
                   const SizedBox(height: 16),
                   Text(
                     local.translate('no_notifications'),
-                    style: AppTextStyles.body.copyWith(color: AppColors.heartLight, fontWeight: FontWeight.w600),
+                    style: AppTextStyles.body.copyWith(
+                        color: AppColors.heartLight,
+                        fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 8),
                   Text('💌', style: AppTextStyles.title.copyWith(fontSize: 32)),
@@ -79,11 +85,13 @@ class NotificationsScreen extends StatelessWidget {
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor: AppColors.backgroundLight,
-                    child: Icon(Icons.notifications_rounded, color: AppColors.heartDark),
+                    child: Icon(Icons.notifications_rounded,
+                        color: AppColors.heartDark),
                   ),
                   title: Text(
                     msg,
-                    style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w500),
+                    style: AppTextStyles.body
+                        .copyWith(fontWeight: FontWeight.w500),
                   ),
                 ),
               );

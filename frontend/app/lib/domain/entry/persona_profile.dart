@@ -16,13 +16,13 @@ class PersonaProfile {
   });
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'categoryCodeId': categoryCodeId,
-    'content': content,
-    'isStatic': isStatic,
-    'source': source,
-    'confidenceScore': confidenceScore,
-  };
+        'userId': userId,
+        'categoryCodeId': categoryCodeId,
+        'content': content,
+        'isStatic': isStatic,
+        'source': source,
+        'confidenceScore': confidenceScore,
+      };
 
   factory PersonaProfile.fromJson(Map<String, dynamic> json) {
     return PersonaProfile(

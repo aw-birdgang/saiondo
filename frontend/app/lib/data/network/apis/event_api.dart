@@ -2,14 +2,12 @@ import 'package:saiondo/data/network/constants/endpoints.dart';
 
 import '../../../core/data/network/dio/dio_client.dart';
 import '../../adapter/event_adapter.dart';
-import '../rest_client.dart';
 import '../../../domain/entry/event.dart';
 
 class EventApi {
   final DioClient _dioClient;
-  final RestClient _restClient;
 
-  EventApi(this._dioClient, this._restClient);
+  EventApi(this._dioClient);
 
   Future<List<Event>> fetchEvents() async {
     final response = await _dioClient.dio.get(Endpoints.events);

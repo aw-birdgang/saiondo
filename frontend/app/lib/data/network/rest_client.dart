@@ -17,34 +17,40 @@ class RestClient {
   // Post:----------------------------------------------------------------------
   Future<dynamic> post(String path,
       {Map<String, String>? headers, body, encoding}) {
-    return http.post(
-      Uri.parse(path),
-      body: body,
-      headers: headers,
-      encoding: encoding,
-    ).then(_createResponse);
+    return http
+        .post(
+          Uri.parse(path),
+          body: body,
+          headers: headers,
+          encoding: encoding,
+        )
+        .then(_createResponse);
   }
 
   // Put:----------------------------------------------------------------------
   Future<dynamic> put(String path,
       {Map<String, String>? headers, body, encoding}) {
-    return http.put(
-      Uri.parse(path),
-      body: body,
-      headers: headers,
-      encoding: encoding,
-    ).then(_createResponse);
+    return http
+        .put(
+          Uri.parse(path),
+          body: body,
+          headers: headers,
+          encoding: encoding,
+        )
+        .then(_createResponse);
   }
 
   // Delete:----------------------------------------------------------------------
   Future<dynamic> delete(String path,
       {Map<String, String>? headers, body, encoding}) {
-    return http.delete(
-      Uri.parse(path),
-      body: body,
-      headers: headers,
-      encoding: encoding,
-    ).then(_createResponse);
+    return http
+        .delete(
+          Uri.parse(path),
+          body: body,
+          headers: headers,
+          encoding: encoding,
+        )
+        .then(_createResponse);
   }
 
   // Response:------------------------------------------------------------------

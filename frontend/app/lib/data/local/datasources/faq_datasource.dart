@@ -48,13 +48,13 @@ class FaqDataSource {
       _sembastClient.database,
     );
 
-    if(recordSnapshots.length > 0) {
+    if (recordSnapshots.length > 0) {
       faqsList = FaqList(
           faqs: recordSnapshots.map((snapshot) {
-            final faq = Faq.fromMap(snapshot.value);
-            faq.faqIdx = snapshot.key.toString();
-            return faq;
-          }).toList());
+        final faq = Faq.fromMap(snapshot.value);
+        faq.faqIdx = snapshot.key.toString();
+        return faq;
+      }).toList());
     }
 
     return faqsList;
@@ -82,5 +82,4 @@ class FaqDataSource {
       _sembastClient.database,
     );
   }
-
 }

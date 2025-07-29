@@ -17,23 +17,24 @@ class ChatHistoryResponse {
     required this.channelId,
   });
 
-  factory ChatHistoryResponse.fromJson(Map<String, dynamic> json) => ChatHistoryResponse(
-    id: json['id'],
-    userId: json['userId'],
-    message: json['message'],
-    sender: json['sender'],
-    createdAt: DateTime.parse(json['createdAt']),
-    assistantId: json['assistantId'],
-    channelId: json['channelId'],
-  );
+  factory ChatHistoryResponse.fromJson(Map<String, dynamic> json) =>
+      ChatHistoryResponse(
+        id: json['id'],
+        userId: json['userId'],
+        message: json['message'],
+        sender: json['sender'],
+        createdAt: DateTime.parse(json['createdAt']),
+        assistantId: json['assistantId'],
+        channelId: json['channelId'],
+      );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'userId': userId,
-    'message': message,
-    'sender': sender,
-    'createdAt': createdAt.toIso8601String(),
-    'assistantId': assistantId,
-    'channelId': channelId,
-  };
+        'id': id,
+        'userId': userId,
+        'message': message,
+        'sender': sender,
+        'createdAt': createdAt.toIso8601String(),
+        'assistantId': assistantId,
+        'channelId': channelId,
+      };
 }

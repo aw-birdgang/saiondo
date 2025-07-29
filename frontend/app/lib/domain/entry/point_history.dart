@@ -14,9 +14,9 @@ class PointHistory {
   });
 
   factory PointHistory.fromResponse(PointHistoryResponse res) => PointHistory(
-    amount: res.amount,
-    type: res.type,
-    description: res.description,
-    createdAt: res.createdAt,
-  );
+        amount: res.amount,
+        type: res.type,
+        description: res.description,
+        createdAt: res.createdAt,
+      );
 }

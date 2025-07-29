@@ -59,7 +59,7 @@ class ChannelRepositoryImpl implements ChannelRepository {
   @override
   Future<String> createInviteCode(String channelId, String userId) async {
     final response = await _channelApi.createInviteCode(channelId, userId);
-    return response.inviteCode!;
+    return response.inviteCode;
   }
 
   @override
@@ -90,7 +90,8 @@ class ChannelRepositoryImpl implements ChannelRepository {
   @override
   Future<ChannelInvitation> createInvitation(
       String channelId, String inviterId, String inviteeId) async {
-    final response = await _channelApi.createInvitation(channelId, inviterId, inviteeId);
+    final response =
+        await _channelApi.createInvitation(channelId, inviterId, inviteeId);
     return ChannelInvitationAdapter.fromResponse(response);
   }
 
@@ -120,5 +121,4 @@ class ChannelRepositoryImpl implements ChannelRepository {
         .where((c) => c.status == 'ACTIVE' || c.status == 'PENDING')
         .toList();
   }
-
 }

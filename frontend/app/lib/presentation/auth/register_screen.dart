@@ -133,7 +133,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
           child: Card(
             elevation: 10,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Padding(
               padding: const EdgeInsets.all(28.0),
               child: Observer(
@@ -150,7 +151,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icons.email,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return '이메일을 입력해주세요';
+                          if (value == null || value.isEmpty)
+                            return '이메일을 입력해주세요';
                           if (!value.contains('@')) return '이메일 형식이 올바르지 않습니다';
                           return null;
                         },
@@ -162,7 +164,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icons.lock,
                         obscure: true,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return '비밀번호를 입력해주세요';
+                          if (value == null || value.isEmpty)
+                            return '비밀번호를 입력해주세요';
                           if (value.length < 6) return '비밀번호는 6자 이상이어야 합니다';
                           return null;
                         },
@@ -173,7 +176,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         label: '이름',
                         icon: Icons.person,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return '이름을 입력해주세요';
+                          if (value == null || value.isEmpty)
+                            return '이름을 입력해주세요';
                           return null;
                         },
                       ),
@@ -185,19 +189,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         width: double.infinity,
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.favorite, color: Colors.white),
-                          label: const Text('회원가입', style: TextStyle(fontSize: 18)),
+                          label: const Text('회원가입',
+                              style: TextStyle(fontSize: 18)),
                           onPressed: _onRegister,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _mainColor,
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
                           ),
                         ),
                       ),
                       const SizedBox(height: 10),
                       TextButton.icon(
                         icon: const Icon(Icons.login, color: _mainColor),
-                        label: const Text('로그인', style: TextStyle(color: _mainColor)),
+                        label: const Text('로그인',
+                            style: TextStyle(color: _mainColor)),
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, '/login');
                         },

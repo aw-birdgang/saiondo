@@ -2,17 +2,14 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/data/network/dio/dio_client.dart';
 import '../constants/endpoints.dart';
-import '../rest_client.dart';
-
 
 class AuthApi {
   final DioClient _dioClient;
-  final RestClient _restClient;
 
-  AuthApi(this._dioClient, this._restClient);
+  AuthApi(this._dioClient);
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    print('[AuthApi] login 요청 email: $email, password: $password');
+    // print('[AuthApi] login 요청 email: $email, password: $password');
     try {
       final response = await _dioClient.dio.post(
         Endpoints.authLogin,
@@ -32,7 +29,8 @@ class AuthApi {
     }
   }
 
-  Future<Map<String, dynamic>> register(String email, String password, String name, String gender) async {
+  Future<Map<String, dynamic>> register(
+      String email, String password, String name, String gender) async {
     try {
       final response = await _dioClient.dio.post(
         Endpoints.authRegister,

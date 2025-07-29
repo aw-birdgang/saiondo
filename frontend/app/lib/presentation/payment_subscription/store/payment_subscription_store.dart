@@ -8,7 +8,8 @@ import '../../../data/network/apis/payment_subscription_api.dart';
 
 part 'payment_subscription_store.g.dart';
 
-class PaymentSubscriptionStore = _PaymentSubscriptionStore with _$PaymentSubscriptionStore;
+class PaymentSubscriptionStore = _PaymentSubscriptionStore
+    with _$PaymentSubscriptionStore;
 
 abstract class _PaymentSubscriptionStore with Store {
   final InAppPurchase _iap = InAppPurchase.instance;
@@ -35,14 +36,16 @@ abstract class _PaymentSubscriptionStore with Store {
     error = null;
     purchasePending = true;
     bool available = await _iap.isAvailable();
-    print("PaymentSubscriptionStore >> initStoreInfo >> available::" + available.toString());
+    print("PaymentSubscriptionStore >> initStoreInfo >> available::" +
+        available.toString());
     isAvailable = available;
     if (!available) {
       error = '스토어를 사용할 수 없습니다.';
       purchasePending = false;
       return;
     }
-    final ProductDetailsResponse response = await _iap.queryProductDetails(productIds);
+    final ProductDetailsResponse response =
+        await _iap.queryProductDetails(productIds);
     if (response.error != null) {
       error = response.error!.message;
       purchasePending = false;
@@ -66,12 +69,14 @@ abstract class _PaymentSubscriptionStore with Store {
 
   @action
   Future<void> buySubscription(ProductDetails productDetails) async {
-    final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
+    final PurchaseParam purchaseParam =
+        PurchaseParam(productDetails: productDetails);
     _iap.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
   @action
-  Future<void> onPurchaseUpdated(List<PurchaseDetails> purchases, BuildContext context) async {
+  Future<void> onPurchaseUpdated(
+      List<PurchaseDetails> purchases, BuildContext context) async {
     for (var purchase in purchases) {
       if (purchase.status == PurchaseStatus.purchased) {
         await verifyReceipt(purchase, context);
@@ -83,10 +88,12 @@ abstract class _PaymentSubscriptionStore with Store {
   }
 
   @action
-  Future<void> verifyReceipt(PurchaseDetails purchase, BuildContext context) async {
+  Future<void> verifyReceipt(
+      PurchaseDetails purchase, BuildContext context) async {
     purchasePending = true;
     try {
-      final platform = Theme.of(context).platform == TargetPlatform.iOS ? 'apple' : 'google';
+      final platform =
+          Theme.of(context).platform == TargetPlatform.iOS ? 'apple' : 'google';
       final receipt = purchase.verificationData.serverVerificationData;
       final isValid = await api.verifyReceipt(receipt, platform);
       if (isValid) {

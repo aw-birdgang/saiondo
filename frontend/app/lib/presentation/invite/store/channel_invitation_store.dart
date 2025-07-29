@@ -5,14 +5,16 @@ import '../../../domain/repository/channel_repository.dart';
 
 part 'channel_invitation_store.g.dart';
 
-class ChannelInvitationStore = _ChannelInvitationStore with _$ChannelInvitationStore;
+class ChannelInvitationStore = _ChannelInvitationStore
+    with _$ChannelInvitationStore;
 
 abstract class _ChannelInvitationStore with Store {
   final ChannelRepository _repository;
   _ChannelInvitationStore(this._repository);
 
   @observable
-  ObservableList<ChannelInvitation> invitations = ObservableList<ChannelInvitation>();
+  ObservableList<ChannelInvitation> invitations =
+      ObservableList<ChannelInvitation>();
 
   @observable
   bool isLoading = false;
@@ -60,11 +62,13 @@ abstract class _ChannelInvitationStore with Store {
   }
 
   @action
-  Future<void> respondToInvitation(String invitationId, bool accept, String userId) async {
+  Future<void> respondToInvitation(
+      String invitationId, bool accept, String userId) async {
     isLoading = true;
     errorMessage = null;
     try {
-      await _repository.respondInvitation(invitationId, accept ? 'accepted' : 'declined');
+      await _repository.respondInvitation(
+          invitationId, accept ? 'accepted' : 'declined');
       await fetchInvitations(userId);
     } catch (e) {
       errorMessage = e.toString();
@@ -81,7 +85,8 @@ abstract class _ChannelInvitationStore with Store {
     throw UnimplementedError('이메일로 유저 id 조회 기능을 구현하세요.');
   }
 
-  Future<void> createInvitation(String channelId, String inviterId, String inviteeId) async {
+  Future<void> createInvitation(
+      String channelId, String inviterId, String inviteeId) async {
     // 실제 초대장 생성 API 호출
     await _repository.createInvitation(channelId, inviterId, inviteeId);
   }

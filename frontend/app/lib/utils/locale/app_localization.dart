@@ -9,7 +9,7 @@ class AppLocalizations {
   final Map<String, String>? _localizedStrings;
 
   static const LocalizationsDelegate<AppLocalizations> delegate =
-  _AppLocalizationsDelegate();
+      _AppLocalizationsDelegate();
 
   // constructor
   AppLocalizations(this.locale, this._localizedStrings);
@@ -20,7 +20,7 @@ class AppLocalizations {
 
   Future<bool> load() async {
     String jsonString =
-    await rootBundle.loadString('assets/lang/${locale?.languageCode}.json');
+        await rootBundle.loadString('assets/lang/${locale?.languageCode}.json');
     Map<String, dynamic> jsonMap = json.decode(jsonString);
 
     _localizedStrings?.clear();
@@ -37,23 +37,22 @@ class AppLocalizations {
       final value = _localizedStrings != null ? _localizedStrings![key] : null;
       if (value == null) {
         debugPrint(
-          '[AppLocalizations] MISSING key: "$key" (locale: ${locale?.languageCode ?? "unknown"})\n'
-          'Stack: ${StackTrace.current}'
-        );
+            '[AppLocalizations] MISSING key: "$key" (locale: ${locale?.languageCode ?? "unknown"})\n'
+            'Stack: ${StackTrace.current}');
         return '[$key]';
       }
       return value;
     } catch (e, stack) {
       debugPrint(
-        '[AppLocalizations] EXCEPTION for key: "$key" (locale: ${locale?.languageCode ?? "unknown"})\n'
-        'Error: $e\nStack: $stack'
-      );
+          '[AppLocalizations] EXCEPTION for key: "$key" (locale: ${locale?.languageCode ?? "unknown"})\n'
+          'Error: $e\nStack: $stack');
       return '[$key]';
     }
   }
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   final String TAG = "AppLocalizations";
 
   const _AppLocalizationsDelegate();

@@ -16,20 +16,20 @@ class UserResponse {
   });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) => UserResponse(
-    id: json['id'],
-    name: json['name'],
-    email: json['email'],
-    gender: json['gender'],
-    assistantId: json['assistantId'],
-    point: json['point'] ?? 0,
-  );
+        id: json['id'],
+        name: json['name'],
+        email: json['email'],
+        gender: json['gender'],
+        assistantId: json['assistantId'],
+        point: json['point'] ?? 0,
+      );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'email': email,
-    'gender': gender,
-    'assistantId': assistantId,
-    'point': point,
-  };
+        'id': id,
+        'name': name,
+        'email': email,
+        'gender': gender,
+        'assistantId': assistantId,
+        'point': point,
+      };
 }

@@ -123,7 +123,8 @@ class MyPageContent extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.history, size: 18, color: Colors.pink),
-                  label: const Text('포인트 내역', style: TextStyle(color: Colors.pink)),
+                  label: const Text('포인트 내역',
+                      style: TextStyle(color: Colors.pink)),
                 ),
               ],
             ),
@@ -140,4 +141,3 @@ class MyPageContent extends StatelessWidget {
     );
   }
 }
-

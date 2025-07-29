@@ -39,7 +39,8 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
       appBar: AppBar(
         title: Text(
           local!.translate('advice_history'),
-          style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
+          style:
+              AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
         ),
         backgroundColor: AppColors.backgroundLight,
         elevation: 0,
@@ -61,16 +62,19 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.tips_and_updates, size: 64, color: AppColors.heartLight),
+                  Icon(Icons.tips_and_updates,
+                      size: 64, color: AppColors.heartLight),
                   const SizedBox(height: 16),
                   Text(
                     local.translate('no_advice_history'),
-                    style: AppTextStyles.body.copyWith(color: AppColors.heartAccent, fontSize: 18),
+                    style: AppTextStyles.body
+                        .copyWith(color: AppColors.heartAccent, fontSize: 18),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     local.translate('advice_history_guide'),
-                    style: AppTextStyles.label.copyWith(color: AppColors.blueDark, fontSize: 14),
+                    style: AppTextStyles.label
+                        .copyWith(color: AppColors.blueDark, fontSize: 14),
                   ),
                 ],
               ),
@@ -90,7 +94,8 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                     bottomRight: Radius.circular(20),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
                 child: Row(
                   children: [
                     const Icon(Icons.favorite, color: AppColors.heartAccent),
@@ -98,7 +103,8 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                     Expanded(
                       child: Text(
                         local.translate('advice_history_tip'),
-                        style: AppTextStyles.body.copyWith(color: AppColors.heartAccent, fontSize: 15),
+                        style: AppTextStyles.body.copyWith(
+                            color: AppColors.heartAccent, fontSize: 15),
                       ),
                     ),
                   ],
@@ -107,7 +113,8 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
               const SizedBox(height: 8),
               Expanded(
                 child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   itemCount: _store.adviceList.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 14),
                   itemBuilder: (context, idx) {
@@ -119,13 +126,15 @@ class _AdviceHistoryScreenState extends State<AdviceHistoryScreen> {
                       ),
                       color: AppColors.white,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 22),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 22),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.tips_and_updates, color: AppColors.heartAccent, size: 22),
+                                Icon(Icons.tips_and_updates,
+                                    color: AppColors.heartAccent, size: 22),
                                 const SizedBox(width: 8),
                                 Text(
                                   formatDate(advice.createdAt),

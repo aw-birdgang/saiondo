@@ -4,7 +4,8 @@ import '../../domain/entry/payment_subscription.dart';
 import '../../domain/entry/payment_subscription_history.dart';
 import '../../domain/repository/payment_subscription_repository.dart';
 
-class PaymentSubscriptionRepositoryImpl implements PaymentSubscriptionRepository {
+class PaymentSubscriptionRepositoryImpl
+    implements PaymentSubscriptionRepository {
   final PaymentSubscriptionApi api;
   PaymentSubscriptionRepositoryImpl(this.api);
 
@@ -14,7 +15,8 @@ class PaymentSubscriptionRepositoryImpl implements PaymentSubscriptionRepository
   }
 
   @override
-  Future<List<SubscriptionHistory>> getSubscriptionHistory({String? userId}) async {
+  Future<List<SubscriptionHistory>> getSubscriptionHistory(
+      {String? userId}) async {
     return await api.getSubscriptionHistory(userId: userId);
   }
 

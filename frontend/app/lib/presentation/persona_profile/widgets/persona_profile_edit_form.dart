@@ -31,7 +31,8 @@ class _PersonaProfileEditFormState extends State<PersonaProfileEditForm> {
   void initState() {
     super.initState();
     _selectedCategoryId = widget.profile?.categoryCodeId;
-    _contentController = TextEditingController(text: widget.profile?.content ?? '');
+    _contentController =
+        TextEditingController(text: widget.profile?.content ?? '');
     _confidenceController = TextEditingController(
       text: widget.profile?.confidenceScore.toString() ?? '0.9',
     );
@@ -53,7 +54,8 @@ class _PersonaProfileEditFormState extends State<PersonaProfileEditForm> {
       content: _contentController.text.trim(),
       isStatic: _isStatic,
       source: 'USER_INPUT',
-      confidenceScore: double.tryParse(_confidenceController.text.trim()) ?? 0.9,
+      confidenceScore:
+          double.tryParse(_confidenceController.text.trim()) ?? 0.9,
     );
     widget.onSubmit(profile);
   }
@@ -74,7 +76,10 @@ class _PersonaProfileEditFormState extends State<PersonaProfileEditForm> {
         children: [
           Text(
             isEdit ? '성향 프로필 수정' : '성향 프로필 추가',
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+            style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent),
           ),
           const SizedBox(height: 28),
           DropdownButtonFormField<String>(
@@ -104,7 +109,8 @@ class _PersonaProfileEditFormState extends State<PersonaProfileEditForm> {
             ),
             maxLines: 2,
             textInputAction: TextInputAction.next,
-            validator: (v) => v == null || v.trim().isEmpty ? '내용을 입력하세요' : null,
+            validator: (v) =>
+                v == null || v.trim().isEmpty ? '내용을 입력하세요' : null,
           ),
           const SizedBox(height: 18),
           TextFormField(
@@ -134,10 +140,12 @@ class _PersonaProfileEditFormState extends State<PersonaProfileEditForm> {
             width: double.infinity,
             child: ElevatedButton.icon(
               icon: Icon(isEdit ? Icons.save : Icons.add),
-              label: Text(isEdit ? '수정' : '추가', style: const TextStyle(fontSize: 18)),
+              label: Text(isEdit ? '수정' : '추가',
+                  style: const TextStyle(fontSize: 18)),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
               onPressed: _onSave,
             ),

@@ -69,7 +69,8 @@ class _AiAdviceTabScreenState extends State<AiAdviceTabScreen> {
                       ),
                     ),
                     padding: const EdgeInsets.all(8),
-                    child: const Icon(Icons.psychology_alt, size: 56, color: Colors.white),
+                    child: const Icon(Icons.psychology_alt,
+                        size: 56, color: Colors.white),
                   ),
                   const SizedBox(height: 24),
                   Text(

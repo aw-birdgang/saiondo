@@ -68,7 +68,8 @@ class ChannelContent extends StatelessWidget {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -78,7 +79,8 @@ class ChannelContent extends StatelessWidget {
                     const SizedBox(width: 16),
                     hasPartner
                         ? LovelyAvatar(imageUrl: partnerProfile)
-                        : Icon(Icons.person_outline, size: 48, color: AppColors.grey),
+                        : Icon(Icons.person_outline,
+                            size: 48, color: AppColors.grey),
                   ],
                 ),
               ),
@@ -87,8 +89,10 @@ class ChannelContent extends StatelessWidget {
                 child: Chip(
                   label: Text(
                     hasPartner
-                        ? (local?.translate('our_anniversary') ?? 'Anniversary').replaceAll('{0}', dDay)
-                        : (local?.translate('no_partner_yet') ?? 'No partner yet'),
+                        ? (local?.translate('our_anniversary') ?? 'Anniversary')
+                            .replaceAll('{0}', dDay)
+                        : (local?.translate('no_partner_yet') ??
+                            'No partner yet'),
                     style: AppTextStyles.chip,
                   ),
                   backgroundColor: AppColors.backgroundLight,
@@ -96,7 +100,8 @@ class ChannelContent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     side: BorderSide(color: AppColors.heartLight),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 ),
               ),
               const SizedBox(height: 18),
@@ -113,7 +118,8 @@ class ChannelContent extends StatelessWidget {
     );
   }
 
-  Widget _buildInviteCodeCard(BuildContext context, AppLocalizations? local, bool hasPartner) {
+  Widget _buildInviteCodeCard(
+      BuildContext context, AppLocalizations? local, bool hasPartner) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -153,7 +159,8 @@ class ChannelContent extends StatelessWidget {
                       );
                     }
                     return SelectableText(
-                      invitationStore.inviteCode ?? (local?.translate('no_code') ?? 'No code'),
+                      invitationStore.inviteCode ??
+                          (local?.translate('no_code') ?? 'No code'),
                       style: AppTextStyles.body.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -165,22 +172,28 @@ class ChannelContent extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.copy, size: 20, color: AppColors.heartAccent),
+                icon: const Icon(Icons.copy,
+                    size: 20, color: AppColors.heartAccent),
                 onPressed: invitationStore.inviteCode == null
                     ? null
                     : () {
-                        Clipboard.setData(ClipboardData(text: invitationStore.inviteCode!));
+                        Clipboard.setData(
+                            ClipboardData(text: invitationStore.inviteCode!));
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(local?.translate('copy_success') ?? 'Copied!')),
+                          SnackBar(
+                              content: Text(local?.translate('copy_success') ??
+                                  'Copied!')),
                         );
                       },
               ),
               IconButton(
-                icon: const Icon(Icons.refresh, size: 20, color: AppColors.blue),
+                icon:
+                    const Icon(Icons.refresh, size: 20, color: AppColors.blue),
                 tooltip: local?.translate('generate_invite_code') ?? 'Generate',
                 onPressed: userId == null
                     ? null
-                    : () => invitationStore.generateInviteCode(channelId!, userId!),
+                    : () =>
+                        invitationStore.generateInviteCode(channelId!, userId!),
               ),
             ],
           ),
@@ -191,14 +204,18 @@ class ChannelContent extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, AppLocalizations? local, bool hasPartner) {
+  Widget _buildActionButtons(
+      BuildContext context, AppLocalizations? local, bool hasPartner) {
     return Column(
       children: [
         LovelyActionButton(
           icon: Icons.chat_bubble_rounded,
           label: local?.translate('start_chat') ?? 'Start Chat',
           color: AppColors.shadow,
-          onPressed: hasPartner && userId != null && assistantId != null && channelId != null
+          onPressed: hasPartner &&
+                  userId != null &&
+                  assistantId != null &&
+                  channelId != null
               ? () {
                   Navigator.pushNamed(
                     context,
@@ -240,7 +257,8 @@ class ChannelContent extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => AdviceHistoryScreen(channelId: channelId!),
+                      builder: (_) =>
+                          AdviceHistoryScreen(channelId: channelId!),
                     ),
                   );
                 }
@@ -258,7 +276,8 @@ class ChannelContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              local?.translate('received_invitations') ?? 'Received Invitations',
+              local?.translate('received_invitations') ??
+                  'Received Invitations',
               style: AppTextStyles.body.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -286,41 +305,47 @@ class ChannelContent extends StatelessWidget {
             }
             if (invitationStore.invitations.isEmpty) {
               return Center(
-                child: Text(local?.translate('no_invitations') ?? 'No invitations'),
+                child: Text(
+                    local?.translate('no_invitations') ?? 'No invitations'),
               );
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ...invitationStore.invitations.map((inv) => Card(
-                  child: ListTile(
-                    title: Text('${inv.inviterId} → ${inv.inviteeId}'),
-                    subtitle: Text('${local?.translate('status') ?? 'Status'}: ${inv.status.name}'),
-                    trailing: inv.status == ChannelInvitationStatus.pending
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.check, color: AppColors.green),
-                                onPressed: () {
-                                  if (userId != null) {
-                                    invitationStore.respondToInvitation(inv.id, true, userId!);
-                                  }
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.close, color: AppColors.error),
-                                onPressed: () {
-                                  if (userId != null) {
-                                    invitationStore.respondToInvitation(inv.id, false, userId!);
-                                  }
-                                },
-                              ),
-                            ],
-                          )
-                        : null,
-                  ),
-                )),
+                      child: ListTile(
+                        title: Text('${inv.inviterId} → ${inv.inviteeId}'),
+                        subtitle: Text(
+                            '${local?.translate('status') ?? 'Status'}: ${inv.status.name}'),
+                        trailing: inv.status == ChannelInvitationStatus.pending
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.check,
+                                        color: AppColors.green),
+                                    onPressed: () {
+                                      if (userId != null) {
+                                        invitationStore.respondToInvitation(
+                                            inv.id, true, userId!);
+                                      }
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.close,
+                                        color: AppColors.error),
+                                    onPressed: () {
+                                      if (userId != null) {
+                                        invitationStore.respondToInvitation(
+                                            inv.id, false, userId!);
+                                      }
+                                    },
+                                  ),
+                                ],
+                              )
+                            : null,
+                      ),
+                    )),
               ],
             );
           },
@@ -329,13 +354,15 @@ class ChannelContent extends StatelessWidget {
     );
   }
 
-  Widget _buildTodayAdvice(BuildContext context, AppLocalizations? local, bool hasPartner) {
+  Widget _buildTodayAdvice(
+      BuildContext context, AppLocalizations? local, bool hasPartner) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           local?.translate('today_advice') ?? 'Today\'s Advice',
-          style: AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
+          style:
+              AppTextStyles.sectionTitle.copyWith(color: AppColors.heartAccent),
         ),
         const SizedBox(height: 12),
         Observer(
@@ -351,13 +378,15 @@ class ChannelContent extends StatelessWidget {
             if (!hasPartner) {
               return Center(
                 child: Text(
-                  local?.translate('no_partner_advice') ?? 'Advice is available after you connect with your partner.',
+                  local?.translate('no_partner_advice') ??
+                      'Advice is available after you connect with your partner.',
                   style: AppTextStyles.body.copyWith(color: AppColors.black54),
                 ),
               );
             }
             return Text(
-              adviceStore.latestAdvice?.advice ?? (local?.translate('no_advice_yet') ?? 'No advice yet.'),
+              adviceStore.latestAdvice?.advice ??
+                  (local?.translate('no_advice_yet') ?? 'No advice yet.'),
               style: AppTextStyles.body.copyWith(color: AppColors.black87),
             );
           },

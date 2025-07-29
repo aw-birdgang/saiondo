@@ -10,20 +10,26 @@ class PointRepositoryImpl implements PointRepository {
   PointRepositoryImpl(this._pointApi);
 
   @override
-  Future<void> earnPoint(String userId, int amount, String type, {String? description}) async {
-    final req = PointRequest(amount: amount, type: type, description: description);
+  Future<void> earnPoint(String userId, int amount, String type,
+      {String? description}) async {
+    final req =
+        PointRequest(amount: amount, type: type, description: description);
     await _pointApi.earnPoint(userId, req);
   }
 
   @override
-  Future<void> usePoint(String userId, int amount, String type, {String? description}) async {
-    final req = PointRequest(amount: amount, type: type, description: description);
+  Future<void> usePoint(String userId, int amount, String type,
+      {String? description}) async {
+    final req =
+        PointRequest(amount: amount, type: type, description: description);
     await _pointApi.usePoint(userId, req);
   }
 
   @override
-  Future<void> adjustPoint(String userId, int amount, {String? description}) async {
-    final req = PointRequest(amount: amount, type: 'ADMIN_ADJUST', description: description);
+  Future<void> adjustPoint(String userId, int amount,
+      {String? description}) async {
+    final req = PointRequest(
+        amount: amount, type: 'ADMIN_ADJUST', description: description);
     await _pointApi.adjustPoint(userId, req);
   }
 

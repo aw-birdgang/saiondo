@@ -12,7 +12,6 @@ import '../network/dto/user_request.dart';
 import '../sharedpref/shared_preference_helper.dart';
 
 class UserRepositoryImpl implements UserRepository {
-
   final UserApi _userApi;
   final SharedPreferenceHelper _prefs;
 
@@ -32,7 +31,8 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<List<Assistant>> fetchUserAssistants(String userId) => _userApi.fetchUserAssistants(userId);
+  Future<List<Assistant>> fetchUserAssistants(String userId) =>
+      _userApi.fetchUserAssistants(userId);
 
   @override
   Future<void> saveUserPreference(User user) async {
@@ -84,22 +84,25 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<PersonaProfile> createPersonaProfile(String userId, PersonaProfile profile) async {
+  Future<PersonaProfile> createPersonaProfile(
+      String userId, PersonaProfile profile) async {
     final requestDto = PersonaProfileAdapter.toRequest(profile);
     final response = await _userApi.createPersonaProfile(userId, requestDto);
     return PersonaProfileAdapter.fromResponse(response)!;
   }
 
   @override
-  Future<PersonaProfile> updatePersonaProfile(String userId, PersonaProfile profile) async {
+  Future<PersonaProfile> updatePersonaProfile(
+      String userId, PersonaProfile profile) async {
     final requestDto = PersonaProfileAdapter.toRequest(profile);
-    final response = await _userApi.updatePersonaProfile(userId, profile.categoryCodeId, requestDto);
+    final response = await _userApi.updatePersonaProfile(
+        userId, profile.categoryCodeId, requestDto);
     return PersonaProfileAdapter.fromResponse(response)!;
   }
 
   @override
-  Future<void> deletePersonaProfile(String userId, String categoryCodeId) async {
+  Future<void> deletePersonaProfile(
+      String userId, String categoryCodeId) async {
     await _userApi.deletePersonaProfile(userId, categoryCodeId);
   }
-
 }

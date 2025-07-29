@@ -31,8 +31,9 @@ class Routes {
     home: (BuildContext context) => HomeScreen(),
     chat: (BuildContext context) {
       print('[Routes] Attempting to build ChatScreen');
-      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
       if (args == null) {
         print('[Routes] Error: No arguments provided');
         return const SizedBox.shrink(); // 또는 에러 화면
@@ -42,10 +43,11 @@ class Routes {
         final userId = args['userId'] as String;
         final channelId = args['channelId'] as String;
         final assistantId = args['assistantId'] as String;
-        
+
         print('[Routes] Building ChatScreen with:');
-        print('userId: $userId, channelId: $channelId, assistantId: $assistantId');
-        
+        print(
+            'userId: $userId, channelId: $channelId, assistantId: $assistantId');
+
         return ChatScreen(
           userId: userId,
           assistantId: assistantId,
@@ -58,8 +60,8 @@ class Routes {
     },
     login: (BuildContext context) => LoginScreen(),
     register: (BuildContext context) => RegisterScreen(),
-    categoryGuide: (BuildContext context)=> CategoryCodeGuideScreen(),
-    notification: (BuildContext context)=> NotificationsScreen(),
+    categoryGuide: (BuildContext context) => CategoryCodeGuideScreen(),
+    notification: (BuildContext context) => NotificationsScreen(),
     analysis: (context) {
       final args = ModalRoute.of(context)!.settings.arguments as Map;
       return AnalysisScreen(
@@ -71,5 +73,4 @@ class Routes {
     channelInvitations: (BuildContext context) => ChannelInvitationScreen(),
     paymentSubscribe: (BuildContext context) => PaymentSubscriptionScreen(),
   };
-
 }

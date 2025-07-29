@@ -37,7 +37,9 @@ class MyPageScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.translate('profile_load_fail'))),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!
+                  .translate('profile_load_fail'))),
         );
       }
     }
@@ -65,7 +67,8 @@ class MyPageScreen extends StatelessWidget {
               ),
             );
           }
-          final user = userStore.selectedUser ?? (userStore.users.isNotEmpty ? userStore.users.first : null);
+          final user = userStore.selectedUser ??
+              (userStore.users.isNotEmpty ? userStore.users.first : null);
           final userId = user?.id;
 
           if (user == null || userId == null || userId.isEmpty) {
@@ -95,6 +98,3 @@ class MyPageScreen extends StatelessWidget {
     );
   }
 }
-
-
-

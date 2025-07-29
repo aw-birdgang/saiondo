@@ -11,10 +11,11 @@ class BasicQuestionCategory {
     this.description,
   });
 
-  factory BasicQuestionCategory.fromJson(Map<String, dynamic> json) => BasicQuestionCategory(
-    id: json['id'],
-    code: json['code'],
-    name: json['name'],
-    description: json['description'],
-  );
+  factory BasicQuestionCategory.fromJson(Map<String, dynamic> json) =>
+      BasicQuestionCategory(
+        id: json['id'],
+        code: json['code'],
+        name: json['name'],
+        description: json['description'],
+      );
 }

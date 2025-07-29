@@ -6,7 +6,8 @@ class AssistantListScreen extends StatelessWidget {
   final List<Assistant> assistants;
   final void Function(Assistant) onAssistantTap;
 
-  const AssistantListScreen({required this.assistants, required this.onAssistantTap, super.key});
+  const AssistantListScreen(
+      {required this.assistants, required this.onAssistantTap, super.key});
 
   @override
   Widget build(BuildContext context) {

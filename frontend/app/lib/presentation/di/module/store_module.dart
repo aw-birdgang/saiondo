@@ -48,7 +48,7 @@ class StoreModule {
     getIt.registerFactory(() => ErrorStore());
     getIt.registerFactory(() => FormErrorStore());
     getIt.registerFactory(
-          () => FormStore(getIt<FormErrorStore>(), getIt<ErrorStore>()),
+      () => FormStore(getIt<FormErrorStore>(), getIt<ErrorStore>()),
     );
 
     // stores:------------------------------------------------------------------
@@ -135,7 +135,6 @@ class StoreModule {
       ),
     );
 
-
     // :------------------------------------------------------------------
     getIt.registerSingleton<CategoryCodeStore>(
       CategoryCodeStore(
@@ -164,6 +163,5 @@ class StoreModule {
         getIt<ErrorStore>(),
       ),
     );
-
   }
 }

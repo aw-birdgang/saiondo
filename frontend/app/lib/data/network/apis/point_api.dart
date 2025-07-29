@@ -6,9 +6,9 @@ import '../rest_client.dart';
 
 class PointApi {
   final DioClient _dioClient;
-  final RestClient _restClient;
+  // final RestClient _restClient;
 
-  PointApi(this._dioClient, this._restClient);
+  PointApi(this._dioClient);
 
   Future<void> earnPoint(String userId, PointRequest req) async {
     await _dioClient.dio.post(Endpoints.pointEarn(userId), data: req.toJson());
@@ -19,7 +19,8 @@ class PointApi {
   }
 
   Future<void> adjustPoint(String userId, PointRequest req) async {
-    await _dioClient.dio.post(Endpoints.pointAdjust(userId), data: req.toJson());
+    await _dioClient.dio
+        .post(Endpoints.pointAdjust(userId), data: req.toJson());
   }
 
   Future<List<PointHistoryResponse>> getPointHistory(String userId) async {

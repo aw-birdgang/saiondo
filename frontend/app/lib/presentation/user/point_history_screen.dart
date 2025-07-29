@@ -53,14 +53,16 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
       body: Observer(
         builder: (_) {
           if (store.isLoading) {
-            return const Center(child: CircularProgressIndicator(color: AppColors.loading));
+            return const Center(
+                child: CircularProgressIndicator(color: AppColors.loading));
           }
           if (store.histories.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.sentiment_dissatisfied, color: AppColors.heartLight, size: 48),
+                  Icon(Icons.sentiment_dissatisfied,
+                      color: AppColors.heartLight, size: 48),
                   const SizedBox(height: 12),
                   const Text(
                     '포인트 내역이 없습니다.',
@@ -79,7 +81,8 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
               final isEarn = h.amount > 0;
               return Container(
                 decoration: BoxDecoration(
-                  color: isEarn ? AppColors.backgroundLight : AppColors.blueLight,
+                  color:
+                      isEarn ? AppColors.backgroundLight : AppColors.blueLight,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -91,7 +94,8 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
                 ),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: isEarn ? AppColors.heartLight : AppColors.blueDark,
+                    backgroundColor:
+                        isEarn ? AppColors.heartLight : AppColors.blueDark,
                     child: Icon(
                       isEarn ? Icons.favorite : Icons.shopping_bag,
                       color: AppColors.white,
@@ -101,7 +105,8 @@ class _PointHistoryScreenState extends State<PointHistoryScreen> {
                     getTypeLabel(h.type),
                     style: AppTextStyles.body.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: isEarn ? AppColors.heartAccent : AppColors.blueDark,
+                      color:
+                          isEarn ? AppColors.heartAccent : AppColors.blueDark,
                     ),
                   ),
                   subtitle: Column(

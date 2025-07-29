@@ -8,7 +8,8 @@ class FaqList {
   });
 
   factory FaqList.fromJson(Map<String, dynamic> json) {
-    List<Faq> faqs = (json['items'] as List).map((faq) => Faq.fromMap(faq)).toList();
+    List<Faq> faqs =
+        (json['items'] as List).map((faq) => Faq.fromMap(faq)).toList();
 
     return FaqList(
       faqs: faqs,

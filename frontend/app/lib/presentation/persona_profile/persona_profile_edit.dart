@@ -41,7 +41,8 @@ class PersonaProfileEditScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Card(
             elevation: 6,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
             margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -56,7 +57,8 @@ class PersonaProfileEditScreen extends StatelessWidget {
                     );
                   }
                   if (_categoryCodeStore.error != null) {
-                    return Center(child: Text('에러: ${_categoryCodeStore.error}'));
+                    return Center(
+                        child: Text('에러: ${_categoryCodeStore.error}'));
                   }
                   return PersonaProfileEditForm(
                     userId: userId,

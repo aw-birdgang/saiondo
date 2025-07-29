@@ -31,11 +31,12 @@ class _CalendarTabState extends State<CalendarTab> {
   }
 
   List<Event> _getEventsForDay(List<Event> events, DateTime day) {
-    return events.where((e) =>
-      e.startTime.year == day.year &&
-      e.startTime.month == day.month &&
-      e.startTime.day == day.day
-    ).toList();
+    return events
+        .where((e) =>
+            e.startTime.year == day.year &&
+            e.startTime.month == day.month &&
+            e.startTime.day == day.day)
+        .toList();
   }
 
   @override
@@ -54,7 +55,9 @@ class _CalendarTabState extends State<CalendarTab> {
               );
             }
             final events = _eventStore.events;
-            final dayEvents = _selectedDay == null ? <Event>[] : _getEventsForDay(events, _selectedDay!);
+            final dayEvents = _selectedDay == null
+                ? <Event>[]
+                : _getEventsForDay(events, _selectedDay!);
 
             return ListView(
               padding: const EdgeInsets.only(bottom: 80),
@@ -105,7 +108,8 @@ class _CalendarTabState extends State<CalendarTab> {
           onPressed: () async {
             final newEvent = await showDialog<Event>(
               context: context,
-              builder: (context) => _EventDialog(selectedDay: _selectedDay ?? DateTime.now()),
+              builder: (context) =>
+                  _EventDialog(selectedDay: _selectedDay ?? DateTime.now()),
             );
             if (newEvent != null) {
               await _eventStore.addEvent(newEvent);
@@ -212,7 +216,8 @@ class CalendarView extends StatelessWidget {
               fontFamily: 'Nunito',
             ),
             leftChevronIcon: Icon(Icons.chevron_left, color: Colors.pink[300]),
-            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.pink[300]),
+            rightChevronIcon:
+                Icon(Icons.chevron_right, color: Colors.pink[300]),
           ),
         ),
       ),
@@ -242,11 +247,13 @@ class EventListView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.calendar_today_rounded, color: Colors.pink[200], size: 48),
+            Icon(Icons.calendar_today_rounded,
+                color: Colors.pink[200], size: 48),
             const SizedBox(height: 12),
             const Text(
               '날짜를 선택 하세요.',
-              style: TextStyle(fontSize: 16, color: Color(0xFFD81B60), fontFamily: 'Nunito'),
+              style: TextStyle(
+                  fontSize: 16, color: Color(0xFFD81B60), fontFamily: 'Nunito'),
             ),
           ],
         ),
@@ -263,7 +270,8 @@ class EventListView extends StatelessWidget {
             const SizedBox(height: 10),
             const Text(
               '일정 없음',
-              style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontFamily: 'Nunito'),
+              style: TextStyle(
+                  fontSize: 15, color: Colors.blueGrey, fontFamily: 'Nunito'),
             ),
           ],
         ),
@@ -275,7 +283,8 @@ class EventListView extends StatelessWidget {
         return Card(
           elevation: 2,
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: ListTile(
             leading: const Icon(Icons.event, color: Color(0xFFD81B60)),
             title: Text(
@@ -290,7 +299,8 @@ class EventListView extends StatelessWidget {
             subtitle: Text(
               '${DateFormat('HH:mm').format(event.startTime)} ~ ${DateFormat('HH:mm').format(event.endTime)}'
               '${event.description != null && event.description!.isNotEmpty ? '\n${event.description}' : ''}',
-              style: const TextStyle(fontSize: 13, color: Colors.blueGrey, fontFamily: 'Nunito'),
+              style: const TextStyle(
+                  fontSize: 13, color: Colors.blueGrey, fontFamily: 'Nunito'),
             ),
             trailing: IconButton(
               icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
@@ -330,7 +340,8 @@ class _EventDialogState extends State<_EventDialog> {
         children: const [
           Icon(Icons.favorite, color: Color(0xFFD81B60)),
           SizedBox(width: 8),
-          Text('일정 추가', style: TextStyle(fontFamily: 'Nunito', color: Color(0xFFD81B60))),
+          Text('일정 추가',
+              style: TextStyle(fontFamily: 'Nunito', color: Color(0xFFD81B60))),
         ],
       ),
       content: SingleChildScrollView(
@@ -365,10 +376,14 @@ class _EventDialogState extends State<_EventDialog> {
                 children: [
                   Expanded(
                     child: TextButton.icon(
-                      icon: const Icon(Icons.access_time, color: Color(0xFFD81B60), size: 18),
+                      icon: const Icon(Icons.access_time,
+                          color: Color(0xFFD81B60), size: 18),
                       label: Text(
-                        _startTime == null ? '시작 시간' : _startTime!.format(context),
-                        style: const TextStyle(color: Color(0xFFD81B60), fontFamily: 'Nunito'),
+                        _startTime == null
+                            ? '시작 시간'
+                            : _startTime!.format(context),
+                        style: const TextStyle(
+                            color: Color(0xFFD81B60), fontFamily: 'Nunito'),
                       ),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.pink[100],
@@ -384,10 +399,12 @@ class _EventDialogState extends State<_EventDialog> {
                   ),
                   Expanded(
                     child: TextButton.icon(
-                      icon: const Icon(Icons.access_time, color: Color(0xFFD81B60), size: 18),
+                      icon: const Icon(Icons.access_time,
+                          color: Color(0xFFD81B60), size: 18),
                       label: Text(
                         _endTime == null ? '종료 시간' : _endTime!.format(context),
-                        style: const TextStyle(color: Color(0xFFD81B60), fontFamily: 'Nunito'),
+                        style: const TextStyle(
+                            color: Color(0xFFD81B60), fontFamily: 'Nunito'),
                       ),
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.pink[100],
@@ -416,10 +433,12 @@ class _EventDialogState extends State<_EventDialog> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.pink[100],
             foregroundColor: const Color(0xFFD81B60),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
           ),
-          child: const Text('추가', style: TextStyle(fontWeight: FontWeight.bold)),
+          child:
+              const Text('추가', style: TextStyle(fontWeight: FontWeight.bold)),
           onPressed: () {
             if (_formKey.currentState?.validate() ?? false) {
               _formKey.currentState?.save();

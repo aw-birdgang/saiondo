@@ -123,23 +123,111 @@ app/
 
 ## 🛠️ 주요 명령어
 
-- **코드 생성(json_serializable, mobx 등)**
-  ```sh
-  fvm flutter pub run build_runner build
-  fvm dart run build_runner build --delete-conflicting-outputs
-  ```
-- **로컬 실행(웹)**
-  ```sh
-  fvm flutter run -d chrome
-  ```
-- **환경변수 포함 실행**
-  ```sh
-  ./run_web_with_env.sh
-  ```
-- **Firebase 배포**
-  ```sh
-  firebase deploy --only hosting
-  ```
+### 📦 Setup & Installation
+```sh
+# 의존성 설치
+make install
+# 또는
+flutter pub get
+
+# Git hooks 설정 (코드 품질 자동 체크)
+make setup-hooks
+```
+
+### 🔍 Code Quality
+```sh
+# 코드 포맷팅
+make format
+# 또는
+dart format lib/ test/
+
+# 정적 분석
+make analyze
+# 또는
+flutter analyze
+
+# 종합 코드 품질 체크
+make check-quality
+# 또는
+./scripts/check_code_quality.sh
+```
+
+### 🧪 Testing
+```sh
+# 테스트 실행
+make test
+# 또는
+flutter test
+
+# 테스트 커버리지 포함
+make test-coverage
+# 또는
+./scripts/run_tests.sh --coverage
+```
+
+### 🏃‍♂️ Running
+```sh
+# 개발 모드 실행
+make run-dev
+# 또는
+flutter run --flavor development
+
+# 프로덕션 모드 실행
+make run-prod
+# 또는
+flutter run --flavor production
+```
+
+### 🏗️ Building
+```sh
+# 웹 빌드
+make build-web
+# 또는
+flutter build web
+
+# Android 빌드
+make build-android
+# 또는
+flutter build apk --release
+
+# iOS 빌드
+make build-ios
+# 또는
+flutter build ios --release
+```
+
+### 🧹 Maintenance
+```sh
+# 빌드 아티팩트 정리
+make clean
+# 또는
+flutter clean
+
+# 코드 생성 (json_serializable, mobx 등)
+make codegen
+# 또는
+flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+### 🔄 Development Workflows
+```sh
+# 개발 환경 설정 (의존성 + Git hooks)
+make dev-setup
+
+# 개발 사이클 (포맷팅 + 분석 + 테스트)
+make dev-cycle
+
+# Pre-commit 체크
+make pre-commit
+
+# CI/CD 체크
+make ci
+```
+
+### 📋 모든 명령어 보기
+```sh
+make help
+```
 
 ---
 
@@ -152,6 +240,46 @@ app/
 | 환경변수 미적용 | --dart-define 옵션 확인, .env 파일/스크립트 활용 |
 | 웹소켓/네트워크 오류 | API 서버 주소, CORS, 네트워크 상태 확인 |
 | 플랫폼별 이슈 | 각 플랫폼별 폴더/설정/권한 확인 |
+| Git hooks 오류 | `make setup-hooks` 재실행 또는 `chmod +x scripts/*.sh` |
+| 린트 규칙 충돌 | `analysis_options.yaml`에서 해당 규칙 비활성화 또는 `// ignore: rule_name` 추가 |
+| 테스트 커버리지 낮음 | 더 많은 테스트 케이스 추가 또는 커버리지 임계값 조정 |
+
+---
+
+## 🛠️ Code Quality Tools
+
+### 📋 Lint & Analysis
+- **Static Analysis**: `flutter analyze` - Dart/Flutter 코드 정적 분석
+- **Code Formatting**: `dart format` - 코드 스타일 자동 포맷팅
+- **Custom Rules**: `analysis_options.yaml` - 프로젝트별 린트 규칙 설정
+
+### 🔧 Git Hooks (Pre-commit, Pre-push)
+- **Pre-commit**: 코드 포맷팅, 정적 분석, 테스트 실행
+- **Pre-push**: 테스트 커버리지 체크, 추가 검증
+- **Commit-msg**: Conventional Commits 형식 검증
+
+### 📊 Testing & Coverage
+- **Unit Tests**: `flutter test` - 단위/위젯 테스트
+- **Coverage**: `flutter test --coverage` - 테스트 커버리지 측정
+- **HTML Reports**: `genhtml` - 커버리지 리포트 생성
+
+### 🚀 Automation Scripts
+- **`scripts/check_code_quality.sh`**: 종합 코드 품질 체크
+- **`scripts/format_code.sh`**: 코드 포맷팅
+- **`scripts/run_tests.sh`**: 테스트 실행 및 커버리지
+- **`scripts/setup_git_hooks.sh`**: Git hooks 설정
+
+### 📦 Make Commands
+- **`make help`**: 모든 명령어 보기
+- **`make dev-setup`**: 개발 환경 설정
+- **`make dev-cycle`**: 개발 사이클 (포맷팅 + 분석 + 테스트)
+- **`make ci`**: CI/CD 체크
+
+### 🎯 Best Practices
+- **Conventional Commits**: `type(scope): description` 형식 사용
+- **Test Coverage**: 80% 이상 유지 권장
+- **Code Review**: 모든 변경사항에 대한 코드 리뷰 필수
+- **Documentation**: 주요 기능에 대한 문서화
 
 ---
 

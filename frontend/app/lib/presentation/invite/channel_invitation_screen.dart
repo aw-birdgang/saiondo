@@ -8,11 +8,13 @@ import '../user/store/user_store.dart';
 
 class ChannelInvitationScreen extends StatefulWidget {
   @override
-  State<ChannelInvitationScreen> createState() => _ChannelInvitationScreenState();
+  State<ChannelInvitationScreen> createState() =>
+      _ChannelInvitationScreenState();
 }
 
 class _ChannelInvitationScreenState extends State<ChannelInvitationScreen> {
-  final ChannelInvitationStore _invitationStore = getIt<ChannelInvitationStore>();
+  final ChannelInvitationStore _invitationStore =
+      getIt<ChannelInvitationStore>();
   final userStore = getIt<UserStore>();
 
   @override
@@ -52,7 +54,8 @@ class _ChannelInvitationScreenState extends State<ChannelInvitationScreen> {
                               icon: Icon(Icons.check, color: Colors.green),
                               onPressed: () {
                                 if (userStore.userId != null) {
-                                  _invitationStore.respondToInvitation(inv.id, true, userStore.userId!);
+                                  _invitationStore.respondToInvitation(
+                                      inv.id, true, userStore.userId!);
                                 }
                               },
                             ),
@@ -60,7 +63,8 @@ class _ChannelInvitationScreenState extends State<ChannelInvitationScreen> {
                               icon: Icon(Icons.close, color: Colors.red),
                               onPressed: () {
                                 if (userStore.userId != null) {
-                                  _invitationStore.respondToInvitation(inv.id, false, userStore.userId!);
+                                  _invitationStore.respondToInvitation(
+                                      inv.id, false, userStore.userId!);
                                 }
                               },
                             ),

@@ -5,14 +5,12 @@ import 'store/category_code_store.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CategoryCodeGuideScreen extends StatelessWidget {
-
   CategoryCodeGuideScreen({super.key});
 
   final _store = getIt<CategoryCodeStore>();
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(title: const Text('카테고리 코드 안내')),
       body: Observer(
@@ -39,7 +37,8 @@ class CategoryCodeGuideScreen extends StatelessWidget {
               final code = _store.codes[idx];
               return ListTile(
                 leading: CircleAvatar(child: Text(code.code[0])),
-                title: Text('${code.code}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                title: Text('${code.code}',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Text(code.description ?? ''),
               );
             },

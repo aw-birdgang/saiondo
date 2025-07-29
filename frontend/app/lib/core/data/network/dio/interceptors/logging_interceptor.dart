@@ -85,9 +85,9 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onRequest(
-      RequestOptions options,
-      RequestInterceptorHandler handler,
-      ) {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) {
     if (level == Level.none) {
       return handler.next(options);
     }
@@ -131,9 +131,9 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(
-      Response response,
-      ResponseInterceptorHandler handler,
-      ) {
+    Response response,
+    ResponseInterceptorHandler handler,
+  ) {
     if (level == Level.none) {
       return handler.next(response);
     }
@@ -175,9 +175,9 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onError(
-      DioException err,
-      ErrorInterceptorHandler handler,
-      ) {
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) {
     if (level == Level.none) {
       return handler.next(err);
     }

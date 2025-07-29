@@ -10,8 +10,8 @@ class ChatHistoryRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'assistantId': assistantId,
-    'message': message,
-  };
+        'userId': userId,
+        'assistantId': assistantId,
+        'message': message,
+      };
 }

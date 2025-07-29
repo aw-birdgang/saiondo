@@ -15,14 +15,15 @@ import '../../local/datasources/chat_history_datasource.dart';
 class LocalModule {
   static Future<void> configureLocalModuleInjection() async {
     // preference manager:------------------------------------------------------
-    getIt.registerSingletonAsync<SharedPreferences>(SharedPreferences.getInstance);
+    getIt.registerSingletonAsync<SharedPreferences>(
+        SharedPreferences.getInstance);
     getIt.registerSingleton<SharedPreferenceHelper>(
       SharedPreferenceHelper(await getIt.getAsync<SharedPreferences>()),
     );
 
     // database:----------------------------------------------------------------
     getIt.registerSingletonAsync<SembastClient>(
-          () async => SembastClient.provideDatabase(
+      () async => SembastClient.provideDatabase(
         databaseName: DBConstants.DB_NAME,
         databasePath: kIsWeb
             ? "/assets/db"
@@ -31,8 +32,10 @@ class LocalModule {
     );
 
     // data sources:------------------------------------------------------------
-    getIt.registerSingleton(FaqDataSource(await getIt.getAsync<SembastClient>()));
-    getIt.registerSingleton(ChatHistoryDataSource(await getIt.getAsync<SembastClient>()));
+    getIt.registerSingleton(
+        FaqDataSource(await getIt.getAsync<SembastClient>()));
+    getIt.registerSingleton(
+        ChatHistoryDataSource(await getIt.getAsync<SembastClient>()));
 
     // logger:------------------------------------------------------------------
     getIt.registerSingleton<Logger>(
@@ -47,6 +50,5 @@ class LocalModule {
         ),
       ),
     );
-
   }
 }

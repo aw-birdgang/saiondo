@@ -27,7 +27,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> register(String email, String password, String name, String gender) async {
+  Future<Map<String, dynamic>> register(
+      String email, String password, String name, String gender) async {
     final result = await _authApi.register(email, password, name, gender);
 
     // 회원가입 성공 시 유저 정보 저장 (accessToken이 있다면 토큰도 저장)

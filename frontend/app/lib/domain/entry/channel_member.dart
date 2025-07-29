@@ -8,8 +8,8 @@ class ChannelMember {
   ChannelMember({required this.userId, required this.role, required this.user});
 
   factory ChannelMember.fromJson(Map<String, dynamic> json) => ChannelMember(
-    userId: json['userId'],
-    role: json['role'],
-    user: User.fromJson(json['user']),
-  );
+        userId: json['userId'],
+        role: json['role'],
+        user: User.fromJson(json['user']),
+      );
 }

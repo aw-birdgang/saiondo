@@ -20,7 +20,7 @@ class SharedPreferenceHelper {
     return _sharedPreference.remove(Preferences.auth_token);
   }
 
-  Future<String?> getAccessToken() async{
+  Future<String?> getAccessToken() async {
     return _sharedPreference.getString(Preferences.auth_token);
   }
 
@@ -53,11 +53,14 @@ class SharedPreferenceHelper {
 
   // user:---------------------------------------------------
   Future<void> saveUserInfo(String userJson) async {
-    await _sharedPreference.setString(Preferences.user_info, jsonEncode(userJson));
+    await _sharedPreference.setString(
+        Preferences.user_info, jsonEncode(userJson));
   }
-  Future<String?> getUserInfo() async{
+
+  Future<String?> getUserInfo() async {
     return _sharedPreference.getString(Preferences.user_info);
   }
+
   Future<bool> removeUserInfo() async {
     return _sharedPreference.remove(Preferences.user_info);
   }
@@ -65,11 +68,12 @@ class SharedPreferenceHelper {
   Future<void> saveUserId(String userId) async {
     await _sharedPreference.setString(Preferences.user_id, userId);
   }
+
   Future<String?> getUserId() async {
     return _sharedPreference.getString(Preferences.user_id);
   }
+
   Future<bool> removeUserId() async {
     return _sharedPreference.remove(Preferences.user_id);
   }
-
 }

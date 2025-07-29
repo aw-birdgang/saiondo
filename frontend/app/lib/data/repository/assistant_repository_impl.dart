@@ -8,8 +8,10 @@ class AssistantRepositoryImpl implements AssistantRepository {
   AssistantRepositoryImpl(this.api);
 
   @override
-  Future<List<Assistant>> fetchAssistants(String userId) => api.fetchAssistants(userId);
+  Future<List<Assistant>> fetchAssistants(String userId) =>
+      api.fetchAssistants(userId);
 
   @override
-  Future<Assistant> fetchAssistantById(String assistantId) => api.fetchAssistantById(assistantId);
+  Future<Assistant> fetchAssistantById(String assistantId) =>
+      api.fetchAssistantById(assistantId);
 }

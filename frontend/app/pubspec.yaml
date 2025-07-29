@@ -89,6 +89,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mobx_codegen: ^2.2.0
+  
+  # Code quality tools
+  coverage: ^1.6.3
+  flutter_lints: ^3.0.0
 
 flutter_icons:
   android: true

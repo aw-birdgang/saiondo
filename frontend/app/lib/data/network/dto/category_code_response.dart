@@ -18,8 +18,8 @@ class CategoryCodeResponse {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'code': code,
-    'description': description,
-  };
+        'id': id,
+        'code': code,
+        'description': description,
+      };
 }
