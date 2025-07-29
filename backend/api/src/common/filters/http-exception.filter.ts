@@ -1,6 +1,6 @@
-import {ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus} from '@nestjs/common';
-import {Request, Response} from 'express';
-import {createWinstonLogger} from "@common/logger/winston.logger";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -11,8 +11,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-    const message = exception instanceof HttpException ? exception.getResponse() : '서버 내부 오류가 발생 했습니다.';
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const message =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : '서버 내부 오류가 발생 했습니다.';
 
     // 에러 로깅
     this.logger.error(
@@ -25,7 +29,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: typeof message === 'string' ? message : (message as any).message || '오류가 발생 했습니다.',
+      message:
+        typeof message === 'string'
+          ? message
+          : ((message as any).message ?? '오류가 발생 했습니다.'),
     };
 
     response.status(status).json(errorResponse);
