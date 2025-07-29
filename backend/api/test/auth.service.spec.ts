@@ -25,6 +25,8 @@ describe('AuthService', () => {
     deletedAt: null,
     point: 0,
     walletId: null,
+    isSubscribed: false,
+    subscriptionUntil: null,
   };
 
   beforeEach(async () => {
@@ -152,7 +154,12 @@ describe('AuthService', () => {
       };
 
       const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-      const newUser = { ...mockUser, ...registerDto, password: hashedPassword };
+      const newUser = {
+        ...mockUser,
+        ...registerDto,
+        password: hashedPassword,
+        birthDate: new Date(registerDto.birthDate),
+      };
       const mockToken = 'mock-jwt-token';
 
       jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(null);

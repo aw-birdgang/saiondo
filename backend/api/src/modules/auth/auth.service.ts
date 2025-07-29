@@ -28,7 +28,7 @@ export class AuthService {
         password: hash,
         name: data.name,
         gender: data.gender,
-        birthDate: new Date(),
+        birthDate: new Date(data.birthDate),
       },
     });
     const payload = { sub: user.id, email: user.email };
@@ -40,6 +40,19 @@ export class AuthService {
       accessToken,
       user: userInfo,
     };
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
   }
 
   async login(data: LoginDto) {

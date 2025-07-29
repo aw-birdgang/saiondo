@@ -17,6 +17,7 @@ PostgreSQL 데이터베이스와 함께 Docker Compose로 전체 서비스를 �
    ```sh
    cd .. # backend 루트
    docker compose up -d
+   docker compose logs -f
    ```
 4. DB 마이그레이션/시드:  
    ```sh

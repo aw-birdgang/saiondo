@@ -55,7 +55,7 @@ export class Web3Service implements OnModuleInit {
   private async startPollingTransferEvents() {
     // 최초 시작 시 마지막 블록을 기록
     if (this.lastBlock === null) {
-      this.lastBlock = await this.provider.getBlockNumber();
+      this.lastBlock ??= await this.provider.getBlockNumber();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises

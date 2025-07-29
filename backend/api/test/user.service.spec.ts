@@ -4,7 +4,7 @@ import { UserService } from '../src/modules/user/user.services';
 import { WalletService } from '../src/modules/wallet/wallet.service';
 import { RedisService } from '../src/common/redis/redis.service';
 import { RelationalUserRepository } from '../src/database/user/infrastructure/persistence/relational/repositories/user.repository';
-import { CreateUserDto } from '../src/modules/user/dto/user.dto';
+import { CreateUserDto, Gender } from '../src/modules/user/dto/user.dto';
 import { User } from '../src/database/user/domain/user';
 
 describe('UserService', () => {
@@ -16,7 +16,7 @@ describe('UserService', () => {
   const mockUser: User = {
     id: 'test-user-id',
     name: 'Test User',
-    gender: 'MALE',
+    gender: Gender.MALE,
     birthDate: new Date('1990-01-01'),
     email: 'test@example.com',
     password: 'hashedPassword',
@@ -87,7 +87,7 @@ describe('UserService', () => {
     it('should create a user successfully', async () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
-        gender: 'MALE',
+        gender: Gender.MALE,
         birthDate: '1990-01-01',
         email: 'test@example.com',
         password: 'password123',
@@ -95,7 +95,7 @@ describe('UserService', () => {
       };
 
       jest.spyOn(userRepository, 'create').mockResolvedValue(mockUser);
-      jest.spyOn(walletService, 'createWalletForUser').mockResolvedValue(undefined);
+      jest.spyOn(walletService, 'createWalletForUser').mockResolvedValue({} as any);
       jest.spyOn(userRepository, 'findById').mockResolvedValue(mockUser);
 
       const result = await service.createUser(createUserDto);
@@ -121,7 +121,7 @@ describe('UserService', () => {
     it('should throw BadRequestException when name is missing', async () => {
       const createUserDto: CreateUserDto = {
         name: '',
-        gender: 'MALE',
+        gender: Gender.MALE,
         birthDate: '1990-01-01',
         email: 'test@example.com',
         password: 'password123',
@@ -134,7 +134,7 @@ describe('UserService', () => {
     it('should throw BadRequestException when gender is missing', async () => {
       const createUserDto: CreateUserDto = {
         name: 'Test User',
-        gender: null,
+        gender: undefined as any,
         birthDate: '1990-01-01',
         email: 'test@example.com',
         password: 'password123',

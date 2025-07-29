@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { LlmService } from '../src/modules/llm/llm.service';
-import { ChatDto } from '../src/modules/llm/dto/chat.dto';
-import { AnalyzeDto } from '../src/modules/llm/dto/analyze.dto';
+import { AnalyzeRequestDto } from '../src/modules/llm/dto/analyze.dto';
+import axios from 'axios';
 
 describe('LlmService', () => {
   let service: LlmService;
@@ -29,102 +29,68 @@ describe('LlmService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('chat', () => {
+  describe('forwardToLLM', () => {
     it('should make chat request to LLM API', async () => {
-      const chatDto: ChatDto = {
-        messages: [{ role: 'user', content: 'Hello, how are you?' }],
-        model: 'gpt-3.5-turbo',
-        temperature: 0.7,
-      };
+      const prompt = 'Hello, how are you?';
+      const model = 'openai';
 
       const mockResponse = {
-        choices: [
-          {
-            message: {
-              content: 'I am doing well, thank you for asking!',
-            },
-          },
-        ],
+        response: 'I am doing well, thank you for asking!',
       };
 
-      // Mock fetch
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        json: jest.fn().mockResolvedValue(mockResponse),
+      // Mock axios
+      jest.spyOn(axios, 'post').mockResolvedValue({ data: mockResponse });
+
+      jest.spyOn(configService, 'getOrThrow').mockReturnValue({
+        llmApiUrl: 'http://localhost:8000',
       });
 
-      jest.spyOn(configService, 'get').mockReturnValue('http://localhost:8000');
+      const result = await service.forwardToLLM(prompt, model);
 
-      const result = await service.chat(chatDto);
-
-      expect(result).toEqual(mockResponse);
-      expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:8000/chat',
-        expect.objectContaining({
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(chatDto),
-        }),
-      );
+      expect(result).toEqual(mockResponse.response);
+      expect(axios.post).toHaveBeenCalledWith('http://localhost:8000/chat', { prompt, model });
     });
 
     it('should throw error when API request fails', async () => {
-      const chatDto: ChatDto = {
-        messages: [{ role: 'user', content: 'Hello' }],
-        model: 'gpt-3.5-turbo',
-        temperature: 0.7,
-      };
+      const prompt = 'Hello';
+      const model = 'openai';
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: false,
-        status: 500,
-        statusText: 'Internal Server Error',
+      jest.spyOn(axios, 'post').mockRejectedValue(new Error('API Error'));
+
+      jest.spyOn(configService, 'getOrThrow').mockReturnValue({
+        llmApiUrl: 'http://localhost:8000',
       });
 
-      jest.spyOn(configService, 'get').mockReturnValue('http://localhost:8000');
-
-      await expect(service.chat(chatDto)).rejects.toThrow('LLM API request failed');
+      await expect(service.forwardToLLM(prompt, model)).rejects.toThrow('API Error');
     });
   });
 
   describe('analyze', () => {
     it('should make analyze request to LLM API', async () => {
-      const analyzeDto: AnalyzeDto = {
-        text: 'Sample text for analysis',
-        analysisType: 'sentiment',
-        model: 'gpt-3.5-turbo',
-        temperature: 0.5,
+      const analyzeDto: AnalyzeRequestDto = {
+        user_prompt: 'Sample user text',
+        partner_prompt: 'Sample partner text',
+        user_gender: 'male',
+        partner_gender: 'female',
+        model: 'openai',
       };
 
       const mockResponse = {
-        analysis: {
-          sentiment: 'positive',
-          confidence: 0.85,
-        },
+        user_traits: 'Sample traits',
+        match_result: 'Sample match',
+        advice: 'Sample advice',
       };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        json: jest.fn().mockResolvedValue(mockResponse),
-      });
+      jest.spyOn(axios, 'post').mockResolvedValue({ data: mockResponse });
 
-      jest.spyOn(configService, 'get').mockReturnValue('http://localhost:8000');
+      jest.spyOn(configService, 'getOrThrow').mockReturnValue({
+        llmApiUrl: 'http://localhost:8000',
+      });
 
       const result = await service.analyze(analyzeDto);
 
       expect(result).toEqual(mockResponse);
-      expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:8000/analyze',
-        expect.objectContaining({
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(analyzeDto),
-        }),
-      );
+      expect(axios.post).toHaveBeenCalledWith('http://localhost:8000/analyze', analyzeDto);
     });
   });
 });

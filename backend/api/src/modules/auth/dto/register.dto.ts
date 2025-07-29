@@ -13,4 +13,7 @@ export class RegisterDto {
 
   @ApiProperty({ example: 'MALE', enum: Gender })
   gender: Gender;
+
+  @ApiProperty({ example: '1990-01-01', description: '생년월일' })
+  birthDate: string;
 }
