@@ -10,9 +10,7 @@ logger = logging.getLogger(__name__)
 class AnalysisCache:
     """분석 결과 캐시 서비스"""
 
-    _cache: Dict[str, Dict[str, Any]] = (
-        {}
-    )  # 메모리 캐시 (실제 운영에서는 Redis 사용 권장)
+    _cache: Dict[str, Dict[str, Any]] = {}  # 메모리 캐시 (실제 운영에서는 Redis 사용 권장)
     _cache_ttl = timedelta(hours=24)  # 24시간 TTL
 
     @classmethod

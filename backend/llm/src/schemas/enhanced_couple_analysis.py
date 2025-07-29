@@ -51,12 +51,8 @@ class UserProfileData(BaseModel):
     name: str = Field(description="이름", examples=["김철수"])
     age: int = Field(ge=18, le=100, description="나이", examples=[28])
     mbti: MBTIType = Field(description="MBTI 성격 유형", examples=[MBTIType.INTJ])
-    interests: List[str] = Field(
-        description="관심사 목록", examples=[["독서", "게임", "영화"]]
-    )
-    personality: str = Field(
-        description="성격 특징", examples=["내향적이고 분석적이며 논리적"]
-    )
+    interests: List[str] = Field(description="관심사 목록", examples=[["독서", "게임", "영화"]])
+    personality: str = Field(description="성격 특징", examples=["내향적이고 분석적이며 논리적"])
     communication_style: CommunicationStyle = Field(
         description="소통 스타일", examples=[CommunicationStyle.LOGICAL]
     )
@@ -66,9 +62,7 @@ class UserProfileData(BaseModel):
     relationship_duration: Optional[int] = Field(
         default=None, ge=0, description="연애 기간(개월)", examples=[24]
     )
-    occupation: Optional[str] = Field(
-        default=None, description="직업", examples=["개발자"]
-    )
+    occupation: Optional[str] = Field(default=None, description="직업", examples=["개발자"])
     education: Optional[str] = Field(
         default=None, description="학력", examples=["대학교 졸업"]
     )
@@ -157,22 +151,16 @@ class PersonalityAnalysisResult(BaseModel):
 class EnhancedCoupleAnalysisResponse(BaseModel):
     summary: str = Field(
         description="커플 관계 요약",
-        examples=[
-            "김철수와 이영희는 서로를 보완하는 관계입니다. 김철수의 논리적 사고와 이영희의 감성적 접근이 조화를 이룹니다."
-        ],
+        examples=["김철수와 이영희는 서로를 보완하는 관계입니다. 김철수의 논리적 사고와 이영희의 감성적 접근이 조화를 이룹니다."],
     )
     advice: str = Field(
         description="주요 조언",
-        examples=[
-            "서로의 차이점을 이해하고 존중하는 시간을 가지세요. 정기적인 대화 시간을 통해 서로의 감정을 공유하세요."
-        ],
+        examples=["서로의 차이점을 이해하고 존중하는 시간을 가지세요. 정기적인 대화 시간을 통해 서로의 감정을 공유하세요."],
     )
     compatibility_score: float = Field(
         ge=0.0, le=100.0, description="궁합 점수 (0-100)", examples=[85.5]
     )
-    personality_analysis: PersonalityAnalysisResult = Field(
-        description="성향 분석 결과"
-    )
+    personality_analysis: PersonalityAnalysisResult = Field(description="성향 분석 결과")
     relationship_insights: List[str] = Field(
         description="관계 인사이트",
         examples=[

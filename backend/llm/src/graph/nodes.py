@@ -37,9 +37,7 @@ def trait_analysis(ctx: MCPContext) -> MCPContext:
 
 def match_analysis(ctx: MCPContext) -> MCPContext:
     partner_mbti = ctx.metadata.get("partner_mbti", "알 수 없음")
-    relationship_duration = ctx.metadata.get(
-        "relationship_duration_months", "알 수 없음"
-    )
+    relationship_duration = ctx.metadata.get("relationship_duration_months", "알 수 없음")
     prompt = (
         f"사용자 성향: {ctx.metadata['user_traits']}\n"
         f"상대방 성향: {ctx.partner_prompt}\n"

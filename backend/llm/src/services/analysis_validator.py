@@ -86,8 +86,7 @@ class AnalysisValidator:
                 ValidationError(
                     field="user_data.mbti",
                     message=(
-                        f"유효하지 않은 MBTI 타입입니다. "
-                        f"유효한 타입: {', '.join(valid_mbti_types)}"
+                        f"유효하지 않은 MBTI 타입입니다. " f"유효한 타입: {', '.join(valid_mbti_types)}"
                     ),
                     code="INVALID_MBTI_TYPE",
                 )
@@ -100,8 +99,7 @@ class AnalysisValidator:
                 ValidationError(
                     field="partner_data.mbti",
                     message=(
-                        f"유효하지 않은 MBTI 타입입니다. "
-                        f"유효한 타입: {', '.join(valid_mbti_types)}"
+                        f"유효하지 않은 MBTI 타입입니다. " f"유효한 타입: {', '.join(valid_mbti_types)}"
                     ),
                     code="INVALID_MBTI_TYPE",
                 )

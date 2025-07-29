@@ -19,9 +19,7 @@ def build_labeling_prompt(categories: dict, messages: list) -> str:
     prompt += "\n메시지 목록:\n"
     for i, msg in enumerate(messages):
         prompt += f"{i+1}. ({msg.sender}) {msg.text}\n"
-    prompt += (
-        "\n각 메시지에 대해 해당되는 카테고리별 라벨을 JSON 형식으로 반환해 주세요."
-    )
+    prompt += "\n각 메시지에 대해 해당되는 카테고리별 라벨을 JSON 형식으로 반환해 주세요."
     return prompt
 
 

@@ -129,9 +129,7 @@ def analyze_communication(request: AnalyzeCommunicationRequest):
         result = personality_service.analyze_communication(request)
         return result
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"소통 스타일 분석 중 오류 발생: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"소통 스타일 분석 중 오류 발생: {str(e)}")
 
 
 @router.post(
@@ -148,9 +146,7 @@ def analyze_love_language(request: AnalyzeLoveLanguageRequest):
         result = personality_service.analyze_love_language(request)
         return result
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"사랑의 언어 분석 중 오류 발생: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"사랑의 언어 분석 중 오류 발생: {str(e)}")
 
 
 @router.post(
@@ -167,9 +163,7 @@ def analyze_behavior(request: AnalyzeBehaviorRequest):
         result = personality_service.analyze_behavior(request)
         return result
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"행동 패턴 분석 중 오류 발생: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"행동 패턴 분석 중 오류 발생: {str(e)}")
 
 
 @router.post(
@@ -186,9 +180,7 @@ def analyze_emotion(request: AnalyzeEmotionRequest):
         result = personality_service.analyze_emotion(request)
         return result
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"감정 상태 분석 중 오류 발생: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"감정 상태 분석 중 오류 발생: {str(e)}")
 
 
 @router.post(
@@ -222,6 +214,4 @@ def generate_feedback(request: FeedbackRequest):
         result = personality_service.generate_feedback(request)
         return result
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"피드백 생성 중 오류 발생: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"피드백 생성 중 오류 발생: {str(e)}")
