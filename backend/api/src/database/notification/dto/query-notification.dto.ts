@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { plainToInstance, Transform, Type } from 'class-transformer';
 
@@ -50,7 +50,9 @@ export class QueryNotificationDto {
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
-  @Transform(({ value }) => (value ? plainToInstance(FilterNotificationDto, JSON.parse(value)) : undefined))
+  @Transform(({ value }) =>
+    value ? plainToInstance(FilterNotificationDto, JSON.parse(value)) : undefined,
+  )
   @ValidateNested()
   @Type(() => FilterNotificationDto)
   filters?: FilterNotificationDto | null;

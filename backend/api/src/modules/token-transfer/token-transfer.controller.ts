@@ -1,6 +1,6 @@
-import {Controller, Get, Param} from '@nestjs/common';
-import {TokenTransferService} from './token-transfer.service';
-import {ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
+import { Controller, Get, Param } from '@nestjs/common';
+import { TokenTransferService } from './token-transfer.service';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('TokenTransfer')
 @Controller('token-transfer')

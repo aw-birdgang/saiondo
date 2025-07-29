@@ -1,6 +1,5 @@
-import { Controller, Post, Body, Param, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get } from '@nestjs/common';
 import { PointService } from './point.service';
-import { PointType } from '@prisma/client';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { EarnPointDto } from './dto/earn-point.dto';
 import { UsePointDto } from './dto/use-point.dto';
@@ -18,10 +17,7 @@ export class PointController {
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiBody({ type: EarnPointDto })
   @ApiResponse({ status: 201, description: '포인트 획득 성공' })
-  async earnPoint(
-    @Param('userId') userId: string,
-    @Body() body: EarnPointDto
-  ) {
+  async earnPoint(@Param('userId') userId: string, @Body() body: EarnPointDto) {
     return this.pointService.earnPoint(userId, body.amount, body.type, body.description);
   }
 
@@ -30,10 +26,7 @@ export class PointController {
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiBody({ type: UsePointDto })
   @ApiResponse({ status: 201, description: '포인트 사용 성공' })
-  async usePoint(
-    @Param('userId') userId: string,
-    @Body() body: UsePointDto
-  ) {
+  async usePoint(@Param('userId') userId: string, @Body() body: UsePointDto) {
     return this.pointService.usePoint(userId, body.amount, body.type, body.description);
   }
 
@@ -42,10 +35,7 @@ export class PointController {
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiBody({ type: AdjustPointDto })
   @ApiResponse({ status: 201, description: '포인트 조정 성공' })
-  async adjustPoint(
-    @Param('userId') userId: string,
-    @Body() body: AdjustPointDto
-  ) {
+  async adjustPoint(@Param('userId') userId: string, @Body() body: AdjustPointDto) {
     return this.pointService.adjustPoint(userId, body.amount, body.description);
   }
 
@@ -61,12 +51,13 @@ export class PointController {
   @ApiOperation({ summary: '포인트를 토큰으로 변환' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiBody({ type: ConvertPointDto })
-  @ApiResponse({ status: 200, description: '트랜잭션 해시 반환', schema: { type: 'object', properties: { txHash: { type: 'string' } } } })
+  @ApiResponse({
+    status: 200,
+    description: '트랜잭션 해시 반환',
+    schema: { type: 'object', properties: { txHash: { type: 'string' } } },
+  })
   // @UseGuards(JwtAuthGuard) // 실제 서비스에서는 인증 필요
-  async convertPointToToken(
-    @Param('userId') userId: string,
-    @Body() dto: ConvertPointDto,
-  ) {
+  async convertPointToToken(@Param('userId') userId: string, @Body() dto: ConvertPointDto) {
     return this.pointService.convertPointToToken(userId, dto.pointAmount);
   }
 
@@ -85,10 +76,7 @@ export class PointController {
       },
     },
   })
-  async convertToPoint(
-    @Param('userId') userId: string,
-    @Body() body: ConvertTokenDto
-  ) {
+  async convertToPoint(@Param('userId') userId: string, @Body() body: ConvertTokenDto) {
     return this.pointService.convertTokenToPoint(userId, body.tokenAmount);
   }
 
@@ -138,10 +126,7 @@ export class PointController {
       },
     },
   })
-  async purchasePoint(
-    @Param('userId') userId: string,
-    @Body() body: { productId: string }
-  ) {
+  async purchasePoint(@Param('userId') userId: string, @Body() body: { productId: string }) {
     // 실제 결제 연동은 별도 구현 필요(이니시스, 카카오페이 등)
     return this.pointService.purchasePoint(userId, body.productId);
   }

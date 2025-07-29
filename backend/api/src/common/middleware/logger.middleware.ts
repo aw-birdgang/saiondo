@@ -13,15 +13,16 @@ export class LoggerMiddleware implements NestMiddleware {
 
     // 요청 로깅 (객체를 JSON 문자열로 변환)
     this.logger.log(
-      `[REQUEST] ${method} ${originalUrl} | ip=${ip} | ua=${userAgent} | body=${JSON.stringify(this.sanitizeBody(req.body))} | query=${JSON.stringify(req.query)} | params=${JSON.stringify(req.params)}`
+      `[REQUEST] ${method} ${originalUrl} | ip=${ip} | ua=${userAgent} | body=${JSON.stringify(this.sanitizeBody(req.body))} | query=${JSON.stringify(req.query)} | params=${JSON.stringify(req.params)}`,
     );
 
     res.on('finish', () => {
       const duration = Date.now() - startTime;
       const { statusCode } = res;
       const contentLength = res.get('content-length');
+
       this.logger.log(
-        `[RESPONSE] ${method} ${originalUrl} - ${statusCode} (${duration}ms) | contentLength=${contentLength}`
+        `[RESPONSE] ${method} ${originalUrl} - ${statusCode} (${duration}ms) | contentLength=${contentLength}`,
       );
     });
 
@@ -33,16 +34,16 @@ export class LoggerMiddleware implements NestMiddleware {
    */
   private sanitizeBody(body: any): any {
     if (!body) return body;
-    
+
     const sanitized = { ...body };
     const sensitiveFields = ['password', 'token', 'secret', 'key'];
-    
+
     sensitiveFields.forEach(field => {
       if (sanitized[field]) {
         sanitized[field] = '[REDACTED]';
       }
     });
-    
+
     return sanitized;
   }
 }

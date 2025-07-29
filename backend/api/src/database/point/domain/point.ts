@@ -1,4 +1,4 @@
-import {PointType} from "@prisma/client";
+import { PointType } from '@prisma/client';
 
 export class Point {
   public id: string;

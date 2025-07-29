@@ -8,10 +8,10 @@ export class ChatbotDetectRequestDto {
   @IsString()
   userId: string;
 
-  @ApiProperty({ 
-    description: '챗봇 대화 데이터', 
+  @ApiProperty({
+    description: '챗봇 대화 데이터',
     example: [{ sender: 'user', text: '오늘 기분 어때?', timestamp: '2024-01-15T14:30:00Z' }],
-    type: [MessageDto]
+    type: [MessageDto],
   })
   @IsArray()
   @ValidateNested({ each: true })

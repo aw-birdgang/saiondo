@@ -1,4 +1,4 @@
-import {CategoryCode} from "../../domain/category-code";
+import { CategoryCode } from '../../domain/category-code';
 
 export abstract class CategoryCodeRepository {
   abstract findById(id: string): Promise<CategoryCode | null>;

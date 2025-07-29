@@ -1,10 +1,10 @@
-import {Injectable} from '@nestjs/common';
-import {FirebaseService} from '../../common/firebase/firebase.service';
-import {PrismaService} from '../../common/prisma/prisma.service';
-import {MessageSender} from '@prisma/client';
-import {ChatService} from "@modules/chat/chat.service";
+import { Injectable } from '@nestjs/common';
+import { FirebaseService } from '../../common/firebase/firebase.service';
+import { PrismaService } from '../../common/prisma/prisma.service';
+import { MessageSender } from '@prisma/client';
+import { ChatService } from '@modules/chat/chat.service';
 import * as admin from 'firebase-admin';
-import {createWinstonLogger} from "@common/logger/winston.logger";
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class PushService {
@@ -30,7 +30,9 @@ export class PushService {
         data,
       };
       const response = await this.firebaseService.messaging.send(message);
+
       this.logger.log(`Push sent: ${response}`);
+
       return response;
     } catch (error) {
       this.logger.error('Push send error', error);
@@ -41,9 +43,11 @@ export class PushService {
   // 유저의 FCM 토큰 조회
   private async getUserFcmToken(userId: string): Promise<string> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
     if (!user?.fcmToken) {
       throw new Error('FCM 토큰이 없습니다.');
     }
+
     return user.fcmToken;
   }
 
@@ -83,6 +87,7 @@ export class PushService {
 
       // 2. 기본 앱 인스턴스 사용 (올바른 방법)
       const app = admin.app();
+
       if (!app) {
         return { ok: false, reason: 'Firebase app instance is null.' };
       }
@@ -94,24 +99,22 @@ export class PushService {
 
       // 4. 인증 객체가 유효한지 (access token 발급 시도)
       await app.options.credential.getAccessToken();
+
       return { ok: true };
     } catch (err: any) {
-      return { ok: false, reason: err.message || String(err) };
+      return { ok: false, reason: err.message ?? String(err) };
     }
   }
 
   // 외부에서 호출하는 메인 함수
-  async sendPushToUser(
-    userId: string,
-    title: string,
-    body: string,
-    data?: Record<string, string>,
-  ) {
+  async sendPushToUser(userId: string, title: string, body: string, data?: Record<string, string>) {
     const fcmToken = await this.getUserFcmToken(userId);
     const pushResult = await this.sendFcmMessage(fcmToken, title, body, data);
+
     this.logger.log(`sendPushToUser: ${pushResult}`);
 
     const assistant = await this.getLatestAssistant(userId);
+
     if (assistant) {
       await this.saveChatHistory(userId, assistant.id, assistant.channelId, body);
     }

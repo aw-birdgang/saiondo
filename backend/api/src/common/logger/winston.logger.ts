@@ -1,4 +1,4 @@
-import { createLogger, format, transports, Logger as WinstonLogger } from 'winston';
+import { createLogger, format, transports, Logger as WinstonLogger, addColors } from 'winston';
 
 // 로그 레벨 정의
 const levels = {
@@ -11,8 +11,9 @@ const levels = {
 
 // 환경에 따른 로그 레벨 설정
 const level = () => {
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV ?? 'development';
   const isDevelopment = env === 'development';
+
   return isDevelopment ? 'debug' : 'warn';
 };
 
@@ -26,24 +27,19 @@ const colors = {
 };
 
 // 색상 추가
-import { addColors } from 'winston';
 addColors(colors);
 
 // 로그 포맷 정의
 const logFormat = format.combine(
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   format.colorize({ all: true }),
-  format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
 );
 
 // 파일 로그 포맷 (색상 제거)
 const fileLogFormat = format.combine(
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-  format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
 );
 
 // Winston 로거 생성
@@ -79,23 +75,23 @@ export class WinstonLoggerWrapper {
   }
 
   log(message: any, context?: string) {
-    this.logger.info(`${context || this.context}: ${message}`);
+    this.logger.info(`${context ?? this.context}: ${message}`);
   }
 
   error(message: any, trace?: string, context?: string) {
-    this.logger.error(`${context || this.context}: ${message}${trace ? `\n${trace}` : ''}`);
+    this.logger.error(`${context ?? this.context}: ${message}${trace ? `\n${trace}` : ''}`);
   }
 
   warn(message: any, context?: string) {
-    this.logger.warn(`${context || this.context}: ${message}`);
+    this.logger.warn(`${context ?? this.context}: ${message}`);
   }
 
   debug(message: any, context?: string) {
-    this.logger.debug(`${context || this.context}: ${message}`);
+    this.logger.debug(`${context ?? this.context}: ${message}`);
   }
 
   verbose(message: any, context?: string) {
-    this.logger.info(`${context || this.context}: ${message}`);
+    this.logger.info(`${context ?? this.context}: ${message}`);
   }
 }
 

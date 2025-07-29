@@ -11,10 +11,10 @@ export class MessageDto {
   @IsString()
   text: string;
 
-  @ApiProperty({ 
-    description: '메시지 타임스탬프', 
+  @ApiProperty({
+    description: '메시지 타임스탬프',
     example: '2024-01-15T14:30:00Z',
-    required: false 
+    required: false,
   })
   @IsOptional()
   @IsDateString()

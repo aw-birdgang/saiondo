@@ -1,4 +1,4 @@
-import {ApiProperty} from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class JoinByInviteDto {
   @ApiProperty({ example: '초대코드' })

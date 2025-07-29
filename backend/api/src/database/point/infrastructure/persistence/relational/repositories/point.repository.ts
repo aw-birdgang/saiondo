@@ -13,13 +13,16 @@ export class RelationalPointRepository extends PointRepository {
 
   async findById(id: string): Promise<Point | null> {
     const prismaPoint = await this.prisma.pointHistory.findUnique({ where: { id } });
+
     if (!prismaPoint) return null;
     const entity = PointMapper.fromPrisma(prismaPoint);
+
     return PointMapper.toDomain(entity);
   }
 
   async findAll(): Promise<Point[]> {
     const prismaPoints = await this.prisma.pointHistory.findMany();
+
     return prismaPoints.map(pc => PointMapper.toDomain(PointMapper.fromPrisma(pc)));
   }
 
@@ -30,18 +33,19 @@ export class RelationalPointRepository extends PointRepository {
       update: {
         userId: entity.userId,
         amount: entity.amount,
-        type: entity.type as PointType,
+        type: entity.type,
         description: entity.description,
       },
       create: {
         id: entity.id,
         userId: entity.userId,
         amount: entity.amount,
-        type: entity.type as PointType,
+        type: entity.type,
         description: entity.description,
         createdAt: entity.createdAt,
       },
     });
+
     return PointMapper.toDomain(PointMapper.fromPrisma(prismaPoint));
   }
 
@@ -63,4 +67,4 @@ export class RelationalPointRepository extends PointRepository {
       orderBy: { createdAt: 'desc' },
     });
   }
-} 
+}

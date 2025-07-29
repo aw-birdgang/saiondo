@@ -1,6 +1,6 @@
-import {Injectable, NotFoundException, BadRequestException} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {LlmService} from '@modules/llm/llm.service';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { LlmService } from '@modules/llm/llm.service';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
@@ -17,7 +17,9 @@ export class CoupleAnalysisService {
       where: { channelId },
       orderBy: { createdAt: 'desc' },
     });
+
     if (!analyses.length) throw new NotFoundException('분석 정보가 없습니다.');
+
     return analyses;
   }
 
@@ -27,7 +29,9 @@ export class CoupleAnalysisService {
       where: { channelId },
       orderBy: { createdAt: 'desc' },
     });
+
     if (!analysis) throw new NotFoundException('분석 정보가 없습니다.');
+
     return analysis;
   }
 
@@ -38,6 +42,7 @@ export class CoupleAnalysisService {
       where: { id: channelId },
       include: { members: { include: { user: true } } },
     });
+
     if (!channel) throw new BadRequestException('채널 없음');
 
     // 2. 역할별 멤버 추출
@@ -89,30 +94,29 @@ export class CoupleAnalysisService {
     function personaSummary(personas: any[], userLabel: string) {
       if (!personas.length) {
         this.logger.log(`[personaSummary][${userLabel}] 없음`);
+
         return '없음';
       }
       const summary = personas
         .map(
-          (p) =>
-            `${p.categoryCode.description || p.categoryCode.code}: ${p.content} (${p.source === 'USER_INPUT' ? '직접입력' : 'AI분석'})`
+          p =>
+            `${p.categoryCode.description ?? p.categoryCode.code}: ${p.content} (${p.source === 'USER_INPUT' ? '직접입력' : 'AI분석'})`,
         )
         .join(', ');
+
       this.logger.log(`[personaSummary][${userLabel}] ${summary}`);
+
       return summary;
     }
 
     const user1PersonaSummary = personaSummary.call(this, user1Personas, 'user1');
     const user2PersonaSummary = personaSummary.call(this, user2Personas, 'user2');
 
-    const user1MbtiProfile = user1Personas.find(
-      (p) => p.categoryCode.code === 'MBTI'
-    );
-    const user1Mbti = user1MbtiProfile?.content || '미입력';
+    const user1MbtiProfile = user1Personas.find(p => p.categoryCode.code === 'MBTI');
+    const user1Mbti = user1MbtiProfile?.content ?? '미입력';
 
-    const user2MbtiProfile = user2Personas.find(
-      (p) => p.categoryCode.code === 'MBTI'
-    );
-    const user2Mbti = user2MbtiProfile?.content || '미입력';
+    const user2MbtiProfile = user2Personas.find(p => p.categoryCode.code === 'MBTI');
+    const user2Mbti = user2MbtiProfile?.content ?? '미입력';
 
     const user1Profile = `
 이름: ${user1Name}

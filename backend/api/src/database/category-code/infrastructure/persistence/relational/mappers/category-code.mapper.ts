@@ -1,6 +1,6 @@
 import { CategoryCodeEntity } from '../entities/category-code.entity';
 import { CategoryCode as PrismaCategoryCode } from '@prisma/client';
-import {CategoryCode} from "../../../../domain/category-code";
+import { CategoryCode } from '../../../../domain/category-code';
 
 export class CategoryCodeMapper {
   static fromPrisma(prisma: PrismaCategoryCode): CategoryCode {

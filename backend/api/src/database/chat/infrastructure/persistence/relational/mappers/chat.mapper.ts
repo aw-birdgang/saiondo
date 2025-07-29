@@ -19,6 +19,7 @@ export class ChatMapper {
   // Entity → 도메인
   static toDomain(entity: ChatEntity): Chat {
     const chat = new Chat();
+
     chat.id = entity.id;
     chat.assistantId = entity.assistantId;
     chat.channelId = entity.channelId;
@@ -26,6 +27,7 @@ export class ChatMapper {
     chat.sender = entity.sender;
     chat.message = entity.message;
     chat.createdAt = entity.createdAt;
+
     return chat;
   }
 

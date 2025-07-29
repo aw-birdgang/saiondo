@@ -46,7 +46,7 @@ export class WalletController {
   })
   @ApiResponse({ status: 201, type: WalletDto, description: '생성된 지갑 정보 반환' })
   async createWallet(@Body() body: { userId: string; index?: number }) {
-    return this.walletService.createWalletForUser(body.userId,);
+    return this.walletService.createWalletForUser(body.userId);
   }
 
   @Post('random')
@@ -104,7 +104,11 @@ export class WalletController {
   @Get(':walletId/decrypted')
   @ApiOperation({ summary: '지갑 정보(복호화) 조회' })
   @ApiParam({ name: 'walletId', description: '지갑 ID', type: 'string' })
-  @ApiResponse({ status: 200, type: WalletDto, description: '복호화된 mnemonic, privateKey 포함 지갑 정보 반환' })
+  @ApiResponse({
+    status: 200,
+    type: WalletDto,
+    description: '복호화된 mnemonic, privateKey 포함 지갑 정보 반환',
+  })
   async getDecryptedWallet(@Param('walletId') walletId: string) {
     return this.walletService.getDecryptedWallet(walletId);
   }

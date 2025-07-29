@@ -9,6 +9,7 @@ type PrismaWalletWithRelations = PrismaWallet & {
 export class WalletMapper {
   static fromPrisma(prisma: PrismaWalletWithRelations): Wallet {
     const wallet = new Wallet();
+
     wallet.id = prisma.id;
     wallet.address = prisma.address;
     wallet.mnemonic = prisma.mnemonic;
@@ -18,11 +19,13 @@ export class WalletMapper {
     wallet.createdAt = prisma.createdAt;
     wallet.updatedAt = prisma.updatedAt;
     wallet.user = prisma.user ?? undefined;
+
     return wallet;
   }
 
   static toDomain(entity: WalletEntity): Wallet {
     const wallet = new Wallet();
+
     wallet.id = entity.id;
     wallet.address = entity.address;
     wallet.mnemonic = entity.mnemonic;
@@ -32,6 +35,7 @@ export class WalletMapper {
     wallet.createdAt = entity.createdAt;
     wallet.updatedAt = entity.updatedAt;
     wallet.user = entity.user;
+
     return wallet;
   }
 
@@ -48,4 +52,4 @@ export class WalletMapper {
       user: domain.user,
     } as WalletEntity;
   }
-} 
+}

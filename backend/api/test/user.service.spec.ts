@@ -128,9 +128,7 @@ describe('UserService', () => {
         fcmToken: 'test-fcm-token',
       };
 
-      await expect(service.createUser(createUserDto)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.createUser(createUserDto)).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException when gender is missing', async () => {
@@ -143,9 +141,7 @@ describe('UserService', () => {
         fcmToken: 'test-fcm-token',
       };
 
-      await expect(service.createUser(createUserDto)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.createUser(createUserDto)).rejects.toThrow(BadRequestException);
     });
   });
 

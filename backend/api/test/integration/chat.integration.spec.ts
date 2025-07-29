@@ -8,6 +8,7 @@ import { ChatService } from '../../src/modules/chat/chat.service';
 describe('Chat Integration Tests', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let chatService: ChatService;
 
   beforeAll(async () => {
@@ -65,10 +66,7 @@ describe('Chat Integration Tests', () => {
         sender: 'USER',
       };
 
-      const response = await request(app.getHttpServer())
-        .post('/chat')
-        .send(chatData)
-        .expect(201);
+      const response = await request(app.getHttpServer()).post('/chat').send(chatData).expect(201);
 
       expect(response.body).toHaveProperty('id');
       expect(response.body.message).toBe(chatData.message);
@@ -81,10 +79,7 @@ describe('Chat Integration Tests', () => {
         message: '', // 빈 메시지
       };
 
-      await request(app.getHttpServer())
-        .post('/chat')
-        .send(invalidChatData)
-        .expect(400);
+      await request(app.getHttpServer()).post('/chat').send(invalidChatData).expect(400);
     });
   });
 
@@ -131,9 +126,7 @@ describe('Chat Integration Tests', () => {
         },
       });
 
-      const response = await request(app.getHttpServer())
-        .get(`/chat/${channel.id}`)
-        .expect(200);
+      const response = await request(app.getHttpServer()).get(`/chat/${channel.id}`).expect(200);
 
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body.length).toBe(2);
@@ -142,9 +135,7 @@ describe('Chat Integration Tests', () => {
     });
 
     it('should return 404 for non-existent channel', async () => {
-      await request(app.getHttpServer())
-        .get('/chat/non-existent-channel')
-        .expect(404);
+      await request(app.getHttpServer()).get('/chat/non-existent-channel').expect(404);
     });
   });
 });

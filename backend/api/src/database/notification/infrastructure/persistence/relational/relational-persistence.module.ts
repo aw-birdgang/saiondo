@@ -3,12 +3,7 @@ import { RelationalNotificationRepository } from './repositories/notification.re
 import { PrismaService } from '@common/prisma/prisma.service';
 
 @Module({
-  providers: [
-    PrismaService,
-    RelationalNotificationRepository,
-  ],
-  exports: [
-    RelationalNotificationRepository,
-  ],
+  providers: [PrismaService, RelationalNotificationRepository],
+  exports: [RelationalNotificationRepository],
 })
 export class RelationalNotificationPersistenceModule {}

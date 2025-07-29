@@ -1,8 +1,8 @@
-import {Injectable} from '@nestjs/common';
-import {LlmService} from '../llm/llm.service';
-import {PersonaProfileService} from '../persona-profile/persona-profile.service';
-import {CoupleAnalysisService} from '../couple-analysis/couple-analysis.service';
-import {AdviceService} from '../advice/advice.service';
+import { Injectable } from '@nestjs/common';
+import { LlmService } from '../llm/llm.service';
+import { PersonaProfileService } from '../persona-profile/persona-profile.service';
+import { CoupleAnalysisService } from '../couple-analysis/couple-analysis.service';
+import { AdviceService } from '../advice/advice.service';
 import {
   AnalyzeBehaviorRequestDto,
   AnalyzeBehaviorResponseDto,
@@ -21,8 +21,8 @@ import {
   FeedbackRequestDto,
   FeedbackResponseDto,
 } from './dto';
-import {LLMResponseUtil} from "../../common/utils/llm-response.util";
-import {createWinstonLogger} from "@common/logger/winston.logger";
+import { LLMResponseUtil } from '../../common/utils/llm-response.util';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class PersonalityService {
@@ -35,15 +35,19 @@ export class PersonalityService {
     private readonly adviceService: AdviceService,
   ) {}
 
-  async analyzeConversation(body: AnalyzeConversationRequestDto): Promise<AnalyzeConversationResponseDto> {
+  async analyzeConversation(
+    body: AnalyzeConversationRequestDto,
+  ): Promise<AnalyzeConversationResponseDto> {
     try {
-      this.logger.log(`[Personality] 대화 분석 시작: userId=${body.userId}, partnerId=${body.partnerId || '없음'}`);
+      this.logger.log(
+        `[Personality] 대화 분석 시작: userId=${body.userId}, partnerId=${body.partnerId ?? '없음'}`,
+      );
 
       const prompt = `당신은 전문적인 성향 분석가입니다.
 
 [분석할 대화]
 사용자: ${body.userId}
-상대방: ${body.partnerId || '없음'}
+상대방: ${body.partnerId ?? '없음'}
 대화 내용:
 ${body.messages.map(msg => `${msg.sender}: ${msg.text}`).join('\n')}
 
@@ -69,7 +73,9 @@ JSON 형식으로만 응답하세요:
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         personalityTraits: {},
@@ -86,9 +92,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 대화 분석 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 대화 분석 실패: userId=${body.userId}`, error);
+
       return {
         personalityTraits: { trait: '분석 실패', score: 0.5 },
         feedback: '분석 중 오류가 발생했습니다.',
@@ -127,7 +135,9 @@ JSON 형식으로만 응답하세요:
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] MBTI LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] MBTI LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] MBTI LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         mbti: '분석 실패',
@@ -144,9 +154,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] MBTI 분석 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] MBTI 분석 실패: userId=${body.userId}`, error);
+
       return {
         mbti: '분석 실패',
         description: '분석 중 오류가 발생했습니다.',
@@ -155,7 +167,9 @@ JSON 형식으로만 응답하세요:
     }
   }
 
-  async analyzeCommunication(body: AnalyzeCommunicationRequestDto): Promise<AnalyzeCommunicationResponseDto> {
+  async analyzeCommunication(
+    body: AnalyzeCommunicationRequestDto,
+  ): Promise<AnalyzeCommunicationResponseDto> {
     try {
       this.logger.log(`[Personality] 소통 스타일 분석 시작: userId=${body.userId}`);
 
@@ -176,12 +190,16 @@ JSON 형식으로만 응답하세요:
   "feedback": "개선을 위한 피드백"
 }`;
 
-      this.logger.log(`[Personality] 소통 스타일 LLM 요청 프롬프트: ${prompt.substring(0, 200)}...`);
+      this.logger.log(
+        `[Personality] 소통 스타일 LLM 요청 프롬프트: ${prompt.substring(0, 200)}...`,
+      );
 
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] 소통 스타일 LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] 소통 스타일 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] 소통 스타일 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         style: '분석 실패',
@@ -198,9 +216,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 소통 스타일 분석 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 소통 스타일 분석 실패: userId=${body.userId}`, error);
+
       return {
         style: '분석 실패',
         description: '분석 중 오류가 발생했습니다.',
@@ -209,7 +229,9 @@ JSON 형식으로만 응답하세요:
     }
   }
 
-  async analyzeLoveLanguage(body: AnalyzeLoveLanguageRequestDto): Promise<AnalyzeLoveLanguageResponseDto> {
+  async analyzeLoveLanguage(
+    body: AnalyzeLoveLanguageRequestDto,
+  ): Promise<AnalyzeLoveLanguageResponseDto> {
     try {
       this.logger.log(`[Personality] 사랑의 언어 분석 시작: userId=${body.userId}`);
 
@@ -233,12 +255,16 @@ JSON 형식으로만 응답하세요:
   }
 }`;
 
-      this.logger.log(`[Personality] 사랑의 언어 LLM 요청 프롬프트: ${prompt.substring(0, 200)}...`);
+      this.logger.log(
+        `[Personality] 사랑의 언어 LLM 요청 프롬프트: ${prompt.substring(0, 200)}...`,
+      );
 
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] 사랑의 언어 LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] 사랑의 언어 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] 사랑의 언어 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         mainLanguage: '분석 실패',
@@ -255,9 +281,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 사랑의 언어 분석 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 사랑의 언어 분석 실패: userId=${body.userId}`, error);
+
       return {
         mainLanguage: '분석 실패',
         description: '분석 중 오류가 발생했습니다.',
@@ -292,7 +320,9 @@ JSON 형식으로만 응답하세요:
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] 행동 패턴 LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] 행동 패턴 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] 행동 패턴 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         pattern: '분석 실패',
@@ -309,9 +339,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 행동 패턴 분석 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 행동 패턴 분석 실패: userId=${body.userId}`, error);
+
       return {
         pattern: '분석 실패',
         description: '분석 중 오류가 발생했습니다.',
@@ -346,7 +378,9 @@ JSON 형식으로만 응답하세요:
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] 감정 상태 LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] 감정 상태 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] 감정 상태 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         emotion: '분석 실패',
@@ -363,9 +397,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 감정 상태 분석 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 감정 상태 분석 실패: userId=${body.userId}`, error);
+
       return {
         emotion: '분석 실패',
         description: '분석 중 오류가 발생했습니다.',
@@ -376,16 +412,21 @@ JSON 형식으로만 응답하세요:
 
   async getProfile(userId: string) {
     this.logger.log(`[Personality] 프로필 조회: userId=${userId}`);
+
     return this.personaProfileService.findByUserId(userId);
   }
 
   async updateProfile(body: any) {
-    this.logger.log(`[Personality] 프로필 업데이트: userId=${body.userId}, categoryCodeId=${body.categoryCodeId}`);
+    this.logger.log(
+      `[Personality] 프로필 업데이트: userId=${body.userId}, categoryCodeId=${body.categoryCodeId}`,
+    );
+
     return this.personaProfileService.update(body.userId, body.categoryCodeId, body);
   }
 
   async getRelationshipReport(channelId: string) {
     this.logger.log(`[Personality] 관계 리포트 조회: channelId=${channelId}`);
+
     return this.coupleAnalysisService.getLatestAnalysis(channelId);
   }
 
@@ -417,7 +458,9 @@ JSON 형식으로만 응답하세요:
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] 챗봇 탐지 LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] 챗봇 탐지 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] 챗봇 탐지 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         detectedTraits: {},
@@ -432,9 +475,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 챗봇 탐지 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 챗봇 탐지 실패: userId=${body.userId}`, error);
+
       return {
         detectedTraits: { trait: '분석 실패', score: 0.5 },
         feedback: '분석 중 오류가 발생했습니다.',
@@ -444,13 +489,15 @@ JSON 형식으로만 응답하세요:
 
   async feedback(body: FeedbackRequestDto): Promise<FeedbackResponseDto> {
     try {
-      this.logger.log(`[Personality] 피드백 생성 시작: userId=${body.userId}, partnerId=${body.partnerId || '없음'}`);
+      this.logger.log(
+        `[Personality] 피드백 생성 시작: userId=${body.userId}, partnerId=${body.partnerId ?? '없음'}`,
+      );
 
       const prompt = `당신은 전문적인 관계 상담사입니다.
 
 [분석할 상황]
 사용자: ${body.userId}
-상대방: ${body.partnerId || '없음'}
+상대방: ${body.partnerId ?? '없음'}
 상황: ${JSON.stringify(body.data)}
 
 [분석 요청]
@@ -468,7 +515,9 @@ JSON 형식으로만 응답하세요:
       const response = await this.llmService.analyze({ answer: prompt });
 
       this.logger.log(`[Personality] 피드백 LLM 원본 응답: ${JSON.stringify(response)}`);
-      this.logger.log(`[Personality] 피드백 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`);
+      this.logger.log(
+        `[Personality] 피드백 LLM 응답 타입: ${typeof response}, 응답 길이: ${typeof response === 'string' ? response.length : 'N/A'}`,
+      );
 
       const result = LLMResponseUtil.getFields(response, {
         feedback: '분석 중 오류가 발생했습니다.',
@@ -483,9 +532,11 @@ JSON 형식으로만 응답하세요:
       };
 
       this.logger.log(`[Personality] 피드백 생성 완료: ${JSON.stringify(finalResult)}`);
+
       return finalResult;
     } catch (error) {
       this.logger.error(`[Personality] 피드백 생성 실패: userId=${body.userId}`, error);
+
       return {
         feedback: '분석 중 오류가 발생했습니다.',
         recommendation: '',

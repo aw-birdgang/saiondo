@@ -33,8 +33,10 @@ export class BasicQuestionWithAnswerDto {
       question: question.question,
       description: question.description ?? undefined,
       options: question.options ?? [],
-      createdAt: question.createdAt instanceof Date ? question.createdAt.toISOString() : question.createdAt,
-      updatedAt: question.updatedAt instanceof Date ? question.updatedAt.toISOString() : question.updatedAt,
+      createdAt:
+        question.createdAt instanceof Date ? question.createdAt.toISOString() : question.createdAt,
+      updatedAt:
+        question.updatedAt instanceof Date ? question.updatedAt.toISOString() : question.updatedAt,
       answer: answer ? BasicAnswerResponseDto.fromEntity(answer) : null,
     };
   }

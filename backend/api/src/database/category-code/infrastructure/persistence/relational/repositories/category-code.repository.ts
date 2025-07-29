@@ -1,8 +1,8 @@
-import {Injectable, Logger} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {CategoryCodeMapper} from '../mappers/category-code.mapper';
-import {CategoryCodeRepository} from "../../category-code.repository";
-import {CategoryCode} from "../../../../domain/category-code";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { CategoryCodeMapper } from '../mappers/category-code.mapper';
+import { CategoryCodeRepository } from '../../category-code.repository';
+import { CategoryCode } from '../../../../domain/category-code';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
@@ -15,14 +15,19 @@ export class RelationalCategoryCodeRepository extends CategoryCodeRepository {
 
   async findById(id: string): Promise<CategoryCode | null> {
     const prismaCategoryCode = await this.prisma.categoryCode.findUnique({ where: { id } });
+
     if (!prismaCategoryCode) return null;
     const entity = CategoryCodeMapper.fromPrisma(prismaCategoryCode);
+
     return CategoryCodeMapper.toDomain(entity);
   }
 
   async findAll(): Promise<CategoryCode[]> {
     const prismaCategoryCodes = await this.prisma.categoryCode.findMany();
-    return prismaCategoryCodes.map(pc => CategoryCodeMapper.toDomain(CategoryCodeMapper.fromPrisma(pc)));
+
+    return prismaCategoryCodes.map(pc =>
+      CategoryCodeMapper.toDomain(CategoryCodeMapper.fromPrisma(pc)),
+    );
   }
 
   async save(categoryCode: CategoryCode): Promise<CategoryCode> {
@@ -42,6 +47,7 @@ export class RelationalCategoryCodeRepository extends CategoryCodeRepository {
         updatedAt: entity.updatedAt,
       },
     });
+
     return CategoryCodeMapper.toDomain(CategoryCodeMapper.fromPrisma(prismaCategoryCode));
   }
 

@@ -1,5 +1,5 @@
 export class SubscriptionPlanDto {
-    plan: string;
-    price: number;
-    periodDays: number;
-  }
+  plan: string;
+  price: number;
+  periodDays: number;
+}

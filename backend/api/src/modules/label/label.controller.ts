@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { LabelService } from './label.service';
-import { CreateLabelCategoryDto } from "@modules/label/dto/create-label-category.dto";
-import { CreateLabelDto } from "@modules/label/dto/create-label.dto";
-import { CreateMessageLabelDto } from "@modules/label/dto/create-message-label.dto";
+import { CreateLabelCategoryDto } from '@modules/label/dto/create-label-category.dto';
+import { CreateLabelDto } from '@modules/label/dto/create-label.dto';
+import { CreateMessageLabelDto } from '@modules/label/dto/create-message-label.dto';
 import { ApiTags, ApiOperation, ApiBody, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('Label')

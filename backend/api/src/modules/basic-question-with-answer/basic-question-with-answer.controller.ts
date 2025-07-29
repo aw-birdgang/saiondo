@@ -1,11 +1,18 @@
 import {
-  Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { BasicQuestionWithAnswerService } from './basic-question-with-answer.service';
-import {CreateBasicQuestionDto, UpdateBasicQuestionDto} from './dto/create-basic-question.dto';
-import {
-  ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags,
-} from '@nestjs/swagger';
+import { CreateBasicQuestionDto, UpdateBasicQuestionDto } from './dto/create-basic-question.dto';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BasicQuestionResponseDto } from './dto/basic-question-response.dto';
 import { CreateBasicAnswerDto } from './dto/create-basic-answer.dto';
 import {
@@ -30,6 +37,7 @@ export class BasicQuestionWithAnswerController {
     if (!dto.userId || !dto.questionId || !dto.answer) {
       throw new BadRequestException('필수값 누락');
     }
+
     return this.service.createOrUpdateAnswer(dto);
   }
 
@@ -54,11 +62,13 @@ export class BasicQuestionWithAnswerController {
   @ApiResponse({ status: 200, description: '유저의 특정 질문 답변', type: BasicAnswerResponseDto })
   @Get('answer/user/:userId/question/:questionId')
   async getAnswerByUserAndQuestion(
-      @Query('userId') userId: string,
-      @Query('questionId') questionId: string,
+    @Query('userId') userId: string,
+    @Query('questionId') questionId: string,
   ): Promise<BasicAnswerResponseDto> {
     const entity = await this.service.getAnswerByUserAndQuestion(userId, questionId);
+
     if (!entity) throw new NotFoundException('답변을 찾을 수 없습니다.');
+
     return BasicAnswerResponseDto.fromEntity(entity);
   }
 
@@ -110,7 +120,9 @@ export class BasicQuestionWithAnswerController {
   @Get('questions/:id')
   async getQuestionById(@Param('id') id: string): Promise<BasicQuestionResponseDto> {
     const entity = await this.service.getQuestionById(id);
+
     if (!entity) throw new NotFoundException('질문을 찾을 수 없습니다.');
+
     return entity;
   }
 

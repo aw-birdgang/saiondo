@@ -6,7 +6,7 @@ export class AnalyzeMbtiRequestDto {
   @IsString()
   userId: string;
 
-  @ApiProperty({ description: '설문/대화 데이터', example: { answers: [1,2,3,4] } })
+  @ApiProperty({ description: '설문/대화 데이터', example: { answers: [1, 2, 3, 4] } })
   @IsObject()
   data: any;
 }

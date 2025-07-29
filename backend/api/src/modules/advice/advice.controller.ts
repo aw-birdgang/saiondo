@@ -1,8 +1,8 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
-import {AdviceService} from './advice.service';
-import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {Advice} from '@prisma/client';
-import {UpdateAdviceDto} from './dto/update-advice.dto';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { AdviceService } from './advice.service';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Advice } from '@prisma/client';
+import { UpdateAdviceDto } from './dto/update-advice.dto';
 
 @ApiTags('Advice')
 @Controller('advice')
@@ -19,36 +19,28 @@ export class AdviceController {
   @Get(':adviceId')
   @ApiOperation({ summary: 'adviceId로 조언 단건 조회' })
   @ApiResponse({ status: 200, description: '단일 조언 반환' })
-  async getAdviceById(
-      @Param('adviceId') adviceId: string,
-  ): Promise<Advice | null> {
+  async getAdviceById(@Param('adviceId') adviceId: string): Promise<Advice | null> {
     return this.adviceService.getAdviceById(adviceId);
   }
 
   @Post('channel/:channelId')
   @ApiOperation({ summary: '조언 생성' })
   @ApiResponse({ status: 201, description: '생성된 조언 반환' })
-  async createAdvice(
-    @Param('channelId') channelId: string,
-  ): Promise<Advice> {
+  async createAdvice(@Param('channelId') channelId: string): Promise<Advice> {
     return this.adviceService.createAdvice(channelId);
   }
 
   @Get('channel/:channelId')
   @ApiOperation({ summary: '리포트 조회' })
   @ApiResponse({ status: 200, description: '리포트 목록 반환' })
-  async getAdviceHistory(
-    @Param('channelId') channelId: string,
-  ): Promise<Advice[]> {
+  async getAdviceHistory(@Param('channelId') channelId: string): Promise<Advice[]> {
     return this.adviceService.getAdviceHistory(channelId);
   }
 
   @Get('channel/:channelId/latest')
   @ApiOperation({ summary: '채널의 최신 조언 1개 조회' })
   @ApiResponse({ status: 200, description: '최신 조언 반환' })
-  async getLatestAdvice(
-    @Param('channelId') channelId: string,
-  ): Promise<Advice | null> {
+  async getLatestAdvice(@Param('channelId') channelId: string): Promise<Advice | null> {
     return this.adviceService.getLatestAdvice(channelId);
   }
 

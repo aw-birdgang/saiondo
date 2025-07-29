@@ -1,6 +1,4 @@
-import { 
-  Body, Controller, Get, Param, Post, Patch, Delete, Query, Req, UseGuards 
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Patch, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from '../../database/notification/dto/create-notification.dto';

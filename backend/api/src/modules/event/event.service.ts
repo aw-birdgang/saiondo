@@ -1,7 +1,7 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {CreateEventDto} from './dto/create-event.dto';
-import {UpdateEventDto} from './dto/update-event.dto';
-import {PrismaService} from "@common/prisma/prisma.service";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
+import { PrismaService } from '@common/prisma/prisma.service';
 
 @Injectable()
 export class EventService {
@@ -34,13 +34,17 @@ export class EventService {
 
   async findOne(id: string) {
     const event = await this.prisma.event.findUnique({ where: { id } });
+
     if (!event) throw new NotFoundException('Event not found');
+
     return event;
   }
 
   async findOneByUser(userId: string, id: string) {
     const event = await this.prisma.event.findUnique({ where: { id } });
+
     if (!event || event.userId !== userId) throw new NotFoundException('Event not found');
+
     return event;
   }
 
@@ -50,6 +54,7 @@ export class EventService {
 
   async update(userId: string, id: string, dto: UpdateEventDto) {
     await this.findOneByUser(userId, id); // 권한 체크
+
     return this.prisma.event.update({
       where: { id },
       data: { ...dto },
@@ -58,6 +63,7 @@ export class EventService {
 
   async remove(userId: string, id: string) {
     await this.findOneByUser(userId, id); // 권한 체크
+
     return this.prisma.event.delete({ where: { id } });
   }
 }

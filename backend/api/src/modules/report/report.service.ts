@@ -34,15 +34,16 @@ export class ReportService {
           },
         },
       });
+
       if (!channel) throw new Error('채널을 찾을 수 없습니다.');
 
       // 2. 멤버 정보 및 페르소나 요약
-      const members = channel.members.map((m) => ({
+      const members = channel.members.map(m => ({
         name: m.user.name,
         gender: m.user.gender,
         birthDate: m.user.birthDate,
-        personas: m.user.personaProfiles.map((p) => ({
-          category: p.categoryCode.description || p.categoryCode.code,
+        personas: m.user.personaProfiles.map(p => ({
+          category: p.categoryCode.description ?? p.categoryCode.code,
           content: p.content,
           confidence: p.confidenceScore,
         })),

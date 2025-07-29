@@ -5,4 +5,4 @@ export abstract class PointRepository {
   abstract findAll(): Promise<Point[]>;
   abstract save(point: Point): Promise<Point>;
   abstract delete(id: string): Promise<void>;
-} 
+}

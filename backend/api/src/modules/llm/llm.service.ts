@@ -1,16 +1,13 @@
-import {Injectable} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import {ConfigService} from '@nestjs/config';
-import {AllConfigType} from '../../config/config.type';
-import {AnalyzeRequestDto} from './dto/analyze.dto';
-import {AnalyzeAnswerDto} from '@modules/llm/dto/analyze-answer.dto';
-import { 
-  loadPromptTemplate, 
-  fillPromptTemplate 
-} from "@common/utils/prompt.util";
-import { summarizeChatHistory } from "@common/utils/chat.util";
-import {SuggestedFieldsService} from '../suggested-fields/suggested-fields.service';
-import {ChatQARelationshipCoachRequestDto} from "@modules/chat/dto/chat_qa_relationship-coach.dto";
+import { ConfigService } from '@nestjs/config';
+import { AllConfigType } from '../../config/config.type';
+import { AnalyzeRequestDto } from './dto/analyze.dto';
+import { AnalyzeAnswerDto } from '@modules/llm/dto/analyze-answer.dto';
+import { loadPromptTemplate } from '@common/utils/prompt.util';
+import { summarizeChatHistory } from '@common/utils/chat.util';
+import { SuggestedFieldsService } from '../suggested-fields/suggested-fields.service';
+import { ChatQARelationshipCoachRequestDto } from '@modules/chat/dto/chat_qa_relationship-coach.dto';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
 /**
@@ -44,60 +41,79 @@ export class LlmService {
     try {
       this.logger.log(`[LLM] forwardToLLM 요청: model=${model}, prompt 길이=${prompt.length}`);
       this.logger.debug(`[LLM] forwardToLLM 프롬프트: ${prompt.substring(0, 200)}...`);
-      
+
       const requestData = { prompt, model };
+
       this.logger.debug(`[LLM] forwardToLLM 요청 데이터: ${JSON.stringify(requestData)}`);
-      
+
       const { data } = await axios.post(`${this.llmApiUrl}/chat`, requestData);
-      
-      this.logger.log(`[LLM] forwardToLLM 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length || 'N/A'}`);
-      this.logger.debug(`[LLM] forwardToLLM 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`);
-      
+
+      this.logger.log(
+        `[LLM] forwardToLLM 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length ?? 'N/A'}`,
+      );
+      this.logger.debug(
+        `[LLM] forwardToLLM 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`,
+      );
+
       return data.response;
     } catch (error: any) {
-      this.logger.error(`[LLM] forwardToLLM 호출 실패: model=${model}, error=${error.message}`, error);
+      this.logger.error(
+        `[LLM] forwardToLLM 호출 실패: model=${model}, error=${error.message}`,
+        error,
+      );
       throw error;
     }
   }
 
   async forwardToLLMQAForChatRelationshipCoach(
-    body: ChatQARelationshipCoachRequestDto
+    body: ChatQARelationshipCoachRequestDto,
   ): Promise<string> {
     try {
-      this.logger.log(`[LLM] RelationshipCoach 요청: model=${body.model}, messages 개수=${body.messages.length}`);
-      
+      this.logger.log(
+        `[LLM] RelationshipCoach 요청: model=${body.model}, messages 개수=${body.messages.length}`,
+      );
+
       // 프롬프트 템플릿 로드 및 변수 치환
       let systemPrompt = loadPromptTemplate('chat_qa_relationship_coach');
+
       systemPrompt = systemPrompt
         .replace('{{profile}}', JSON.stringify(body.profile))
         .replace('{{chat_history}}', summarizeChatHistory(body.chat_history));
 
-      this.logger.debug(`[LLM] RelationshipCoach 시스템 프롬프트: ${systemPrompt.substring(0, 300)}...`);
+      this.logger.debug(
+        `[LLM] RelationshipCoach 시스템 프롬프트: ${systemPrompt.substring(0, 300)}...`,
+      );
 
       // 메시지 배열 구성
-      const messages = [
-        { role: 'system', content: systemPrompt },
-        ...body.messages,
-      ];
-      
-      this.logger.debug(`[LLM] RelationshipCoach 메시지 배열: ${JSON.stringify(messages, null, 2)}`);
-      
+      const messages = [{ role: 'system', content: systemPrompt }, ...body.messages];
+
+      this.logger.debug(
+        `[LLM] RelationshipCoach 메시지 배열: ${JSON.stringify(messages, null, 2)}`,
+      );
+
       const requestData = {
         messages,
         model: body.model,
-        response_format: { type: "json_object" }
+        response_format: { type: 'json_object' },
       };
-      
+
       this.logger.debug(`[LLM] RelationshipCoach 요청 데이터: ${JSON.stringify(requestData)}`);
-      
+
       const { data } = await axios.post(`${this.llmApiUrl}/chat-relationship-coach`, requestData);
-      
-      this.logger.log(`[LLM] RelationshipCoach 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length || 'N/A'}`);
-      this.logger.debug(`[LLM] RelationshipCoach 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`);
-      
+
+      this.logger.log(
+        `[LLM] RelationshipCoach 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length ?? 'N/A'}`,
+      );
+      this.logger.debug(
+        `[LLM] RelationshipCoach 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`,
+      );
+
       return data.response;
     } catch (error: any) {
-      this.logger.error(`[LLM] RelationshipCoach 호출 실패: model=${body.model}, error=${error.message}`, error);
+      this.logger.error(
+        `[LLM] RelationshipCoach 호출 실패: model=${body.model}, error=${error.message}`,
+        error,
+      );
       throw error;
     }
   }
@@ -108,14 +124,18 @@ export class LlmService {
    */
   async analyze(data: AnalyzeRequestDto | AnalyzeAnswerDto): Promise<any> {
     try {
-      this.logger.log(`[LLM] analyze 요청: answer 길이=${'answer' in data ? data.answer?.length || 'N/A' : 'N/A'}`);
+      this.logger.log(
+        `[LLM] analyze 요청: answer 길이=${'answer' in data ? (data.answer?.length ?? 'N/A') : 'N/A'}`,
+      );
       this.logger.debug(`[LLM] analyze 요청 데이터: ${JSON.stringify(data).substring(0, 300)}...`);
-      
+
       const { data: res } = await axios.post(`${this.llmApiUrl}/analyze`, data);
-      
-      this.logger.log(`[LLM] analyze 응답 성공: 응답 타입=${typeof res}, 응답 키=${Object.keys(res || {}).join(', ')}`);
+
+      this.logger.log(
+        `[LLM] analyze 응답 성공: 응답 타입=${typeof res}, 응답 키=${Object.keys(res ?? {}).join(', ')}`,
+      );
       this.logger.debug(`[LLM] analyze 응답 데이터: ${JSON.stringify(res).substring(0, 500)}...`);
-      
+
       return res;
     } catch (error: any) {
       this.logger.error(`[LLM] analyze 호출 실패: error=${error.message}`, error);
@@ -132,32 +152,46 @@ export class LlmService {
     try {
       this.logger.log(`[LLM] getFeedback 요청: roomId=${roomId}, message 길이=${message.length}`);
       this.logger.debug(`[LLM] getFeedback 메시지: ${message.substring(0, 200)}...`);
-      
+
       const requestData = { message, roomId };
+
       this.logger.debug(`[LLM] getFeedback 요청 데이터: ${JSON.stringify(requestData)}`);
-      
+
       const { data } = await axios.post(`${this.llmApiUrl}/feedback`, requestData);
-      
-      this.logger.log(`[LLM] getFeedback 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length || 'N/A'}`);
-      this.logger.debug(`[LLM] getFeedback 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`);
-      
+
+      this.logger.log(
+        `[LLM] getFeedback 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length ?? 'N/A'}`,
+      );
+      this.logger.debug(
+        `[LLM] getFeedback 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`,
+      );
+
       return data.response;
     } catch (error: any) {
-      this.logger.error(`[LLM] getFeedback 호출 실패: roomId=${roomId}, error=${error.message}`, error);
-      
+      this.logger.error(
+        `[LLM] getFeedback 호출 실패: roomId=${roomId}, error=${error.message}`,
+        error,
+      );
+
       // fallback: /chat 엔드포인트 사용
       try {
-        this.logger.log(`[LLM] getFeedback fallback 시도: /chat 엔드포인트 사용`);
-        
+        this.logger.log('[LLM] getFeedback fallback 시도: /chat 엔드포인트 사용');
+
         const { data: fallback } = await axios.post(`${this.llmApiUrl}/chat`, {
           prompt: message,
           model: 'openai', // 기본 모델 지정
         });
-        
-        this.logger.log(`[LLM] getFeedback fallback 성공: 응답 길이=${fallback.response?.length || 'N/A'}`);
+
+        this.logger.log(
+          `[LLM] getFeedback fallback 성공: 응답 길이=${fallback.response?.length ?? 'N/A'}`,
+        );
+
         return fallback.response;
       } catch (fallbackError: any) {
-        this.logger.error(`[LLM] getFeedback fallback 실패: error=${fallbackError.message}`, fallbackError);
+        this.logger.error(
+          `[LLM] getFeedback fallback 실패: error=${fallbackError.message}`,
+          fallbackError,
+        );
         throw fallbackError;
       }
     }
@@ -167,15 +201,20 @@ export class LlmService {
     try {
       this.logger.log(`[LLM] analyzeCouple 요청: prompt 길이=${prompt.length}`);
       this.logger.debug(`[LLM] analyzeCouple 프롬프트: ${prompt.substring(0, 300)}...`);
-      
+
       const requestData = { prompt };
+
       this.logger.debug(`[LLM] analyzeCouple 요청 데이터: ${JSON.stringify(requestData)}`);
-      
+
       const { data } = await axios.post(`${this.llmApiUrl}/couple-analysis`, requestData);
-      
-      this.logger.log(`[LLM] analyzeCouple 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length || 'N/A'}`);
-      this.logger.debug(`[LLM] analyzeCouple 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`);
-      
+
+      this.logger.log(
+        `[LLM] analyzeCouple 응답 성공: 응답 타입=${typeof data.response}, 응답 길이=${data.response?.length ?? 'N/A'}`,
+      );
+      this.logger.debug(
+        `[LLM] analyzeCouple 응답 데이터: ${JSON.stringify(data).substring(0, 500)}...`,
+      );
+
       return data.response;
     } catch (error: any) {
       this.logger.error(`[LLM] analyzeCouple 호출 실패: error=${error.message}`, error);

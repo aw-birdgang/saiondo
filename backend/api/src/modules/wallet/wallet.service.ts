@@ -1,13 +1,19 @@
-import {BadRequestException, ForbiddenException, Injectable, NotFoundException,} from '@nestjs/common';
-import {createWalletFromEnvMnemonic, decrypt, encrypt, isValidEthAddress,} from '@common/utils/wallet.util';
-import {ethers} from 'ethers';
-import {Web3Service} from '@modules/web3/web3.service';
 import {
-  RelationalWalletRepository
-} from '../../database/wallet/infrastructure/persistence/relational/repositories/wallet.repository';
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
-  RelationalUserRepository
-} from '../../database/user/infrastructure/persistence/relational/repositories/user.repository';
+  createWalletFromEnvMnemonic,
+  decrypt,
+  encrypt,
+  isValidEthAddress,
+} from '@common/utils/wallet.util';
+import { ethers } from 'ethers';
+import { Web3Service } from '@modules/web3/web3.service';
+import { RelationalWalletRepository } from '../../database/wallet/infrastructure/persistence/relational/repositories/wallet.repository';
+import { RelationalUserRepository } from '../../database/user/infrastructure/persistence/relational/repositories/user.repository';
 
 @Injectable()
 export class WalletService {
@@ -23,9 +29,11 @@ export class WalletService {
 
   async getWalletsByUser(userId: string) {
     const wallets = await this.walletRepository.findManyByUserId(userId);
+
     return Promise.all(
-      wallets.map(async (wallet) => {
+      wallets.map(async wallet => {
         const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
+
         return { ...wallet, tokenBalance };
       }),
     );
@@ -33,8 +41,10 @@ export class WalletService {
 
   async getWalletById(walletId: string) {
     const wallet = await this.walletRepository.findById(walletId);
+
     if (!wallet) return null;
     const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
+
     return { ...wallet, tokenBalance };
   }
 
@@ -51,6 +61,7 @@ export class WalletService {
     }
 
     const exists = await this.walletRepository.findByAddress(address);
+
     if (exists) throw new BadRequestException('이미 등록된 지갑 주소입니다.');
 
     const encryptedMnemonic = encrypt(mnemonic ?? '');
@@ -80,10 +91,12 @@ export class WalletService {
         throw new BadRequestException('유효하지 않은 이더리움 주소입니다.');
       }
       const exists = await this.walletRepository.findByAddress(update.address);
+
       if (exists && exists.id !== walletId) {
         throw new BadRequestException('이미 등록된 지갑 주소입니다.');
       }
     }
+
     return this.walletRepository.update(walletId, {
       ...(update.address && { address: update.address }),
       ...(update.mnemonic && { mnemonic: update.mnemonic }),
@@ -92,38 +105,48 @@ export class WalletService {
 
   async deleteWallet(walletId: string) {
     const wallet = await this.walletRepository.findById(walletId);
+
     if (!wallet) throw new NotFoundException('지갑을 찾을 수 없습니다.');
     await this.walletRepository.remove(walletId);
+
     return wallet;
   }
 
   async getUserByWalletAddress(address: string) {
     const wallet = await this.walletRepository.findByAddressWithUser(address);
+
     return wallet?.user;
   }
 
-  async sendTransaction(userId: string, to: string, amount: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async sendTransaction(userId: string, _to: string, _amount: string) {
     const user = await this.userRepository.findWithRelations(userId, { wallet: true });
+
     if (!user?.wallet) throw new NotFoundException('지갑 없음');
 
     const encryptedPrivateKey = user.wallet.privateKey;
+
     if (!encryptedPrivateKey) throw new ForbiddenException('개인키 없음');
     const privateKey = decrypt(encryptedPrivateKey);
 
-    const wallet = new ethers.Wallet(privateKey);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _wallet = new ethers.Wallet(privateKey);
     // ...provider 연결, 트랜잭션 전송 등
     // await wallet.connect(provider).sendTransaction({ to, value: ... });
   }
 
   async getMnemonic(userId: string) {
     const user = await this.userRepository.findWithRelations(userId, { wallet: true });
+
     if (!user?.wallet) throw new NotFoundException('지갑 없음');
     const encryptedMnemonic = user.wallet.mnemonic;
+
     return { mnemonic: decrypt(encryptedMnemonic) };
   }
 
   async getDecryptedWallet(walletId: string) {
     const wallet = await this.walletRepository.findById(walletId);
+
     if (!wallet) throw new NotFoundException('지갑을 찾을 수 없습니다.');
 
     return {
@@ -135,9 +158,12 @@ export class WalletService {
 
   async refreshWalletBalance(walletId: string) {
     const wallet = await this.walletRepository.findById(walletId);
+
     if (!wallet) return null;
     const tokenBalance = await this.web3Service.getTokenBalance(wallet.address);
+
     await this.walletRepository.update(walletId, { tokenBalance });
+
     return { ...wallet, tokenBalance };
   }
 }

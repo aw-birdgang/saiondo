@@ -1,6 +1,6 @@
-import {Controller, Get, Param, Post} from '@nestjs/common';
-import {ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {CoupleAnalysisService} from './couple-analysis.service';
+import { Controller, Get, Param, Post } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CoupleAnalysisService } from './couple-analysis.service';
 
 @ApiTags('CoupleAnalysis')
 @Controller('couple-analysis')

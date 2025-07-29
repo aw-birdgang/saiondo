@@ -12,6 +12,7 @@ export class NotificationMapper {
    */
   static fromPrisma(prisma: PrismaNotificationWithRelations): Notification {
     const notification = new Notification();
+
     notification.id = prisma.id;
     notification.userId = prisma.userId;
     notification.title = prisma.title;
@@ -22,6 +23,7 @@ export class NotificationMapper {
     notification.createdAt = prisma.createdAt;
     notification.updatedAt = prisma.updatedAt;
     notification.user = prisma.user;
+
     return notification;
   }
 
@@ -30,6 +32,7 @@ export class NotificationMapper {
    */
   static toDomain(entity: NotificationEntity): Notification {
     const notification = new Notification();
+
     notification.id = entity.id;
     notification.userId = entity.userId;
     notification.title = entity.title;
@@ -40,6 +43,7 @@ export class NotificationMapper {
     notification.createdAt = entity.createdAt;
     notification.updatedAt = entity.updatedAt;
     notification.user = entity.user;
+
     return notification;
   }
 

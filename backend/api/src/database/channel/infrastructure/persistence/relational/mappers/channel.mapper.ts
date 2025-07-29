@@ -1,6 +1,6 @@
 import { ChannelEntity } from '../entities/channel.entity';
 import { Channel as PrismaChannel } from '@prisma/client';
-import { Channel } from "../../../../domain/channel";
+import { Channel } from '../../../../domain/channel';
 
 export class ChannelMapper {
   // Prisma → Entity
@@ -9,19 +9,20 @@ export class ChannelMapper {
       id: prisma.id,
       createdAt: prisma.createdAt,
       updatedAt: prisma.updatedAt,
-      inviteCode: prisma.inviteCode,
+      inviteCode: prisma.inviteCode ?? null,
       status: prisma.status,
       startedAt: prisma.startedAt,
-      endedAt: prisma.endedAt,
-      anniversary: prisma.anniversary,
-      keywords: prisma.keywords,
-      deletedAt: prisma.deletedAt,
+      endedAt: prisma.endedAt ?? null,
+      anniversary: prisma.anniversary ?? null,
+      keywords: prisma.keywords ?? null,
+      deletedAt: prisma.deletedAt ?? null,
     };
   }
 
   // Entity → 도메인
   static toDomain(entity: ChannelEntity): Channel {
     const channel = new Channel();
+
     channel.id = entity.id;
     channel.createdAt = entity.createdAt;
     channel.updatedAt = entity.updatedAt;
@@ -32,6 +33,7 @@ export class ChannelMapper {
     channel.anniversary = entity.anniversary;
     channel.keywords = entity.keywords;
     channel.deletedAt = entity.deletedAt;
+
     return channel;
   }
 
@@ -39,10 +41,10 @@ export class ChannelMapper {
   static toEntity(domain: Channel): ChannelEntity {
     return {
       id: domain.id,
-      createdAt: domain.createdAt!,
-      updatedAt: domain.updatedAt!,
+      createdAt: domain.createdAt ?? new Date(),
+      updatedAt: domain.updatedAt ?? new Date(),
       inviteCode: domain.inviteCode,
-      status: domain.status!,
+      status: domain.status ?? 'ACTIVE',
       startedAt: domain.startedAt ?? null,
       endedAt: domain.endedAt ?? null,
       anniversary: domain.anniversary ?? null,

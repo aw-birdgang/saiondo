@@ -1,10 +1,18 @@
-import {Body, Controller, forwardRef, HttpException, HttpStatus, Inject, Post,} from '@nestjs/common';
-import {LlmService} from './llm.service';
-import {ChatRequestDto, ChatResponseDto} from './dto/chat.dto';
-import {ApiBody, ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {AnalyzeRequestDto, AnalyzeResponseDto} from './dto/analyze.dto';
-import {MessageSender} from "@prisma/client";
-import {ChatService} from "@modules/chat/chat.service";
+import {
+  Body,
+  Controller,
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Post,
+} from '@nestjs/common';
+import { LlmService } from './llm.service';
+import { ChatRequestDto, ChatResponseDto } from './dto/chat.dto';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AnalyzeRequestDto, AnalyzeResponseDto } from './dto/analyze.dto';
+import { MessageSender } from '@prisma/client';
+import { ChatService } from '@modules/chat/chat.service';
 
 @ApiTags('LLM')
 @Controller('llm')
@@ -52,7 +60,7 @@ export class LlmController {
       });
 
       return { response: result };
-    } catch (error) {
+    } catch {
       throw new HttpException('LLM 호출 실패', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -64,5 +72,4 @@ export class LlmController {
   async analyze(@Body() body: AnalyzeRequestDto): Promise<AnalyzeResponseDto> {
     return this.llmService.analyze(body);
   }
-
 }

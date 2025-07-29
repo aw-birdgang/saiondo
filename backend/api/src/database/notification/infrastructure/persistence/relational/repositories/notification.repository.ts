@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { NullableType } from '../../../../../../common/utils/types/nullable.type';
 import { Notification } from '../../../../domain/notification';
 import { NotificationMapper } from '../mappers/notification.mapper';
@@ -30,34 +30,38 @@ export class RelationalNotificationRepository extends NotificationRepository {
         user: true,
       },
     });
+
     return NotificationMapper.fromPrisma(created);
   }
 
   async findById(id: string): Promise<NullableType<Notification>> {
-    const notification = await this.prisma.notification.findUnique({ 
+    const notification = await this.prisma.notification.findUnique({
       where: { id },
       include: {
         user: true,
       },
     });
+
     return notification ? NotificationMapper.fromPrisma(notification) : null;
   }
 
   async findByUserId(userId: string, query?: QueryNotificationDto): Promise<Notification[]> {
-    const { page = 1, limit = 10, filters, sort, isRead, type } = query || {};
-    
+    const { page = 1, limit = 10, filters, sort, isRead, type } = query ?? {};
+
     const where: any = { userId };
-    
+
     if (filters) {
       if (filters.id) where.id = filters.id;
       if (filters.type) where.type = filters.type;
       if (filters.isRead !== undefined) where.isRead = filters.isRead;
     }
-    
+
     if (isRead !== undefined) where.isRead = isRead;
     if (type) where.type = type;
 
-    const orderBy = sort?.map(s => ({ [s.field || 'createdAt']: s.order || 'DESC' })) || [{ createdAt: 'DESC' }];
+    const orderBy = sort?.map(s => ({ [s.field ?? 'createdAt']: s.order ?? 'DESC' })) ?? [
+      { createdAt: 'DESC' },
+    ];
 
     const notifications = await this.prisma.notification.findMany({
       where,
@@ -68,13 +72,13 @@ export class RelationalNotificationRepository extends NotificationRepository {
         user: true,
       },
     });
-    
+
     return notifications.map(n => NotificationMapper.fromPrisma(n));
   }
 
   async findUnreadByUserId(userId: string): Promise<Notification[]> {
     const notifications = await this.prisma.notification.findMany({
-      where: { 
+      where: {
         userId,
         isRead: false,
       },
@@ -83,6 +87,7 @@ export class RelationalNotificationRepository extends NotificationRepository {
         user: true,
       },
     });
+
     return notifications.map(n => NotificationMapper.fromPrisma(n));
   }
 
@@ -94,6 +99,7 @@ export class RelationalNotificationRepository extends NotificationRepository {
         user: true,
       },
     });
+
     return NotificationMapper.fromPrisma(updated);
   }
 
@@ -105,12 +111,13 @@ export class RelationalNotificationRepository extends NotificationRepository {
         user: true,
       },
     });
+
     return NotificationMapper.fromPrisma(updated);
   }
 
   async markAllAsRead(userId: string): Promise<void> {
     await this.prisma.notification.updateMany({
-      where: { 
+      where: {
         userId,
         isRead: false,
       },
@@ -124,7 +131,7 @@ export class RelationalNotificationRepository extends NotificationRepository {
 
   async countUnreadByUserId(userId: string): Promise<number> {
     return this.prisma.notification.count({
-      where: { 
+      where: {
         userId,
         isRead: false,
       },

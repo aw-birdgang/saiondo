@@ -8,8 +8,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import {Server, Socket} from 'socket.io';
-import {ChatService} from './chat.service';
+import { Server, Socket } from 'socket.io';
+import { ChatService } from './chat.service';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
 interface SendMessagePayload {
@@ -23,9 +23,7 @@ interface SendMessagePayload {
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = createWinstonLogger(ChatGateway.name);
 
-  constructor(
-    private readonly chatService: ChatService,
-  ) {}
+  constructor(private readonly chatService: ChatService) {}
 
   @WebSocketServer()
   server: Server;
@@ -43,6 +41,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const now = new Date().toISOString();
 
     let count = 'unknown';
+
     if (this.server && this.server.engine) {
       count = this.server.engine.clientsCount.toString();
     }
@@ -65,7 +64,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('send_message')
   async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: SendMessagePayload) {
     const { userId, assistantId, channelId, message } = data;
-    this.log(`[API][WebSocket] handleMessage called`, {
+
+    this.log('[API][WebSocket] handleMessage called', {
       userId,
       assistantId,
       channelId,
@@ -79,9 +79,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         channelId,
         message,
       );
-      this.log(`[API][WebSocket] processUserMessage response`, response);
+
+      this.log('[API][WebSocket] processUserMessage response', response);
       this.server.emit('receive_message', response);
-      this.log(`[API][WebSocket] Sent feedback to all clients:`, JSON.stringify(response));
+      this.log('[API][WebSocket] Sent feedback to all clients:', JSON.stringify(response));
     } catch (error) {
       this.log(`[API][WebSocket] Error processing message from client ${client.id}:`, error);
 
@@ -89,6 +90,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
       let errorPayload: any = {
         message: error?.message ?? 'Unknown error',
       };
+
       if (error?.response) {
         // NestJS HttpException의 경우
         errorPayload = {

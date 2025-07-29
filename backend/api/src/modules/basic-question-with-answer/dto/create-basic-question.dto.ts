@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsOptional, IsString, IsArray, ArrayMinSize, ArrayMaxSize } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+} from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 

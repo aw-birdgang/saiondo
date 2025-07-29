@@ -1,6 +1,6 @@
-import {Injectable} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {PushService} from './push.service';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { PushService } from './push.service';
 
 @Injectable()
 export class PushScheduleService {
@@ -37,13 +37,14 @@ export class PushScheduleService {
       const user = await this.prisma.user.findUnique({
         where: { id: schedule.userId },
       });
+
       if (user?.fcmToken) {
         // questionId가 더 이상 없으므로, 데이터에서 제거
         await this.pushService.sendPush(
           user.fcmToken,
           '질문 알림',
           '새로운 질문이 도착했습니다!',
-          {} // questionId 등 추가 데이터가 필요 없다면 빈 객체 전달
+          {}, // questionId 등 추가 데이터가 필요 없다면 빈 객체 전달
         );
         await this.markAsSent(schedule.id);
       }

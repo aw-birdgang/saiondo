@@ -1,10 +1,10 @@
-import {Injectable, Logger} from '@nestjs/common';
-import {PushService} from '../push-schedule/push.service';
-import {WebSocketGateway, WebSocketServer} from '@nestjs/websockets';
-import {Server} from 'socket.io';
-import {NotificationRepository} from '../../database/notification/infrastructure/persistence/notification.repository';
-import {CreateNotificationDto} from '../../database/notification/dto/create-notification.dto';
-import {QueryNotificationDto} from '../../database/notification/dto/query-notification.dto';
+import { Injectable } from '@nestjs/common';
+import { PushService } from '../push-schedule/push.service';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'socket.io';
+import { NotificationRepository } from '../../database/notification/infrastructure/persistence/notification.repository';
+import { CreateNotificationDto } from '../../database/notification/dto/create-notification.dto';
+import { QueryNotificationDto } from '../../database/notification/dto/query-notification.dto';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
@@ -25,6 +25,7 @@ export class NotificationService {
     try {
       // 0. FCM 환경 validation 체크
       const fcmCheck = await this.pushService.validateFcmEnvironment();
+
       if (!fcmCheck.ok) {
         this.logger.error(`[FCM Validation] FCM 환경 이상: ${fcmCheck.reason}`);
         // DB에는 저장, FCM/웹소켓은 스킵 또는 fallback 처리
@@ -56,6 +57,7 @@ export class NotificationService {
       await this.pushService.sendPushToUser(userId, notification.title, notification.body);
 
       this.logger.log(`알림 전송 완료: ${userId} - ${notification.type}`);
+
       return saved;
     } catch (error) {
       this.logger.error(`알림 전송 실패: ${error.message}`);
@@ -93,12 +95,20 @@ export class NotificationService {
     return this.notificationRepo.remove(id);
   }
 
-  async sendCoupleNotification(channelId: string, notification: {
-    title: string;
-    body: string;
-    type: 'ANALYSIS_COMPLETE' | 'NEW_MESSAGE' | 'RELATIONSHIP_TIP' | 'MISSION_REMINDER' | 'REPORT';
-    data?: any;
-  }) {
+  async sendCoupleNotification(
+    channelId: string,
+    notification: {
+      title: string;
+      body: string;
+      type:
+        | 'ANALYSIS_COMPLETE'
+        | 'NEW_MESSAGE'
+        | 'RELATIONSHIP_TIP'
+        | 'MISSION_REMINDER'
+        | 'REPORT';
+      data?: any;
+    },
+  ) {
     try {
       const channel = await this.notificationRepo['prisma'].channel.findUnique({
         where: { id: channelId },

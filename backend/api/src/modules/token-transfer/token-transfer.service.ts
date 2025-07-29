@@ -35,7 +35,9 @@ export class TokenTransferService {
   // 단일 내역 조회
   async getTransferById(id: string) {
     const transfer = await this.prisma.tokenTransfer.findUnique({ where: { id } });
+
     if (!transfer) throw new NotFoundException('전송 내역을 찾을 수 없습니다.');
+
     return transfer;
   }
 

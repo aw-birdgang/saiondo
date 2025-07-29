@@ -1,6 +1,6 @@
-import {NullableType} from '../../../../common/utils/types/nullable.type';
-import {DeepPartial} from 'typeorm';
-import {User} from '../../domain/user';
+import { NullableType } from '../../../../common/utils/types/nullable.type';
+import { DeepPartial } from 'typeorm';
+import { User } from '../../domain/user';
 
 export abstract class UserRepository {
   abstract create(data: Omit<User, 'id' | 'createdAt' | 'deletedAt' | 'updatedAt'>): Promise<User>;

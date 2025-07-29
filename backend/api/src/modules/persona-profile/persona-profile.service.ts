@@ -1,11 +1,10 @@
-import {Injectable} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {CreatePersonaProfileDto} from './dto/create-persona-profile.dto';
-import {PersonaProfile, ProfileSource} from '@prisma/client';
-import {LlmService} from '@modules/llm/llm.service';
-import {UpdatePersonaProfileDto} from './dto/update-persona-profile.dto';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { CreatePersonaProfileDto } from './dto/create-persona-profile.dto';
+import { PersonaProfile, ProfileSource, PointType } from '@prisma/client';
+import { LlmService } from '@modules/llm/llm.service';
+import { UpdatePersonaProfileDto } from './dto/update-persona-profile.dto';
 import { PointService } from '../point/point.service';
-import { PointType } from '@prisma/client';
 
 @Injectable()
 export class PersonaProfileService {
@@ -31,6 +30,7 @@ export class PersonaProfileService {
     const category = await this.prisma.categoryCode.findUnique({
       where: { id: data.categoryCodeId },
     });
+
     if (!category) throw new Error('Invalid categoryCodeId');
 
     return this.prisma.personaProfile.create({
@@ -58,6 +58,7 @@ export class PersonaProfileService {
     const existing = await this.prisma.personaProfile.findFirst({
       where: { userId, categoryCodeId },
     });
+
     if (!existing) throw new Error('PersonaProfile not found');
 
     await this.pointService.earnPoint(userId, 10, PointType.PROFILE_UPDATE, '프로필 업데이트 보상');

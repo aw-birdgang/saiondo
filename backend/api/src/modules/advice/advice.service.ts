@@ -1,9 +1,9 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from "@common/prisma/prisma.service";
-import {Advice} from '@prisma/client';
-import {UpdateAdviceDto} from './dto/update-advice.dto';
-import {LlmService} from "@modules/llm/llm.service";
-import {ChannelService} from "@modules/channel/channel.service";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { Advice } from '@prisma/client';
+import { UpdateAdviceDto } from './dto/update-advice.dto';
+import { LlmService } from '@modules/llm/llm.service';
+import { ChannelService } from '@modules/channel/channel.service';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
@@ -11,9 +11,9 @@ export class AdviceService {
   private readonly logger = createWinstonLogger(AdviceService.name);
 
   constructor(
-      private readonly prisma: PrismaService,
-      private readonly llmService: LlmService,
-      private readonly channelService: ChannelService,
+    private readonly prisma: PrismaService,
+    private readonly llmService: LlmService,
+    private readonly channelService: ChannelService,
   ) {}
 
   /**
@@ -22,6 +22,7 @@ export class AdviceService {
   async createAdvice(channelId: string) {
     // 1. 커플(채널) 및 유저 정보 조회 (ChannelService 사용)
     const channel = await this.channelService.getChannelById(channelId);
+
     if (!channel) throw new NotFoundException('채널(커플)을 찾을 수 없습니다.');
 
     // 2. 멤버(OWNER, MEMBER) userId 추출
@@ -101,15 +102,18 @@ export class AdviceService {
   private buildPersonaSummary(personas: any[], userLabel: string): string {
     if (!personas.length) {
       this.logger.log(`[personaSummary][${userLabel}] 없음`);
+
       return '없음';
     }
     const summary = personas
-        .map(
-            (p) =>
-                `${p.categoryCode.description || p.categoryCode.code}: ${p.content} (${p.source === 'USER_INPUT' ? '직접입력' : 'AI분석'})`
-        )
-        .join(', ');
+      .map(
+        p =>
+          `${p.categoryCode.description ?? p.categoryCode.code}: ${p.content} (${p.source === 'USER_INPUT' ? '직접입력' : 'AI분석'})`,
+      )
+      .join(', ');
+
     this.logger.log(`[personaSummary][${userLabel}] ${summary}`);
+
     return summary;
   }
 
@@ -117,8 +121,9 @@ export class AdviceService {
    * MBTI 값 추출
    */
   private extractMbti(personas: any[]): string {
-    const mbtiProfile = personas.find((p) => p.categoryCode.code === 'MBTI');
-    return mbtiProfile?.content || '미입력';
+    const mbtiProfile = personas.find(p => p.categoryCode.code === 'MBTI');
+
+    return mbtiProfile?.content ?? '미입력';
   }
 
   /**
@@ -128,7 +133,7 @@ export class AdviceService {
     return `
 이름: ${user.name}
 성별: ${user.gender}
-생년월일: ${user.birthDate?.toISOString().split('T')[0] || '미입력'}
+생년월일: ${user.birthDate?.toISOString().split('T')[0] ?? '미입력'}
 MBTI: ${mbti}
 페르소나: ${personaSummary}
   `.trim();
@@ -138,10 +143,10 @@ MBTI: ${mbti}
    * AI 조언 프롬프트 생성
    */
   private buildAdvicePrompt(
-      user1Profile: string,
-      user2Profile: string,
-      anniversary: string,
-      keywords: string[]
+    user1Profile: string,
+    user2Profile: string,
+    anniversary: string,
+    keywords: string[],
   ): string {
     return `
 아래는 커플의 상세 정보 입니다.
@@ -213,10 +218,16 @@ ${user2Profile}
   /**
    * 조언 수정 (채널 내에서만 허용)
    */
-  async updateAdvice(channelId: string, adviceId: string, updateAdviceDto: UpdateAdviceDto): Promise<Advice> {
+  async updateAdvice(
+    channelId: string,
+    adviceId: string,
+    updateAdviceDto: UpdateAdviceDto,
+  ): Promise<Advice> {
     // 존재 여부 확인
     const advice = await this.getAdviceInChannel(channelId, adviceId);
+
     if (!advice) throw new NotFoundException('Advice not found in this channel');
+
     return this.prisma.advice.update({
       where: { id: adviceId },
       data: {
@@ -231,7 +242,9 @@ ${user2Profile}
   async deleteAdvice(channelId: string, adviceId: string): Promise<Advice> {
     // 존재 여부 확인
     const advice = await this.getAdviceInChannel(channelId, adviceId);
+
     if (!advice) throw new NotFoundException('Advice not found in this channel');
+
     return this.prisma.advice.delete({
       where: { id: adviceId },
     });

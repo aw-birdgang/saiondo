@@ -1,14 +1,14 @@
-import {Body, Controller, Get, Param, Post, Req, UseGuards} from '@nestjs/common';
-import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {PaymentSubscriptionService} from './payment-subscription.service';
-import {BuyPointDto} from './dto/buy-point.dto';
-import {SubscribeDto} from './dto/subscribe.dto';
-import {PointProductDto} from "@modules/payment-subscription/dto/point-product.dto";
-import {BuyPointResponseDto} from "@modules/payment-subscription/dto/buy-point-response.dto";
-import {SubscriptionPlanDto} from "@modules/payment-subscription/dto/subscription-plan.dto";
-import {SubscriptionHistoryDto} from './dto/subscription-history.dto';
-import {SubscribeResponseDto} from "@modules/payment-subscription/dto/subscribe-response.dto";
-import {VerifyReceiptDto} from './dto/verify-receipt.dto';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PaymentSubscriptionService } from './payment-subscription.service';
+import { BuyPointDto } from './dto/buy-point.dto';
+import { SubscribeDto } from './dto/subscribe.dto';
+import { PointProductDto } from '@modules/payment-subscription/dto/point-product.dto';
+import { BuyPointResponseDto } from '@modules/payment-subscription/dto/buy-point-response.dto';
+import { SubscriptionPlanDto } from '@modules/payment-subscription/dto/subscription-plan.dto';
+import { SubscriptionHistoryDto } from './dto/subscription-history.dto';
+import { SubscribeResponseDto } from '@modules/payment-subscription/dto/subscribe-response.dto';
+import { VerifyReceiptDto } from './dto/verify-receipt.dto';
 
 @ApiTags('PaymentSubscription')
 @Controller('payment-subscription')
@@ -53,7 +53,7 @@ export class PaymentSubscriptionController {
     type: SubscriptionPlanDto,
     isArray: true,
   })
-  async getSubscriptionPlans(): Promise<SubscriptionPlanDto[]> {
+  getSubscriptionPlans(): SubscriptionPlanDto[] {
     return this.service.getSubscriptionPlans();
   }
 
@@ -104,8 +104,8 @@ export class PaymentSubscriptionController {
   @Post('verify')
   async verify(@Req() req, @Body() dto: VerifyReceiptDto) {
     // req.user.id 등으로 사용자 식별 (JWT 인증 등 필요)
-    const userId = req.user?.id || 'test-user';
+    const userId = req.user?.id ?? 'test-user';
+
     return this.service.verifyReceipt(userId, dto);
   }
-
 }

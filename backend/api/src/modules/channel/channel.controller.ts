@@ -1,10 +1,10 @@
-import {Body, Controller, Delete, Get, Param, Post, Query,} from '@nestjs/common';
-import {ChannelService} from './channel.service';
-import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
-import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags,} from '@nestjs/swagger';
-import {JoinByInviteDto} from './dto/join-by-invite.dto';
-import {CreateChannelDto} from './dto/create-channel.dto';
-import {Channel} from "@prisma/client";
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { ChannelService } from './channel.service';
+import { InviteCodeChannelDto } from '@modules/channel/dto/invite-code-channel.dto';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JoinByInviteDto } from './dto/join-by-invite.dto';
+import { CreateChannelDto } from './dto/create-channel.dto';
+import { Channel } from '@prisma/client';
 
 @ApiTags('Channel')
 @Controller('channels')
@@ -47,10 +47,7 @@ export class ChannelController {
   @ApiParam({ name: 'channelId', description: '채널 ID' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiResponse({ status: 200, description: '멤버 여부 반환' })
-  async isMember(
-    @Param('channelId') channelId: string,
-    @Param('userId') userId: string,
-  ) {
+  async isMember(@Param('channelId') channelId: string, @Param('userId') userId: string) {
     return this.channelService.isMember(channelId, userId);
   }
 
@@ -76,9 +73,7 @@ export class ChannelController {
   @ApiOperation({ summary: 'userId로 참여 중인 모든 채널 조회' })
   @ApiParam({ name: 'userId', description: '유저 ID' })
   @ApiResponse({ status: 200, description: '참여 채널 목록 반환' })
-  async getChannelsByUser(
-      @Param('userId') userId: string
-  ) {
+  async getChannelsByUser(@Param('userId') userId: string) {
     return this.channelService.getChannelByUserId(userId);
   }
 
@@ -172,8 +167,9 @@ export class ChannelController {
     },
   })
   @ApiResponse({ status: 200, description: '초대 거절 성공' })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async reject(@Param('id') id: string, @Body('userId') userId: string) {
-    return this.channelService.reject(id, userId);
+    return this.channelService.reject(id);
   }
 
   // 채널 나가기

@@ -41,9 +41,7 @@ export class QueryChatDto {
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
-  @Transform(({ value }) =>
-    value ? plainToInstance(FilterChatDto, JSON.parse(value)) : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(FilterChatDto, JSON.parse(value)) : undefined))
   @ValidateNested()
   @Type(() => FilterChatDto)
   filters?: FilterChatDto | null;

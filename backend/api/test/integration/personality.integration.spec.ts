@@ -8,6 +8,7 @@ import { PersonalityService } from '../../src/modules/personality/personality.se
 describe('Personality Integration Tests', () => {
   let app: INestApplication;
   let prismaService: PrismaService;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let personalityService: PersonalityService;
 
   beforeAll(async () => {
@@ -52,7 +53,7 @@ describe('Personality Integration Tests', () => {
         messages: [
           { role: 'user', content: '안녕하세요!' },
           { role: 'partner', content: '안녕하세요! 오늘 날씨가 좋네요.' },
-          { role: 'user', content: '네, 정말 좋은 날씨입니다.' }
+          { role: 'user', content: '네, 정말 좋은 날씨입니다.' },
         ],
       };
 
@@ -98,8 +99,8 @@ describe('Personality Integration Tests', () => {
           answers: ['A', 'B', 'A', 'B', 'A'],
           conversation_samples: [
             '저는 혼자 있는 시간을 좋아해요.',
-            '새로운 사람들을 만나는 것이 즐거워요.'
-          ]
+            '새로운 사람들을 만나는 것이 즐거워요.',
+          ],
         },
       };
 
@@ -130,7 +131,7 @@ describe('Personality Integration Tests', () => {
         userId: user.id,
         messages: [
           { role: 'user', content: '직접적으로 말씀드리겠습니다.' },
-          { role: 'partner', content: '감사합니다. 솔직한 대화가 좋네요.' }
+          { role: 'partner', content: '감사합니다. 솔직한 대화가 좋네요.' },
         ],
       };
 

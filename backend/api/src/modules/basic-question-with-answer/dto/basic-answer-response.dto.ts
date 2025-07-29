@@ -1,5 +1,5 @@
-import {ApiProperty} from '@nestjs/swagger';
-import {BasicQuestionResponseDto} from "@modules/basic-question-with-answer/dto/basic-question-response.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { BasicQuestionResponseDto } from '@modules/basic-question-with-answer/dto/basic-question-response.dto';
 
 export class BasicAnswerResponseDto {
   @ApiProperty({ example: 'uuid' })
@@ -26,20 +26,22 @@ export class BasicAnswerResponseDto {
       userId: entity.userId,
       questionId: entity.questionId,
       answer: entity.answer,
-      createdAt: entity.createdAt instanceof Date ? entity.createdAt.toISOString() : entity.createdAt,
-      updatedAt: entity.updatedAt instanceof Date ? entity.updatedAt.toISOString() : entity.updatedAt,
+      createdAt:
+        entity.createdAt instanceof Date ? entity.createdAt.toISOString() : entity.createdAt,
+      updatedAt:
+        entity.updatedAt instanceof Date ? entity.updatedAt.toISOString() : entity.updatedAt,
     };
   }
 }
 
 export class BasicAnswerWithQuestionResponseDto extends BasicAnswerResponseDto {
-    @ApiProperty({ type: BasicQuestionResponseDto })
-    question: BasicQuestionResponseDto;
+  @ApiProperty({ type: BasicQuestionResponseDto })
+  question: BasicQuestionResponseDto;
 
-    static fromEntity(entity: any): BasicAnswerWithQuestionResponseDto {
-        return {
-            ...BasicAnswerResponseDto.fromEntity(entity),
-            question: BasicQuestionResponseDto.fromEntity(entity.question),
-        };
-    }
+  static fromEntity(entity: any): BasicAnswerWithQuestionResponseDto {
+    return {
+      ...BasicAnswerResponseDto.fromEntity(entity),
+      question: BasicQuestionResponseDto.fromEntity(entity.question),
+    };
+  }
 }

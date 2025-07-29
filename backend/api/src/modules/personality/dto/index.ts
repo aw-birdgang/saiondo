@@ -6,4 +6,4 @@ export * from './analyze-behavior.dto';
 export * from './analyze-emotion.dto';
 export * from './chatbot-detect.dto';
 export * from './feedback.dto';
-export * from './common/message.dto'; 
+export * from './common/message.dto';

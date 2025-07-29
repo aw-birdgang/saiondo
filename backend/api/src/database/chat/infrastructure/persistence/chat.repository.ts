@@ -5,4 +5,4 @@ export abstract class ChatRepository {
   abstract findAll(): Promise<Chat[]>;
   abstract save(chat: Chat): Promise<Chat>;
   abstract delete(id: string): Promise<void>;
-} 
+}

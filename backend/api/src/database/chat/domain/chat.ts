@@ -1,4 +1,4 @@
-import {MessageSender} from '@prisma/client';
+import { MessageSender } from '@prisma/client';
 
 export class Chat {
   public id: string;

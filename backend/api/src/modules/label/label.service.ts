@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
-import {CreateLabelCategoryDto} from "@modules/label/dto/create-label-category.dto";
-import {CreateLabelDto} from "@modules/label/dto/create-label.dto";
-import {CreateMessageLabelDto} from "@modules/label/dto/create-message-label.dto";
+import { CreateLabelCategoryDto } from '@modules/label/dto/create-label-category.dto';
+import { CreateLabelDto } from '@modules/label/dto/create-label.dto';
+import { CreateMessageLabelDto } from '@modules/label/dto/create-message-label.dto';
 
 @Injectable()
 export class LabelService {

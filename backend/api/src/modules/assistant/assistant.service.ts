@@ -26,7 +26,9 @@ export class AssistantService {
       where: { id },
       include: { chats: true },
     });
+
     if (!assistant) throw new NotFoundException('Room not found');
+
     return assistant;
   }
 

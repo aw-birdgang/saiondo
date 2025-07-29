@@ -41,7 +41,9 @@ export class QueryWalletDto {
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
-  @Transform(({ value }) => (value ? plainToInstance(FilterWalletDto, JSON.parse(value)) : undefined))
+  @Transform(({ value }) =>
+    value ? plainToInstance(FilterWalletDto, JSON.parse(value)) : undefined,
+  )
   @ValidateNested()
   @Type(() => FilterWalletDto)
   filters?: FilterWalletDto | null;
@@ -64,4 +66,4 @@ export class QueryWalletDto {
   @IsOptional()
   @IsString()
   address?: string;
-} 
+}

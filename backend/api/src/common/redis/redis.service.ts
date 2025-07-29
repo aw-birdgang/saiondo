@@ -12,6 +12,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit() {
     const redisConfig = this.configService.get('common.redis');
+
     this.client = new Redis({
       host: redisConfig.host,
       port: redisConfig.port,
@@ -20,15 +21,15 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       maxRetriesPerRequest: 3,
       lazyConnect: true,
       // retryStrategy는 공식 옵션
-      retryStrategy: (times) => Math.min(times * 50, 2000),
+      retryStrategy: times => Math.min(times * 50, 2000),
     });
 
     this.client.on('connect', () => {
       this.logger.log(`Redis connected: ${redisConfig.host}:${redisConfig.port}/${redisConfig.db}`);
     });
 
-    this.client.on('error', (error) => {
-      this.logger.error('Redis connection error:', error.stack || String(error));
+    this.client.on('error', error => {
+      this.logger.error('Redis connection error:', error.stack ?? String(error));
     });
 
     this.client.on('ready', () => {
@@ -43,7 +44,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async set(key: string, value: string, ...args: any[]) {
     try {
       const result = await this.client.set(key, value, ...args);
-      this.logger.debug(`[SET] key=${key} value=${value.substring(0, 50)}... args=${JSON.stringify(args)}`);
+
+      this.logger.debug(
+        `[SET] key=${key} value=${value.substring(0, 50)}... args=${JSON.stringify(args)}`,
+      );
+
       return result;
     } catch (error) {
       this.logger.error(`[SET] Failed for key=${key}:`, error);
@@ -54,7 +59,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async get(key: string) {
     try {
       const value = await this.client.get(key);
-      this.logger.debug(`[GET] key=${key} value=${value ? value.substring(0, 50) + '...' : 'null'}`);
+
+      this.logger.debug(
+        `[GET] key=${key} value=${value ? value.substring(0, 50) + '...' : 'null'}`,
+      );
+
       return value;
     } catch (error) {
       this.logger.error(`[GET] Failed for key=${key}:`, error);
@@ -65,7 +74,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async del(key: string) {
     try {
       const result = await this.client.del(key);
+
       this.logger.debug(`[DEL] key=${key} result=${result}`);
+
       return result;
     } catch (error) {
       this.logger.error(`[DEL] Failed for key=${key}:`, error);
@@ -76,7 +87,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async incr(key: string): Promise<number> {
     try {
       const result = await this.client.incr(key);
+
       this.logger.debug(`[INCR] key=${key} result=${result}`);
+
       return result;
     } catch (error) {
       this.logger.error(`[INCR] Failed for key=${key}:`, error);
@@ -87,7 +100,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async expire(key: string, seconds: number): Promise<number> {
     try {
       const result = await this.client.expire(key, seconds);
+
       this.logger.debug(`[EXPIRE] key=${key} seconds=${seconds} result=${result}`);
+
       return result;
     } catch (error) {
       this.logger.error(`[EXPIRE] Failed for key=${key}:`, error);
@@ -98,7 +113,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async mget(keys: string[]): Promise<(string | null)[]> {
     try {
       const result = await this.client.mget(...keys);
+
       this.logger.debug(`[MGET] keys=${keys.join(',')} result=${result.length} items`);
+
       return result;
     } catch (error) {
       this.logger.error(`[MGET] Failed for keys=${keys.join(',')}:`, error);
@@ -109,10 +126,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async mset(keyValuePairs: Record<string, string>): Promise<'OK'> {
     try {
       const result = await this.client.mset(keyValuePairs);
+
       this.logger.debug(`[MSET] pairs=${Object.keys(keyValuePairs).length} items`);
+
       return result;
     } catch (error) {
-      this.logger.error(`[MSET] Failed:`, error);
+      this.logger.error('[MSET] Failed:', error);
       throw error;
     }
   }
@@ -120,7 +139,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async exists(key: string): Promise<number> {
     try {
       const result = await this.client.exists(key);
+
       this.logger.debug(`[EXISTS] key=${key} result=${result}`);
+
       return result;
     } catch (error) {
       this.logger.error(`[EXISTS] Failed for key=${key}:`, error);

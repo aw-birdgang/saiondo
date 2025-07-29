@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ethers } from 'ethers';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -17,13 +17,14 @@ export class Web3Service implements OnModuleInit {
   private lastBlock: number | null = null;
 
   constructor(private readonly prisma: PrismaService) {
-    const rpcUrl = process.env.WEB3_RPC_URL!;
-    const contractAddress = process.env.TOKEN_CONTRACT_ADDRESS!;
-    const abiPath = process.env.TOKEN_CONTRACT_ABI_PATH!;
-    const privateKey = process.env.WEB3_OWNER_PRIVATE_KEY!;
+    const rpcUrl = process.env.WEB3_RPC_URL ?? '';
+    const contractAddress = process.env.TOKEN_CONTRACT_ADDRESS ?? '';
+    const abiPath = process.env.TOKEN_CONTRACT_ABI_PATH ?? '';
+    const privateKey = process.env.WEB3_OWNER_PRIVATE_KEY ?? '';
 
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
     const abi = JSON.parse(fs.readFileSync(path.resolve(abiPath), 'utf-8'));
+
     this.ownerWallet = new ethers.Wallet(privateKey, this.provider);
     this.tokenContract = new ethers.Contract(contractAddress, abi, this.ownerWallet);
   }
@@ -33,20 +34,22 @@ export class Web3Service implements OnModuleInit {
     const decimals = await this.tokenContract.decimals();
     const value = ethers.parseUnits(amount.toString(), decimals);
     const tx = await this.tokenContract.transfer(to, value);
+
     return tx.hash;
   }
 
   async getTokenBalance(address: string): Promise<string> {
     const decimals = await this.tokenContract.decimals();
     const balance = await this.tokenContract.balanceOf(address);
+
     // balance는 BigInt, 사람이 읽을 수 있는 단위로 변환
     return ethers.formatUnits(balance, decimals);
   }
 
   // 개선: 이벤트 구독 대신 polling 방식으로 Transfer 이벤트 동기화
-  async onModuleInit() {
+  onModuleInit() {
     this.logger.log('Web3Service polling for Transfer events...');
-    //this.startPollingTransferEvents();
+    // this.startPollingTransferEvents();
   }
 
   private async startPollingTransferEvents() {
@@ -55,11 +58,13 @@ export class Web3Service implements OnModuleInit {
       this.lastBlock = await this.provider.getBlockNumber();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setInterval(async () => {
       try {
         const currentBlock = await this.provider.getBlockNumber();
         // 최근 1000블록까지만 조회(너무 과거까지 조회 방지)
-        const fromBlock = Math.max((this.lastBlock ?? currentBlock) + 1, currentBlock - 1000);
+        this.lastBlock ??= currentBlock;
+        const fromBlock = Math.max(this.lastBlock + 1, currentBlock - 1000);
         const toBlock = currentBlock;
 
         if (fromBlock > toBlock) {
@@ -73,19 +78,23 @@ export class Web3Service implements OnModuleInit {
 
         for (const event of events) {
           const parsed = this.tokenContract.interface.parseLog(event);
-          if (!parsed) continue;
 
-          const from = parsed.args[0];
-          const to = parsed.args[1];
-          for (const addr of [from, to]) {
-            const wallet = await this.prisma.wallet.findUnique({ where: { address: addr } });
-            if (wallet) {
-              const tokenBalance = await this.getTokenBalance(addr);
-              await this.prisma.wallet.update({
-                where: { id: wallet.id },
-                data: { tokenBalance },
-              });
-              this.logger.log(`Wallet ${addr} balance updated: ${tokenBalance}`);
+          if (parsed) {
+            const from = parsed.args[0];
+            const to = parsed.args[1];
+
+            for (const addr of [from, to]) {
+              const wallet = await this.prisma.wallet.findUnique({ where: { address: addr } });
+
+              if (wallet) {
+                const tokenBalance = await this.getTokenBalance(addr);
+
+                await this.prisma.wallet.update({
+                  where: { id: wallet.id },
+                  data: { tokenBalance },
+                });
+                this.logger.log(`Wallet ${addr} balance updated: ${tokenBalance}`);
+              }
             }
           }
         }

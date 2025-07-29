@@ -7,6 +7,7 @@ async function deepResolvePromises(input) {
   // 2. 입력이 배열인 경우, 배열 내의 모든 요소에 대해 재귀적으로 deepResolvePromises를 호출하여 Promise가 있는 모든 요소를 resolve
   if (Array.isArray(input)) {
     const resolvedArray = await Promise.all(input.map(deepResolvePromises));
+
     return resolvedArray;
   }
 
@@ -23,6 +24,7 @@ async function deepResolvePromises(input) {
     // 각 키에 대해 재귀적으로 deepResolvePromises 호출 후, resolvedObject에 저장
     for (const key of keys) {
       const resolvedValue = await deepResolvePromises(input[key]);
+
       resolvedObject[key] = resolvedValue;
     }
 

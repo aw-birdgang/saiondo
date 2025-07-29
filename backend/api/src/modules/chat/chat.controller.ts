@@ -1,8 +1,8 @@
-import {Body, Controller, Get, Param, Post} from '@nestjs/common';
-import {ChatService} from './chat.service';
-import {ChatWithFeedbackDto} from './dto/chat-with-feedback.dto';
-import {ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {CreateChatDto} from "@modules/chat/dto/create-chat.dto";
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ChatService } from './chat.service';
+import { ChatWithFeedbackDto } from './dto/chat-with-feedback.dto';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateChatDto } from '@modules/chat/dto/create-chat.dto';
 
 @ApiTags('Chat')
 @Controller('chat')
@@ -35,10 +35,7 @@ export class ChatController {
     description: 'Assistant ID',
   })
   @ApiResponse({ status: 200, description: '채팅 기록 목록 반환' })
-  async findChatsByChannelWithAssistantId(
-      @Param('assistantId') assistantId: string,
-  ) {
+  async findChatsByChannelWithAssistantId(@Param('assistantId') assistantId: string) {
     return this.service.findChatsByChannelWithAssistantId(assistantId);
   }
-
 }

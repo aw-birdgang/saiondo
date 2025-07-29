@@ -1,11 +1,14 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {CreateBasicQuestionDto, UpdateBasicQuestionDto} from './dto/create-basic-question.dto';
-import {BasicQuestionResponseDto} from './dto/basic-question-response.dto';
-import {CreateBasicAnswerDto} from './dto/create-basic-answer.dto';
-import {BasicAnswerResponseDto, BasicAnswerWithQuestionResponseDto,} from './dto/basic-answer-response.dto';
-import {BasicQuestionWithAnswerDto} from './dto/basic-question-with-answer.dto';
-import {BasicQuestionCategoryResponseDto} from './dto/basic-question-category-response.dto';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { CreateBasicQuestionDto, UpdateBasicQuestionDto } from './dto/create-basic-question.dto';
+import { BasicQuestionResponseDto } from './dto/basic-question-response.dto';
+import { CreateBasicAnswerDto } from './dto/create-basic-answer.dto';
+import {
+  BasicAnswerResponseDto,
+  BasicAnswerWithQuestionResponseDto,
+} from './dto/basic-answer-response.dto';
+import { BasicQuestionWithAnswerDto } from './dto/basic-question-with-answer.dto';
+import { BasicQuestionCategoryResponseDto } from './dto/basic-question-category-response.dto';
 
 /**
  * BasicQuestionWithAnswerService
@@ -23,6 +26,7 @@ export class BasicQuestionWithAnswerService {
   /** 답변 생성 또는 수정 */
   async createOrUpdateAnswer(dto: CreateBasicAnswerDto): Promise<BasicAnswerResponseDto> {
     const question = await this.prisma.basicQuestion.findUnique({ where: { id: dto.questionId } });
+
     if (!question) throw new NotFoundException('질문을 찾을 수 없습니다.');
     if (!question.options.includes(dto.answer)) {
       throw new BadRequestException('유효하지 않은 선택지입니다.');
@@ -31,14 +35,17 @@ export class BasicQuestionWithAnswerService {
     const existing = await this.prisma.basicAnswer.findFirst({
       where: { userId: dto.userId, questionId: dto.questionId },
     });
+
     if (existing) {
       const updated = await this.prisma.basicAnswer.update({
         where: { id: existing.id },
         data: { answer: dto.answer, updatedAt: new Date() },
       });
+
       return BasicAnswerResponseDto.fromEntity(updated);
     } else {
       const created = await this.prisma.basicAnswer.create({ data: dto });
+
       return BasicAnswerResponseDto.fromEntity(created);
     }
   }
@@ -50,14 +57,19 @@ export class BasicQuestionWithAnswerService {
       include: { question: true },
       orderBy: { createdAt: 'asc' },
     });
+
     return answers.map(BasicAnswerWithQuestionResponseDto.fromEntity);
   }
 
   /** 유저/질문별 답변 조회 */
-  async getAnswerByUserAndQuestion(userId: string, questionId: string): Promise<BasicAnswerResponseDto | null> {
+  async getAnswerByUserAndQuestion(
+    userId: string,
+    questionId: string,
+  ): Promise<BasicAnswerResponseDto | null> {
     const answer = await this.prisma.basicAnswer.findFirst({
       where: { userId, questionId },
     });
+
     return answer ? BasicAnswerResponseDto.fromEntity(answer) : null;
   }
 
@@ -67,21 +79,26 @@ export class BasicQuestionWithAnswerService {
       include: { question: true },
       orderBy: { createdAt: 'asc' },
     });
+
     return answers.map(BasicAnswerWithQuestionResponseDto.fromEntity);
   }
 
   /** 답변 삭제 */
   async deleteAnswer(answerId: string): Promise<BasicAnswerResponseDto> {
     const existing = await this.prisma.basicAnswer.findUnique({ where: { id: answerId } });
+
     if (!existing) throw new NotFoundException('답변을 찾을 수 없습니다.');
     const deleted = await this.prisma.basicAnswer.delete({ where: { id: answerId } });
+
     return BasicAnswerResponseDto.fromEntity(deleted);
   }
 
   /**
    * 답변이 있는 질문+답변만 반환 (AI/챗봇 프롬프트용)
    */
-  async getAnsweredQAPairs(userId: string): Promise<{ question: string; answer: string; categoryId: string }[]> {
+  async getAnsweredQAPairs(
+    userId: string,
+  ): Promise<{ question: string; answer: string; categoryId: string }[]> {
     const answers = await this.prisma.basicAnswer.findMany({
       where: { userId },
       include: { question: true },
@@ -106,9 +123,7 @@ export class BasicQuestionWithAnswerService {
       orderBy: { createdAt: 'asc' },
     });
 
-    return answers.map(ans =>
-      BasicQuestionWithAnswerDto.fromEntity(ans.question, ans)
-    );
+    return answers.map(ans => BasicQuestionWithAnswerDto.fromEntity(ans.question, ans));
   }
 
   // =========================
@@ -118,13 +133,16 @@ export class BasicQuestionWithAnswerService {
   /** 전체 질문 조회 */
   async getAllQuestions(): Promise<BasicQuestionResponseDto[]> {
     const questions = await this.prisma.basicQuestion.findMany();
+
     return questions.map(BasicQuestionResponseDto.fromEntity);
   }
 
   /** 질문 ID로 조회 */
   async getQuestionById(id: string): Promise<BasicQuestionResponseDto> {
     const question = await this.prisma.basicQuestion.findUnique({ where: { id } });
+
     if (!question) throw new NotFoundException('질문을 찾을 수 없습니다.');
+
     return BasicQuestionResponseDto.fromEntity(question);
   }
 
@@ -138,6 +156,7 @@ export class BasicQuestionWithAnswerService {
         options: dto.options,
       },
     });
+
     return BasicQuestionResponseDto.fromEntity(entity);
   }
 
@@ -151,6 +170,7 @@ export class BasicQuestionWithAnswerService {
         options: dto.options,
       },
     });
+
     return BasicQuestionResponseDto.fromEntity(entity);
   }
 
@@ -158,6 +178,7 @@ export class BasicQuestionWithAnswerService {
   async deleteQuestion(id: string): Promise<BasicQuestionResponseDto> {
     await this.getQuestionById(id); // 존재 확인
     const entity = await this.prisma.basicQuestion.delete({ where: { id } });
+
     return BasicQuestionResponseDto.fromEntity(entity);
   }
 
@@ -181,6 +202,7 @@ export class BasicQuestionWithAnswerService {
     const categories = await this.prisma.basicQuestionCategory.findMany({
       orderBy: { code: 'asc' },
     });
+
     return categories.map(BasicQuestionCategoryResponseDto.fromEntity);
   }
 
@@ -190,6 +212,7 @@ export class BasicQuestionWithAnswerService {
       where: { categoryId },
       orderBy: { createdAt: 'asc' },
     });
+
     return questions.map(BasicQuestionResponseDto.fromEntity);
   }
 
@@ -209,8 +232,6 @@ export class BasicQuestionWithAnswerService {
       },
     });
 
-    return questions.map(q =>
-      BasicQuestionWithAnswerDto.fromEntity(q, q.answers[0] ?? null),
-    );
+    return questions.map(q => BasicQuestionWithAnswerDto.fromEntity(q, q.answers[0] ?? null));
   }
 }

@@ -1,6 +1,6 @@
 import { TokenTransfer as PrismaTokenTransfer } from '@prisma/client';
-import {TokenTransfer} from "../../../../domain/token-transfer";
-import {TokenTransferEntity} from "../entities/token-transfer.mapper";
+import { TokenTransfer } from '../../../../domain/token-transfer';
+import { TokenTransferEntity } from '../entities/token-transfer.mapper';
 
 export class TokenTransferMapper {
   static fromPrisma(prisma: PrismaTokenTransfer): TokenTransfer {

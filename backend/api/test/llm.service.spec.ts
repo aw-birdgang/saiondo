@@ -32,9 +32,7 @@ describe('LlmService', () => {
   describe('chat', () => {
     it('should make chat request to LLM API', async () => {
       const chatDto: ChatDto = {
-        messages: [
-          { role: 'user', content: 'Hello, how are you?' }
-        ],
+        messages: [{ role: 'user', content: 'Hello, how are you?' }],
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
       };
@@ -43,10 +41,10 @@ describe('LlmService', () => {
         choices: [
           {
             message: {
-              content: 'I am doing well, thank you for asking!'
-            }
-          }
-        ]
+              content: 'I am doing well, thank you for asking!',
+            },
+          },
+        ],
       };
 
       // Mock fetch
@@ -68,15 +66,13 @@ describe('LlmService', () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(chatDto),
-        })
+        }),
       );
     });
 
     it('should throw error when API request fails', async () => {
       const chatDto: ChatDto = {
-        messages: [
-          { role: 'user', content: 'Hello' }
-        ],
+        messages: [{ role: 'user', content: 'Hello' }],
         model: 'gpt-3.5-turbo',
         temperature: 0.7,
       };
@@ -106,7 +102,7 @@ describe('LlmService', () => {
         analysis: {
           sentiment: 'positive',
           confidence: 0.85,
-        }
+        },
       };
 
       global.fetch = jest.fn().mockResolvedValue({
@@ -127,7 +123,7 @@ describe('LlmService', () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(analyzeDto),
-        })
+        }),
       );
     });
   });

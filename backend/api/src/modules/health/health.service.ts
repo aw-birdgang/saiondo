@@ -9,6 +9,7 @@ export class HealthService {
     // DB 연결 체크
     try {
       await this.prisma.$queryRaw`SELECT 1`;
+
       return { status: 'ok', db: 'ok' };
     } catch (e) {
       return { status: 'fail', db: 'fail', error: e.message };

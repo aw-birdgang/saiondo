@@ -30,7 +30,11 @@
     "test:unit": "jest --testPathPattern=test/.*\\.spec\\.ts",
     "clean": "rm -rf dist node_modules/.cache",
     "clean:all": "rm -rf dist node_modules package-lock.json yarn.lock",
-    "migrate-and-start": "yarn prisma migrate deploy && yarn prisma generate && yarn build && yarn start:prod"
+    "migrate-and-start": "yarn prisma migrate deploy && yarn prisma generate && yarn build && yarn start:prod",
+    "commit": "cz",
+    "prepare": "husky",
+    "type-check": "tsc --noEmit",
+    "check-all": "npm run lint && npm run type-check && npm test"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
@@ -113,7 +117,13 @@
     "tslib": "2.7.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "lint-staged": "^15.5.2",
+    "husky": "^9.0.11",
+    "@commitlint/cli": "^19.0.3",
+    "@commitlint/config-conventional": "^19.0.3",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -131,6 +141,20 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "engines": {
     "node": ">=16.0.0",

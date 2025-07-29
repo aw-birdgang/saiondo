@@ -1,4 +1,4 @@
-import {TokenTransfer} from "../../domain/token-transfer";
+import { TokenTransfer } from '../../domain/token-transfer';
 
 export abstract class TokenTransferRepository {
   abstract findById(id: string): Promise<TokenTransfer | null>;

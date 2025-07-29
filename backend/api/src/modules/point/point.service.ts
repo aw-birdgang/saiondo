@@ -1,12 +1,10 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {PointType} from '@prisma/client';
-import {PrismaService} from "@common/prisma/prisma.service";
-import {TokenTransferService} from '../token-transfer/token-transfer.service';
-import {WalletService} from '@modules/wallet/wallet.service';
-import {Web3Service} from "@modules/web3/web3.service";
-import {
-  RelationalPointRepository
-} from "../../database/point/infrastructure/persistence/relational/repositories/point.repository";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { PointType } from '@prisma/client';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { TokenTransferService } from '../token-transfer/token-transfer.service';
+import { WalletService } from '@modules/wallet/wallet.service';
+import { Web3Service } from '@modules/web3/web3.service';
+import { RelationalPointRepository } from '../../database/point/infrastructure/persistence/relational/repositories/point.repository';
 
 @Injectable()
 export class PointService {
@@ -19,15 +17,12 @@ export class PointService {
   ) {}
 
   // 내부 공통 로직
-  private async changePoint(
-    userId: string,
-    amount: number,
-    type: PointType,
-    description?: string
-  ) {
+  private async changePoint(userId: string, amount: number, type: PointType, description?: string) {
     if (amount === 0) throw new BadRequestException('amount must not be zero');
-    return this.prisma.$transaction(async (tx) => {
+
+    return this.prisma.$transaction(async tx => {
       const user = await tx.user.findUnique({ where: { id: userId } });
+
       if (!user) throw new NotFoundException('User not found');
       if (amount < 0 && user.point + amount < 0) throw new BadRequestException('Not enough points');
 
@@ -46,10 +41,16 @@ export class PointService {
   // 포인트 획득 (미션, 프로필 등)
   async earnPoint(userId: string, amount: number, type: PointType, description?: string) {
     if (amount <= 0) throw new BadRequestException('amount must be positive');
-    const allowed = [PointType.MISSION_REWARD, PointType.PROFILE_UPDATE, PointType.ADMIN_ADJUST] as const;
+    const allowed = [
+      PointType.MISSION_REWARD,
+      PointType.PROFILE_UPDATE,
+      PointType.ADMIN_ADJUST,
+    ] as const;
+
     if (!(allowed as readonly PointType[]).includes(type)) {
       throw new BadRequestException('Invalid point type for earning');
     }
+
     return this.changePoint(userId, amount, type, description);
   }
 
@@ -57,9 +58,11 @@ export class PointService {
   async usePoint(userId: string, amount: number, type: PointType, description?: string) {
     if (amount <= 0) throw new BadRequestException('amount must be positive');
     const allowed = [PointType.CHAT_USE, PointType.ADMIN_ADJUST] as const;
+
     if (!(allowed as readonly PointType[]).includes(type)) {
       throw new BadRequestException('Invalid point type for usage');
     }
+
     return this.changePoint(userId, -amount, type, description);
   }
 
@@ -84,6 +87,7 @@ export class PointService {
       where: { id: userId },
       include: { wallet: true },
     });
+
     if (!user) throw new NotFoundException('유저 없음');
     if (!user.wallet?.address) throw new BadRequestException('지갑 주소 없음');
 
@@ -121,6 +125,7 @@ export class PointService {
   async convertTokenToPoint(userId: string, tokenAmount: number) {
     // 1. 포인트 적립
     await this.earnPoint(userId, tokenAmount, PointType.ADMIN_ADJUST, '토큰→포인트 전환');
+
     return { success: true };
   }
 
@@ -134,7 +139,8 @@ export class PointService {
   async purchasePoint(userId: string, productId: string) {
     // 실제 결제 연동은 생략(성공 가정)
     const product = await this.prisma.pointProduct.findUnique({ where: { id: productId } });
-    if (!product || !product.isActive) throw new Error('상품 없음');
+
+    if (!product?.isActive) throw new Error('상품 없음');
     await this.prisma.user.update({
       where: { id: userId },
       data: { point: { increment: product.pointAmount } },
@@ -147,6 +153,7 @@ export class PointService {
         price: product.price,
       },
     });
+
     return { success: true, pointAdded: product.pointAmount };
   }
 }

@@ -1,4 +1,4 @@
 export class BuyPointResponseDto {
-    success: boolean;
-    pointAdded: number;
-  }
+  success: boolean;
+  pointAdded: number;
+}

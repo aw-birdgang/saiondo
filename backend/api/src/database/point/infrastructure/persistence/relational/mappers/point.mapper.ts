@@ -18,12 +18,14 @@ export class PointMapper {
   // Entity → 도메인
   static toDomain(entity: PointEntity): Point {
     const point = new Point();
+
     point.id = entity.id;
     point.userId = entity.userId;
     point.amount = entity.amount;
     point.type = entity.type;
     point.description = entity.description;
     point.createdAt = entity.createdAt;
+
     return point;
   }
 
@@ -35,7 +37,7 @@ export class PointMapper {
       amount: domain.amount,
       type: domain.type,
       description: domain.description,
-      createdAt: domain.createdAt!,
+      createdAt: domain.createdAt ?? new Date(),
     };
   }
-} 
+}

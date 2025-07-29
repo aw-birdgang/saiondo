@@ -8,12 +8,16 @@ export class WalletDto {
 export class UserWithWalletDto {
   @ApiProperty()
   id: string;
+
   @ApiProperty()
   name: string;
+
   @ApiProperty()
   email: string;
+
   @ApiProperty()
   point: number;
+
   @ApiProperty({ type: WalletDto, required: false })
   wallet?: WalletDto;
 }

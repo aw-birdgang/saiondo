@@ -8,10 +8,10 @@ export class AnalyzeCommunicationRequestDto {
   @IsString()
   userId: string;
 
-  @ApiProperty({ 
-    description: '대화 데이터', 
+  @ApiProperty({
+    description: '대화 데이터',
     example: [{ sender: 'user', text: '안녕?', timestamp: '2024-01-15T14:30:00Z' }],
-    type: [MessageDto]
+    type: [MessageDto],
   })
   @IsArray()
   @ValidateNested({ each: true })

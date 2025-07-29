@@ -1,11 +1,9 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {InviteCodeChannelDto} from '@modules/channel/dto/invite-code-channel.dto';
-import {generateInviteCode} from "@common/utils/invite-code.util";
-import {CreateChannelDto} from './dto/create-channel.dto';
-import {Channel} from './../../database/channel/domain/channel';
-import {
-  RelationalChannelRepository
-} from "../../database/channel/infrastructure/persistence/relational/repositories/channel.repository";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InviteCodeChannelDto } from '@modules/channel/dto/invite-code-channel.dto';
+import { generateInviteCode } from '@common/utils/invite-code.util';
+import { CreateChannelDto } from './dto/create-channel.dto';
+import { Channel } from './../../database/channel/domain/channel';
+import { RelationalChannelRepository } from '../../database/channel/infrastructure/persistence/relational/repositories/channel.repository';
 import { RedisService } from '@common/redis/redis.service';
 import { createWinstonLogger } from '@common/logger/winston.logger';
 
@@ -30,6 +28,7 @@ export class ChannelService {
   /** 커플(채널) 생성 + OWNER 멤버 등록 */
   async createChannel(dto: CreateChannelDto) {
     const channel = new Channel();
+
     channel.createdAt = new Date();
     channel.updatedAt = new Date();
     channel.inviteCode = dto.inviteCode ?? generateInviteCode();
@@ -43,7 +42,9 @@ export class ChannelService {
     channel.invitations = [];
 
     const saved = await this.channelRepo.save(channel);
+
     await this.channelRepo.addMember(saved.id, dto.userId, 'OWNER');
+
     return saved;
   }
 
@@ -74,9 +75,11 @@ export class ChannelService {
   /** 채널 참가자(상대방) userId 조회 (2인 채널 기준) */
   async getChannelParticipants(channelId: string, userId: string): Promise<string | null> {
     const channel = await this.channelRepo.findByIdWithMembers(channelId);
+
     if (!channel) return null;
     const owner = channel.members.find(m => m.role === 'OWNER');
     const participant = channel.members.find(m => m.role === 'MEMBER');
+
     if (owner?.userId === userId) {
       return participant?.userId ?? null;
     } else if (participant?.userId === userId) {
@@ -92,15 +95,18 @@ export class ChannelService {
 
     // 1. Redis에서 먼저 조회 (로그 자동 출력)
     const cached = await this.redisService.get(redisKey);
+
     if (cached) {
       return JSON.parse(cached);
     }
 
     // 2. 없으면 DB 조회 후 캐시 저장
     const channel = await this.channelRepo.findByInviteCodeWithMembers(inviteCode);
+
     if (!channel) throw new NotFoundException('초대코드에 해당하는 채널이 없습니다.');
 
     await this.redisService.set(redisKey, JSON.stringify(channel), 'EX', 60 * 5); // 5분 캐시
+
     return channel;
   }
 
@@ -132,6 +138,7 @@ export class ChannelService {
     const channelId = dto.channelId;
     const inviteCode = generateInviteCode();
     const channel = await this.channelRepo.findById(channelId);
+
     if (!channel) throw new NotFoundException('채널을 찾을 수 없습니다.');
 
     // 기존 캐시 삭제 (로그 자동 출력)
@@ -146,14 +153,18 @@ export class ChannelService {
 
     // 이미 사용된 초대코드인지 체크 (로그 자동 출력)
     const used = await this.redisService.get(redisKey);
+
     if (used) throw new BadRequestException('이미 사용된 초대코드입니다.');
 
     const channel = await this.channelRepo.findByInviteCodeWithMembers(inviteCode);
+
     if (!channel) throw new NotFoundException('초대 코드를 찾을 수 없습니다.');
     const participant = channel.members.find(m => m.role === 'MEMBER');
+
     if (participant) throw new BadRequestException('이미 참여한 채널입니다.');
     await this.channelRepo.addMember(channel.id, participantId, 'MEMBER');
     await this.redisService.set(redisKey, '1', 'EX', 60 * 10); // 10분간 재사용 방지 (로그 자동 출력)
+
     return this.channelRepo.updateStatus(channel.id, 'ACTIVE');
   }
 
@@ -184,15 +195,18 @@ export class ChannelService {
   /** 채널 ID로 참여 (MEMBER로 추가, 상태 ACTIVE로 변경) */
   async joinChannelById(userId: string, channelId: string) {
     const channel = await this.channelRepo.findByIdWithMembers(channelId);
+
     if (!channel) throw new NotFoundException('채널을 찾을 수 없습니다.');
     const participant = channel.members.find(m => m.role === 'MEMBER');
+
     if (participant) throw new BadRequestException('이미 참여한 채널입니다.');
     await this.channelRepo.addMember(channelId, userId, 'MEMBER');
+
     return this.channelRepo.updateStatus(channelId, 'ACTIVE');
   }
 
   /** 채널 상태를 ENDED로 변경 (거절/종료) */
-  async reject(channelId: string, userId: string) {
+  async reject(channelId: string) {
     // userId가 해당 채널의 멤버인지, 권한이 있는지 체크 등 추가 가능
     return this.channelRepo.updateStatus(channelId, 'ENDED');
   }
@@ -200,6 +214,7 @@ export class ChannelService {
   /** 채널 나가기 (OWNER면 채널 삭제, MEMBER면 멤버만 제거 및 상태 PENDING) */
   async leaveChannel(userId: string) {
     const channel = await this.channelRepo.findFirstCurrentChannel(userId);
+
     if (!channel) throw new NotFoundException('참여 중인 채널이 없습니다.');
     if (channel.members.find(m => m.role === 'OWNER')?.userId === userId) {
       await this.channelRepo.delete(channel.id);
@@ -207,6 +222,7 @@ export class ChannelService {
       await this.channelRepo.removeMember(channel.id, userId);
       await this.channelRepo.updateStatus(channel.id, 'PENDING');
     }
+
     return { success: true };
   }
 

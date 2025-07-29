@@ -13,10 +13,10 @@ export class AnalyzeConversationRequestDto {
   @IsString()
   partnerId?: string;
 
-  @ApiProperty({ 
-    description: '대화 메시지 배열', 
+  @ApiProperty({
+    description: '대화 메시지 배열',
     example: [{ sender: 'user', text: '안녕?', timestamp: '2024-01-15T14:30:00Z' }],
-    type: [MessageDto]
+    type: [MessageDto],
   })
   @IsArray()
   @ValidateNested({ each: true })
@@ -33,4 +33,4 @@ export class AnalyzeConversationResponseDto {
 
   @ApiProperty({ description: '신뢰도 점수', example: 0.87 })
   score: number;
-} 
+}

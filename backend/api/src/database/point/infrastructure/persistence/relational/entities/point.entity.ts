@@ -7,4 +7,4 @@ export class PointEntity {
   type: PointType;
   description?: string | null;
   createdAt: Date;
-} 
+}

@@ -1,6 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { INestApplication } from '@nestjs/common';
 
 @Module({})
 export class SwaggerModuleConfig {
@@ -11,6 +10,7 @@ export class SwaggerModuleConfig {
       .setVersion('1.0')
       .build();
     const document = SwaggerModule.createDocument(app, config);
+
     SwaggerModule.setup('api-docs', app, document);
   }
 }

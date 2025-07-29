@@ -38,20 +38,20 @@ export function validateConfig<T extends object>(
     const validatedConfig = plainToClass(envVariablesClass, config, {
       enableImplicitConversion: true,
     });
-    
+
     const errors = validateSync(validatedConfig, {
       skipMissingProperties: false,
     });
 
     if (errors.length > 0) {
       const errorMessage = `Configuration validation failed: ${errors.toString()}`;
-      logger.error(
-        `환경 설정 검증 실패: errors=${JSON.stringify(generateErrors(errors))}`
-      );
+
+      logger.error(`환경 설정 검증 실패: errors=${JSON.stringify(generateErrors(errors))}`);
       throw new Error(errorMessage);
     }
-    
+
     logger.debug('환경 설정 검증 성공');
+
     return validatedConfig;
   } catch (error) {
     logger.error('환경 설정 검증 중 오류:', error);
@@ -67,9 +67,8 @@ export const validationOptions: ValidationPipeOptions = {
   whitelist: true,
   errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
   exceptionFactory: (errors: ValidationError[]) => {
-    logger.error(
-      `Validation errors: errors=${JSON.stringify(generateErrors(errors))}`
-    );
+    logger.error(`Validation errors: errors=${JSON.stringify(generateErrors(errors))}`);
+
     return new UnprocessableEntityException({
       status: HttpStatus.UNPROCESSABLE_ENTITY,
       errors: generateErrors(errors),
@@ -83,6 +82,7 @@ export const validationOptions: ValidationPipeOptions = {
 export function createValidationDecorator(validator: (value: any) => boolean, message: string) {
   return function (target: any, propertyKey: string) {
     const value = target[propertyKey];
+
     if (!validator(value)) {
       throw new UnprocessableEntityException(message);
     }

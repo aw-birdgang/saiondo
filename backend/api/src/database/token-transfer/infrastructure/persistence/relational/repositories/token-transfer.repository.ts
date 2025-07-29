@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { TokenTransferRepository } from '../../token-transfer.repository';
 import { TokenTransfer } from '../../../../domain/token-transfer';
@@ -15,14 +15,19 @@ export class RelationalTokenTransferRepository extends TokenTransferRepository {
 
   async findById(id: string): Promise<TokenTransfer | null> {
     const prismaTokenTransfer = await this.prisma.tokenTransfer.findUnique({ where: { id } });
+
     if (!prismaTokenTransfer) return null;
     const entity = TokenTransferMapper.fromPrisma(prismaTokenTransfer);
+
     return TokenTransferMapper.toDomain(entity);
   }
 
   async findAll(): Promise<TokenTransfer[]> {
     const prismaTokenTransfers = await this.prisma.tokenTransfer.findMany();
-    return prismaTokenTransfers.map(pt => TokenTransferMapper.toDomain(TokenTransferMapper.fromPrisma(pt)));
+
+    return prismaTokenTransfers.map(pt =>
+      TokenTransferMapper.toDomain(TokenTransferMapper.fromPrisma(pt)),
+    );
   }
 
   async save(tokenTransfer: TokenTransfer): Promise<TokenTransfer> {
@@ -46,6 +51,7 @@ export class RelationalTokenTransferRepository extends TokenTransferRepository {
         createdAt: entity.createdAt,
       },
     });
+
     return TokenTransferMapper.toDomain(TokenTransferMapper.fromPrisma(prismaTokenTransfer));
   }
 
@@ -55,7 +61,9 @@ export class RelationalTokenTransferRepository extends TokenTransferRepository {
 
   async findByUserId(userId: string): Promise<TokenTransfer[]> {
     const prismaTokenTransfers = await this.prisma.tokenTransfer.findMany({ where: { userId } });
-    return prismaTokenTransfers.map(pt => TokenTransferMapper.toDomain(TokenTransferMapper.fromPrisma(pt)));
-  }
 
+    return prismaTokenTransfers.map(pt =>
+      TokenTransferMapper.toDomain(TokenTransferMapper.fromPrisma(pt)),
+    );
+  }
 }

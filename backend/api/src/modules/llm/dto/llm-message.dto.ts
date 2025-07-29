@@ -1,4 +1,4 @@
-import {ApiProperty} from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class LLMMessageDto {
   @ApiProperty({ example: 'user', enum: ['system', 'user', 'assistant'] })

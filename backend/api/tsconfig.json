@@ -34,6 +34,7 @@
   },
   "include": [
     "src/**/*",
-    "prisma/seed.ts"
+    "prisma/seed.ts",
+    "test/**/*"
   ]
 }

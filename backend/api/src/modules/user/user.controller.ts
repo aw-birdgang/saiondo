@@ -1,10 +1,20 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post,} from '@nestjs/common';
-import {UserService} from './user.services';
-import {ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags} from '@nestjs/swagger';
-import {CreateUserDto} from '@modules/user/dto/user.dto';
-import {UpdateFcmTokenDto} from '@modules/user/dto/update-fcm-token.dto';
-import {UserWithPointHistoryDto} from './dto/user-with-point-history.dto';
-import {UserWithWalletDto} from './dto/user-with-wallet.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { UserService } from './user.services';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from '@modules/user/dto/user.dto';
+import { UpdateFcmTokenDto } from '@modules/user/dto/update-fcm-token.dto';
+import { UserWithPointHistoryDto } from './dto/user-with-point-history.dto';
+import { UserWithWalletDto } from './dto/user-with-wallet.dto';
 
 @ApiTags('User')
 @Controller('users')
@@ -35,7 +45,7 @@ export class UserController {
     try {
       return await this.userService.createUser(body);
     } catch (e) {
-      throw new HttpException(e.message || '유저 생성 실패', HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message ?? '유저 생성 실패', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -50,9 +60,11 @@ export class UserController {
   @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
   async findById(@Param('id') userId: string) {
     const user = await this.userService.findById(userId);
+
     if (!user) {
       throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
     }
+
     return user;
   }
 
@@ -66,6 +78,7 @@ export class UserController {
   })
   async findAssistantsByUserId(@Param('id') userId: string) {
     const assistants = await this.userService.findAssistantsByUserId(userId);
+
     return assistants;
   }
 
@@ -88,9 +101,11 @@ export class UserController {
   })
   async getUserWithPointHistory(@Param('id') userId: string) {
     const user = await this.userService.findUserWithPointHistory(userId);
+
     if (!user) {
       throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
     }
+
     return user;
   }
 
@@ -101,9 +116,11 @@ export class UserController {
   @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
   async deleteUser(@Param('id') userId: string) {
     const deleted = await this.userService.deleteUser(userId);
+
     if (!deleted) {
       throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
     }
+
     return { message: '삭제 성공', userId };
   }
 }

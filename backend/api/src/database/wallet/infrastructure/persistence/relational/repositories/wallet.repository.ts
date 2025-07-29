@@ -1,10 +1,10 @@
-import {Injectable} from '@nestjs/common';
-import {NullableType} from '../../../../../../common/utils/types/nullable.type';
-import {Wallet} from '../../../../domain/wallet';
-import {WalletMapper} from '../mappers/wallet.mapper';
-import {PrismaService} from '@common/prisma/prisma.service';
-import {WalletRepository} from '../../wallet.repository';
-import {createWinstonLogger} from "@common/logger/winston.logger";
+import { Injectable } from '@nestjs/common';
+import { NullableType } from '../../../../../../common/utils/types/nullable.type';
+import { Wallet } from '../../../../domain/wallet';
+import { WalletMapper } from '../mappers/wallet.mapper';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { WalletRepository } from '../../wallet.repository';
+import { createWinstonLogger } from '@common/logger/winston.logger';
 
 @Injectable()
 export class RelationalWalletRepository extends WalletRepository {
@@ -28,26 +28,31 @@ export class RelationalWalletRepository extends WalletRepository {
         updatedAt: data.updatedAt,
       },
     });
+
     return WalletMapper.fromPrisma(created);
   }
 
   async findById(id: string): Promise<NullableType<Wallet>> {
     const wallet = await this.prisma.wallet.findUnique({ where: { id } });
+
     return wallet ? WalletMapper.fromPrisma(wallet) : null;
   }
 
   async findAll(): Promise<Wallet[]> {
     const wallets = await this.prisma.wallet.findMany();
+
     return wallets.map(w => WalletMapper.fromPrisma(w));
   }
 
   async findAllWithUser(): Promise<Wallet[]> {
     const wallets = await this.prisma.wallet.findMany({ include: { user: true } });
+
     return wallets.map(w => WalletMapper.fromPrisma(w));
   }
 
   async findManyByUserId(userId: string): Promise<Wallet[]> {
     const wallets = await this.prisma.wallet.findMany({ where: { user: { id: userId } } });
+
     return wallets.map(w => WalletMapper.fromPrisma(w));
   }
 
@@ -56,22 +61,29 @@ export class RelationalWalletRepository extends WalletRepository {
       where: { user: { id: userId } },
       orderBy: { derivationIndex: 'desc' },
     });
+
     return wallet ? WalletMapper.fromPrisma(wallet) : null;
   }
 
   async findByAddress(address: string): Promise<Wallet | null> {
     const wallet = await this.prisma.wallet.findUnique({ where: { address } });
+
     return wallet ? WalletMapper.fromPrisma(wallet) : null;
   }
 
   async findByAddressWithUser(address: string): Promise<Wallet | null> {
-    const wallet = await this.prisma.wallet.findUnique({ where: { address }, include: { user: true } });
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { address },
+      include: { user: true },
+    });
+
     return wallet ? WalletMapper.fromPrisma(wallet) : null;
   }
 
   async update(id: string, payload: Partial<Wallet>): Promise<Wallet> {
     const { user, ...rest } = payload;
     const data: any = { ...rest };
+
     if (user) {
       data.user = { connect: { id: user.id } };
     } else if (user === null) {
@@ -81,6 +93,7 @@ export class RelationalWalletRepository extends WalletRepository {
       where: { id },
       data,
     });
+
     return WalletMapper.fromPrisma(updated);
   }
 
@@ -93,6 +106,7 @@ export class RelationalWalletRepository extends WalletRepository {
       where: { id },
       include: relations,
     });
+
     return wallet ? WalletMapper.fromPrisma(wallet) : null;
   }
 }

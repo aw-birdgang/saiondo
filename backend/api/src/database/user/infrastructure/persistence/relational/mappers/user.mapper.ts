@@ -1,5 +1,5 @@
-import {User} from '../../../../domain/user';
-import {UserEntity} from '../entities/user.entity';
+import { User } from '../../../../domain/user';
+import { UserEntity } from '../entities/user.entity';
 import {
   Advice,
   Assistant,
@@ -13,8 +13,8 @@ import {
   SuggestedField,
   TokenTransfer,
   User as PrismaUser,
-  Wallet
-} from "@prisma/client";
+  Wallet,
+} from '@prisma/client';
 
 type PrismaUserWithRelations = PrismaUser & {
   assistants?: Assistant[];
@@ -34,9 +34,9 @@ type PrismaUserWithRelations = PrismaUser & {
 };
 
 export class UserMapper {
-
   static fromPrisma(prisma: PrismaUserWithRelations): User {
     const user = new User();
+
     user.id = prisma.id;
     user.name = prisma.name;
     user.email = prisma.email;
@@ -77,6 +77,7 @@ export class UserMapper {
    */
   static toDomain(entity: UserEntity): User {
     const user = new User();
+
     user.id = entity.id;
     user.name = entity.name;
     user.email = entity.email;
@@ -107,6 +108,7 @@ export class UserMapper {
     user.channelMembers = entity.channelMembers;
     user.invitationsSent = entity.invitationsSent;
     user.invitationsReceived = entity.invitationsReceived;
+
     return user;
   }
 
