@@ -1,351 +1,345 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../constants";
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { ROUTES } from '../../constants';
+import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
 
-interface SubscriptionPlan {
+interface SubscriptionProduct {
   id: string;
-  name: string;
-  price: number;
-  period: "monthly" | "yearly";
+  title: string;
+  description: string;
+  price: string;
+  originalPrice?: string;
+  discount?: string;
   features: string[];
   popular?: boolean;
 }
 
 const PaymentSubscriptionScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  
+  const [products, setProducts] = useState<SubscriptionProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [purchasePending, setPurchasePending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isAvailable, setIsAvailable] = useState(true);
 
-  const plans: SubscriptionPlan[] = [
-    {
-      id: "free",
-      name: "무료",
-      price: 0,
-      period: "monthly",
-      features: ["기본 채팅 기능", "일일 대화 분석", "기본 알림", "1개 채널"],
-    },
-    {
-      id: "premium",
-      name: "프리미엄",
-      price: 9900,
-      period: "monthly",
-      features: [
-        "무제한 채팅",
-        "실시간 대화 분석",
-        "고급 AI 조언",
-        "무제한 채널",
-        "우선 지원",
-        "고급 알림 설정",
-      ],
-      popular: true,
-    },
-    {
-      id: "premium-yearly",
-      name: "프리미엄 (연간)",
-      price: 99000,
-      period: "yearly",
-      features: [
-        "무제한 채팅",
-        "실시간 대화 분석",
-        "고급 AI 조언",
-        "무제한 채널",
-        "우선 지원",
-        "고급 알림 설정",
-        "2개월 무료",
-      ],
-    },
-  ];
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-  const handleSubscribe = async () => {
-    setIsLoading(true);
-
+  const fetchProducts = async () => {
     try {
-      // Simulate payment process
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // Mock success
-      alert("구독이 성공적으로 완료되었습니다!");
-      navigate(ROUTES.HOME);
-    } catch {
-      alert("구독 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsLoading(true);
+      setError(null);
+      
+      // TODO: 실제 API 호출로 대체
+      // const response = await getSubscriptionProducts();
+      
+      // 시뮬레이션을 위한 지연
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock 데이터
+      const mockProducts: SubscriptionProduct[] = [
+        {
+          id: 'basic_monthly',
+          title: '기본 월간 구독',
+          description: '월 1,000포인트 제공',
+          price: '₩9,900',
+          originalPrice: '₩12,900',
+          discount: '23% 할인',
+          features: [
+            '월 1,000포인트 제공',
+            '기본 AI 상담 서비스',
+            '채팅 히스토리 저장',
+            '이메일 지원',
+          ],
+        },
+        {
+          id: 'premium_monthly',
+          title: '프리미엄 월간 구독',
+          description: '월 3,000포인트 제공',
+          price: '₩19,900',
+          originalPrice: '₩29,900',
+          discount: '33% 할인',
+          features: [
+            '월 3,000포인트 제공',
+            '고급 AI 상담 서비스',
+            '무제한 채팅',
+            '우선 고객 지원',
+            '고급 분석 기능',
+            '개인화된 추천',
+          ],
+          popular: true,
+        },
+        {
+          id: 'premium_yearly',
+          title: '프리미엄 연간 구독',
+          description: '연 36,000포인트 제공',
+          price: '₩199,900',
+          originalPrice: '₩358,800',
+          discount: '44% 할인',
+          features: [
+            '연 36,000포인트 제공',
+            '고급 AI 상담 서비스',
+            '무제한 채팅',
+            '우선 고객 지원',
+            '고급 분석 기능',
+            '개인화된 추천',
+            '2개월 무료',
+          ],
+        },
+      ];
+      
+      setProducts(mockProducts);
+      setIsAvailable(true);
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
+      setError('구독 상품을 불러오는데 실패했습니다.');
+      setIsAvailable(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const formatPrice = (price: number) => {
-    if (price === 0) return "무료";
-    return `₩${price.toLocaleString()}`;
+  const handlePurchase = async (product: SubscriptionProduct) => {
+    try {
+      setPurchasePending(true);
+      
+      // TODO: 실제 결제 API 호출로 대체
+      // await purchaseSubscription(product.id);
+      
+      // 시뮬레이션을 위한 지연
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast.success(`${product.title} 구독이 완료되었습니다!`);
+      navigate(ROUTES.HOME);
+      
+    } catch (err) {
+      console.error('Purchase failed:', err);
+      toast.error('결제에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setPurchasePending(false);
+    }
   };
 
-  const formatPeriod = (period: string) => {
-    return period === "monthly" ? "월" : "년";
-  };
+  if (purchasePending) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="lg" />
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            {t('processing_payment') || '결제를 처리하는 중...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="text-6xl mb-4">❌</div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            {t('payment_error') || '결제 오류'}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            {error}
+          </p>
+          <button
+            onClick={fetchProducts}
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            {t('retry') || '다시 시도'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAvailable) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            {t('store_unavailable') || '스토어를 사용할 수 없습니다'}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
+            기기에서 Google Play/Apple App Store에 로그인되어 있는지,<br />
+            네트워크 연결 상태, 인앱결제 상품 등록 여부를 확인하세요.
+          </p>
+          <button
+            onClick={fetchProducts}
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            {t('retry') || '다시 시도'}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-surface">
       {/* Header */}
-      <header className="bg-surface shadow-sm border-b border-border">
-        <div className="flex items-center justify-between h-16 px-4">
-          <div className="flex items-center space-x-4">
+      <div className="bg-white dark:bg-dark-secondary-container shadow-sm border-b dark:border-dark-border">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-3">
             <button
-              onClick={() => navigate(ROUTES.HOME)}
-              className="text-text-secondary hover:text-text"
+              onClick={() => navigate(-1)}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-dark-surface rounded-full transition-colors"
             >
-              ← 뒤로
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
-            <h1 className="text-lg font-semibold text-text">구독 관리</h1>
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">💎</span>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                {t('subscription_plans') || '구독 플랜'}
+              </h1>
+            </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          {/* Header Section */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-text mb-4">
-              Saiondo 프리미엄으로 업그레이드
-            </h2>
-            <p className="text-lg text-text-secondary max-w-2xl mx-auto">
-              더 나은 관계를 위한 고급 기능들을 경험해보세요. AI 기반 개인화된
-              조언과 실시간 분석으로 더 깊은 소통을 만들어보세요.
-            </p>
+      {/* Content */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <LoadingSpinner size="lg" />
           </div>
-
-          {/* Current Plan */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="text-xl font-semibold text-text">현재 구독</h3>
+        ) : products.length === 0 ? (
+          <EmptyState
+            icon="📦"
+            title={t('no_products') || '구독 상품이 없습니다'}
+            description={t('no_products_description') || '현재 이용 가능한 구독 상품이 없습니다.'}
+          />
+        ) : (
+          <>
+            {/* Header Info */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                {t('choose_your_plan') || '나에게 맞는 플랜을 선택하세요'}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                {t('subscription_description') || '더 많은 포인트와 고급 기능으로 AI 상담을 더욱 풍부하게 경험해보세요.'}
+              </p>
             </div>
-            <div className="card-body">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-lg font-medium text-text">무료 플랜</h4>
-                  <p className="text-text-secondary">
-                    기본 기능을 사용 중입니다
-                  </p>
-                </div>
-                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                  활성
-                </span>
-              </div>
-            </div>
-          </div>
 
-          {/* Subscription Plans */}
-          <div>
-            <h3 className="text-2xl font-bold text-text mb-6 text-center">
-              구독 플랜 선택
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {plans.map((plan) => (
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
                 <div
-                  key={plan.id}
-                  className={`card relative ${
-                    plan.popular ? "ring-2 ring-primary" : ""
+                  key={product.id}
+                  className={`relative bg-white dark:bg-dark-secondary-container rounded-2xl shadow-lg border-2 transition-all duration-200 hover:shadow-xl ${
+                    product.popular 
+                      ? 'border-pink-500 dark:border-pink-400' 
+                      : 'border-gray-200 dark:border-dark-border'
                   }`}
                 >
-                  {plan.popular && (
+                  {/* Popular Badge */}
+                  {product.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-primary text-on-primary px-3 py-1 rounded-full text-sm font-medium">
-                        인기
+                      <span className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                        {t('most_popular') || '인기'}
                       </span>
                     </div>
                   )}
 
-                  <div className="card-body">
-                    <div className="text-center mb-6">
-                      <h4 className="text-xl font-semibold text-text mb-2">
-                        {plan.name}
-                      </h4>
-                      <div className="mb-2">
-                        <span className="text-3xl font-bold text-primary">
-                          {formatPrice(plan.price)}
+                  <div className="p-6">
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                      {product.title}
+                    </h3>
+                    
+                    {/* Description */}
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      {product.description}
+                    </p>
+
+                    {/* Price */}
+                    <div className="mb-6">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                          {product.price}
                         </span>
-                        {plan.price > 0 && (
-                          <span className="text-text-secondary">
-                            /{formatPeriod(plan.period)}
+                        {product.originalPrice && (
+                          <span className="text-lg text-gray-500 line-through">
+                            {product.originalPrice}
                           </span>
                         )}
                       </div>
-                      {plan.period === "yearly" && plan.price > 0 && (
-                        <p className="text-sm text-green-600 font-medium">
-                          월 ₩{Math.round(plan.price / 12).toLocaleString()}{" "}
-                          (연간 결제 시)
-                        </p>
+                      {product.discount && (
+                        <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+                          {product.discount}
+                        </span>
                       )}
                     </div>
 
+                    {/* Features */}
                     <ul className="space-y-3 mb-6">
-                      {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-center">
-                          <div className="w-5 h-5 bg-primary text-on-primary rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                            <svg
-                              className="w-3 h-3"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <span className="text-text">{feature}</span>
+                      {product.features.map((feature, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-700 dark:text-gray-300 text-sm">
+                            {feature}
+                          </span>
                         </li>
                       ))}
                     </ul>
 
+                    {/* Purchase Button */}
                     <button
-                      onClick={handleSubscribe}
-                      disabled={isLoading || plan.id === "free"}
-                      className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-colors ${
-                        plan.id === "free"
-                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                          : plan.popular
-                            ? "bg-primary text-on-primary hover:bg-primaryContainer"
-                            : "bg-secondary text-on-secondary hover:bg-secondary-container"
-                      }`}
+                      onClick={() => handlePurchase(product)}
+                      disabled={purchasePending}
+                      className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
+                        product.popular
+                          ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:from-pink-600 hover:to-purple-600'
+                          : 'bg-blue-500 text-white hover:bg-blue-600'
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
-                      {isLoading
-                        ? "처리 중..."
-                        : plan.id === "free"
-                          ? "현재 플랜"
-                          : "구독하기"}
+                      {purchasePending ? (
+                        <div className="flex items-center justify-center">
+                          <LoadingSpinner size="sm" color="white" className="mr-2" />
+                          {t('processing') || '처리 중...'}
+                        </div>
+                      ) : (
+                        t('subscribe_now') || '지금 구독하기'
+                      )}
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Features Comparison */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="text-xl font-semibold text-text">기능 비교</h3>
-            </div>
-            <div className="card-body">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left py-3 px-4 font-medium text-text">
-                        기능
-                      </th>
-                      <th className="text-center py-3 px-4 font-medium text-text">
-                        무료
-                      </th>
-                      <th className="text-center py-3 px-4 font-medium text-text">
-                        프리미엄
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-border">
-                      <td className="py-3 px-4 text-text">일일 메시지 수</td>
-                      <td className="text-center py-3 px-4 text-text-secondary">
-                        50개
-                      </td>
-                      <td className="text-center py-3 px-4 text-primary font-medium">
-                        무제한
-                      </td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="py-3 px-4 text-text">대화 분석</td>
-                      <td className="text-center py-3 px-4 text-text-secondary">
-                        일일 1회
-                      </td>
-                      <td className="text-center py-3 px-4 text-primary font-medium">
-                        실시간
-                      </td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="py-3 px-4 text-text">AI 조언</td>
-                      <td className="text-center py-3 px-4 text-text-secondary">
-                        기본
-                      </td>
-                      <td className="text-center py-3 px-4 text-primary font-medium">
-                        고급
-                      </td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="py-3 px-4 text-text">채널 수</td>
-                      <td className="text-center py-3 px-4 text-text-secondary">
-                        1개
-                      </td>
-                      <td className="text-center py-3 px-4 text-primary font-medium">
-                        무제한
-                      </td>
-                    </tr>
-                    <tr className="border-b border-border">
-                      <td className="py-3 px-4 text-text">고객 지원</td>
-                      <td className="text-center py-3 px-4 text-text-secondary">
-                        이메일
-                      </td>
-                      <td className="text-center py-3 px-4 text-primary font-medium">
-                        우선 지원
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            {/* Footer Info */}
+            <div className="mt-12 text-center">
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                {t('subscription_terms') || '구독은 언제든지 취소할 수 있습니다.'}
+              </p>
+              <div className="flex justify-center space-x-6 text-xs text-gray-400">
+                <a href="#" className="hover:text-gray-600 dark:hover:text-gray-300">
+                  {t('terms_of_service') || '이용약관'}
+                </a>
+                <a href="#" className="hover:text-gray-600 dark:hover:text-gray-300">
+                  {t('privacy_policy') || '개인정보처리방침'}
+                </a>
+                <a href="#" className="hover:text-gray-600 dark:hover:text-gray-300">
+                  {t('refund_policy') || '환불정책'}
+                </a>
               </div>
             </div>
-          </div>
-
-          {/* FAQ */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="text-xl font-semibold text-text">
-                자주 묻는 질문
-              </h3>
-            </div>
-            <div className="card-body">
-              <div className="space-y-6">
-                <div>
-                  <h4 className="font-medium text-text mb-2">
-                    언제든지 구독을 취소할 수 있나요?
-                  </h4>
-                  <p className="text-text-secondary">
-                    네, 언제든지 구독을 취소할 수 있습니다. 취소 후에는 다음
-                    결제일까지 프리미엄 기능을 계속 사용할 수 있습니다.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="font-medium text-text mb-2">
-                    연간 구독과 월간 구독의 차이점은?
-                  </h4>
-                  <p className="text-text-secondary">
-                    연간 구독은 월간 구독보다 2개월 무료로 제공됩니다. 장기간
-                    사용하실 계획이라면 연간 구독이 더 경제적입니다.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="font-medium text-text mb-2">
-                    환불 정책은 어떻게 되나요?
-                  </h4>
-                  <p className="text-text-secondary">
-                    구독 후 7일 이내에 환불 요청을 하시면 전액 환불해드립니다.
-                    7일 이후에는 부분 환불이 불가능합니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={() => navigate(ROUTES.HOME)}
-              className="btn btn-secondary"
-            >
-              홈으로 가기
-            </button>
-          </div>
-        </div>
-      </main>
+          </>
+        )}
+      </div>
     </div>
   );
 };
