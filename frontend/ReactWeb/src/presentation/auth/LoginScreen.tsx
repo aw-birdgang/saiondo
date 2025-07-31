@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -13,9 +13,13 @@ interface LoginFormData {
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useTranslation();
   const { login, isLoading, error, clearError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
+  
+  // Get the page user was trying to access
+  const from = location.state?.from?.pathname || ROUTES.HOME;
 
   // Test accounts
   const testAccounts = {
@@ -32,9 +36,11 @@ const LoginScreen: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       clearError();
-      await login(data.email, data.password);
-      toast.success(t("auth.loginSuccess"));
-      navigate(ROUTES.HOME, { replace: true });
+      const success = await login(data.email, data.password);
+      if (success) {
+        toast.success(t("auth.loginSuccess"));
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : t("auth.loginError"),
@@ -46,9 +52,11 @@ const LoginScreen: React.FC = () => {
     const account = testAccounts[accountType];
     try {
       clearError();
-      await login(account.email, account.password);
-      toast.success(t("auth.loginSuccess"));
-      navigate(ROUTES.HOME, { replace: true });
+      const success = await login(account.email, account.password);
+      if (success) {
+        toast.success(t("auth.loginSuccess"));
+        navigate(from, { replace: true });
+      }
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : t("auth.loginError"),

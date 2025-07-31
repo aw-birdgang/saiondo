@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { useUserStore } from "../../core/stores/userStore";
 
@@ -14,11 +14,27 @@ interface Message {
 const ChatScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { selectedUser } = useUserStore();
+  const params = useParams();
+  const location = useLocation();
+  const { selectedUser, setAssistantId, setChannelId } = useUserStore();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Extract parameters from URL or location state
+  const channelId = params.channelId || location.state?.channelId;
+  const assistantId = params.assistantId || location.state?.assistantId;
+
+  // Update store with URL parameters
+  useEffect(() => {
+    if (channelId) {
+      setChannelId(channelId);
+    }
+    if (assistantId) {
+      setAssistantId(assistantId);
+    }
+  }, [channelId, assistantId, setChannelId, setAssistantId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

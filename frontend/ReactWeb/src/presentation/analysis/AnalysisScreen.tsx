@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { ROUTES } from "../../constants";
+import { useUserStore } from "../../core/stores/userStore";
 
 const AnalysisScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
+  const { setChannelId } = useUserStore();
+
+  // Extract channelId from URL or location state
+  const channelId = params.channelId || location.state?.channelId;
+
+  // Update store with URL parameter
+  useEffect(() => {
+    if (channelId) {
+      setChannelId(channelId);
+    }
+  }, [channelId, setChannelId]);
 
   return (
     <div className="min-h-screen bg-gray-50">

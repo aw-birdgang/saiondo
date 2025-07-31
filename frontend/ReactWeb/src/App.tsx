@@ -7,6 +7,7 @@ import { useAuthStore } from "./core/stores/authStore";
 import { useThemeStore } from "./core/stores/themeStore";
 import { useUserStore } from "./core/stores/userStore";
 import { useLanguageStore } from "./core/stores/languageStore";
+import { usePushNavigation } from "./core/hooks/usePushNavigation";
 import "./core/i18n"; // Initialize i18n
 import "./App.css";
 
@@ -25,6 +26,9 @@ const App: React.FC = () => {
   const { isDarkMode, init: initTheme } = useThemeStore();
   const { initUser } = useUserStore();
   const { locale, init: initLanguage } = useLanguageStore();
+  
+  // Initialize push navigation
+  usePushNavigation();
 
   useEffect(() => {
     // Initialize theme and language

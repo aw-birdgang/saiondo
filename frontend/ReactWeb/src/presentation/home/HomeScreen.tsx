@@ -136,7 +136,15 @@ const HomeScreen: React.FC = () => {
               </h3>
               <div className="space-y-3">
                 <button
-                  onClick={() => navigate(ROUTES.CHAT)}
+                  onClick={() => {
+                    // Use URL parameters for chat navigation
+                    const channelId = "default-channel"; // TODO: Get from user store or API
+                    const assistantId = "default-assistant"; // TODO: Get from user store or API
+                    
+                    navigate(`${ROUTES.CHAT}/${channelId}/${assistantId}`, {
+                      state: { channelId, assistantId },
+                    });
+                  }}
                   className="w-full text-left p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
                 >
                   <div className="flex items-center space-x-3">
@@ -150,7 +158,14 @@ const HomeScreen: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => navigate(ROUTES.ANALYSIS)}
+                  onClick={() => {
+                    // Use URL parameters for analysis navigation
+                    const channelId = "default-channel"; // TODO: Get from user store or API
+                    
+                    navigate(`${ROUTES.ANALYSIS}/${channelId}`, {
+                      state: { channelId },
+                    });
+                  }}
                   className="w-full text-left p-3 rounded-lg bg-green-50 hover:bg-green-100 transition-colors"
                 >
                   <div className="flex items-center space-x-3">

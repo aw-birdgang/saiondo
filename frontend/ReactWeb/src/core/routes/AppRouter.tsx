@@ -1,7 +1,52 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { useAuthStore } from "../stores/authStore";
+import { useUserStore } from "../stores/userStore";
+
+// Error boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Route error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+              Something went wrong
+            </h1>
+            <p className="text-gray-600 mb-4">
+              {this.state.error?.message || "An unexpected error occurred"}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 // Lazy load components for better performance
 const SplashScreen = React.lazy(
@@ -51,10 +96,23 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isUserLoaded } = useUserStore();
+  const location = useLocation();
 
+  // Show loading while checking authentication
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.LOGIN} replace />;
+    return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
+  }
+
+  // Show loading while user data is being loaded
+  if (!isUserLoaded) {
+    return <LoadingSpinner />;
   }
 
   return <>{children}</>;
@@ -77,9 +135,10 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
 
 export const AppRouter: React.FC = () => {
   return (
-    <BrowserRouter>
-      <React.Suspense fallback={<LoadingSpinner />}>
-        <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <React.Suspense fallback={<LoadingSpinner />}>
+          <Routes>
           {/* Public routes */}
           <Route path={ROUTES.SPLASH} element={<SplashScreen />} />
 
@@ -121,7 +180,25 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path={`${ROUTES.CHAT}/:channelId/:assistantId`}
+            element={
+              <ProtectedRoute>
+                <ChatScreen />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path={ROUTES.ANALYSIS}
+            element={
+              <ProtectedRoute>
+                <AnalysisScreen />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={`${ROUTES.ANALYSIS}/:channelId`}
             element={
               <ProtectedRoute>
                 <AnalysisScreen />
@@ -179,5 +256,6 @@ export const AppRouter: React.FC = () => {
         </Routes>
       </React.Suspense>
     </BrowserRouter>
+    </ErrorBoundary>
   );
 };
