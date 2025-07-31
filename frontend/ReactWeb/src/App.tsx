@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRouter } from "./core/routes/AppRouter";
 import { useAuthStore } from "./core/stores/authStore";
 import { useThemeStore } from "./core/stores/themeStore";
+import { useUserStore } from "./core/stores/userStore";
+import { useLanguageStore } from "./core/stores/languageStore";
+import "./core/i18n"; // Initialize i18n
 import "./App.css";
 
 // Create a client
@@ -20,11 +23,21 @@ const queryClient = new QueryClient({
 const App: React.FC = () => {
   const { loadAuthFromStorage } = useAuthStore();
   const { isDarkMode } = useThemeStore();
+  const { initUser } = useUserStore();
+  const { locale } = useLanguageStore();
 
   useEffect(() => {
     // Load authentication state from storage on app start
     loadAuthFromStorage();
   }, [loadAuthFromStorage]);
+
+  useEffect(() => {
+    // Initialize user data if authenticated
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      initUser();
+    }
+  }, [initUser]);
 
   useEffect(() => {
     // Apply theme to document

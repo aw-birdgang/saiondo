@@ -1,0 +1,78 @@
+{
+  "app": {
+    "name": "Saiondo",
+    "description": "사랑을 이어주는 커플 앱"
+  },
+  "auth": {
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃",
+    "email": "이메일",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "name": "이름",
+    "loginError": "로그인에 실패했습니다",
+    "registerError": "회원가입에 실패했습니다",
+    "emailRequired": "이메일을 입력해주세요",
+    "passwordRequired": "비밀번호를 입력해주세요",
+    "nameRequired": "이름을 입력해주세요",
+    "invalidEmail": "유효한 이메일 주소를 입력해주세요",
+    "passwordMismatch": "비밀번호가 일치하지 않습니다",
+    "loginSuccess": "로그인에 성공했습니다",
+    "registerSuccess": "회원가입에 성공했습니다"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공했습니다",
+    "cancel": "취소",
+    "confirm": "확인",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "수정",
+    "back": "뒤로",
+    "next": "다음",
+    "previous": "이전",
+    "close": "닫기",
+    "retry": "다시 시도"
+  },
+  "home": {
+    "title": "홈",
+    "welcome": "환영합니다",
+    "today": "오늘",
+    "yesterday": "어제"
+  },
+  "chat": {
+    "title": "채팅",
+    "sendMessage": "메시지 보내기",
+    "typeMessage": "메시지를 입력하세요",
+    "noMessages": "메시지가 없습니다"
+  },
+  "analysis": {
+    "title": "분석",
+    "personality": "성격 분석",
+    "relationship": "관계 분석",
+    "communication": "소통 패턴"
+  },
+  "notifications": {
+    "title": "알림",
+    "noNotifications": "알림이 없습니다",
+    "markAsRead": "읽음으로 표시"
+  },
+  "profile": {
+    "title": "프로필",
+    "editProfile": "프로필 수정",
+    "settings": "설정",
+    "language": "언어",
+    "theme": "테마",
+    "darkMode": "다크 모드",
+    "lightMode": "라이트 모드"
+  },
+  "invite": {
+    "title": "초대",
+    "invitePartner": "파트너 초대",
+    "inviteCode": "초대 코드",
+    "copyCode": "코드 복사",
+    "codeCopied": "코드가 복사되었습니다"
+  }
+} 

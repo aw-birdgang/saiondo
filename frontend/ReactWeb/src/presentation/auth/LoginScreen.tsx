@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { ROUTES } from "../../constants";
 import { useAuthStore } from "../../core/stores/authStore";
 
@@ -12,8 +13,15 @@ interface LoginFormData {
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { login, isLoading, error, clearError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
+
+  // Test accounts
+  const testAccounts = {
+    male: { email: "kim@example.com", password: "password123" },
+    female: { email: "lee@example.com", password: "password123" },
+  };
 
   const {
     register,
@@ -25,11 +33,25 @@ const LoginScreen: React.FC = () => {
     try {
       clearError();
       await login(data.email, data.password);
-      toast.success("로그인에 성공했습니다!");
+      toast.success(t("auth.loginSuccess"));
       navigate(ROUTES.HOME, { replace: true });
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "로그인에 실패했습니다.",
+        error instanceof Error ? error.message : t("auth.loginError"),
+      );
+    }
+  };
+
+  const handleQuickLogin = async (accountType: "male" | "female") => {
+    const account = testAccounts[accountType];
+    try {
+      clearError();
+      await login(account.email, account.password);
+      toast.success(t("auth.loginSuccess"));
+      navigate(ROUTES.HOME, { replace: true });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : t("auth.loginError"),
       );
     }
   };
@@ -39,7 +61,7 @@ const LoginScreen: React.FC = () => {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Saiondo</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">{t("app.name")}</h1>
           <p className="text-white/80">로그인하여 시작하세요</p>
         </div>
 
@@ -52,14 +74,14 @@ const LoginScreen: React.FC = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                이메일
+                {t("auth.email")}
               </label>
               <input
                 {...register("email", {
-                  required: "이메일을 입력해주세요.",
+                  required: t("auth.emailRequired"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "유효한 이메일 주소를 입력해주세요.",
+                    message: t("auth.invalidEmail"),
                   },
                 })}
                 type="email"
@@ -67,7 +89,7 @@ const LoginScreen: React.FC = () => {
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder="이메일을 입력하세요"
+                placeholder={t("auth.email")}
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">
@@ -82,12 +104,12 @@ const LoginScreen: React.FC = () => {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                비밀번호
+                {t("auth.password")}
               </label>
               <div className="relative">
                 <input
                   {...register("password", {
-                    required: "비밀번호를 입력해주세요.",
+                    required: t("auth.passwordRequired"),
                     minLength: {
                       value: 6,
                       message: "비밀번호는 최소 6자 이상이어야 합니다.",
@@ -132,8 +154,28 @@ const LoginScreen: React.FC = () => {
                   : "bg-primary hover:bg-primaryContainer"
               }`}
             >
-              {isLoading ? "로그인 중..." : "로그인"}
+              {isLoading ? t("common.loading") : t("auth.login")}
             </button>
+
+            {/* Test Account Buttons */}
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => handleQuickLogin("male")}
+                disabled={isLoading}
+                className="w-full py-2 px-4 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+              >
+                남성 테스트 계정으로 로그인
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLogin("female")}
+                disabled={isLoading}
+                className="w-full py-2 px-4 rounded-lg font-medium text-white bg-pink-600 hover:bg-pink-700 transition-colors"
+              >
+                여성 테스트 계정으로 로그인
+              </button>
+            </div>
           </form>
 
           {/* Divider */}

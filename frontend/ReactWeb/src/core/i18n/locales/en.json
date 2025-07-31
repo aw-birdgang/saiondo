@@ -1,0 +1,78 @@
+{
+  "app": {
+    "name": "Saiondo",
+    "description": "Couple app that connects love"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "loginError": "Login failed",
+    "registerError": "Registration failed",
+    "emailRequired": "Please enter your email",
+    "passwordRequired": "Please enter your password",
+    "nameRequired": "Please enter your name",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMismatch": "Passwords do not match",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "retry": "Retry"
+  },
+  "home": {
+    "title": "Home",
+    "welcome": "Welcome",
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "chat": {
+    "title": "Chat",
+    "sendMessage": "Send Message",
+    "typeMessage": "Type your message",
+    "noMessages": "No messages"
+  },
+  "analysis": {
+    "title": "Analysis",
+    "personality": "Personality Analysis",
+    "relationship": "Relationship Analysis",
+    "communication": "Communication Patterns"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "markAsRead": "Mark as read"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode"
+  },
+  "invite": {
+    "title": "Invite",
+    "invitePartner": "Invite Partner",
+    "inviteCode": "Invite Code",
+    "copyCode": "Copy Code",
+    "codeCopied": "Code copied"
+  }
+} 

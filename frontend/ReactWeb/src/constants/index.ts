@@ -22,6 +22,7 @@ export const FIREBASE_CONFIG = {
 export const STORAGE_KEYS = {
   AUTH_TOKEN: "auth_token",
   USER_DATA: "user_data",
+  USER_ID: "user_id",
   THEME: "theme",
   LANGUAGE: "language",
   PREFERENCES: "preferences",

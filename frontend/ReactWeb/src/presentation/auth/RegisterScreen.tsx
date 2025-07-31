@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { ROUTES } from "../../constants";
 import { useAuthStore } from "../../core/stores/authStore";
 
@@ -14,6 +15,7 @@ interface RegisterFormData {
 
 const RegisterScreen: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     register: registerUser,
     isLoading,
@@ -36,11 +38,11 @@ const RegisterScreen: React.FC = () => {
     try {
       clearError();
       await registerUser(data.email, data.password, data.name);
-      toast.success("회원가입에 성공했습니다!");
+      toast.success(t("auth.registerSuccess"));
       navigate(ROUTES.HOME, { replace: true });
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "회원가입에 실패했습니다.",
+        error instanceof Error ? error.message : t("auth.registerError"),
       );
     }
   };
