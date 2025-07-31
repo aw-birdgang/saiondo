@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { messagingService, type PushMessage } from '../firebase/messagingService';
-import { useAuthStore } from '../stores/authStore';
-import { useUserStore } from '../stores/userStore';
+import { useAuthStore } from '../../application/stores/authStore';
+import { useUserStore } from '../../application/stores/userStore';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import { toast } from 'react-hot-toast';

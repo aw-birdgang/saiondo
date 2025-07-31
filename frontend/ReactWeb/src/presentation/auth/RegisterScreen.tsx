@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../constants';
-import { useAuthStore } from '../../core/stores/authStore';
-import { useRegister } from '../../core/hooks/useAuthApi';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
+import { useRegister } from '../../presentati../../presentation/hooks/useAuthApi';
 
 const RegisterScreen: React.FC = () => {
   const { t } = useTranslation();

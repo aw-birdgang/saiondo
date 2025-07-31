@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
-import { useAuthStore } from '../../core/stores/authStore';
-import { useUserStore } from '../../core/stores/userStore';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
+import { useUserStore } from '../../applicati../../application/stores/userStore';
 
 const MyPageTab: React.FC = () => {
   const { t } = useTranslation();

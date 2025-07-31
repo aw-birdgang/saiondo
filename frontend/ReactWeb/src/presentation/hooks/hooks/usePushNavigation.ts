@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
-import { useAuthStore } from "../stores/authStore";
-import { useUserStore } from "../stores/userStore";
+import { useAuthStore } from "../../../applicati../../application/stores/authStore";
+import { useUserStore } from "../../../applicati../../application/stores/userStore";
 
 interface PushMessageData {
   userId?: string;

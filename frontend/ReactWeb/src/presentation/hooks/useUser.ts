@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Container } from "../../core/di";
-import type { User } from "../../core/domain";
+import { Container } from "../../../../di/Container";
+import type { User } from "../../domain";
 
 export const useUser = () => {
   const container = Container.getInstance();

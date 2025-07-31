@@ -1,8 +1,8 @@
 import React from 'react';
-import { useFirebase } from '../../core/hooks/useFirebase';
-import { useFCMToken } from '../../core/hooks/useFirebase';
-import { useFCMTokenStatus } from '../../core/hooks/useFirebaseApi';
-import { useAuthStore } from '../../core/stores/authStore';
+import { useFirebase } from '../../presentati../../presentation/hooks/useFirebase';
+import { useFCMToken } from '../../presentati../../presentation/hooks/useFirebase';
+import { useFCMTokenStatus } from '../../presentati../../presentation/hooks/useFirebaseApi';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
 
 const FirebaseTest: React.FC = () => {
   const { 

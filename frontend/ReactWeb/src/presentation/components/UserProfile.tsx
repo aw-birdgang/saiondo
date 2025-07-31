@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useUser } from "../hooks/useUser";
+import { useUser } from "../../presentation/hooks/useUser";
 
 export const UserProfile: React.FC = () => {
   const { user, isLoading, error, updateUser, isUpdating, updateError } =

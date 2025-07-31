@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useSocket } from '../../core/hooks/useSocket';
-import { useAuthStore } from '../../core/stores/authStore';
+import { useSocket } from '../../presentati../../presentation/hooks/useSocket';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
 
 const SocketTest: React.FC = () => {
   const { userId } = useAuthStore();

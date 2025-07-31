@@ -1,5 +1,5 @@
-import type { User, UserProfile } from "../../domain/entities/User";
-import type { UserRepository } from "../../domain/repositories/UserRepository";
+import type { User, UserProfile } from "../../../../../domain/entities/User";
+import type { UserRepository } from "../../../../../domain/repositories/UserRepository";
 import { ApiClient } from "../datasources/ApiClient";
 
 export class UserRepositoryImpl implements UserRepository {

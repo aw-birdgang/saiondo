@@ -1,6 +1,6 @@
-import { ApiClient } from "../data/datasources/ApiClient";
-import { UserRepositoryImpl } from "../data/repositories/UserRepositoryImpl";
-import { GetCurrentUserUseCase, UpdateUserUseCase } from "../domain/usecases";
+import { ApiClient } from "../../infrastructu../../infrastructure/data/datasources/ApiClient";
+import { UserRepositoryImpl } from "../../infrastructu../../infrastructure/data/repositories/UserRepositoryImpl";
+import { GetCurrentUserUseCase, UpdateUserUseCase } from "../../../../domain/usecases";
 
 export class Container {
   private static instance: Container;

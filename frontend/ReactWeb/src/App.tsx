@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "react-hot-toast";
-import { AppRouter } from "./core/routes/AppRouter";
-import { useAuthStore } from "./core/stores/authStore";
-import { useThemeStore } from "./core/stores/themeStore";
-import { useUserStore } from "./core/stores/userStore";
-import { useLanguageStore } from "./core/stores/languageStore";
-import { usePushNavigation } from "./core/hooks/usePushNavigation";
-import { useTheme } from "./core/hooks/useTheme";
-import { useFirebase } from "./core/hooks/useFirebase";
-import QueryProvider from "./core/providers/QueryProvider";
-import "./core/i18n"; // Initialize i18n
+import { AppRouter } from "./presentation/routes/AppRouter";
+import { useAuthStore } from "./application/stores/authStore";
+import { useThemeStore } from "./application/stores/themeStore";
+import { useUserStore } from "./application/stores/userStore";
+import { useLanguageStore } from "./application/stores/languageStore";
+import { usePushNavigation } from "./presentation/hooks/usePushNavigation";
+import { useTheme } from "./presentation/hooks/useTheme";
+import { useFirebase } from "./presentation/hooks/useFirebase";
+import QueryProvider from "./di/QueryProvider";
+import "./di/i18n"; // Initialize i18n
 import "./App.css";
 
 

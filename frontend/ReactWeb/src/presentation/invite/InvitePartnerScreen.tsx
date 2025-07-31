@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../constants';
-import { useAuthStore } from '../../core/stores/authStore';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const InvitePartnerScreen: React.FC = () => {

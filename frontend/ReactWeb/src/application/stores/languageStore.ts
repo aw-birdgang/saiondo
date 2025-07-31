@@ -58,7 +58,7 @@ export const useLanguageStore = create<LanguageState>()(
         set({ locale: value });
         localStorage.setItem("language", value);
         // Update i18n language
-        import("../../core/i18n").then(({ default: i18n }) => {
+        import("../../di/i18n").then(({ default: i18n }) => {
           i18n.changeLanguage(value);
         });
       },
@@ -86,7 +86,7 @@ export const useLanguageStore = create<LanguageState>()(
         if (savedLocale) {
           set({ locale: savedLocale });
           // Update i18n language
-          import("../../core/i18n").then(({ default: i18n }) => {
+          import("../../di/i18n").then(({ default: i18n }) => {
             i18n.changeLanguage(savedLocale);
           });
         }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../core/stores/authStore';
-import { useUserStore } from '../../core/stores/userStore';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
+import { useUserStore } from '../../applicati../../application/stores/userStore';
 import { ROUTES } from '../../constants';
 
 const SplashScreen: React.FC = () => {

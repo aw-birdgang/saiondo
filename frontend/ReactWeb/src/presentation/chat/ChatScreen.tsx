@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ROUTES } from "../../constants";
-import { useUserStore } from "../../core/stores/userStore";
-import { useAuthStore } from "../../core/stores/authStore";
-import { useSocket } from "../../core/hooks/useSocket";
+import { useUserStore } from "../../applicati../../application/stores/userStore";
+import { useAuthStore } from "../../applicati../../application/stores/authStore";
+import { useSocket } from "../../presentati../../presentation/hooks/useSocket";
 
 interface Message {
   id: string;

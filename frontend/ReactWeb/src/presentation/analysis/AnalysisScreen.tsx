@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ROUTES } from "../../constants";
-import { useUserStore } from "../../core/stores/userStore";
+import { useUserStore } from "../../applicati../../application/stores/userStore";
 
 interface AnalysisData {
   user1: {

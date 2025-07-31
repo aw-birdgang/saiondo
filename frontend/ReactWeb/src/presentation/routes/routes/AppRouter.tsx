@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../constants";
-import { useAuthStore } from "../stores/authStore";
-import { useUserStore } from "../stores/userStore";
+import { useAuthStore } from "../../applicati../../application/stores/authStore";
+import { useUserStore } from "../../applicati../../application/stores/userStore";
 
 // Error boundary component
 class ErrorBoundary extends React.Component<

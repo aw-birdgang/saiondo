@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
-import { useAuthStore } from '../../core/stores/authStore';
+import { useAuthStore } from '../../applicati../../application/stores/authStore';
 
 interface Channel {
   id: string;
