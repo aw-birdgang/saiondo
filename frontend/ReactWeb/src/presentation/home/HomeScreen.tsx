@@ -7,6 +7,7 @@ import { useUserStore } from "../../core/stores/userStore";
 import { useLanguageStore } from "../../core/stores/languageStore";
 import { useThemeStore } from "../../core/stores/themeStore";
 import FirebaseTest from "../common/FirebaseTest";
+import SocketTest from "../common/SocketTest";
 import ThemeToggle from "../common/ThemeToggle";
 
 const HomeScreen: React.FC = () => {
@@ -265,6 +266,11 @@ const HomeScreen: React.FC = () => {
             {/* Firebase Test */}
             <div className="mt-6">
               <FirebaseTest />
+            </div>
+            
+            {/* Socket Test */}
+            <div className="mt-6">
+              <SocketTest />
             </div>
           </div>
         )}
