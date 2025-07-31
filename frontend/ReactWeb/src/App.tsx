@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRouter } from "./core/routes/AppRouter";
 import { useAuthStore } from "./core/stores/authStore";
 import { useThemeStore } from "./core/stores/themeStore";
@@ -9,18 +8,11 @@ import { useUserStore } from "./core/stores/userStore";
 import { useLanguageStore } from "./core/stores/languageStore";
 import { usePushNavigation } from "./core/hooks/usePushNavigation";
 import { useTheme } from "./core/hooks/useTheme";
+import QueryProvider from "./core/providers/QueryProvider";
 import "./core/i18n"; // Initialize i18n
 import "./App.css";
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+
 
 const App: React.FC = () => {
   const { loadAuthFromStorage, isAuthenticated } = useAuthStore();
@@ -59,7 +51,7 @@ const App: React.FC = () => {
 
   return (
     <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
+      <QueryProvider>
         <div className={`app ${isDarkMode ? "dark" : "light"}`}>
           <AppRouter />
           <Toaster
@@ -86,7 +78,7 @@ const App: React.FC = () => {
             }}
           />
         </div>
-      </QueryClientProvider>
+      </QueryProvider>
     </HelmetProvider>
   );
 };
