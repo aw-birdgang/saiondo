@@ -8,6 +8,7 @@ import { useThemeStore } from "./core/stores/themeStore";
 import { useUserStore } from "./core/stores/userStore";
 import { useLanguageStore } from "./core/stores/languageStore";
 import { usePushNavigation } from "./core/hooks/usePushNavigation";
+import { useTheme } from "./core/hooks/useTheme";
 import "./core/i18n"; // Initialize i18n
 import "./App.css";
 
@@ -23,11 +24,12 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => {
   const { loadAuthFromStorage, isAuthenticated } = useAuthStore();
-  const { isDarkMode, init: initTheme } = useThemeStore();
+  const { init: initTheme } = useThemeStore();
   const { initUser } = useUserStore();
   const { locale, init: initLanguage } = useLanguageStore();
   
-  // Initialize push navigation
+  // Initialize theme and push navigation
+  const { isDarkMode } = useTheme();
   usePushNavigation();
 
   useEffect(() => {

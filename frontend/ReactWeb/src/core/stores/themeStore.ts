@@ -34,9 +34,27 @@ export const useThemeStore = create<ThemeState>()(
             "(prefers-color-scheme: dark)",
           ).matches;
           set({ isDarkMode: isDark });
+          
+          // Update document class
+          if (isDark) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
         } else {
-          set({ isDarkMode: mode === "dark" });
+          const isDark = mode === "dark";
+          set({ isDarkMode: isDark });
+          
+          // Update document class
+          if (isDark) {
+            document.documentElement.classList.add("dark");
+          } else {
+            document.documentElement.classList.remove("dark");
+          }
         }
+        
+        // Save to localStorage
+        localStorage.setItem("theme-mode", mode);
       },
 
       toggleMode: () => {
@@ -51,14 +69,24 @@ export const useThemeStore = create<ThemeState>()(
 
       changeBrightnessToDark: async (value: boolean) => {
         set({ isDarkMode: value });
-        // TODO: Save to repository/settings
+        localStorage.setItem("theme-mode", value ? "dark" : "light");
+        
+        // Update document class for Tailwind CSS
+        if (value) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
       },
 
       init: async () => {
-        // TODO: Load from repository/settings
         const savedMode = localStorage.getItem("theme-mode");
         if (savedMode) {
           get().setMode(savedMode as ThemeMode);
+        } else {
+          // Check system preference
+          const isSystemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          get().setMode(isSystemDark ? "dark" : "light");
         }
       },
 

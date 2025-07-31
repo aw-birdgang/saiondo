@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Light Theme Colors (matching Flutter app)
+        // Light Theme Colors (exact match with Flutter app)
         primary: {
           DEFAULT: "#d21e1d",
           container: "#9e1718",
@@ -27,8 +27,9 @@ export default {
         divider: "#E0E0E0",
         shadow: "rgba(0, 0, 0, 0.1)",
         overlay: "rgba(0, 0, 0, 0.5)",
+        focus: "rgba(0, 0, 0, 0.12)",
 
-        // Dark Theme Colors (matching Flutter app)
+        // Dark Theme Colors (exact match with Flutter app)
         dark: {
           primary: "#FF8383",
           "primary-container": "#1CDEC9",
@@ -47,6 +48,7 @@ export default {
           divider: "#333333",
           shadow: "rgba(0, 0, 0, 0.3)",
           overlay: "rgba(0, 0, 0, 0.7)",
+          focus: "rgba(255, 255, 255, 0.12)",
         },
       },
       fontFamily: {

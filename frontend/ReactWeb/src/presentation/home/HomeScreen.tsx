@@ -5,6 +5,8 @@ import { ROUTES } from "../../constants";
 import { useAuthStore } from "../../core/stores/authStore";
 import { useUserStore } from "../../core/stores/userStore";
 import { useLanguageStore } from "../../core/stores/languageStore";
+import { useThemeStore } from "../../core/stores/themeStore";
+import ThemeToggle from "../common/ThemeToggle";
 
 const HomeScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -12,6 +14,7 @@ const HomeScreen: React.FC = () => {
   const { user, logout } = useAuthStore();
   const { selectedUser, partnerUser, isLoading } = useUserStore();
   const { locale, setLanguage, changeLanguage, getCurrentLanguage, supportedLanguages } = useLanguageStore();
+  const { mode, setMode, isDarkMode } = useThemeStore();
 
   const currentLanguage = getCurrentLanguage();
 
@@ -52,6 +55,9 @@ const HomeScreen: React.FC = () => {
                   </option>
                 ))}
               </select>
+              
+              {/* Theme Toggle */}
+              <ThemeToggle />
               
               {/* Logout Button */}
               <button
@@ -159,6 +165,32 @@ const HomeScreen: React.FC = () => {
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
                     {t("home_tv_choose_language")}
+                  </p>
+                </div>
+
+                {/* Theme Selector */}
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t("profile.theme")}
+                  </label>
+                  <select
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as "light" | "dark" | "system")}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    <option value="light">라이트 모드</option>
+                    <option value="dark">다크 모드</option>
+                    <option value="system">시스템 설정</option>
+                  </select>
+                </div>
+
+                {/* Current Theme Info */}
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600">
+                    <strong>{t("profile.theme")}:</strong> {mode === "light" ? "라이트" : mode === "dark" ? "다크" : "시스템"} 모드
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    현재: {isDarkMode ? "다크" : "라이트"} 모드
                   </p>
                 </div>
               </div>
