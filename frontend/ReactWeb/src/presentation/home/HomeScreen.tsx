@@ -6,6 +6,7 @@ import { useAuthStore } from "../../core/stores/authStore";
 import { useUserStore } from "../../core/stores/userStore";
 import { useLanguageStore } from "../../core/stores/languageStore";
 import { useThemeStore } from "../../core/stores/themeStore";
+import FirebaseTest from "../common/FirebaseTest";
 import ThemeToggle from "../common/ThemeToggle";
 
 const HomeScreen: React.FC = () => {
@@ -259,6 +260,11 @@ const HomeScreen: React.FC = () => {
                   </div>
                 </button>
               </div>
+            </div>
+            
+            {/* Firebase Test */}
+            <div className="mt-6">
+              <FirebaseTest />
             </div>
           </div>
         )}

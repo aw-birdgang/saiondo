@@ -8,6 +8,7 @@ import { useUserStore } from "./core/stores/userStore";
 import { useLanguageStore } from "./core/stores/languageStore";
 import { usePushNavigation } from "./core/hooks/usePushNavigation";
 import { useTheme } from "./core/hooks/useTheme";
+import { useFirebase } from "./core/hooks/useFirebase";
 import QueryProvider from "./core/providers/QueryProvider";
 import "./core/i18n"; // Initialize i18n
 import "./App.css";
@@ -20,9 +21,10 @@ const App: React.FC = () => {
   const { initUser } = useUserStore();
   const { locale, init: initLanguage } = useLanguageStore();
   
-  // Initialize theme and push navigation
+  // Initialize theme, push navigation, and Firebase
   const { isDarkMode } = useTheme();
   usePushNavigation();
+  useFirebase();
 
   useEffect(() => {
     // Initialize theme and language
