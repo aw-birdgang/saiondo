@@ -4,7 +4,8 @@ import 'package:saiondo/utils/device/device_utils.dart';
 
 void main() {
   group('Device Utils Tests', () {
-    testWidgets('hideKeyboard should not throw exception', (WidgetTester tester) async {
+    testWidgets('hideKeyboard should not throw exception',
+        (WidgetTester tester) async {
       // Build a simple widget to get BuildContext
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
@@ -19,4 +20,4 @@ void main() {
       ));
     });
   });
-} 
+}

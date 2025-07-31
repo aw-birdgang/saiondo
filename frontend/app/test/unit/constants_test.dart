@@ -19,4 +19,4 @@ void main() {
       expect(Strings.appName, isNotEmpty);
     });
   });
-} 
+}
