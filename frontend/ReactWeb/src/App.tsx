@@ -21,23 +21,26 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
-  const { loadAuthFromStorage } = useAuthStore();
-  const { isDarkMode } = useThemeStore();
+  const { loadAuthFromStorage, isAuthenticated } = useAuthStore();
+  const { isDarkMode, init: initTheme } = useThemeStore();
   const { initUser } = useUserStore();
-  const { locale } = useLanguageStore();
+  const { locale, init: initLanguage } = useLanguageStore();
 
   useEffect(() => {
+    // Initialize theme and language
+    initTheme();
+    initLanguage();
+    
     // Load authentication state from storage on app start
     loadAuthFromStorage();
-  }, [loadAuthFromStorage]);
+  }, [loadAuthFromStorage, initTheme, initLanguage]);
 
   useEffect(() => {
     // Initialize user data if authenticated
-    const token = localStorage.getItem("auth_token");
-    if (token) {
+    if (isAuthenticated) {
       initUser();
     }
-  }, [initUser]);
+  }, [isAuthenticated, initUser]);
 
   useEffect(() => {
     // Apply theme to document

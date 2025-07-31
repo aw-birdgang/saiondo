@@ -11,7 +11,7 @@ const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const { selectedUser, partnerUser, isLoading } = useUserStore();
-  const { locale, setLanguage, getCurrentLanguage } = useLanguageStore();
+  const { locale, setLanguage, changeLanguage, getCurrentLanguage } = useLanguageStore();
 
   const currentLanguage = getCurrentLanguage();
 
@@ -22,6 +22,7 @@ const HomeScreen: React.FC = () => {
 
   const handleLanguageChange = (newLocale: string) => {
     setLanguage(newLocale);
+    changeLanguage(newLocale);
   };
 
   return (

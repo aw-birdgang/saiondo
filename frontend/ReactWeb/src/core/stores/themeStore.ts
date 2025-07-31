@@ -12,6 +12,9 @@ export interface ThemeState {
   setMode: (mode: ThemeMode) => void;
   toggleMode: () => void;
   setDarkMode: (isDark: boolean) => void;
+  changeBrightnessToDark: (value: boolean) => Promise<void>;
+  init: () => Promise<void>;
+  isPlatformDark: () => boolean;
 }
 
 export const useThemeStore = create<ThemeState>()(
@@ -44,6 +47,23 @@ export const useThemeStore = create<ThemeState>()(
 
       setDarkMode: (isDark: boolean) => {
         set({ isDarkMode: isDark });
+      },
+
+      changeBrightnessToDark: async (value: boolean) => {
+        set({ isDarkMode: value });
+        // TODO: Save to repository/settings
+      },
+
+      init: async () => {
+        // TODO: Load from repository/settings
+        const savedMode = localStorage.getItem("theme-mode");
+        if (savedMode) {
+          get().setMode(savedMode as ThemeMode);
+        }
+      },
+
+      isPlatformDark: () => {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches;
       },
     }),
     {

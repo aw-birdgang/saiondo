@@ -15,7 +15,11 @@ export interface LanguageState {
 
   // Actions
   setLanguage: (locale: string) => void;
+  changeLanguage: (value: string) => void;
   getCurrentLanguage: () => Language;
+  getCode: () => string;
+  getLanguage: () => string | null;
+  init: () => void;
 }
 
 const supportedLanguages: Language[] = [
@@ -48,6 +52,37 @@ export const useLanguageStore = create<LanguageState>()(
           state.supportedLanguages.find((lang) => lang.locale === state.locale) ||
           state.supportedLanguages[0]
         );
+      },
+
+      changeLanguage: (value: string) => {
+        set({ locale: value });
+        // TODO: Save to repository/settings
+      },
+
+      getCode: () => {
+        const state = get();
+        if (state.locale === 'en') {
+          return "US";
+        } else if (state.locale === 'ko') {
+          return "KO";
+        }
+        return "US";
+      },
+
+      getLanguage: () => {
+        const state = get();
+        const language = state.supportedLanguages.find(
+          (lang) => lang.locale === state.locale
+        );
+        return language?.name || null;
+      },
+
+      init: () => {
+        // TODO: Load from repository/settings
+        const savedLocale = localStorage.getItem("language");
+        if (savedLocale) {
+          set({ locale: savedLocale });
+        }
       },
     }),
     {

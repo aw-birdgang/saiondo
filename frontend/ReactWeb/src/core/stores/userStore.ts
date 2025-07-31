@@ -41,11 +41,13 @@ export interface UserState {
   // Actions
   initUser: () => Promise<void>;
   loadUserById: (id: string) => Promise<void>;
+  loadPartnerUser: (partnerUserId: string) => Promise<void>;
   setSelectedUser: (user: User) => void;
   setPartnerUser: (user: User) => void;
   setAssistantId: (id: string) => void;
   setChannelId: (id: string) => void;
   clearUsers: () => void;
+  removeUser: () => Promise<void>;
   setSuccess: (success: boolean) => void;
 }
 
@@ -172,6 +174,29 @@ export const useUserStore = create<UserState>()(
 
       setSuccess: (success: boolean) => {
         set({ success });
+      },
+
+      loadPartnerUser: async (partnerUserId: string) => {
+        set({ isLoading: true });
+        try {
+          // TODO: Implement actual API call
+          const partnerUser: User = {
+            id: partnerUserId,
+            email: "partner@example.com",
+            name: "Partner User",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          set({ partnerUser, isLoading: false });
+        } catch (error) {
+          console.error("Failed to load partner user:", error);
+          set({ isLoading: false });
+        }
+      },
+
+      removeUser: async () => {
+        set({ selectedUser: null });
+        set({ users: [] });
       },
     }),
     {

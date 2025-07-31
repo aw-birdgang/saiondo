@@ -11,6 +11,7 @@ interface RegisterFormData {
   email: string;
   password: string;
   confirmPassword: string;
+  gender: string;
 }
 
 const RegisterScreen: React.FC = () => {
@@ -37,7 +38,7 @@ const RegisterScreen: React.FC = () => {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       clearError();
-      await registerUser(data.email, data.password, data.name);
+      await registerUser(data.email, data.password, data.name, data.gender);
       toast.success(t("auth.registerSuccess"));
       navigate(ROUTES.HOME, { replace: true });
     } catch (error) {
@@ -193,6 +194,34 @@ const RegisterScreen: React.FC = () => {
               {errors.confirmPassword && (
                 <p className="mt-1 text-sm text-red-600">
                   {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            {/* Gender Field */}
+            <div>
+              <label
+                htmlFor="gender"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                성별
+              </label>
+              <select
+                {...register("gender", {
+                  required: "성별을 선택해주세요.",
+                })}
+                id="gender"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                  errors.gender ? "border-red-500" : "border-gray-300"
+                }`}
+              >
+                <option value="">성별을 선택하세요</option>
+                <option value="male">남성</option>
+                <option value="female">여성</option>
+              </select>
+              {errors.gender && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.gender.message}
                 </p>
               )}
             </div>
