@@ -11,7 +11,7 @@ const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const { selectedUser, partnerUser, isLoading } = useUserStore();
-  const { locale, setLanguage, changeLanguage, getCurrentLanguage } = useLanguageStore();
+  const { locale, setLanguage, changeLanguage, getCurrentLanguage, supportedLanguages } = useLanguageStore();
 
   const currentLanguage = getCurrentLanguage();
 
@@ -128,6 +128,41 @@ const HomeScreen: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Language Selector */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                {t("home.settings")}
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t("profile.language")}
+                  </label>
+                  <select
+                    value={locale}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
+                  >
+                    {supportedLanguages.map((lang) => (
+                      <option key={lang.locale} value={lang.locale}>
+                        {lang.name} ({lang.code})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Current Language Info */}
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600">
+                    <strong>{t("profile.language")}:</strong> {currentLanguage.name} ({currentLanguage.code})
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {t("home_tv_choose_language")}
+                  </p>
+                </div>
+              </div>
+            </div>
 
             {/* Quick Actions */}
             <div className="bg-white rounded-lg shadow-md p-6">

@@ -20,6 +20,7 @@ i18n
     resources,
     lng: localStorage.getItem("language") || "ko", // default language
     fallbackLng: "ko",
+    debug: process.env.NODE_ENV === "development",
     interpolation: {
       escapeValue: false, // React already escapes values
     },
@@ -27,6 +28,15 @@ i18n
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
     },
+    react: {
+      useSuspense: false, // Disable Suspense for better error handling
+    },
   });
+
+// Add language change listener
+i18n.on("languageChanged", (lng) => {
+  localStorage.setItem("language", lng);
+  document.documentElement.lang = lng;
+});
 
 export default i18n; 

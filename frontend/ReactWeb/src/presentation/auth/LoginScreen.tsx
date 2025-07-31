@@ -70,7 +70,7 @@ const LoginScreen: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">{t("app.name")}</h1>
-          <p className="text-white/80">로그인하여 시작하세요</p>
+          <p className="text-white/80">{t("login")}하여 시작하세요</p>
         </div>
 
         {/* Login Form */}
@@ -97,7 +97,7 @@ const LoginScreen: React.FC = () => {
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
-                placeholder={t("auth.email")}
+                placeholder={t("enter_email")}
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">
@@ -108,19 +108,19 @@ const LoginScreen: React.FC = () => {
 
             {/* Password Field */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                {t("auth.password")}
-              </label>
+                                <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    {t("password")}
+                  </label>
               <div className="relative">
                 <input
                   {...register("password", {
                     required: t("auth.passwordRequired"),
                     minLength: {
                       value: 6,
-                      message: "비밀번호는 최소 6자 이상이어야 합니다.",
+                      message: t("password_min_length"),
                     },
                   })}
                   type={showPassword ? "text" : "password"}
@@ -128,7 +128,7 @@ const LoginScreen: React.FC = () => {
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
                     errors.password ? "border-red-500" : "border-gray-300"
                   }`}
-                  placeholder="비밀번호를 입력하세요"
+                  placeholder={t("enter_password")}
                 />
                 <button
                   type="button"
@@ -162,7 +162,7 @@ const LoginScreen: React.FC = () => {
                   : "bg-primary hover:bg-primaryContainer"
               }`}
             >
-              {isLoading ? t("common.loading") : t("auth.login")}
+              {isLoading ? t("loading") : t("login")}
             </button>
 
             {/* Test Account Buttons */}
@@ -173,7 +173,7 @@ const LoginScreen: React.FC = () => {
                 disabled={isLoading}
                 className="w-full py-2 px-4 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors"
               >
-                남성 테스트 계정으로 로그인
+                {t("quick_login_male")}
               </button>
               <button
                 type="button"
@@ -181,7 +181,7 @@ const LoginScreen: React.FC = () => {
                 disabled={isLoading}
                 className="w-full py-2 px-4 rounded-lg font-medium text-white bg-pink-600 hover:bg-pink-700 transition-colors"
               >
-                여성 테스트 계정으로 로그인
+                {t("quick_login_female")}
               </button>
             </div>
           </form>

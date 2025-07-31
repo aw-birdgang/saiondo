@@ -56,7 +56,11 @@ export const useLanguageStore = create<LanguageState>()(
 
       changeLanguage: (value: string) => {
         set({ locale: value });
-        // TODO: Save to repository/settings
+        localStorage.setItem("language", value);
+        // Update i18n language
+        import("../../core/i18n").then(({ default: i18n }) => {
+          i18n.changeLanguage(value);
+        });
       },
 
       getCode: () => {
@@ -78,10 +82,13 @@ export const useLanguageStore = create<LanguageState>()(
       },
 
       init: () => {
-        // TODO: Load from repository/settings
         const savedLocale = localStorage.getItem("language");
         if (savedLocale) {
           set({ locale: savedLocale });
+          // Update i18n language
+          import("../../core/i18n").then(({ default: i18n }) => {
+            i18n.changeLanguage(savedLocale);
+          });
         }
       },
     }),
