@@ -1,14 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { ROUTES } from "../../constants";
 import { useUserStore } from "../../core/stores/userStore";
+import { useAuthStore } from "../../core/stores/authStore";
 
 interface Message {
   id: string;
   text: string;
   sender: "user" | "assistant";
   timestamp: Date;
+  userId?: string;
+  assistantId?: string;
+  channelId?: string;
+}
+
+interface ChatState {
+  messages: Message[];
+  isConnected: boolean;
+  isAwaitingLLM: boolean;
+  errorMessage: string | null;
 }
 
 const ChatScreen: React.FC = () => {
@@ -17,9 +29,16 @@ const ChatScreen: React.FC = () => {
   const params = useParams();
   const location = useLocation();
   const { selectedUser, setAssistantId, setChannelId } = useUserStore();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { userId } = useAuthStore();
+  
+  // Chat state
+  const [chatState, setChatState] = useState<ChatState>({
+    messages: [],
+    isConnected: false,
+    isAwaitingLLM: false,
+    errorMessage: null,
+  });
   const [inputText, setInputText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Extract parameters from URL or location state
@@ -42,46 +61,83 @@ const ChatScreen: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [chatState.messages]);
 
-  // Mock initial messages
+  // Load initial messages
   useEffect(() => {
-    const initialMessages: Message[] = [
-      {
-        id: "1",
-        text: "안녕하세요! 저는 당신의 관계 상담사입니다. 무엇을 도와드릴까요?",
-        sender: "assistant",
-        timestamp: new Date(),
-      },
-    ];
-    setMessages(initialMessages);
-  }, []);
+    const loadMessages = async () => {
+      try {
+        // TODO: Implement actual API call
+        const initialMessages: Message[] = [
+          {
+            id: "1",
+            text: t("ai_advice_description"),
+            sender: "assistant",
+            timestamp: new Date(),
+            userId: userId || "",
+            assistantId: assistantId || "",
+            channelId: channelId || "",
+          },
+        ];
+        setChatState(prev => ({ ...prev, messages: initialMessages }));
+      } catch (error) {
+        console.error("Failed to load messages:", error);
+        toast.error(t("chat_connected"));
+      }
+    };
+
+    if (assistantId) {
+      loadMessages();
+    }
+  }, [assistantId, userId, channelId, t]);
 
   const handleSendMessage = async () => {
-    if (!inputText.trim() || isLoading) return;
+    if (!inputText.trim() || chatState.isAwaitingLLM) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputText,
       sender: "user",
       timestamp: new Date(),
+      userId: userId || "",
+      assistantId: assistantId || "",
+      channelId: channelId || "",
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setChatState((prev) => ({ 
+      ...prev, 
+      messages: [...prev.messages, userMessage],
+      isAwaitingLLM: true 
+    }));
     setInputText("");
-    setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "메시지를 받았습니다. 곧 답변드리겠습니다.",
-        sender: "assistant",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 1000);
+    try {
+      // TODO: Implement actual API call
+      setTimeout(() => {
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "메시지를 받았습니다. 곧 답변드리겠습니다.",
+          sender: "assistant",
+          timestamp: new Date(),
+          userId: userId || "",
+          assistantId: assistantId || "",
+          channelId: channelId || "",
+        };
+        setChatState((prev) => ({ 
+          ...prev, 
+          messages: [...prev.messages, assistantMessage],
+          isAwaitingLLM: false 
+        }));
+      }, 1000);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      setChatState((prev) => ({ 
+        ...prev, 
+        isAwaitingLLM: false,
+        errorMessage: "메시지 전송에 실패했습니다." 
+      }));
+      toast.error("메시지 전송에 실패했습니다.");
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -97,6 +153,14 @@ const ChatScreen: React.FC = () => {
       minute: "2-digit",
     });
   };
+
+  // Error handling
+  useEffect(() => {
+    if (chatState.errorMessage) {
+      toast.error(chatState.errorMessage);
+      setChatState(prev => ({ ...prev, errorMessage: null }));
+    }
+  }, [chatState.errorMessage]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -135,7 +199,7 @@ const ChatScreen: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm h-[calc(100vh-200px)] flex flex-col">
           {/* Messages Container */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
+            {chatState.messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${
@@ -163,7 +227,7 @@ const ChatScreen: React.FC = () => {
               </div>
             ))}
             
-            {isLoading && (
+            {chatState.isAwaitingLLM && (
               <div className="flex justify-start">
                 <div className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg">
                   <div className="flex space-x-1">
@@ -189,14 +253,14 @@ const ChatScreen: React.FC = () => {
                   placeholder={t("chat.typeMessage")}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   rows={1}
-                  disabled={isLoading}
+                  disabled={chatState.isAwaitingLLM}
                 />
               </div>
               <button
                 onClick={handleSendMessage}
-                disabled={!inputText.trim() || isLoading}
+                disabled={!inputText.trim() || chatState.isAwaitingLLM}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  !inputText.trim() || isLoading
+                  !inputText.trim() || chatState.isAwaitingLLM
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-primary text-white hover:bg-primaryContainer"
                 }`}
