@@ -1,6 +1,6 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { HomePage } from '../pages/HomePage';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import { HomePage } from "../pages/HomePage";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -10,4 +10,4 @@ export const AppRoutes: React.FC = () => {
       {/* Add more routes as needed */}
     </Routes>
   );
-}; 
+};

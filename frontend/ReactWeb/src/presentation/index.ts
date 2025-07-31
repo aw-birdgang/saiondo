@@ -1,14 +1,14 @@
 // Components
-export * from './components';
+export * from "./components";
 
 // Hooks
-export * from './hooks';
+export * from "./hooks";
 
 // Pages
-export * from './pages';
+export * from "./pages";
 
 // Providers
-export * from './providers';
+export * from "./providers";
 
 // Routes
-export * from './routes'; 
+export * from "./routes";

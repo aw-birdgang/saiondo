@@ -1,4 +1,4 @@
-import type { User, UserProfile } from '../entities/User';
+import type { User, UserProfile } from "../entities/User";
 
 export interface UserRepository {
   getCurrentUser(): Promise<User | null>;
@@ -6,4 +6,4 @@ export interface UserRepository {
   updateUser(user: Partial<User>): Promise<User>;
   getUserProfile(userId: string): Promise<UserProfile | null>;
   updateUserProfile(profile: Partial<UserProfile>): Promise<UserProfile>;
-} 
+}

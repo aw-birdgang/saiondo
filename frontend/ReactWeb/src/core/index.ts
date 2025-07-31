@@ -1,8 +1,8 @@
 // Domain Layer
-export * from './domain';
+export * from "./domain";
 
 // Data Layer
-export * from './data';
+export * from "./data";
 
 // Dependency Injection
-export * from './di'; 
+export * from "./di";

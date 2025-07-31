@@ -1,5 +1,5 @@
-import type { User } from '../entities/User';
-import type { UserRepository } from '../repositories/UserRepository';
+import type { User } from "../entities/User";
+import type { UserRepository } from "../repositories/UserRepository";
 
 export class UpdateUserUseCase {
   private userRepository: UserRepository;
@@ -12,8 +12,8 @@ export class UpdateUserUseCase {
     try {
       return await this.userRepository.updateUser(userData);
     } catch (error) {
-      console.error('Failed to update user:', error);
-      throw new Error('Failed to update user');
+      console.error("Failed to update user:", error);
+      throw new Error("Failed to update user");
     }
   }
-} 
+}

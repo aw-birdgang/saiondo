@@ -1,1 +1,1 @@
-export { UserRepositoryImpl } from './UserRepositoryImpl'; 
+export { UserRepositoryImpl } from "./UserRepositoryImpl";

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { useUser } from '../hooks/useUser';
+import React, { useState } from "react";
+import { useUser } from "../hooks/useUser";
 
 export const UserProfile: React.FC = () => {
-  const { user, isLoading, error, updateUser, isUpdating, updateError } = useUser();
+  const { user, isLoading, error, updateUser, isUpdating, updateError } =
+    useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+    name: user?.name || "",
+    email: user?.email || "",
   });
 
   React.useEffect(() => {
@@ -24,13 +25,13 @@ export const UserProfile: React.FC = () => {
       await updateUser(formData);
       setIsEditing(false);
     } catch (error) {
-      console.error('Failed to update user:', error);
+      console.error("Failed to update user:", error);
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -51,7 +52,7 @@ export const UserProfile: React.FC = () => {
   return (
     <div className="user-profile">
       <h2>User Profile</h2>
-      
+
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div>
@@ -78,24 +79,33 @@ export const UserProfile: React.FC = () => {
           </div>
           <div>
             <button type="submit" disabled={isUpdating}>
-              {isUpdating ? 'Saving...' : 'Save'}
+              {isUpdating ? "Saving..." : "Save"}
             </button>
             <button type="button" onClick={() => setIsEditing(false)}>
               Cancel
             </button>
           </div>
           {updateError && (
-            <div className="error">Error updating user: {updateError.message}</div>
+            <div className="error">
+              Error updating user: {updateError.message}
+            </div>
           )}
         </form>
       ) : (
         <div>
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Created:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+          <p>
+            <strong>Name:</strong> {user.name}
+          </p>
+          <p>
+            <strong>Email:</strong> {user.email}
+          </p>
+          <p>
+            <strong>Created:</strong>{" "}
+            {new Date(user.createdAt).toLocaleDateString()}
+          </p>
           <button onClick={() => setIsEditing(true)}>Edit Profile</button>
         </div>
       )}
     </div>
   );
-}; 
+};

@@ -1,5 +1,5 @@
-import type { User } from '../entities/User';
-import type { UserRepository } from '../repositories/UserRepository';
+import type { User } from "../entities/User";
+import type { UserRepository } from "../repositories/UserRepository";
 
 export class GetCurrentUserUseCase {
   private userRepository: UserRepository;
@@ -12,8 +12,8 @@ export class GetCurrentUserUseCase {
     try {
       return await this.userRepository.getCurrentUser();
     } catch (error) {
-      console.error('Failed to get current user:', error);
-      throw new Error('Failed to get current user');
+      console.error("Failed to get current user:", error);
+      throw new Error("Failed to get current user");
     }
   }
-} 
+}

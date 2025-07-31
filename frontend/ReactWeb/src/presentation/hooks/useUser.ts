@@ -1,6 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Container } from '../../core/di';
-import type { User } from '../../core/domain';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Container } from "../../core/di";
+import type { User } from "../../core/domain";
 
 export const useUser = () => {
   const container = Container.getInstance();
@@ -10,19 +10,19 @@ export const useUser = () => {
     data: user,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useQuery({
-    queryKey: ['user', 'current'],
+    queryKey: ["user", "current"],
     queryFn: () => container.getGetCurrentUserUseCase().execute(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const updateUserMutation = useMutation({
-    mutationFn: (userData: Partial<User>) => 
+    mutationFn: (userData: Partial<User>) =>
       container.getUpdateUserUseCase().execute(userData),
     onSuccess: (updatedUser) => {
-      queryClient.setQueryData(['user', 'current'], updatedUser);
-      queryClient.invalidateQueries({ queryKey: ['user'] });
+      queryClient.setQueryData(["user", "current"], updatedUser);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
@@ -35,4 +35,4 @@ export const useUser = () => {
     isUpdating: updateUserMutation.isPending,
     updateError: updateUserMutation.error,
   };
-}; 
+};

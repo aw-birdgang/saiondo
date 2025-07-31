@@ -1,5 +1,5 @@
-import React from 'react';
-import { UserProfile } from '../components/UserProfile';
+import React from "react";
+import { UserProfile } from "../components/UserProfile";
 
 export const HomePage: React.FC = () => {
   return (
@@ -9,4 +9,4 @@ export const HomePage: React.FC = () => {
       <UserProfile />
     </div>
   );
-}; 
+};

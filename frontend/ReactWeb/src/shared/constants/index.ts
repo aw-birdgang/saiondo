@@ -1,20 +1,20 @@
 export const API_ENDPOINTS = {
-  USERS: '/api/users',
-  AUTH: '/api/auth',
-  PROFILE: '/api/users/profile',
+  USERS: "/api/users",
+  AUTH: "/api/auth",
+  PROFILE: "/api/users/profile",
 } as const;
 
 export const ROUTES = {
-  HOME: '/',
-  PROFILE: '/profile',
-  LOGIN: '/login',
-  REGISTER: '/register',
+  HOME: "/",
+  PROFILE: "/profile",
+  LOGIN: "/login",
+  REGISTER: "/register",
 } as const;
 
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'authToken',
-  USER_DATA: 'userData',
-  THEME: 'theme',
+  AUTH_TOKEN: "authToken",
+  USER_DATA: "userData",
+  THEME: "theme",
 } as const;
 
 export const HTTP_STATUS = {
@@ -25,4 +25,4 @@ export const HTTP_STATUS = {
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
-} as const; 
+} as const;
