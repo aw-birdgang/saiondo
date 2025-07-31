@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuthStore } from '../../../stores/authStore';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { Header, Input, Button } from '../../components/common';
 
 const InvitePartnerScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -82,23 +82,11 @@ const InvitePartnerScreen: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-surface">
       {/* Header */}
-      <div className="bg-white dark:bg-dark-secondary-container shadow-sm border-b dark:border-dark-border">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-dark-surface rounded-full transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              {t('invite_partner') || '파트너 초대'}
-            </h1>
-          </div>
-        </div>
-      </div>
+      <Header
+        title={t('invite_partner') || '파트너 초대'}
+        showBackButton
+        className="max-w-4xl mx-auto"
+      />
 
       {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-8">
@@ -117,62 +105,33 @@ const InvitePartnerScreen: React.FC = () => {
           </div>
 
           {/* Email Input */}
-          <div className="mb-6">
-            <label htmlFor="partnerEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              {t('partner_email') || '초대할 이메일'}
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                </svg>
-              </div>
-              <input
-                id="partnerEmail"
-                type="email"
-                value={partnerEmail}
-                onChange={(e) => {
-                  setPartnerEmail(e.target.value);
-                  if (error) setError(null);
-                }}
-                onKeyPress={handleKeyPress}
-                placeholder="partner@example.com"
-                disabled={isLoading}
-                className={`appearance-none relative block w-full pl-10 pr-3 py-3 border rounded-2xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent dark:bg-dark-surface dark:text-white dark:border-dark-border ${
-                  error ? 'border-red-500' : 'border-gray-300'
-                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              />
-            </div>
-            {error && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                {error}
-              </p>
-            )}
-          </div>
+          <Input
+            name="partnerEmail"
+            type="email"
+            value={partnerEmail}
+            onChange={(e) => {
+              setPartnerEmail(e.target.value);
+              if (error) setError(null);
+            }}
+            onKeyPress={handleKeyPress}
+            placeholder="partner@example.com"
+            label={t('partner_email') || '초대할 이메일'}
+            error={error || undefined}
+            disabled={isLoading}
+            className="mb-6"
+          />
 
           {/* Invite Button */}
-          <button
+          <Button
+            variant="primary"
+            fullWidth
             onClick={handleInvite}
             disabled={isLoading || !partnerEmail.trim()}
-            className="w-full bg-gradient-to-r from-pink-500 to-blue-500 text-white py-4 px-6 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg flex items-center justify-center"
+            loading={isLoading}
+            className="w-full bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 py-4 px-6 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           >
-            {isLoading ? (
-              <>
-                <LoadingSpinner size="sm" color="white" className="mr-2" />
-                {t('inviting') || '초대 중...'}
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-                {t('invite') || '초대하기'}
-              </>
-            )}
-          </button>
+            {t('invite') || '초대하기'}
+          </Button>
 
           {/* Additional Info */}
           <div className="mt-6 text-center">

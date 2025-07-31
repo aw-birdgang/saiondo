@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../../shared/constants/app';
 import { useAuth } from '../../../presentation/hooks/useAuth';
 import { validateEmail } from '../../../shared/utils/validation';
+import { Form, Button } from '../../components/common';
 
 const LoginPage: React.FC = () => {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ const LoginPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
@@ -109,82 +110,54 @@ const LoginPage: React.FC = () => {
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                {t('email_address')}
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder={t('email_address')}
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                {t('password')}
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
-                placeholder={t('password')}
-                value={formData.password}
-                onChange={handleInputChange}
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {loading ? t('signing_in') : t('sign_in')}
-            </button>
-          </div>
+        <div className="space-y-6">
+          <Form
+            fields={[
+              {
+                name: 'email',
+                type: 'email',
+                label: t('email_address'),
+                placeholder: t('email_address'),
+                required: true,
+                autoComplete: 'email',
+              },
+              {
+                name: 'password',
+                type: 'password',
+                label: t('password'),
+                placeholder: t('password'),
+                required: true,
+                autoComplete: 'current-password',
+              },
+            ]}
+            values={formData}
+            errors={errors}
+            onChange={handleInputChange}
+            onSubmit={handleSubmit}
+            submitText={loading ? t('signing_in') : t('sign_in')}
+            loading={loading}
+          />
 
           {/* Quick Login Buttons */}
           <div className="space-y-2">
-            <button
-              type="button"
+            <Button
+              variant="secondary"
+              fullWidth
               onClick={() => handleQuickLogin('kim@example.com')}
               disabled={loading}
-              className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
               {t('quick_login_kim')}
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
+              variant="secondary"
+              fullWidth
               onClick={() => handleQuickLogin('lee@example.com')}
               disabled={loading}
-              className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
               {t('quick_login_lee')}
-            </button>
+            </Button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

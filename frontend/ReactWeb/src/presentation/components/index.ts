@@ -1,11 +1,12 @@
-// Common Components
+// Common components
 export * from './common';
 
-// Layout Components
+// Specific components
+export * from './specific/assistant';
+export * from './specific/payment';
+export * from './specific/calendar';
+export * from './specific/splash';
+export * from './specific/test';
+
+// Layout components
 export * from './layout';
-
-// Provider Components
-export * from './providers';
-
-// User Components
-export { UserProfile } from "./UserProfile";

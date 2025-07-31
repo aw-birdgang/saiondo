@@ -5,6 +5,7 @@ import { ROUTES } from "../../../shared/constants/app";
 import { useAuth } from '../../../contexts/AuthContext';
 import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
+import { UserProfile, Card, Button } from '../../components/common';
 
 const MyPage: React.FC = () => {
   const { t } = useTranslation();
@@ -62,40 +63,21 @@ const MyPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Profile Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center">
-              <span className="text-2xl text-white">
-                {user?.name?.charAt(0) || 'U'}
-              </span>
-            </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold text-gray-900">
-                {user?.name || t('user')}
-              </h2>
-              <p className="text-gray-600">
-                {user?.email || 'user@example.com'}
-              </p>
-              <p className="text-sm text-gray-500">
-                {t('member_since')}: {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
-              </p>
-            </div>
-            <button
-              onClick={() => navigate(ROUTES.PROFILE)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              {t('edit')}
-            </button>
-          </div>
-        </div>
+        <UserProfile
+          showEditButton
+          showMemberSince
+          size="lg"
+          className="mb-6"
+        />
 
         {/* Menu Items */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {menuItems.map((item) => (
-            <button
+            <Card
               key={item.id}
               onClick={item.onClick}
-              className="bg-white rounded-lg shadow-sm p-6 text-left hover:shadow-md transition-shadow"
+              hoverable
+              className="text-left"
             >
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">{item.icon}</span>
@@ -104,20 +86,22 @@ const MyPage: React.FC = () => {
                   <p className="text-sm text-gray-600">{item.description}</p>
                 </div>
               </div>
-            </button>
+            </Card>
           ))}
         </div>
 
         {/* Logout Button */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <button
+        <Card>
+          <Button
+            variant="danger"
+            fullWidth
             onClick={handleLogout}
             disabled={isLoading}
-            className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+            loading={isLoading}
           >
-            {isLoading ? t('logging_out') : t('logout')}
-          </button>
-        </div>
+            {t('logout')}
+          </Button>
+        </Card>
       </div>
     </div>
   );

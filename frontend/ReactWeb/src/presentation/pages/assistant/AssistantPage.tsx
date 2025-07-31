@@ -3,8 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from "../../../shared/constants/app";
-import LoadingSpinner from '../../components/common/LoadingSpinner';
-import EmptyState from '../../components/common/EmptyState';
+import { 
+  Header, 
+  EmptyState 
+} from '../../components/common';
+import { 
+  SearchBar, 
+  CategoryFilter, 
+  AssistantCard 
+} from '../../components/specific/assistant';
+import { 
+  LoadingState, 
+  ErrorState 
+} from '../../components/specific/test';
 
 interface Assistant {
   id: string;
@@ -170,105 +181,53 @@ const AssistantListScreen: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
-        <div className="text-center">
-          <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
-            {t('loading_assistants') || 'AI 상담사를 불러오는 중...'}
-          </p>
-        </div>
-      </div>
+      <LoadingState 
+        message={t('loading_assistants') || 'AI 상담사를 불러오는 중...'}
+      />
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
-          <div className="text-6xl mb-4">❌</div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('error_loading_assistants') || 'AI 상담사 로딩 오류'}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {error}
-          </p>
-          <button
-            onClick={fetchAssistants}
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            {t('retry') || '다시 시도'}
-          </button>
-        </div>
-      </div>
+      <ErrorState
+        title={t('error_loading_assistants') || 'AI 상담사 로딩 오류'}
+        message={error}
+        onRetry={fetchAssistants}
+        retryText={t('retry') || '다시 시도'}
+      />
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-surface">
       {/* Header */}
-      <div className="bg-white dark:bg-dark-secondary-container shadow-sm border-b dark:border-dark-border">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => navigate(-1)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-dark-surface rounded-full transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <div className="flex items-center space-x-2">
-                <span className="text-2xl">🤖</span>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {t('ai_assistants') || 'AI 상담사'}
-                </h1>
-              </div>
-            </div>
-
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              {assistants.length}명의 상담사
-            </div>
-          </div>
+      <Header
+        title={t('ai_assistants') || 'AI 상담사'}
+        showBackButton
+        className="max-w-4xl mx-auto"
+      >
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          {assistants.length}명의 상담사
         </div>
-      </div>
+      </Header>
 
       {/* Search and Filter */}
       <div className="bg-white dark:bg-dark-secondary-container border-b dark:border-dark-border">
         <div className="max-w-4xl mx-auto px-4 py-4">
           {/* Search Bar */}
-          <div className="relative mb-4">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={t('search_assistants') || 'AI 상담사 검색...'}
-              className="appearance-none relative block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-dark-border rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark-surface dark:text-white"
-            />
-          </div>
+          <SearchBar
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder={t('search_assistants') || 'AI 상담사 검색...'}
+            className="mb-4"
+          />
 
           {/* Category Filter */}
-          <div className="flex space-x-2 overflow-x-auto pb-2">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  selectedCategory === category.id
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                }`}
-              >
-                <span>{category.icon}</span>
-                <span>{category.name}</span>
-              </button>
-            ))}
-          </div>
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
         </div>
       </div>
 
@@ -283,67 +242,14 @@ const AssistantListScreen: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {filteredAssistants.map((assistant) => (
-              <div
+              <AssistantCard
                 key={assistant.id}
-                onClick={() => handleAssistantSelect(assistant)}
-                className="bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm border border-gray-200 dark:border-dark-border p-4 hover:shadow-md transition-all cursor-pointer hover:scale-[1.02]"
-              >
-                <div className="flex items-start space-x-4">
-                  {/* Avatar */}
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-xl">
-                      {assistant.avatar || getCategoryIcon(assistant.category)}
-                    </span>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-3">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                          {assistant.name}
-                        </h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(assistant.category)}`}>
-                          <span className="mr-1">{getCategoryIcon(assistant.category)}</span>
-                          {categories.find(c => c.id === assistant.category)?.name || assistant.category}
-                        </span>
-                        {assistant.isActive && (
-                          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                        )}
-                      </div>
-
-                      <div className="text-right">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {assistant.messageCount} {t('messages') || '메시지'}
-                        </div>
-                        {assistant.lastUsed && (
-                          <div className="text-xs text-gray-400">
-                            {formatTime(assistant.lastUsed)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <p className="text-gray-700 dark:text-gray-300 mb-3">
-                      {assistant.description}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                          </svg>
-                          {t('start_chat') || '채팅 시작'}
-                        </span>
-                      </div>
-
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                assistant={assistant}
+                categoryName={categories.find(c => c.id === assistant.category)?.name || assistant.category}
+                categoryColor={getCategoryColor(assistant.category)}
+                categoryIcon={getCategoryIcon(assistant.category)}
+                onClick={handleAssistantSelect}
+              />
             ))}
           </div>
         )}

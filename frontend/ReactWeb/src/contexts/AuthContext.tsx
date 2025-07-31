@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, type ReactNode } from 'react';
-import { useServices } from '../app/di';
 import { useAuthStore } from '../stores/authStore';
-import type { LoginCredentials, RegisterData } from '../application/services/AuthService';
+import { authService } from '../infrastructure/api/services/authService';
+import type { LoginRequest, RegisterRequest } from '../domain/types';
 
 interface AuthContextType {
   // Zustand store actions
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  login: (credentials: LoginRequest) => Promise<void>;
+  register: (data: RegisterRequest) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
 }
@@ -18,19 +18,15 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { authService } = useServices();
   const authStore = useAuthStore();
-  
-  // Type assertion for authService
-  const typedAuthService = authService as any;
 
-  const login = async (credentials: LoginCredentials): Promise<void> => {
+  const login = async (credentials: LoginRequest): Promise<void> => {
     try {
       authStore.setLoading(true);
       authStore.setError(null);
       
-      const response = await typedAuthService.login(credentials);
-      authStore.login(response.user, response.token);
+      const response = await authService.login(credentials);
+      authStore.login(response.user, response.accessToken);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed';
       authStore.setError(errorMessage);
@@ -40,13 +36,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (data: RegisterData): Promise<void> => {
+  const register = async (data: RegisterRequest): Promise<void> => {
     try {
       authStore.setLoading(true);
       authStore.setError(null);
       
-      const response = await typedAuthService.register(data);
-      authStore.login(response.user, response.token);
+      const response = await authService.register(data);
+      authStore.login(response.user, response.accessToken);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
       authStore.setError(errorMessage);
@@ -58,7 +54,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async (): Promise<void> => {
     try {
-      await typedAuthService.logout();
+      authService.logout();
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
@@ -73,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Initialize auth state from storage
   useEffect(() => {
     const checkAuth = (): void => {
-      const token = typedAuthService.getToken();
+      const token = authService.getToken();
       if (token && !authStore.isAuthenticated) {
         // Token exists but not authenticated, try to validate
         // This could be enhanced with a token validation API call

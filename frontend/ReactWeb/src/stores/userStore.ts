@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User } from './authStore';
+import { userService } from '../infrastructure/api/services/userService';
+import type { User } from '../domain/types';
 
 export interface UserProfile extends User {
   avatar?: string;
@@ -28,6 +29,11 @@ export interface UserState {
   setError: (error: string | null) => void;
   updateUserProfile: (updates: Partial<UserProfile>) => void;
   clearUserData: () => void;
+  
+  // API Actions
+  fetchCurrentUser: () => Promise<void>;
+  fetchUserById: (id: string) => Promise<void>;
+  updateUser: (updates: Partial<UserProfile> & { id: string }) => Promise<void>;
 }
 
 export const useUserStore = create<UserState>()(
@@ -62,6 +68,43 @@ export const useUserStore = create<UserState>()(
         partnerUser: null,
         error: null,
       }),
+      
+      // API Actions
+      fetchCurrentUser: async () => {
+        try {
+          set({ loading: true, error: null });
+          const user = await userService.fetchCurrentUser();
+          set({ currentUser: user as UserProfile, loading: false });
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch current user';
+          set({ error: errorMessage, loading: false });
+        }
+      },
+      
+      fetchUserById: async (id: string) => {
+        try {
+          set({ loading: true, error: null });
+          const user = await userService.fetchUserById(id);
+          set({ selectedUser: user as UserProfile, loading: false });
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch user';
+          set({ error: errorMessage, loading: false });
+        }
+      },
+      
+      updateUser: async (updates) => {
+        try {
+          set({ loading: true, error: null });
+          const updatedUser = await userService.updateUser(updates);
+          set({ 
+            currentUser: updatedUser as UserProfile, 
+            loading: false 
+          });
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Failed to update user';
+          set({ error: errorMessage, loading: false });
+        }
+      },
     }),
     {
       name: 'user-storage',

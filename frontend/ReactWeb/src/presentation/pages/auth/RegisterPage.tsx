@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../../shared/constants/app';
 import { useAuth } from '../../../presentation/hooks/useAuth';
 import { validateEmail } from '../../../shared/utils/validation';
+import { Form } from '../../components/common';
 
 const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
@@ -119,135 +120,58 @@ const RegisterPage: React.FC = () => {
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            {/* Name Field */}
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                {t('name')}
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder={t('name')}
-                value={formData.name}
-                onChange={handleInputChange}
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-              )}
-            </div>
-
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                {t('email_address')}
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder={t('email_address')}
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                {t('password')}
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder={t('password')}
-                value={formData.password}
-                onChange={handleInputChange}
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Confirm Password Field */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                {t('confirm_password')}
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
-                  errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                placeholder={t('confirm_password')}
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-              />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-              )}
-            </div>
-
-            {/* Gender Field */}
-            <div>
-              <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-                {t('gender')}
-              </label>
-              <select
-                id="gender"
-                name="gender"
-                required
-                className={`mt-1 block w-full px-3 py-2 border ${
-                  errors.gender ? 'border-red-500' : 'border-gray-300'
-                } text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                value={formData.gender}
-                onChange={handleInputChange}
-              >
-                <option value="">{t('select_gender')}</option>
-                <option value="male">{t('male')}</option>
-                <option value="female">{t('female')}</option>
-              </select>
-              {errors.gender && (
-                <p className="mt-1 text-sm text-red-600">{errors.gender}</p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {loading ? t('creating_account') : t('create_account')}
-            </button>
-          </div>
-        </form>
+        <Form
+          fields={[
+            {
+              name: 'name',
+              type: 'text',
+              label: t('name'),
+              placeholder: t('name'),
+              required: true,
+              autoComplete: 'name',
+            },
+            {
+              name: 'email',
+              type: 'email',
+              label: t('email_address'),
+              placeholder: t('email_address'),
+              required: true,
+              autoComplete: 'email',
+            },
+            {
+              name: 'password',
+              type: 'password',
+              label: t('password'),
+              placeholder: t('password'),
+              required: true,
+              autoComplete: 'new-password',
+            },
+            {
+              name: 'confirmPassword',
+              type: 'password',
+              label: t('confirm_password'),
+              placeholder: t('confirm_password'),
+              required: true,
+              autoComplete: 'new-password',
+            },
+            {
+              name: 'gender',
+              type: 'select',
+              label: t('gender'),
+              required: true,
+              options: [
+                { value: 'male', label: t('male') },
+                { value: 'female', label: t('female') },
+              ],
+            },
+          ]}
+          values={formData}
+          errors={errors}
+          onChange={handleInputChange}
+          onSubmit={handleSubmit}
+          submitText={loading ? t('creating_account') : t('create_account')}
+          loading={loading}
+        />
       </div>
     </div>
   );

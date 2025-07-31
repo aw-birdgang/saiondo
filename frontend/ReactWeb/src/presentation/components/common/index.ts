@@ -1,6 +1,11 @@
-export { default as ErrorBoundary } from './ErrorBoundary';
-export { default as SocketTest } from './SocketTest';
-export { default as FirebaseTest } from './FirebaseTest';
 export { default as EmptyState } from './EmptyState';
 export { default as LoadingSpinner } from './LoadingSpinner';
-export { default as ThemeToggle } from './ThemeToggle'; 
+export { default as ThemeToggle } from './ThemeToggle';
+export { default as Header } from './Header';
+export { default as Button } from './Button';
+export { default as Input } from './Input';
+export { default as Card } from './Card';
+export { default as UserProfile } from './UserProfile';
+export { default as Form } from './Form';
+export { default as MessageBubble } from './MessageBubble';
+export { default as ChannelCard } from './ChannelCard'; 

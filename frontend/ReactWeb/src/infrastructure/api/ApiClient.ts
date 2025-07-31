@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import axios, {type AxiosInstance, type AxiosRequestConfig, type AxiosResponse} from 'axios';
 
 export class ApiClient {
   private client: AxiosInstance;
@@ -81,4 +81,4 @@ export class ApiClient {
     const response: AxiosResponse<T> = await this.client.patch(url, data, config);
     return response.data;
   }
-} 
+}

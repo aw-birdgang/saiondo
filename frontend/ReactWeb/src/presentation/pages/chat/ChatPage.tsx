@@ -7,6 +7,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
 import { useMessages } from "../../hooks/useMessages";
+import { Header, Button, MessageBubble } from "../../components/common";
 
 interface Message {
   id: string;
@@ -106,26 +107,16 @@ const ChatPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate(ROUTES.HOME)}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                ← {t("nav.back")}
-              </button>
-              <h1 className="text-xl font-semibold text-gray-900">
-                {t("chat.title")}
-              </h1>
-            </div>
-            <div className="text-sm text-gray-500">
-              Channel: {channelId}
-            </div>
-          </div>
+      <Header
+        title={t("chat.title")}
+        showBackButton
+        backRoute={ROUTES.HOME}
+        className="max-w-4xl mx-auto"
+      >
+        <div className="text-sm text-gray-500">
+          Channel: {channelId}
         </div>
-      </div>
+      </Header>
 
       {/* Chat Messages */}
       <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-6">
@@ -144,27 +135,12 @@ const ChatPage: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {messages.map((message) => (
-                <div
+                <MessageBubble
                   key={message.id}
-                  className={`flex ${
-                    message.senderId === (user?.id || currentUser?.id) ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      message.senderId === (user?.id || currentUser?.id)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-900'
-                    }`}
-                  >
-                    <p className="text-sm">{message.content}</p>
-                    <p className={`text-xs mt-1 ${
-                      message.senderId === (user?.id || currentUser?.id) ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
-                      {formatTime(new Date(message.createdAt))}
-                    </p>
-                  </div>
-                </div>
+                  content={message.content}
+                  timestamp={new Date(message.createdAt)}
+                  isOwnMessage={message.senderId === (user?.id || currentUser?.id)}
+                />
               ))}
               <div ref={messagesEndRef} />
             </div>
@@ -182,13 +158,13 @@ const ChatPage: React.FC = () => {
             className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
           />
-          <button
+          <Button
             onClick={handleSendMessage}
             disabled={!inputText.trim() || loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            loading={loading}
           >
-            {loading ? t("common.sending") : t("chat.send")}
-          </button>
+            {t("chat.send")}
+          </Button>
         </div>
       </div>
     </div>
