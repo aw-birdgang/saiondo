@@ -44,6 +44,7 @@ export const ROUTES = {
   CHANNEL_INVITATIONS: "/channel-invitations",
   PAYMENT_SUBSCRIPTION: "/payment-subscription",
   CATEGORY_GUIDE: "/category-guide",
+  ASSISTANTS: "/assistants",
 } as const;
 
 // Error Messages

@@ -79,8 +79,11 @@ const ChannelInvitationScreen = React.lazy(
 const PaymentSubscriptionScreen = React.lazy(
   () => import("../../presentation/payment/PaymentSubscriptionScreen"),
 );
-const CategoryGuideScreen = React.lazy(
-  () => import("../../presentation/category/CategoryGuideScreen"),
+const CategoryCodeGuideScreen = React.lazy(
+  () => import("../../presentation/category/CategoryCodeGuideScreen"),
+);
+const AssistantListScreen = React.lazy(
+  () => import("../../presentation/assistant/AssistantListScreen"),
 );
 
 // Loading component
@@ -246,7 +249,16 @@ export const AppRouter: React.FC = () => {
             path={ROUTES.CATEGORY_GUIDE}
             element={
               <ProtectedRoute>
-                <CategoryGuideScreen />
+                <CategoryCodeGuideScreen />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={ROUTES.ASSISTANTS}
+            element={
+              <ProtectedRoute>
+                <AssistantListScreen />
               </ProtectedRoute>
             }
           />
