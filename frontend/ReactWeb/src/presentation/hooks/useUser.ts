@@ -1,38 +1,30 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Container } from "../../../../di/Container";
-import type { User } from "../../domain";
+import { useUserStore } from '../../stores/userStore';
+import { useUser as useUserContext } from '../../contexts/UserContext';
 
 export const useUser = () => {
-  const container = Container.getInstance();
-  const queryClient = useQueryClient();
-
-  const {
-    data: user,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["user", "current"],
-    queryFn: () => container.getGetCurrentUserUseCase().execute(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  const updateUserMutation = useMutation({
-    mutationFn: (userData: Partial<User>) =>
-      container.getUpdateUserUseCase().execute(userData),
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["user", "current"], updatedUser);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-    },
-  });
+  const userStore = useUserStore();
+  const userContext = useUserContext();
 
   return {
-    user,
-    isLoading,
-    error,
-    refetch,
-    updateUser: updateUserMutation.mutate,
-    isUpdating: updateUserMutation.isPending,
-    updateError: updateUserMutation.error,
+    // State from Zustand store
+    currentUser: userStore.currentUser,
+    selectedUser: userStore.selectedUser,
+    partnerUser: userStore.partnerUser,
+    loading: userStore.loading,
+    error: userStore.error,
+
+    // Actions from Context
+    refreshUser: userContext.refreshUser,
+    updateUser: userContext.updateUser,
+    clearUser: userContext.clearUser,
+
+    // Additional Zustand actions
+    setCurrentUser: userStore.setCurrentUser,
+    setSelectedUser: userStore.setSelectedUser,
+    setPartnerUser: userStore.setPartnerUser,
+    setLoading: userStore.setLoading,
+    setError: userStore.setError,
+    updateUserProfile: userStore.updateUserProfile,
+    clearUserData: userStore.clearUserData,
   };
 };

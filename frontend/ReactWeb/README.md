@@ -1,174 +1,382 @@
-# Saiondo Web App
+# ReactWeb - Clean Architecture with Advanced DI Pattern
 
-사랑을 이어주는 커플 앱의 웹 버전입니다. Flutter 앱과 동일한 기능을 제공하는 React 기반 웹 애플리케이션입니다.
+A modern React application built with TypeScript, Vite, and Clean Architecture principles, featuring an advanced Dependency Injection (DI) pattern with Zustand state management.
 
-## 🚀 Features
+## 🏗️ Architecture Overview
 
-- **인증 시스템**: 로그인/회원가입 기능
-- **실시간 채팅**: Socket.IO 기반 실시간 메시징
-- **개인화 분석**: AI 기반 대화 분석 및 조언
-- **다크/라이트 테마**: 사용자 선호에 따른 테마 전환
-- **반응형 디자인**: 모바일, 태블릿, 데스크톱 지원
-- **다국어 지원**: 한국어/영어 지원
-- **푸시 알림**: Firebase 기반 푸시 알림
+This project follows Clean Architecture principles with an advanced DI pattern that provides:
 
-## 🛠️ Tech Stack
-
-- **Frontend**: React 19, TypeScript
-- **State Management**: Zustand
-- **Styling**: Tailwind CSS
-- **Routing**: React Router DOM
-- **HTTP Client**: Axios
-- **Real-time**: Socket.IO Client
-- **Forms**: React Hook Form
-- **Notifications**: React Hot Toast
-- **Build Tool**: Vite
-- **Linting**: ESLint + Prettier
-
-## 📁 Project Structure
+- **Type-safe dependency injection** with Symbol-based tokens
+- **Singleton and transient service management**
+- **Configuration-driven service registration**
+- **React hooks integration** for seamless DI usage
+- **Testing utilities** for mock service injection
 
 ```
 src/
-├── constants/          # 앱 상수 및 설정
-├── core/              # 핵심 기능
-│   ├── network/       # 네트워크 레이어
-│   ├── routes/        # 라우팅 설정
-│   └── stores/        # 상태 관리
-├── data/              # 데이터 레이어
-│   ├── api/           # API 서비스
-│   ├── models/        # 데이터 모델
-│   └── repositories/  # 리포지토리
-├── domain/            # 도메인 레이어
-│   ├── entities/      # 엔티티
-│   ├── repositories/  # 리포지토리 인터페이스
-│   └── usecases/      # 유스케이스
-├── presentation/      # 프레젠테이션 레이어
-│   ├── auth/          # 인증 관련 페이지
-│   ├── chat/          # 채팅 페이지
-│   ├── home/          # 홈 페이지
-│   └── shared/        # 공통 컴포넌트
-└── utils/             # 유틸리티 함수
+├── app/                    # Application entry point
+│   ├── di/                # Advanced DI container system
+│   │   ├── container.ts   # Main DI container with lifecycle management
+│   │   ├── tokens.ts      # Type-safe DI tokens
+│   │   ├── config.ts      # Configuration interfaces and defaults
+│   │   ├── useDI.ts       # React hooks for DI
+│   │   ├── testUtils.ts   # Testing utilities
+│   │   └── index.ts       # DI module exports
+│   ├── App.tsx            # Main app component
+│   └── main.tsx           # App entry point
+├── contexts/              # React Context providers
+│   ├── AuthContext.tsx    # Authentication context
+│   ├── ThemeContext.tsx   # Theme management context
+│   ├── UserContext.tsx    # User data context
+│   └── UseCaseContext.tsx # Use case dependency injection
+├── stores/                # Zustand state stores
+│   ├── authStore.ts       # Authentication state
+│   ├── themeStore.ts      # Theme state
+│   ├── userStore.ts       # User profile state
+│   ├── channelStore.ts    # Channel management state
+│   ├── messageStore.ts    # Message state
+│   ├── uiStore.ts         # UI state (modals, notifications)
+│   └── index.ts           # Store exports
+├── application/           # Application layer
+│   ├── usecases/          # Business logic use cases
+│   └── services/          # Application services
+├── domain/                # Domain layer
+│   ├── entities/          # Core business entities
+│   └── repositories/      # Repository interfaces
+├── infrastructure/        # Infrastructure layer
+│   ├── api/              # API client implementations
+│   ├── repositories/     # Repository implementations
+│   └── websocket/        # WebSocket client
+├── presentation/          # Presentation layer
+│   ├── pages/            # Route-based page components
+│   ├── components/       # Reusable UI components
+│   └── hooks/            # Custom hooks (Zustand + Context)
+└── shared/               # Shared utilities
+    ├── constants/        # Application constants
+    └── utils/            # Utility functions
 ```
 
-## 🚀 Getting Started
+## 🚀 Key Features
 
-### Prerequisites
+### 🔧 Advanced DI Pattern
+- **Type-safe tokens**: Symbol-based DI tokens for compile-time safety
+- **Service lifecycle management**: Singleton and transient service support
+- **Configuration-driven**: Environment-based service configuration
+- **React integration**: Custom hooks for seamless DI usage in components
+- **Testing support**: Comprehensive testing utilities with mock injection
 
-- Node.js 18+
-- npm or yarn
+### 📦 DI Container Features
 
-### Installation
+#### Token-based Registration
+```typescript
+import { DI_TOKENS, container } from '../app/di';
 
-1. **Clone the repository**
+// Register a service
+container.register(DI_TOKENS.API_CLIENT, () => new ApiClient(config), true);
 
-   ```bash
-   git clone <repository-url>
-   cd frontend/ReactWeb
-   ```
+// Resolve a service
+const apiClient = container.get<ApiClient>(DI_TOKENS.API_CLIENT);
+```
 
-2. **Install dependencies**
+#### Configuration Management
+```typescript
+import { createAppConfig, container } from '../app/di';
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+const config = createAppConfig({
+  api: { baseURL: 'https://api.example.com' },
+  environment: 'production'
+});
 
-3. **Environment setup**
+container.updateConfig(config);
+```
 
-   ```bash
-   cp env.example .env.local
-   ```
+#### React Hooks Integration
+```typescript
+import { useDI, useUseCases, useServices } from '../app/di';
 
-   `.env.local` 파일을 편집하여 필요한 환경 변수를 설정하세요.
+// Single service
+const apiClient = useDI<ApiClient>(DI_TOKENS.API_CLIENT);
 
-4. **Start development server**
+// Multiple services
+const { userUseCases, channelUseCases } = useUseCases();
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+// Service categories
+const { authService, notificationService } = useServices();
+```
 
-5. **Open your browser**
+### 🔄 Hybrid State Management
+- **Zustand Stores**: For complex state management with persistence
+- **React Context**: For dependency injection and cross-cutting concerns
+- **Custom Hooks**: Unified interface combining both approaches
 
-   [http://localhost:5173](http://localhost:5173)에서 앱을 확인하세요.
+### 📦 Zustand Stores
 
-## 📝 Available Scripts
+#### AuthStore
+```typescript
+const { user, isAuthenticated, login, logout } = useAuthStore();
+```
+- User authentication state
+- Token management
+- Persistent authentication
 
-- `npm run dev` - 개발 서버 시작
-- `npm run build` - 프로덕션 빌드
-- `npm run preview` - 빌드된 앱 미리보기
-- `npm run lint` - 코드 린팅
-- `npm run format` - 코드 포맷팅
-- `npm run type-check` - TypeScript 타입 체크
+#### ThemeStore
+```typescript
+const { theme, isDarkMode, setTheme, toggleTheme } = useThemeStore();
+```
+- Light/Dark/System theme support
+- Automatic theme persistence
+- DOM class management
 
-## 🎨 Design System
+#### UserStore
+```typescript
+const { currentUser, selectedUser, updateUserProfile } = useUserStore();
+```
+- User profile management
+- Partner user selection
+- Profile preferences
 
-### Colors
+#### ChannelStore
+```typescript
+const { channels, currentChannel, addChannel, joinChannel } = useChannelStore();
+```
+- Channel management
+- Member management
+- Real-time updates
 
-**Light Theme:**
+#### MessageStore
+```typescript
+const { messages, sendMessage, addReaction } = useMessageStore();
+```
+- Message management
+- Reactions support
+- Channel-based organization
 
-- Primary: `#d21e1d`
-- Secondary: `#EFF3F3`
-- Surface: `#FAFBFB`
-- Text: `#241E30`
+#### UIStore
+```typescript
+const { notifications, modals, setLoading } = useUIStore();
+```
+- Global UI state
+- Notification management
+- Modal management
 
-**Dark Theme:**
+### 🎣 Custom Hooks
 
-- Primary: `#FF8383`
-- Secondary: `#4D1F7C`
-- Surface: `#1F1929`
-- Text: `#FFFFFF`
+#### useAuth
+```typescript
+const { user, isAuthenticated, login, logout, loading, error } = useAuth();
+```
+Combines Zustand store state with Context actions.
 
-### Typography
+#### useUser
+```typescript
+const { currentUser, refreshUser, updateUser, loading } = useUser();
+```
+Unified user management with both store and context.
 
-- **Primary Font**: Montserrat
-- **Secondary Font**: Oswald
-- **Font Weights**: 400, 500, 600, 700
+#### useTheme
+```typescript
+const { theme, isDarkMode, setTheme, toggleTheme } = useTheme();
+```
+Theme management with automatic DOM updates.
+
+#### useChannels
+```typescript
+const { channels, createChannel, joinChannel, loading } = useChannels();
+```
+Channel management with Zustand store integration.
+
+#### useMessages
+```typescript
+const { messages, sendMessage, addReaction, loading } = useMessages(channelId);
+```
+Message management with channel-specific state.
+
+## 🛠️ Technology Stack
+
+- **React 19** - Latest React with concurrent features
+- **TypeScript** - Type-safe development
+- **Vite** - Fast build tool and dev server
+- **Zustand** - Lightweight state management
+- **React Router DOM** - Client-side routing
+- **React Query** - Server state management
+- **React Hot Toast** - Notifications
+- **Tailwind CSS** - Utility-first CSS framework
+
+## 📦 Installation
+
+```bash
+npm install
+```
+
+## 🚀 Development
+
+```bash
+npm run dev
+```
+
+## 🏗️ Build
+
+```bash
+npm run build
+```
+
+## 🧪 Testing
+
+```bash
+npm run test
+```
+
+## 📁 DI System Details
+
+### Container (`src/app/di/container.ts`)
+Advanced DI container with:
+- **Service registration**: Factory-based service creation
+- **Lifecycle management**: Singleton and transient services
+- **Dependency resolution**: Automatic dependency injection
+- **Configuration integration**: Environment-based configuration
+- **Debug capabilities**: Service inspection and debugging
+
+### Tokens (`src/app/di/tokens.ts`)
+Type-safe DI tokens:
+- **Symbol-based**: Unique, non-colliding identifiers
+- **Type-safe**: Compile-time type checking
+- **Categorized**: Organized by layer and responsibility
+- **Extensible**: Easy to add new services
+
+### Configuration (`src/app/di/config.ts`)
+Configuration management:
+- **Environment-specific**: Development, production, test configs
+- **Type-safe**: Full TypeScript support
+- **Extensible**: Easy to add new configuration options
+- **Validation**: Runtime configuration validation
+
+### React Hooks (`src/app/di/useDI.ts`)
+React integration:
+- **useDI**: Single service resolution
+- **useDIMultiple**: Multiple service resolution
+- **useUseCases**: Use case access
+- **useRepositories**: Repository access
+- **useServices**: Service access
+- **useInfrastructure**: Infrastructure access
+- **useStores**: Zustand store access
+- **useConfig**: Configuration access
+
+### Testing Utilities (`src/app/di/testUtils.ts`)
+Testing support:
+- **Mock services**: Pre-configured mock implementations
+- **Test containers**: Isolated DI containers for testing
+- **Mock registration**: Easy mock service injection
+- **Reset utilities**: Clean test state management
+
+## 🔄 DI Usage Patterns
+
+### Service Registration
+```typescript
+// Register a singleton service
+container.register(DI_TOKENS.API_CLIENT, () => new ApiClient(config), true);
+
+// Register a transient service
+container.register(DI_TOKENS.LOGGER, () => new Logger(), false);
+```
+
+### Service Resolution
+```typescript
+// Direct resolution
+const apiClient = container.get<ApiClient>(DI_TOKENS.API_CLIENT);
+
+// React hook resolution
+const apiClient = useDI<ApiClient>(DI_TOKENS.API_CLIENT);
+```
+
+### Configuration Management
+```typescript
+// Update configuration
+container.updateConfig({
+  api: { baseURL: 'https://new-api.example.com' }
+});
+
+// Get current configuration
+const config = container.getConfig();
+```
+
+### Testing
+```typescript
+import { createTestEnvironment } from '../app/di/testUtils';
+
+const { container, mocks, reset } = createTestEnvironment();
+
+// Use mocks in tests
+mocks.apiClient.get.mockResolvedValue({ data: 'test' });
+
+// Clean up after tests
+afterEach(reset);
+```
+
+## 🎯 Benefits
+
+- **Type Safety**: Full TypeScript support with compile-time checking
+- **Testability**: Easy mock injection and isolated testing
+- **Maintainability**: Clear separation of concerns and dependencies
+- **Scalability**: Modular architecture that grows with your application
+- **Performance**: Efficient service lifecycle management
+- **Developer Experience**: Intuitive API and comprehensive tooling
 
 ## 🔧 Configuration
 
 ### Environment Variables
-
-필요한 환경 변수들을 `.env.local` 파일에 설정하세요:
-
 ```env
-# API Configuration
 VITE_API_BASE_URL=http://localhost:3000
-VITE_SOCKET_URL=http://localhost:3000
-
-# Firebase Configuration
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
-VITE_FIREBASE_APP_ID=your_firebase_app_id
+VITE_SOCKET_URL=ws://localhost:3000
+VITE_ENVIRONMENT=development
 ```
 
-## 🏗️ Architecture
+### DI Configuration
+```typescript
+const config = createAppConfig({
+  api: {
+    baseURL: 'https://api.example.com',
+    timeout: 10000,
+  },
+  websocket: {
+    url: 'wss://ws.example.com',
+    options: { autoConnect: true }
+  },
+  environment: 'production',
+  debug: false
+});
+```
 
-이 프로젝트는 Clean Architecture 패턴을 따릅니다:
+## 📝 Usage Examples
 
-- **Presentation Layer**: UI 컴포넌트 및 페이지
-- **Domain Layer**: 비즈니스 로직 및 엔티티
-- **Data Layer**: API 통신 및 데이터 관리
+### Authentication with DI
+```typescript
+const { authService } = useServices();
+const { user, isAuthenticated } = useAuthStore();
 
-## 🤝 Contributing
+const handleLogin = async () => {
+  await authService.login({ email, password });
+};
+```
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Theme Management with DI
+```typescript
+const { theme, isDarkMode, toggleTheme } = useThemeStore();
 
-## 📄 License
+return (
+  <button onClick={toggleTheme}>
+    {isDarkMode ? '🌞' : '🌙'}
+  </button>
+);
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Channel Management with DI
+```typescript
+const { channelUseCases } = useUseCases();
+const { channels, createChannel } = useChannels();
 
-## 🔗 Related Projects
+const handleCreateChannel = async () => {
+  await createChannel({ name: 'New Channel', type: 'public' });
+};
+```
 
-- [Saiondo Flutter App](../app/) - 모바일 앱
-- [Saiondo Backend](../../backend/) - 백엔드 API
-- [Saiondo LLM](../../backend/llm/) - AI 서비스
+This advanced DI pattern provides a robust, scalable, and maintainable foundation for modern React applications with powerful dependency management capabilities.

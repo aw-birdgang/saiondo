@@ -1,111 +1,111 @@
-import React, { useState } from "react";
-import { useUser } from "../../presentation/hooks/useUser";
+import React from "react";
+import { useUserStore } from "../../stores/userStore";
 
 export const UserProfile: React.FC = () => {
-  const { user, isLoading, error, updateUser, isUpdating, updateError } =
-    useUser();
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: user?.name || "",
-    email: user?.email || "",
-  });
+  const { currentUser, loading, error } = useUserStore();
 
-  React.useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name,
-        email: user.email,
-      });
-    }
-  }, [user]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await updateUser(formData);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Failed to update user:", error);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error loading user data</div>;
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p className="text-red-600">Error: {error}</p>
+      </div>
+    );
   }
 
-  if (!user) {
-    return <div>No user data available</div>;
+  if (!currentUser) {
+    return (
+      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <p className="text-gray-600">No user data available</p>
+      </div>
+    );
   }
 
   return (
-    <div className="user-profile">
-      <h2>User Profile</h2>
-
-      {isEditing ? (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <button type="submit" disabled={isUpdating}>
-              {isUpdating ? "Saving..." : "Save"}
-            </button>
-            <button type="button" onClick={() => setIsEditing(false)}>
-              Cancel
-            </button>
-          </div>
-          {updateError && (
-            <div className="error">
-              Error updating user: {updateError.message}
-            </div>
-          )}
-        </form>
-      ) : (
+    <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="flex items-center space-x-4 mb-6">
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center">
+          <span className="text-2xl text-white font-bold">
+            {currentUser.name?.charAt(0) || 'U'}
+          </span>
+        </div>
         <div>
-          <p>
-            <strong>Name:</strong> {user.name}
-          </p>
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-          <p>
-            <strong>Created:</strong>{" "}
-            {new Date(user.createdAt).toLocaleDateString()}
-          </p>
-          <button onClick={() => setIsEditing(true)}>Edit Profile</button>
+          <h2 className="text-xl font-bold text-gray-900">
+            {currentUser.name || 'Unknown User'}
+          </h2>
+          <p className="text-gray-600">{currentUser.email}</p>
+          {currentUser.createdAt && (
+            <p className="text-sm text-gray-500">
+              Member since: {new Date(currentUser.createdAt).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {currentUser.bio && (
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Bio</h3>
+          <p className="text-gray-700">{currentUser.bio}</p>
         </div>
       )}
+
+      {currentUser.preferences && (
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Preferences</h3>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700">Notifications</span>
+              <span className={`px-2 py-1 rounded text-sm ${
+                currentUser.preferences.notifications 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {currentUser.preferences.notifications ? 'Enabled' : 'Disabled'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700">Email Notifications</span>
+              <span className={`px-2 py-1 rounded text-sm ${
+                currentUser.preferences.emailNotifications 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {currentUser.preferences.emailNotifications ? 'Enabled' : 'Disabled'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-700">Language</span>
+              <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                {currentUser.preferences.language}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="border-t pt-4">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="text-gray-500">User ID:</span>
+            <p className="text-gray-900 font-mono">{currentUser.id}</p>
+          </div>
+          {currentUser.updatedAt && (
+            <div>
+              <span className="text-gray-500">Last Updated:</span>
+              <p className="text-gray-900">
+                {new Date(currentUser.updatedAt).toLocaleDateString()}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
