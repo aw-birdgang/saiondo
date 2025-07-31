@@ -58,8 +58,8 @@ const LoginScreen = React.lazy(
 const RegisterScreen = React.lazy(
   () => import("../../presentation/auth/RegisterScreen"),
 );
-const HomeScreen = React.lazy(
-  () => import("../../presentation/home/HomeScreen"),
+const MainLayout = React.lazy(
+  () => import("../../presentation/layout/MainLayout"),
 );
 const ChatScreen = React.lazy(
   () => import("../../presentation/chat/ChatScreen"),
@@ -165,7 +165,7 @@ export const AppRouter: React.FC = () => {
             path={ROUTES.HOME}
             element={
               <ProtectedRoute>
-                <HomeScreen />
+                <MainLayout />
               </ProtectedRoute>
             }
           />
