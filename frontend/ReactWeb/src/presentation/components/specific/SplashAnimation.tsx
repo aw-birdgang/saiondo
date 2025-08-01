@@ -50,7 +50,7 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
   }, [duration, onAnimationComplete]);
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center ${className}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-primary via-primary-container to-error flex items-center justify-center ${className}`}>
       <div className="text-center text-white">
         {/* Logo Animation */}
         <LogoAnimation
@@ -60,9 +60,9 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
 
         {/* Loading Animation */}
         {animationPhase === 'loading' && (
-          <div className="space-y-4 animate-fade-in">
+          <div className="space-y-6 animate-fade-in">
             <LoadingDots />
-            <p className="text-lg opacity-90">{loadingMessage}</p>
+            <p className="text-lg font-medium opacity-90">{loadingMessage}</p>
           </div>
         )}
 

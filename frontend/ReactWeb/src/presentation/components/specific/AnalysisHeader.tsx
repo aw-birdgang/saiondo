@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../../../shared/constants/app";
+import { ROUTES } from "../../../shared/constants/app";
 
 interface AnalysisHeaderProps {
   onCreateAnalysis: () => void;
@@ -9,30 +9,30 @@ interface AnalysisHeaderProps {
   className?: string;
 }
 
-const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({ 
-  onCreateAnalysis, 
-  isCreating, 
-  className = "" 
+const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
+  onCreateAnalysis,
+  isCreating,
+  className = ""
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
-    <div className={`bg-white shadow-sm border-b ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 py-4">
+    <div className={`bg-surface shadow-sm border-b border-border ${className}`}>
+      <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate(ROUTES.HOME)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-3 hover:bg-secondary rounded-full transition-all duration-200 hover:scale-105"
             >
-              <span className="text-xl">←</span>
+              <span className="text-xl text-text-secondary">←</span>
             </button>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {t("analysis.title")}
+              <h1 className="text-2xl font-bold text-text leading-tight">
+                {t("analysis.title") || "관계 분석"}
               </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 관계 분석 결과를 확인하세요
               </p>
             </div>
@@ -40,15 +40,15 @@ const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
           <button
             onClick={onCreateAnalysis}
             disabled={isCreating}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`btn px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
               isCreating
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-primary text-white hover:bg-primaryContainer"
+                ? "bg-secondary text-text-secondary cursor-not-allowed opacity-50"
+                : "btn-primary"
             }`}
           >
             {isCreating ? (
-              <div className="flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <div className="flex items-center space-x-3">
+                <div className="spinner" />
                 <span>분석 중...</span>
               </div>
             ) : (
@@ -61,4 +61,4 @@ const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
   );
 };
 
-export default AnalysisHeader; 
+export default AnalysisHeader;

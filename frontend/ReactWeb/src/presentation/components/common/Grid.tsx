@@ -34,7 +34,7 @@ const Grid: React.FC<GridProps> = ({
       case 'none':
         return '';
       case 'sm':
-        return 'gap-2';
+        return 'gap-3';
       case 'lg':
         return 'gap-8';
       case 'xl':

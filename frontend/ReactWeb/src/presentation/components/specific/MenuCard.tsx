@@ -19,9 +19,9 @@ const MenuCard: React.FC<MenuCardProps> = ({ item, className = "" }) => {
     <Card
       onClick={item.onClick}
       hoverable
-      className={`text-left ${className}`}
+      className={`text-left cursor-pointer transition-all duration-200 hover:scale-[1.02] ${className}`}
     >
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-4">
         <MenuIcon icon={item.icon} size="md" />
         <MenuItemContent
           title={item.title}

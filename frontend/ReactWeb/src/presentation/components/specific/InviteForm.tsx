@@ -45,7 +45,7 @@ const InviteForm: React.FC<InviteFormProps> = ({
   };
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-8 ${className}`}>
       {/* Icon */}
       <InviteIcon />
 
@@ -53,7 +53,7 @@ const InviteForm: React.FC<InviteFormProps> = ({
       <InviteHeader />
 
       {/* Email Input */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <Input
           name="partnerEmail"
           type="email"

@@ -13,13 +13,21 @@ const AnalysisSection: React.FC<AnalysisSectionProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`bg-white rounded-lg shadow-md p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        {title}
-      </h3>
-      <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-        {content}
-      </p>
+    <div className={`space-y-6 ${className}`}>
+      <div className="flex items-center space-x-4">
+        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+          <span className="text-xl">📝</span>
+        </div>
+        <h3 className="text-xl font-semibold text-text leading-tight">
+          {title}
+        </h3>
+      </div>
+      
+      <div className="bg-secondary rounded-lg p-6">
+        <p className="text-text-secondary leading-relaxed">
+          {content}
+        </p>
+      </div>
     </div>
   );
 };

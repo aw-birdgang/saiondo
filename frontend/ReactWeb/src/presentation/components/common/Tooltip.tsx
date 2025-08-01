@@ -54,13 +54,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   const getArrowClasses = () => {
     switch (position) {
       case 'bottom':
-        return 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-full border-b-gray-900';
+        return 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-full border-b-surface';
       case 'left':
-        return 'top-1/2 right-0 transform translate-x-full -translate-y-1/2 border-l-gray-900';
+        return 'top-1/2 right-0 transform translate-x-full -translate-y-1/2 border-l-surface';
       case 'right':
-        return 'top-1/2 left-0 transform -translate-x-full -translate-y-1/2 border-r-gray-900';
+        return 'top-1/2 left-0 transform -translate-x-full -translate-y-1/2 border-r-surface';
       default: // top
-        return 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full border-t-gray-900';
+        return 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full border-t-surface';
     }
   };
 
@@ -87,7 +87,7 @@ const Tooltip: React.FC<TooltipProps> = ({
         <div
           ref={tooltipRef}
           className={`
-            absolute z-50 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg
+            absolute z-50 px-4 py-2 text-sm text-on-surface bg-surface rounded-lg shadow-xl border border-border
             whitespace-nowrap pointer-events-none
             ${getPositionClasses()}
             animate-fade-in

@@ -10,7 +10,7 @@ const ErrorStateContainer: React.FC<ErrorStateContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center ${className}`}>
+    <div className={`min-h-screen bg-background flex items-center justify-center ${className}`}>
       {children}
     </div>
   );

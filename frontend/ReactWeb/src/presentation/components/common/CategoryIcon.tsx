@@ -23,7 +23,7 @@ const CategoryIcon: React.FC<CategoryIconProps> = ({
   };
 
   return (
-    <div className={`rounded-full flex items-center justify-center ${getSizeClasses(size)} ${color} ${className}`}>
+    <div className={`rounded-full flex items-center justify-center shadow-md border-2 border-border transition-all duration-200 hover:scale-105 ${getSizeClasses(size)} ${color} ${className}`}>
       {icon}
     </div>
   );

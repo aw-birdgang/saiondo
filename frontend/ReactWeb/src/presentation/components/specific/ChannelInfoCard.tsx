@@ -40,12 +40,17 @@ const ChannelInfoCard: React.FC<ChannelInfoCardProps> = ({
   ];
 
   return (
-    <div className={`space-y-4 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-        {t("channel_info") || "채널 정보"}
-      </h3>
+    <div className={`space-y-6 ${className}`}>
+      <div className="flex items-center space-x-4">
+        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+          <span className="text-xl">📺</span>
+        </div>
+        <h3 className="text-xl font-semibold text-text leading-tight">
+          {t("channel_info") || "채널 정보"}
+        </h3>
+      </div>
       
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {channelStats.map((stat, index) => (
           <InfoCard
             key={index}

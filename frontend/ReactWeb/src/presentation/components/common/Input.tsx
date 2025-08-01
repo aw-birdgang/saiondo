@@ -34,18 +34,18 @@ const Input: React.FC<InputProps> = ({
   const inputId = id || name;
   const hasError = !!error;
 
-  const baseClasses = 'appearance-none relative block w-full px-3 py-2 border placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:z-10 sm:text-sm';
-  const borderClasses = hasError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500';
-  const disabledClasses = disabled ? 'bg-gray-100 cursor-not-allowed' : '';
+  const baseClasses = 'input';
+  const errorClasses = hasError ? 'error' : '';
+  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';
 
-  const inputClasses = `${baseClasses} ${borderClasses} ${disabledClasses} ${className}`;
+  const inputClasses = `${baseClasses} ${errorClasses} ${disabledClasses} ${className}`;
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-2">
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={inputId} className="block text-sm font-medium text-text">
           {label}
-          {required && <span className="text-red-500 ml-1">*</span>}
+          {required && <span className="text-error ml-1">*</span>}
         </label>
       )}
       <input
@@ -62,7 +62,10 @@ const Input: React.FC<InputProps> = ({
         className={inputClasses}
       />
       {hasError && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <div className="flex items-center space-x-2">
+          <div className="w-1 h-1 bg-error rounded-full"></div>
+          <p className="text-sm text-error">{error}</p>
+        </div>
       )}
     </div>
   );

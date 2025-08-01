@@ -18,7 +18,7 @@ const Stack: React.FC<StackProps> = ({
       case 'none':
         return '';
       case 'sm':
-        return 'space-y-2';
+        return 'space-y-3';
       case 'lg':
         return 'space-y-6';
       case 'xl':

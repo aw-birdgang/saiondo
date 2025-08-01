@@ -20,13 +20,13 @@ const InteractiveCard: React.FC<InteractiveCardProps> = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'elevated':
-        return 'bg-white dark:bg-dark-secondary-container shadow-lg border border-gray-200 dark:border-gray-700';
+        return 'bg-surface shadow-xl border border-border';
       case 'outlined':
-        return 'bg-transparent border-2 border-gray-200 dark:border-gray-700';
+        return 'bg-transparent border-2 border-border';
       case 'filled':
-        return 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700';
+        return 'bg-secondary border border-border';
       default:
-        return 'bg-white dark:bg-dark-secondary-container shadow-sm border border-gray-200 dark:border-gray-700';
+        return 'bg-surface shadow-sm border border-border';
     }
   };
 
@@ -35,11 +35,11 @@ const InteractiveCard: React.FC<InteractiveCardProps> = ({
     
     switch (hover) {
       case 'scale':
-        return 'hover:scale-[1.02] transition-transform cursor-pointer';
+        return 'hover:scale-[1.02] transition-transform duration-200 cursor-pointer';
       case 'both':
-        return 'hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer';
+        return 'hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer';
       default:
-        return 'hover:shadow-md transition-shadow cursor-pointer';
+        return 'hover:shadow-md transition-shadow duration-200 cursor-pointer';
     }
   };
 
@@ -48,20 +48,20 @@ const InteractiveCard: React.FC<InteractiveCardProps> = ({
       case 'none':
         return '';
       case 'sm':
-        return 'p-3';
+        return 'p-4';
       case 'lg':
         return 'p-6';
       case 'xl':
         return 'p-8';
       default:
-        return 'p-4';
+        return 'p-5';
     }
   };
 
   return (
     <div
       className={`
-        rounded-lg ${getVariantClasses()} ${getHoverClasses()} ${getPaddingClasses()} ${className}
+        rounded-xl ${getVariantClasses()} ${getHoverClasses()} ${getPaddingClasses()} ${className}
       `}
       onClick={onClick}
     >

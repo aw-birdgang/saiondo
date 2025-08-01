@@ -27,12 +27,12 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`${className}`}>
+    <div className={`space-y-6 ${className}`}>
       {/* Day Headers */}
       <CalendarHeader />
 
       {/* Calendar Days */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-3">
         {daysInMonth.map((day) => (
           <CalendarDay
             key={day.toISOString()}

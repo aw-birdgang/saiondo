@@ -70,9 +70,9 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
   const currentStats = stats || defaultStats;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10 ${className}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-secondary to-secondary-container ${className}`}>
       <CenteredContainer>
-        <Stack spacing="xl" className="max-w-4xl w-full">
+        <Stack spacing="xl" className="max-w-6xl w-full">
           {/* Welcome Section */}
           <div className="text-center">
             <WelcomeMessage />
@@ -80,7 +80,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
 
           {/* Stats Cards */}
           {stats && (
-            <Grid cols={{ sm: 1, md: 2, lg: 4 }} gap="md">
+            <Grid cols={{ sm: 1, md: 2, lg: 4 }} gap="lg">
               <InfoCard
                 title={t('total_chats') || '총 대화'}
                 value={currentStats.totalChats}
@@ -120,44 +120,48 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm p-6">
-            <Heading level={4} align="center" className="mb-4">
-              {t('quick_actions') || '빠른 액션'}
-            </Heading>
-            <QuickActionsGrid actions={quickActions} />
+          <div className="card">
+            <div className="card-body">
+              <Heading level={4} align="center" className="mb-8">
+                {t('quick_actions') || '빠른 액션'}
+              </Heading>
+              <QuickActionsGrid actions={quickActions} />
+            </div>
           </div>
 
           {/* Recent Activity */}
-          <div className="bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm p-6">
-            <Heading level={4} className="mb-4">
-              {t('recent_activity') || '최근 활동'}
-            </Heading>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
-                  <span className="text-sm">💬</span>
+          <div className="card">
+            <div className="card-body">
+              <Heading level={4} className="mb-8">
+                {t('recent_activity') || '최근 활동'}
+              </Heading>
+              <div className="space-y-6">
+                <div className="flex items-center space-x-4 p-6 bg-secondary rounded-lg">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-xl">💬</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-text leading-tight">
+                      {t('ai_chat_started') || 'AI 상담사와 대화를 시작했습니다'}
+                    </p>
+                    <Caption size="xs" className="text-text-secondary mt-1">
+                      {currentStats.lastActivity}
+                    </Caption>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {t('ai_chat_started') || 'AI 상담사와 대화를 시작했습니다'}
-                  </p>
-                  <Caption size="xs">
-                    {currentStats.lastActivity}
-                  </Caption>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <div className="w-8 h-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-                  <span className="text-sm">👥</span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {t('channel_joined') || '새로운 채널에 참여했습니다'}
-                  </p>
-                  <Caption size="xs">
-                    {t('yesterday') || '어제'}
-                  </Caption>
+                
+                <div className="flex items-center space-x-4 p-6 bg-secondary rounded-lg">
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                    <span className="text-xl">👥</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-text leading-tight">
+                      {t('channel_joined') || '새로운 채널에 참여했습니다'}
+                    </p>
+                    <Caption size="xs" className="text-text-secondary mt-1">
+                      {t('yesterday') || '어제'}
+                    </Caption>
+                  </div>
                 </div>
               </div>
             </div>

@@ -14,11 +14,17 @@ const KeywordsSection: React.FC<KeywordsSectionProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        {t("main_keywords")}
-      </h3>
-      <div className="flex flex-wrap gap-2">
+    <div className={`space-y-6 ${className}`}>
+      <div className="flex items-center space-x-4">
+        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+          <span className="text-xl">🏷️</span>
+        </div>
+        <h3 className="text-xl font-semibold text-text leading-tight">
+          {t("main_keywords") || "주요 키워드"}
+        </h3>
+      </div>
+      
+      <div className="flex flex-wrap gap-4">
         {keywords.map((keyword, index) => (
           <KeywordTag
             key={index}
@@ -28,6 +34,10 @@ const KeywordsSection: React.FC<KeywordsSectionProps> = ({
           />
         ))}
       </div>
+      
+      <p className="text-sm text-text-secondary leading-relaxed">
+        {t("keywords_description") || "관계에서 자주 나타나는 주요 키워드들입니다"}
+      </p>
     </div>
   );
 };

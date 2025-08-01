@@ -12,34 +12,34 @@ const MessageContent: React.FC<MessageContentProps> = ({
   className = '',
 }) => {
   const renderTextContent = () => (
-    <p className="text-sm break-words whitespace-pre-wrap">{content}</p>
+    <p className="text-sm break-words whitespace-pre-wrap leading-relaxed">{content}</p>
   );
 
   const renderImageContent = () => (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <img 
         src={content} 
         alt="Message image" 
-        className="max-w-xs rounded-lg shadow-sm"
+        className="max-w-xs rounded-lg shadow-md border border-border"
         onError={(e) => {
           const target = e.target as HTMLImageElement;
           target.style.display = 'none';
         }}
       />
-      <p className="text-xs text-gray-500">📷 Image</p>
+      <p className="text-xs text-text-secondary font-medium">📷 Image</p>
     </div>
   );
 
   const renderFileContent = () => (
-    <div className="flex items-center space-x-2 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+    <div className="flex items-center space-x-3 p-3 bg-secondary rounded-lg border border-border">
       <span className="text-lg">📎</span>
-      <span className="text-sm font-medium">{content}</span>
+      <span className="text-sm font-semibold text-text">{content}</span>
     </div>
   );
 
   const renderSystemContent = () => (
     <div className="text-center">
-      <span className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
+      <span className="text-xs text-text-secondary bg-secondary px-4 py-2 rounded-full font-medium">
         {content}
       </span>
     </div>

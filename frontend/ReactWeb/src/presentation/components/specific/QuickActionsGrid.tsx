@@ -6,6 +6,7 @@ interface QuickAction {
   icon: string;
   label: string;
   onClick: () => void;
+  description?: string;
 }
 
 interface QuickActionsGridProps {
@@ -18,12 +19,13 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`grid grid-cols-2 gap-4 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 gap-6 ${className}`}>
       {actions.map((action, index) => (
         <QuickActionButton
           key={index}
           icon={action.icon}
           label={action.label}
+          description={action.description}
           onClick={action.onClick}
         />
       ))}

@@ -10,7 +10,7 @@ const HeaderContainer: React.FC<HeaderContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`max-w-4xl mx-auto ${className}`}>
+    <div className={`max-w-6xl mx-auto ${className}`}>
       {children}
     </div>
   );

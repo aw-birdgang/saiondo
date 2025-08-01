@@ -30,7 +30,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   const getVariantClasses = (variant: 'default' | 'success' | 'warning' | 'error') => {
     const variantClasses = {
-      default: 'bg-blue-500',
+      default: 'bg-primary',
       success: 'bg-green-500',
       warning: 'bg-yellow-500',
       error: 'bg-red-500',
@@ -41,14 +41,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {showLabel && (
-        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+        <div className="flex justify-between text-sm text-text-secondary mb-2">
           <span>진행률</span>
-          <span>{Math.round(percentage)}%</span>
+          <span className="font-medium">{Math.round(percentage)}%</span>
         </div>
       )}
-      <div className={`w-full bg-gray-200 dark:bg-gray-700 rounded-full ${getSizeClasses(size)}`}>
+      <div className={`w-full bg-secondary rounded-full ${getSizeClasses(size)} overflow-hidden`}>
         <div
-          className={`${getVariantClasses(variant)} rounded-full transition-all duration-300 ${getSizeClasses(size)}`}
+          className={`${getVariantClasses(variant)} rounded-full transition-all duration-500 ease-out ${getSizeClasses(size)} shadow-sm`}
           style={{ width: `${percentage}%` }}
         />
       </div>

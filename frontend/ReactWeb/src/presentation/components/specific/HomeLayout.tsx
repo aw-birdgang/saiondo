@@ -10,7 +10,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 ${className}`}>
+    <div className={`min-h-screen bg-gradient-to-br from-primary to-primary-container ${className}`}>
       {children}
     </div>
   );

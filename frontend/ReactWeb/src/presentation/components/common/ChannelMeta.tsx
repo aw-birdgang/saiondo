@@ -17,14 +17,16 @@ const ChannelMeta: React.FC<ChannelMetaProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`flex items-center text-xs text-gray-500 dark:text-gray-400 ${className}`}>
-      <span className="mr-4">
-        👥 {memberCount} {t('members')}
+    <div className={`flex items-center text-xs text-text-secondary space-x-4 ${className}`}>
+      <span className="flex items-center">
+        <span className="mr-1">👥</span>
+        {memberCount} {t('members')}
       </span>
       {lastMessage && (
         <>
-          <span className="mr-4">
-            💬 {lastMessage}
+          <span className="flex items-center">
+            <span className="mr-1">💬</span>
+            {lastMessage}
           </span>
           <span>{lastMessageTime}</span>
         </>

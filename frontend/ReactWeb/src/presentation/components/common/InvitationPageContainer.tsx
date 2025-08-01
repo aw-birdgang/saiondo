@@ -10,7 +10,7 @@ const InvitationPageContainer: React.FC<InvitationPageContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`min-h-screen bg-gray-50 dark:bg-dark-surface ${className}`}>
+    <div className={`min-h-screen bg-background ${className}`}>
       {children}
     </div>
   );

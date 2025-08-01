@@ -17,7 +17,7 @@ const SplashTagline: React.FC<SplashTaglineProps> = ({
       ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
       ${className}
     `}>
-      <p className="text-lg opacity-90 text-white">{text}</p>
+      <p className="text-lg font-medium text-white/90 leading-relaxed">{text}</p>
     </div>
   );
 };

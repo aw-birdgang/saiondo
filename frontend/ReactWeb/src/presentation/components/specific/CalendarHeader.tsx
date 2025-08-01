@@ -21,39 +21,39 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm p-6 mb-6 ${className}`}>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {t('calendar')}
+    <div className={`card p-6 mb-8 ${className}`}>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-text leading-tight">
+          {t('calendar') || '캘린더'}
         </h2>
         <button
           onClick={onToday}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          className="btn btn-primary px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
         >
-          {t('today')}
+          {t('today') || '오늘'}
         </button>
       </div>
 
       {/* Month Navigation */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <button
           onClick={onPreviousMonth}
-          className="p-2 hover:bg-gray-100 dark:hover:bg-dark-surface rounded-lg transition-colors"
+          className="p-3 hover:bg-secondary rounded-lg transition-all duration-200 hover:scale-105"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <h3 className="text-xl font-semibold text-text leading-tight">
           {format(currentDate, 'yyyy년 M월', { locale: ko })}
         </h3>
 
         <button
           onClick={onNextMonth}
-          className="p-2 hover:bg-gray-100 dark:hover:bg-dark-surface rounded-lg transition-colors"
+          className="p-3 hover:bg-secondary rounded-lg transition-all duration-200 hover:scale-105"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>

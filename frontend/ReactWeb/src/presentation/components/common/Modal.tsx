@@ -61,32 +61,33 @@ const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+        className="fixed inset-0 bg-overlay transition-opacity duration-300"
         onClick={closeOnOverlayClick ? onClose : undefined}
       />
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div className={`
-          relative bg-white dark:bg-dark-secondary-container rounded-lg shadow-xl
+          relative bg-surface rounded-xl shadow-2xl border border-border
           w-full ${getSizeClasses()} ${className}
           transform transition-all duration-300 ease-out
+          animate-slide-in
         `}>
           {/* Header */}
           {(title || showCloseButton) && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between p-6 border-b border-divider">
               {title && (
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-text">
                   {title}
                 </h3>
               )}
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="p-2 text-text-secondary hover:text-text hover:bg-secondary rounded-lg transition-all duration-200"
                   aria-label="Close modal"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>

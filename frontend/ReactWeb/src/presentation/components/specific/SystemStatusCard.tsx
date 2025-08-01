@@ -30,12 +30,12 @@ const SystemStatusCard: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+    <div className="space-y-6">
+      <h3 className="text-xl font-bold text-text leading-tight">
         {t("system_status") || "시스템 상태"}
       </h3>
       
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-6">
         {systemStats.map((stat, index) => (
           <SystemStatItem
             key={index}

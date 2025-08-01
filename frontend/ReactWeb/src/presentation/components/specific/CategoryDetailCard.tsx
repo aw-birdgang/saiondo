@@ -33,21 +33,21 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg shadow-lg overflow-hidden ${className}`}>
+    <div className={`card overflow-hidden ${className}`}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-primary to-primary-container p-8 text-white">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="text-3xl">{category.icon}</div>
+          <div className="flex items-center space-x-4">
+            <div className="text-4xl">{category.icon}</div>
             <div>
-              <h3 className="text-xl font-semibold">{category.name}</h3>
-              <p className="text-blue-100 text-sm">{category.description}</p>
+              <h3 className="text-2xl font-bold leading-tight">{category.name}</h3>
+              <p className="text-white/90 text-base leading-relaxed">{category.description}</p>
             </div>
           </div>
           {onClose && (
             <button
               onClick={onClose}
-              className="text-white hover:text-blue-100 transition-colors"
+              className="text-white hover:text-white/80 transition-all duration-200 hover:scale-110 p-2"
             >
               ✕
             </button>
@@ -56,19 +56,19 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Examples */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+            <h4 className="text-xl font-bold text-text mb-6 flex items-center leading-tight">
+              <span className="w-3 h-3 bg-primary rounded-full mr-4"></span>
               이런 대화를 나누어보세요
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {category.examples.map((example, index) => (
-                <li key={index} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                <li key={index} className="flex items-start space-x-4">
+                  <div className="w-3 h-3 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-text-secondary text-base leading-relaxed">
                     {example}
                   </p>
                 </li>
@@ -78,15 +78,15 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
 
           {/* Tips */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-              <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+            <h4 className="text-xl font-bold text-text mb-6 flex items-center leading-tight">
+              <span className="w-3 h-3 bg-green-500 rounded-full mr-4"></span>
               대화 팁
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {category.tips.map((tip, index) => (
-                <li key={index} className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                <li key={index} className="flex items-start space-x-4">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-text-secondary text-base leading-relaxed">
                     {tip}
                   </p>
                 </li>
@@ -96,12 +96,12 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
         </div>
 
         {/* Action Button */}
-        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="mt-8 pt-8 border-t border-border">
           <Button
             onClick={handleStartChat}
             variant="primary"
             fullWidth
-            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+            className="bg-gradient-to-r from-primary to-primary-container hover:from-primary/90 hover:to-primary-container/90 text-lg py-4 font-semibold transition-all duration-200 hover:scale-105"
           >
             {category.name} 카테고리로 대화 시작하기
           </Button>

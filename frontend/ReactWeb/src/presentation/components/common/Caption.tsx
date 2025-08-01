@@ -27,19 +27,19 @@ const Caption: React.FC<CaptionProps> = ({
   const getColorClass = () => {
     switch (color) {
       case 'primary':
-        return 'text-gray-900 dark:text-white';
+        return 'text-text';
       case 'secondary':
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-text-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
         return 'text-yellow-600 dark:text-yellow-400';
       case 'danger':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error';
       case 'info':
         return 'text-blue-600 dark:text-blue-400';
       default:
-        return 'text-gray-500 dark:text-gray-400';
+        return 'text-text-secondary';
     }
   };
 
@@ -59,7 +59,7 @@ const Caption: React.FC<CaptionProps> = ({
   return (
     <span
       className={`
-        ${getSizeClass()} ${getColorClass()} ${getAlignClass()} ${className}
+        font-medium leading-relaxed ${getSizeClass()} ${getColorClass()} ${getAlignClass()} ${className}
       `}
     >
       {children}

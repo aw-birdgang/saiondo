@@ -30,46 +30,46 @@ const MyPageContent: React.FC<MyPageContentProps> = ({
   const menuItems: MenuItem[] = [
     {
       id: 'profile',
-      title: t('profile'),
+      title: t('profile') || '프로필',
       icon: '👤',
-      description: t('profile_description'),
+      description: t('profile_description') || '프로필 정보를 확인하고 수정하세요',
       onClick: () => navigate('/profile'),
     },
     {
       id: 'settings',
-      title: t('settings'),
+      title: t('settings') || '설정',
       icon: '⚙️',
-      description: t('settings_description'),
+      description: t('settings_description') || '앱 설정을 관리하세요',
       onClick: () => navigate('/settings'),
     },
     {
       id: 'chat',
-      title: t('chat'),
+      title: t('chat') || '채팅',
       icon: '💬',
-      description: t('chat_description'),
+      description: t('chat_description') || 'AI 상담사와 대화하세요',
       onClick: () => navigate('/chat'),
     },
     {
       id: 'channels',
-      title: t('channels'),
+      title: t('channels') || '채널',
       icon: '👥',
-      description: t('channels_description'),
+      description: t('channels_description') || '채널을 관리하세요',
       onClick: () => navigate('/channels'),
     },
   ];
 
   return (
-    <div className={className}>
+    <div className={`space-y-8 ${className}`}>
       {/* Profile Section */}
       <UserProfile
         showEditButton
         showMemberSince
         size="lg"
-        className="mb-6"
+        className="mb-8"
       />
 
       {/* Menu Items */}
-      <MenuGrid items={menuItems} className="mb-6" />
+      <MenuGrid items={menuItems} className="mb-8" />
 
       {/* Logout Button */}
       <Card>
@@ -80,7 +80,7 @@ const MyPageContent: React.FC<MyPageContentProps> = ({
           disabled={isLoading}
           loading={isLoading}
         >
-          {t('logout')}
+          {t('logout') || '로그아웃'}
         </Button>
       </Card>
     </div>

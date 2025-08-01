@@ -10,7 +10,7 @@ const ChannelDescription: React.FC<ChannelDescriptionProps> = ({
   className = '',
 }) => {
   return (
-    <p className={`text-sm text-gray-600 dark:text-gray-400 mb-2 ${className}`}>
+    <p className={`text-sm text-text-secondary mb-3 leading-relaxed ${className}`}>
       {description}
     </p>
   );

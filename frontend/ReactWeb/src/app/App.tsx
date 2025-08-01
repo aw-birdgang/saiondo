@@ -11,7 +11,7 @@ import { useThemeStore } from "../stores/themeStore";
 import QueryProvider from "./di/QueryProvider.tsx";
 import "./di/i18n.ts"; // Initialize i18n
 import { container } from "./di"; // Initialize DI container
-import "../App.css";
+import "../index.css";
 
 // Initialize DI container on app startup
 container.getConfig(); // This ensures the container is initialized
@@ -20,7 +20,7 @@ const AppContent: React.FC = () => {
   const { isDarkMode } = useThemeStore();
 
   return (
-    <div className={`app ${isDarkMode ? "dark" : "light"}`}>
+    <div className={`min-h-screen bg-background text-text ${isDarkMode ? 'dark' : 'light'}`}>
       <AppRoutes />
       <Toaster
         position="top-right"
@@ -30,6 +30,8 @@ const AppContent: React.FC = () => {
             background: isDarkMode ? "#1F1929" : "#FFFFFF",
             color: isDarkMode ? "#FFFFFF" : "#241E30",
             border: `1px solid ${isDarkMode ? "#333333" : "#E0E0E0"}`,
+            borderRadius: "12px",
+            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
           },
           success: {
             iconTheme: {

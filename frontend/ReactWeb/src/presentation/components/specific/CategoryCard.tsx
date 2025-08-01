@@ -28,10 +28,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     <div
       onClick={() => onClick(category.id)}
       className={`
-        p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-lg
+        card p-6 cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02]
         ${isSelected 
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
-          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-dark-secondary-container hover:border-gray-300'
+          ? 'border-2 border-primary bg-primary/5 shadow-md' 
+          : 'border-2 border-border hover:border-primary/30'
         }
         ${className}
       `}
@@ -43,14 +43,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           size="md"
         />
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-lg font-semibold text-text mb-3 leading-tight">
             {category.name}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-text-secondary mb-6 leading-relaxed">
             {category.description}
           </p>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             <ExampleList examples={category.examples} />
             <TipList tips={category.tips} />
           </div>

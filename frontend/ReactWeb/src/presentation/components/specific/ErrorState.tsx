@@ -17,22 +17,22 @@ const ErrorState: React.FC<ErrorStateProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-gray-500 text-2xl">⚠️</span>
+    <div className={`min-h-screen bg-background flex items-center justify-center ${className}`}>
+      <div className="max-w-md mx-auto px-6">
+        <div className="card p-8 text-center">
+          <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-3xl">⚠️</span>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {title || t("error_occurred")}
+          <h3 className="text-xl font-bold text-text mb-4 leading-tight">
+            {title || t("error_occurred") || "오류가 발생했습니다"}
           </h3>
-          <p className="text-gray-500 mb-4">
-            {message || t("error_message")}
+          <p className="text-text-secondary mb-8 leading-relaxed">
+            {message || t("error_message") || "문제가 발생했습니다. 다시 시도해주세요."}
           </p>
           {onRetry && (
             <button
               onClick={onRetry}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primaryContainer transition-colors"
+              className="btn btn-primary px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
             >
               {t("retry") || "다시 시도"}
             </button>

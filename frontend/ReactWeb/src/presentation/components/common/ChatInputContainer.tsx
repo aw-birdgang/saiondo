@@ -10,7 +10,7 @@ const ChatInputContainer: React.FC<ChatInputContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`mt-4 ${className}`}>
+    <div className={`mt-6 ${className}`}>
       {children}
     </div>
   );

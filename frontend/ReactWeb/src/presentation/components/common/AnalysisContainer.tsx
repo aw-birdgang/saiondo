@@ -10,7 +10,7 @@ const AnalysisContainer: React.FC<AnalysisContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 ${className}`}>
+    <div className={`min-h-screen bg-background ${className}`}>
       {children}
     </div>
   );

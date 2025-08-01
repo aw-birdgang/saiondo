@@ -19,30 +19,52 @@ const CoupleProfile: React.FC<CoupleProfileProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`bg-gradient-to-r from-pink-100 to-blue-50 dark:from-pink-900/20 dark:to-blue-900/20 rounded-2xl p-6 shadow-lg ${className}`}>
-      <div className="flex items-center justify-center space-x-4 mb-4">
-        <UserAvatar 
-          name={user1.name}
-          profileUrl={user1.profileUrl}
-          size="lg"
-        />
-        <HeartIcon 
-          size="lg"
-          animated={true}
-        />
-        <UserAvatar 
-          name={user2.name}
-          profileUrl={user2.profileUrl}
-          size="lg"
-        />
+    <div className={`bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-8 shadow-lg border border-primary/20 ${className}`}>
+      <div className="flex items-center justify-center space-x-8 mb-8">
+        <div className="text-center">
+          <UserAvatar 
+            name={user1.name}
+            profileUrl={user1.profileUrl}
+            size="lg"
+          />
+          <p className="text-sm font-medium text-text mt-3 leading-tight">{user1.name}</p>
+          {user1.mbti && (
+            <span className="inline-block px-3 py-1.5 bg-secondary text-text-secondary text-xs rounded-full mt-2 font-medium">
+              {user1.mbti}
+            </span>
+          )}
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <HeartIcon 
+            size="lg"
+            animated={true}
+          />
+          <p className="text-xs text-text-secondary mt-3 font-medium">커플</p>
+        </div>
+        
+        <div className="text-center">
+          <UserAvatar 
+            name={user2.name}
+            profileUrl={user2.profileUrl}
+            size="lg"
+          />
+          <p className="text-sm font-medium text-text mt-3 leading-tight">{user2.name}</p>
+          {user2.mbti && (
+            <span className="inline-block px-3 py-1.5 bg-secondary text-text-secondary text-xs rounded-full mt-2 font-medium">
+              {user2.mbti}
+            </span>
+          )}
+        </div>
       </div>
+      
       <div className="text-center">
-        <h2 className="text-xl font-bold text-pink-600 dark:text-pink-400">
-          {user1.name} <HeartIcon size="sm" /> {user2.name}
+        <h2 className="text-2xl font-bold text-text mb-3 leading-tight">
+          {user1.name} & {user2.name}
         </h2>
         {user1.mbti && user2.mbti && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-            {user1.mbti} × {user2.mbti}
+          <p className="text-sm text-text-secondary leading-relaxed">
+            {user1.mbti} × {user2.mbti} 조합
           </p>
         )}
       </div>

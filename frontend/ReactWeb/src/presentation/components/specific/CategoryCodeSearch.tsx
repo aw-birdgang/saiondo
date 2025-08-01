@@ -15,13 +15,13 @@ const CategoryCodeSearch: React.FC<CategoryCodeSearchProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm p-6 ${className}`}>
-      <div className="space-y-4">
+    <div className={`card p-6 ${className}`}>
+      <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <h3 className="text-xl font-bold text-text mb-3 leading-tight">
             {t('search_codes') || '코드 검색'}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
+          <p className="text-text-secondary text-base leading-relaxed">
             {t('search_codes_description') || '카테고리 코드를 검색하여 원하는 대화 주제를 찾아보세요.'}
           </p>
         </div>
@@ -32,10 +32,10 @@ const CategoryCodeSearch: React.FC<CategoryCodeSearchProps> = ({
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={t('search_placeholder') || '코드 또는 설명으로 검색...'}
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:text-white"
+            className="input w-full pr-12 text-base focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
           />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+            <svg className="h-5 w-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>

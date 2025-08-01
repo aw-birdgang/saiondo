@@ -34,10 +34,10 @@ const MessageTimestamp: React.FC<MessageTimestampProps> = ({
 
   return (
     <p
-      className={`text-xs mt-1 ${
+      className={`text-xs mt-2 font-medium ${
         isOwnMessage 
-          ? 'text-blue-100 dark:text-blue-200' 
-          : 'text-gray-500 dark:text-gray-400'
+          ? 'text-on-primary/80' 
+          : 'text-text-secondary'
       } ${className}`}
     >
       {formatTime(timestamp)}

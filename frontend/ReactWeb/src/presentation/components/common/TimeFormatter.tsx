@@ -58,7 +58,7 @@ const TimeFormatter: React.FC<TimeFormatterProps> = ({
   return (
     <time 
       dateTime={date.toISOString()} 
-      className={`text-sm text-gray-500 dark:text-gray-400 ${className}`}
+      className={`text-sm text-text-secondary ${className}`}
     >
       {getFormattedTime()}
     </time>

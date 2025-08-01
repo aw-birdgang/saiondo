@@ -56,59 +56,101 @@ const AnalysisContent: React.FC<AnalysisContentProps> = ({
   ];
 
   return (
-    <div className={`max-w-4xl mx-auto px-4 py-8 ${className}`}>
-      <div className="space-y-6">
+    <div className={`max-w-6xl mx-auto px-6 py-8 ${className}`}>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-text mb-4 leading-tight">
+            {t("relationship_analysis") || "관계 분석"}
+          </h1>
+          <p className="text-text-secondary text-lg leading-relaxed">
+            {t("analysis_description") || "AI가 분석한 당신의 관계에 대한 인사이트"}
+          </p>
+        </div>
+
         {/* Couple Profile */}
-        <CoupleProfile 
-          user1={data.user1}
-          user2={data.user2}
-        />
+        <div className="card">
+          <div className="card-body">
+            <CoupleProfile 
+              user1={data.user1}
+              user2={data.user2}
+            />
+          </div>
+        </div>
 
         {/* MBTI Match */}
-        <MbtiMatch 
-          user1={data.user1}
-          user2={data.user2}
-          matchPercent={data.matchPercent}
-        />
+        <div className="card">
+          <div className="card-body">
+            <MbtiMatch 
+              user1={data.user1}
+              user2={data.user2}
+              matchPercent={data.matchPercent}
+            />
+          </div>
+        </div>
 
         {/* Compatibility Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AnalysisChart
-            title="관계 호환성 분석"
-            data={compatibilityData}
-            type="bar"
-            maxValue={100}
-          />
-          <AnalysisChart
-            title="MBTI 호환성"
-            data={mbtiCompatibilityData}
-            type="radar"
-            maxValue={100}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="card">
+            <div className="card-body">
+              <AnalysisChart
+                title="관계 호환성 분석"
+                data={compatibilityData}
+                type="bar"
+                maxValue={100}
+              />
+            </div>
+          </div>
+          <div className="card">
+            <div className="card-body">
+              <AnalysisChart
+                title="MBTI 호환성"
+                data={mbtiCompatibilityData}
+                type="radar"
+                maxValue={100}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Keywords */}
-        <KeywordsSection keywords={data.keywords} />
+        <div className="card">
+          <div className="card-body">
+            <KeywordsSection keywords={data.keywords} />
+          </div>
+        </div>
 
         {/* Summary */}
-        <AnalysisSection 
-          title={t("analysis_summary")}
-          content={data.summary || ""}
-        />
+        <div className="card">
+          <div className="card-body">
+            <AnalysisSection 
+              title={t("analysis_summary") || "분석 요약"}
+              content={data.summary || ""}
+            />
+          </div>
+        </div>
 
         {/* Advice */}
         {data.advice && (
-          <AnalysisSection 
-            title={t("advice")}
-            content={data.advice}
-          />
+          <div className="card">
+            <div className="card-body">
+              <AnalysisSection 
+                title={t("advice") || "조언"}
+                content={data.advice}
+              />
+            </div>
+          </div>
         )}
 
         {/* Personas */}
-        <PersonasSection 
-          persona1={data.persona1}
-          persona2={data.persona2}
-        />
+        <div className="card">
+          <div className="card-body">
+            <PersonasSection 
+              persona1={data.persona1}
+              persona2={data.persona2}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

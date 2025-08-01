@@ -7,103 +7,121 @@ export const UserProfile: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="spinner"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-        <p className="text-red-600">Error: {error}</p>
+      <div className="card">
+        <div className="card-body">
+          <div className="flex items-center space-x-3">
+            <div className="w-5 h-5 bg-error rounded-full flex items-center justify-center">
+              <span className="text-on-error text-xs">!</span>
+            </div>
+            <p className="text-error font-medium">Error: {error}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!currentUser) {
     return (
-      <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-        <p className="text-gray-600">No user data available</p>
+      <div className="card">
+        <div className="card-body">
+          <div className="flex items-center space-x-3">
+            <div className="w-5 h-5 bg-text-secondary rounded-full flex items-center justify-center">
+              <span className="text-surface text-xs">?</span>
+            </div>
+            <p className="text-text-secondary font-medium">No user data available</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
-      <div className="flex items-center space-x-4 mb-6">
-        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center">
-          <span className="text-2xl text-white font-bold">
-            {currentUser.name?.charAt(0) || 'U'}
-          </span>
-        </div>
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">
-            {currentUser.name || 'Unknown User'}
-          </h2>
-          <p className="text-gray-600">{currentUser.email}</p>
-          {currentUser.createdAt && (
-            <p className="text-sm text-gray-500">
-              Member since: {new Date(currentUser.createdAt).toLocaleDateString()}
-            </p>
-          )}
+    <div className="card">
+      <div className="card-header">
+        <div className="flex items-center space-x-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center shadow-lg">
+            <span className="text-2xl text-on-primary font-bold">
+              {currentUser.name?.charAt(0) || 'U'}
+            </span>
+          </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-text">
+              {currentUser.name || 'Unknown User'}
+            </h2>
+            <p className="text-text-secondary">{currentUser.email}</p>
+            {currentUser.createdAt && (
+              <p className="text-sm text-text-secondary">
+                Member since: {new Date(currentUser.createdAt).toLocaleDateString()}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
-      {currentUser.bio && (
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Bio</h3>
-          <p className="text-gray-700">{currentUser.bio}</p>
-        </div>
-      )}
-
-      {currentUser.preferences && (
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Preferences</h3>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700">Notifications</span>
-              <span className={`px-2 py-1 rounded text-sm ${
-                currentUser.preferences.notifications 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {currentUser.preferences.notifications ? 'Enabled' : 'Disabled'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700">Email Notifications</span>
-              <span className={`px-2 py-1 rounded text-sm ${
-                currentUser.preferences.emailNotifications 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {currentUser.preferences.emailNotifications ? 'Enabled' : 'Disabled'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-700">Language</span>
-              <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                {currentUser.preferences.language}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="border-t pt-4">
-        <div className="grid grid-cols-2 gap-4 text-sm">
+      <div className="card-body space-y-6">
+        {currentUser.bio && (
           <div>
-            <span className="text-gray-500">User ID:</span>
-            <p className="text-gray-900 font-mono">{currentUser.id}</p>
+            <h3 className="text-lg font-semibold text-text mb-3">Bio</h3>
+            <p className="text-text-secondary leading-relaxed">{currentUser.bio}</p>
           </div>
-          {currentUser.updatedAt && (
-            <div>
-              <span className="text-gray-500">Last Updated:</span>
-              <p className="text-gray-900">
-                {new Date(currentUser.updatedAt).toLocaleDateString()}
-              </p>
+        )}
+
+        {currentUser.preferences && (
+          <div>
+            <h3 className="text-lg font-semibold text-text mb-3">Preferences</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                <span className="text-text-secondary font-medium">Notifications</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  currentUser.preferences.notifications 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                }`}>
+                  {currentUser.preferences.notifications ? 'Enabled' : 'Disabled'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                <span className="text-text-secondary font-medium">Email Notifications</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  currentUser.preferences.emailNotifications 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                }`}>
+                  {currentUser.preferences.emailNotifications ? 'Enabled' : 'Disabled'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                <span className="text-text-secondary font-medium">Language</span>
+                <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                  {currentUser.preferences.language}
+                </span>
+              </div>
             </div>
-          )}
+          </div>
+        )}
+
+        <div className="border-t border-divider pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="p-3 bg-secondary rounded-lg">
+              <span className="text-text-secondary block mb-1">User ID:</span>
+              <p className="text-text font-mono font-medium">{currentUser.id}</p>
+            </div>
+            {currentUser.updatedAt && (
+              <div className="p-3 bg-secondary rounded-lg">
+                <span className="text-text-secondary block mb-1">Last Updated:</span>
+                <p className="text-text font-medium">
+                  {new Date(currentUser.updatedAt).toLocaleDateString()}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

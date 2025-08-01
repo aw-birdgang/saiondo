@@ -20,27 +20,27 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   return (
     <div className={`mb-8 ${centered ? 'text-center' : ''} ${className}`}>
       {/* Title */}
-      <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      <h2 className="text-3xl font-bold text-text mb-4 leading-tight">
         {title}
       </h2>
 
       {/* Subtitle */}
       {subtitle && (
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
+        <p className="text-lg text-text-secondary mb-3 font-medium">
           {subtitle}
         </p>
       )}
 
       {/* Description */}
       {description && (
-        <p className={`text-gray-600 dark:text-gray-400 ${centered ? 'max-w-2xl mx-auto' : ''}`}>
+        <p className={`text-text-secondary leading-relaxed ${centered ? 'max-w-2xl mx-auto' : ''}`}>
           {description}
         </p>
       )}
 
       {/* Action */}
       {action && (
-        <div className={`mt-4 ${centered ? 'flex justify-center' : ''}`}>
+        <div className={`mt-6 ${centered ? 'flex justify-center' : ''}`}>
           {action}
         </div>
       )}

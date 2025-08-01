@@ -13,14 +13,14 @@ const SplashProgressBar: React.FC<SplashProgressBarProps> = ({
 }) => {
   return (
     <div className={`mt-8 w-64 mx-auto ${className}`}>
-      <div className="bg-white bg-opacity-20 rounded-full h-2 overflow-hidden">
+      <div className="bg-white/20 rounded-full h-3 overflow-hidden shadow-inner">
         <div 
-          className="bg-white h-full rounded-full transition-all duration-300 ease-out"
+          className="bg-white h-full rounded-full transition-all duration-500 ease-out shadow-sm"
           style={{ width: `${progress}%` }}
         />
       </div>
       {showPercentage && (
-        <p className="text-sm mt-2 opacity-75 text-white">{progress}%</p>
+        <p className="text-sm mt-3 font-semibold text-white/90">{progress}%</p>
       )}
     </div>
   );

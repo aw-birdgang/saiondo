@@ -27,7 +27,7 @@ const ChatContent: React.FC<ChatContentProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`flex-1 max-w-4xl mx-auto w-full px-4 py-6 ${className}`}>
+    <div className={`flex-1 max-w-6xl mx-auto w-full px-6 py-8 ${className}`}>
       <ChatMessagesContainer>
         <ChatMessages
           messages={messages as any}

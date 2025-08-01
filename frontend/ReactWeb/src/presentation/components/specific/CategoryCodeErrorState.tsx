@@ -15,18 +15,18 @@ const CategoryCodeErrorState: React.FC<CategoryCodeErrorStateProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center ${className}`}>
-      <div className="text-center max-w-md mx-auto px-4">
-        <div className="text-6xl mb-4">❌</div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+    <div className={`min-h-screen bg-background flex items-center justify-center ${className}`}>
+      <div className="text-center max-w-md mx-auto px-6">
+        <div className="text-6xl mb-6 animate-pulse">❌</div>
+        <h1 className="text-2xl font-bold text-text mb-6 leading-tight">
           {t('error_loading_codes') || '코드 로딩 오류'}
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-text-secondary mb-8 leading-relaxed">
           {error}
         </p>
         <button
           onClick={onRetry}
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          className="btn btn-primary px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
         >
           {t('retry') || '다시 시도'}
         </button>

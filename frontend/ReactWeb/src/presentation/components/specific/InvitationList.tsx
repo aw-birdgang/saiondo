@@ -30,12 +30,12 @@ const InvitationList: React.FC<InvitationListProps> = ({
 
   if (invitations.length === 0) {
     return (
-      <div className={`text-center py-12 ${className}`}>
-        <div className="text-6xl mb-4">📨</div>
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+      <div className={`text-center py-16 ${className}`}>
+        <div className="text-6xl mb-6 animate-pulse">📨</div>
+        <h3 className="text-2xl font-bold text-text mb-4 leading-tight">
           {t('no_invitations') || '초대장이 없습니다'}
         </h3>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-text-secondary text-lg leading-relaxed">
           {t('no_invitations_description') || '현재 받은 채널 초대장이 없습니다.'}
         </p>
       </div>
@@ -43,7 +43,7 @@ const InvitationList: React.FC<InvitationListProps> = ({
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-6 ${className}`}>
       {invitations.map((invitation) => (
         <InvitationCard
           key={invitation.id}

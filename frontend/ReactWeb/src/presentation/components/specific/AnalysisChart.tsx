@@ -24,21 +24,21 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
   const max = maxValue || Math.max(...data.map(d => d.value));
 
   const getBarChart = () => (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {data.map((item, index) => (
-        <div key={index} className="flex items-center gap-3">
-          <div className="w-20 text-sm text-gray-600 dark:text-gray-400 truncate">
+        <div key={index} className="flex items-center gap-4">
+          <div className="w-24 text-sm text-text-secondary truncate font-medium">
             {item.label}
           </div>
-          <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+          <div className="flex-1 bg-secondary rounded-full h-4 overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                item.color || 'bg-blue-500'
+              className={`h-full rounded-full transition-all duration-700 ease-out shadow-sm ${
+                item.color || 'bg-primary'
               }`}
               style={{ width: `${(item.value / max) * 100}%` }}
             />
           </div>
-          <div className="w-12 text-sm font-medium text-gray-900 dark:text-white text-right">
+          <div className="w-16 text-sm font-semibold text-text text-right">
             {item.value}%
           </div>
         </div>
@@ -48,7 +48,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
 
   const getPieChart = () => (
     <div className="flex justify-center">
-      <div className="relative w-32 h-32">
+      <div className="relative w-40 h-40">
         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
           {data.map((item, index) => {
             const percentage = (item.value / max) * 100;
@@ -64,21 +64,21 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
                 cy="50"
                 r="45"
                 fill="none"
-                stroke={item.color || '#3B82F6'}
-                strokeWidth="8"
+                stroke={item.color || '#d21e1d'}
+                strokeWidth="10"
                 strokeDasharray={strokeDasharray}
                 strokeDashoffset={strokeDashoffset}
-                className="transition-all duration-500"
+                className="transition-all duration-700 ease-out"
               />
             );
           })}
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-lg font-bold text-gray-900 dark:text-white">
+            <div className="text-xl font-bold text-text">
               {Math.round(data.reduce((acc, item) => acc + item.value, 0) / data.length)}%
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">평균</div>
+            <div className="text-xs text-text-secondary">평균</div>
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
 
   const getRadarChart = () => (
     <div className="flex justify-center">
-      <div className="relative w-48 h-48">
+      <div className="relative w-56 h-56">
         <svg className="w-full h-full" viewBox="0 0 100 100">
           {/* Grid lines */}
           {[20, 40, 60, 80].map((radius) => (
@@ -115,9 +115,9 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
                 key={index}
                 cx={x}
                 cy={y}
-                r="2"
-                fill={item.color || '#3B82F6'}
-                className="transition-all duration-500"
+                r="3"
+                fill={item.color || '#d21e1d'}
+                className="transition-all duration-700 ease-out"
               />
             );
           })}
@@ -131,10 +131,10 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
               const y = 50 + radius * Math.sin(angle);
               return `${x},${y}`;
             }).join(' ')}
-            fill="rgba(59, 130, 246, 0.1)"
-            stroke="#3B82F6"
-            strokeWidth="1"
-            className="transition-all duration-500"
+            fill="rgba(210, 30, 29, 0.1)"
+            stroke="#d21e1d"
+            strokeWidth="2"
+            className="transition-all duration-700 ease-out"
           />
         </svg>
       </div>
@@ -153,22 +153,22 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg p-6 shadow-sm ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <div className={`card p-6 ${className}`}>
+      <h3 className="text-xl font-bold text-text mb-6">
         {title}
       </h3>
       {renderChart()}
       
       {/* Legend */}
       {type === 'pie' && (
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="mt-6 grid grid-cols-2 gap-3">
           {data.map((item, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm">
+            <div key={index} className="flex items-center gap-3 text-sm">
               <div 
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: item.color || '#3B82F6' }}
+                className="w-4 h-4 rounded-full shadow-sm"
+                style={{ backgroundColor: item.color || '#d21e1d' }}
               />
-              <span className="text-gray-600 dark:text-gray-400">{item.label}</span>
+              <span className="text-text-secondary font-medium">{item.label}</span>
             </div>
           ))}
         </div>

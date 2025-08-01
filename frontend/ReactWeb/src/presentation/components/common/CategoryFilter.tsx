@@ -20,20 +20,20 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
+    <div className={`flex flex-wrap gap-3 ${className}`}>
       {categories.map((category) => (
         <button
           key={category.id}
           onClick={() => onCategoryChange(category.id)}
           className={`
-            flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+            flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105
             ${selectedCategory === category.id
-              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+              ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+              : 'bg-secondary text-text-secondary hover:bg-secondary/80 hover:text-text border border-transparent'
             }
           `}
         >
-          <span>{category.icon}</span>
+          <span className="text-lg">{category.icon}</span>
           <span>{category.name}</span>
         </button>
       ))}

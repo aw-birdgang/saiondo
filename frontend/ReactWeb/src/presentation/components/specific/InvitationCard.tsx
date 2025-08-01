@@ -30,10 +30,10 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
 
   const getStatusColor = (status: ChannelInvitation['status']) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
-      case 'accepted': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
+      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800';
+      case 'accepted': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border border-green-200 dark:border-green-800';
+      case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800';
+      default: return 'bg-secondary text-text-secondary border border-border';
     }
   };
 
@@ -61,29 +61,29 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm border border-gray-200 dark:border-dark-border p-6 ${className}`}>
+    <div className={`card p-6 hover:shadow-lg transition-all duration-200 hover:scale-[1.01] ${className}`}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <div className="flex items-center space-x-3 mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="flex items-center space-x-4 mb-3">
+            <h3 className="text-lg font-semibold text-text leading-tight">
               {invitation.channelName || '채널'}
             </h3>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(invitation.status)}`}>
+            <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getStatusColor(invitation.status)}`}>
               {getStatusText(invitation.status)}
             </span>
           </div>
           
-          <p className="text-gray-600 dark:text-gray-400 mb-3">
+          <p className="text-text-secondary mb-4 leading-relaxed">
             {invitation.inviterName || '사용자'}님이 초대했습니다
           </p>
           
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-sm text-text-secondary font-medium">
             {formatTime(invitation.createdAt)}
           </div>
         </div>
 
         {invitation.status === 'pending' && (
-          <div className="flex space-x-2 ml-4">
+          <div className="flex space-x-3 ml-6">
             <Button
               variant="success"
               size="sm"

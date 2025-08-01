@@ -10,7 +10,7 @@ const AssistantContentContainer: React.FC<AssistantContentContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`max-w-6xl mx-auto px-4 py-8 ${className}`}>
+    <div className={`max-w-6xl mx-auto px-6 py-8 ${className}`}>
       {children}
     </div>
   );

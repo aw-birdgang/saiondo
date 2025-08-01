@@ -9,8 +9,8 @@ interface PageContainerProps {
 
 const PageContainer: React.FC<PageContainerProps> = ({ 
   children, 
-  maxWidth = "max-w-4xl", 
-  padding = "px-4 py-6", 
+  maxWidth = "max-w-6xl", 
+  padding = "px-6 py-8", 
   className = "" 
 }) => {
   return (

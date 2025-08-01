@@ -23,16 +23,18 @@ const ActionButton: React.FC<ActionButtonProps> = ({
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
+      case 'primary':
+        return 'btn-primary';
       case 'secondary':
-        return 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700';
+        return 'btn-secondary';
       case 'danger':
-        return 'bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700';
+        return 'bg-error text-on-error hover:bg-error/90 shadow-sm';
       case 'success':
-        return 'bg-green-500 text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700';
+        return 'bg-green-500 text-white hover:bg-green-600 shadow-sm';
       case 'warning':
-        return 'bg-yellow-500 text-white hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700';
+        return 'bg-yellow-500 text-white hover:bg-yellow-600 shadow-sm';
       default:
-        return 'bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700';
+        return 'btn-primary';
     }
   };
 
@@ -43,7 +45,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       case 'lg':
         return 'px-8 py-3 text-lg';
       default:
-        return 'px-6 py-2 text-base';
+        return 'px-6 py-3 text-base';
     }
   };
 
@@ -52,7 +54,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       onClick={onClick}
       disabled={disabled || loading}
       className={`
-        rounded-lg font-medium transition-colors
+        btn rounded-lg font-semibold transition-all duration-200 hover:scale-105 active:scale-95
         ${getVariantClasses()} ${getSizeClasses()}
         ${fullWidth ? 'w-full' : ''}
         ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''}
@@ -61,7 +63,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
     >
       {loading ? (
         <div className="flex items-center justify-center space-x-2">
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <div className="spinner" />
           <span>처리 중...</span>
         </div>
       ) : (

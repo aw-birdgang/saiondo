@@ -29,12 +29,12 @@ const HomeTabContent: React.FC<HomeTabContentProps> = ({
   const quickActions: QuickAction[] = [
     {
       icon: '📊',
-      label: t('analysis'),
+      label: t('analysis') || '분석',
       onClick: () => navigate('/analysis'),
     },
     {
       icon: '👥',
-      label: t('channel'),
+      label: t('channel') || '채널',
       onClick: () => navigate('/channels'),
     },
   ];

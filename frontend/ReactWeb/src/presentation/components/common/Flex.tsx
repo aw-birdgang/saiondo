@@ -78,7 +78,7 @@ const Flex: React.FC<FlexProps> = ({
   const getGapClass = () => {
     switch (gap) {
       case 'sm':
-        return 'gap-2';
+        return 'gap-3';
       case 'md':
         return 'gap-4';
       case 'lg':

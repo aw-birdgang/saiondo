@@ -45,28 +45,30 @@ const Avatar: React.FC<AvatarProps> = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'gradient':
-        return 'bg-gradient-to-br from-blue-500 to-purple-600 text-white';
+        return 'bg-gradient-to-br from-primary to-primary-container text-on-primary';
       case 'solid':
         return getColorClass();
       default:
-        return 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+        return 'bg-secondary text-text-secondary';
     }
   };
 
   const getColorClass = () => {
     switch (color) {
+      case 'primary':
+        return 'bg-primary text-on-primary';
       case 'secondary':
-        return 'bg-gray-500 text-white';
+        return 'bg-secondary text-text-secondary';
       case 'success':
         return 'bg-green-500 text-white';
       case 'warning':
         return 'bg-yellow-500 text-white';
       case 'danger':
-        return 'bg-red-500 text-white';
+        return 'bg-error text-on-error';
       case 'info':
         return 'bg-blue-500 text-white';
       default:
-        return 'bg-blue-500 text-white';
+        return 'bg-primary text-on-primary';
     }
   };
 
@@ -79,7 +81,8 @@ const Avatar: React.FC<AvatarProps> = ({
   return (
     <div
       className={`
-        flex items-center justify-center font-medium ${getSizeClasses()} ${getShapeClass()} ${getVariantClasses()} ${className}
+        flex items-center justify-center font-semibold shadow-md border-2 border-border
+        ${getSizeClasses()} ${getShapeClass()} ${getVariantClasses()} ${className}
       `}
     >
       {src ? (

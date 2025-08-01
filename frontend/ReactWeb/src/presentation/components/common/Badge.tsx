@@ -17,42 +17,45 @@ const Badge: React.FC<BadgeProps> = ({
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
+      case 'primary':
+        return 'bg-primary/10 text-primary border border-primary/20';
       case 'secondary':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200';
+        return 'bg-secondary text-text-secondary border border-border';
       case 'success':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200 border border-green-200 dark:border-green-800';
       case 'warning':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800';
       case 'danger':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
+        return 'bg-error/10 text-error border border-error/20';
       case 'info':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200 border border-blue-200 dark:border-blue-800';
       case 'outline':
-        return 'bg-transparent border border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300';
+        return 'bg-transparent border border-border text-text-secondary';
       default:
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
+        return 'bg-primary/10 text-primary border border-primary/20';
     }
   };
 
   const getSizeClasses = () => {
     switch (size) {
       case 'sm':
-        return 'px-2 py-1 text-xs';
+        return 'px-3 py-1 text-xs';
       case 'lg':
-        return 'px-3 py-1.5 text-sm';
+        return 'px-4 py-2 text-sm';
       default:
-        return 'px-2.5 py-1 text-sm';
+        return 'px-3 py-1.5 text-sm';
     }
   };
 
   const getRoundedClass = () => {
-    return rounded ? 'rounded-full' : 'rounded-md';
+    return rounded ? 'rounded-full' : 'rounded-lg';
   };
 
   return (
     <span
       className={`
-        inline-flex items-center font-medium ${getVariantClasses()} ${getSizeClasses()} ${getRoundedClass()} ${className}
+        inline-flex items-center font-semibold transition-all duration-200 hover:scale-105
+        ${getVariantClasses()} ${getSizeClasses()} ${getRoundedClass()} ${className}
       `}
     >
       {children}

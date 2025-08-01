@@ -17,12 +17,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   return (
     <Header
-      title={t("chat.title")}
+      title={t("chat.title") || "채팅"}
       showBackButton
       backRoute={backRoute}
-      className={`max-w-4xl mx-auto ${className}`}
+      className={`max-w-6xl mx-auto ${className}`}
     >
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-text-secondary font-medium">
         Channel: {channelId}
       </div>
     </Header>

@@ -35,56 +35,56 @@ const EventList: React.FC<EventListProps> = ({
   // 이벤트 타입별 색상
   const getEventColor = (type: Event['type']) => {
     switch (type) {
-      case 'meeting': return 'bg-blue-500';
+      case 'meeting': return 'bg-primary';
       case 'date': return 'bg-pink-500';
-      case 'anniversary': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'anniversary': return 'bg-error';
+      default: return 'bg-secondary';
     }
   };
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm p-6 ${className}`}>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+    <div className={`card p-6 ${className}`}>
+      <div className="flex items-center justify-between mb-8">
+        <h3 className="text-xl font-bold text-text leading-tight">
           {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })}
         </h3>
         <button
           onClick={onAddEvent}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+          className="btn btn-primary px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
         >
-          {t('add_event')}
+          {t('add_event') || '이벤트 추가'}
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-6">
         {events.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-            {t('no_events')}
+          <p className="text-text-secondary text-center py-12 text-lg font-medium">
+            {t('no_events') || '등록된 이벤트가 없습니다'}
           </p>
         ) : (
           events.map((event) => (
             <div
               key={event.id}
-              className={`p-3 rounded-lg ${getEventColor(event.type)} text-white`}
+              className={`p-6 rounded-xl ${getEventColor(event.type)} text-white shadow-md border border-white/20`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h4 className="font-medium">{event.title}</h4>
+                  <h4 className="font-semibold text-lg leading-tight">{event.title}</h4>
                   {event.description && (
-                    <p className="text-sm opacity-90 mt-1">{event.description}</p>
+                    <p className="text-sm opacity-90 mt-3 leading-relaxed">{event.description}</p>
                   )}
                   {event.time && (
-                    <p className="text-xs opacity-75 mt-1">🕐 {event.time}</p>
+                    <p className="text-xs opacity-75 mt-3 font-medium">🕐 {event.time}</p>
                   )}
                   {event.location && (
-                    <p className="text-xs opacity-75 mt-1">📍 {event.location}</p>
+                    <p className="text-xs opacity-75 mt-2 font-medium">📍 {event.location}</p>
                   )}
                 </div>
-                <div className="flex gap-2 ml-3">
+                <div className="flex gap-3 ml-6">
                   {onEditEvent && (
                     <button
                       onClick={() => onEditEvent(event)}
-                      className="text-xs bg-white bg-opacity-20 hover:bg-opacity-30 px-2 py-1 rounded transition-colors"
+                      className="text-sm bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
                     >
                       ✏️
                     </button>
@@ -92,7 +92,7 @@ const EventList: React.FC<EventListProps> = ({
                   {onDeleteEvent && event.id && (
                     <button
                       onClick={() => onDeleteEvent(event.id!)}
-                      className="text-xs bg-white bg-opacity-20 hover:bg-opacity-30 px-2 py-1 rounded transition-colors"
+                      className="text-sm bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
                     >
                       🗑️
                     </button>

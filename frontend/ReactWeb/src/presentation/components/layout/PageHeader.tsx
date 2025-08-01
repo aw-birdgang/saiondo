@@ -31,14 +31,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container shadow-sm border-b border-gray-200 dark:border-gray-700 ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 py-4">
+    <div className={`bg-surface shadow-sm border-b border-border ${className}`}>
+      <div className="max-w-4xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-4">
             {showBackButton && (
               <button
                 onClick={handleBackClick}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                className="p-2 hover:bg-secondary rounded-full transition-all duration-200 text-text-secondary hover:text-text"
                 aria-label={t('go_back') || '뒤로 가기'}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,12 +47,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
               </button>
             )}
             
-            <div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold text-text">
                 {title}
               </h1>
               {subtitle && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-sm text-text-secondary mt-2 leading-relaxed">
                   {subtitle}
                 </p>
               )}
@@ -60,7 +60,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           </div>
           
           {rightContent && (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               {rightContent}
             </div>
           )}

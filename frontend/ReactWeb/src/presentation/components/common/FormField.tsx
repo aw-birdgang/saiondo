@@ -37,10 +37,10 @@ const FormField: React.FC<FormFieldProps> = ({
   const { t } = useTranslation();
 
   const renderSelectField = () => (
-    <div className={`space-y-1 ${className}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+    <div className={`space-y-2 ${className}`}>
+      <label htmlFor={name} className="block text-sm font-medium text-text">
         {label}
-        {required && <span className="text-red-500 ml-1">*</span>}
+        {required && <span className="text-error ml-1">*</span>}
       </label>
       <select
         id={name}
@@ -48,11 +48,9 @@ const FormField: React.FC<FormFieldProps> = ({
         value={value}
         onChange={onChange}
         required={required}
-        className={`appearance-none relative block w-full px-3 py-2 border ${
-          error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-        } text-gray-900 dark:text-white bg-white dark:bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm`}
+        className={`input ${error ? 'error' : ''}`}
       >
-        <option value="">{placeholder || t('select_option')}</option>
+        <option value="">{placeholder || t('select_option') || '옵션을 선택하세요'}</option>
         {options?.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -60,7 +58,10 @@ const FormField: React.FC<FormFieldProps> = ({
         ))}
       </select>
       {error && (
-        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="flex items-center space-x-2">
+          <div className="w-1 h-1 bg-error rounded-full"></div>
+          <p className="text-sm text-error">{error}</p>
+        </div>
       )}
     </div>
   );

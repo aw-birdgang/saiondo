@@ -19,20 +19,20 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
 }) => {
   const getVariantClasses = (variant: 'default' | 'primary' | 'success' | 'warning' | 'error') => {
     const variantClasses = {
-      default: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
-      primary: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      default: 'bg-secondary text-text-secondary border border-border',
+      primary: 'bg-primary/10 text-primary border border-primary/20',
+      success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800',
+      warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800',
+      error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-200 dark:border-red-800',
     };
     return variantClasses[variant];
   };
 
   const getSizeClasses = (size: 'sm' | 'md' | 'lg') => {
     const sizeClasses = {
-      sm: 'px-2 py-1 text-xs',
-      md: 'px-3 py-1.5 text-sm',
-      lg: 'px-4 py-2 text-base',
+      sm: 'px-3 py-1 text-xs',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-5 py-2.5 text-base',
     };
     return sizeClasses[size];
   };
@@ -40,7 +40,7 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
   return (
     <span
       className={`
-        inline-flex items-center rounded-full font-medium
+        inline-flex items-center rounded-full font-medium transition-all duration-200 hover:scale-105
         ${getVariantClasses(variant)}
         ${getSizeClasses(size)}
         ${className}
@@ -50,7 +50,7 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
       {removable && (
         <button
           onClick={onRemove}
-          className="ml-2 hover:bg-black/10 rounded-full p-0.5 transition-colors"
+          className="ml-2 hover:bg-black/10 rounded-full p-1 transition-colors duration-200"
           type="button"
         >
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

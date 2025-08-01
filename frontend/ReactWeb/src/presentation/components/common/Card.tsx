@@ -19,12 +19,12 @@ const Card: React.FC<CardProps> = ({
   hoverable = false,
   padding = 'md',
 }) => {
-  const baseClasses = 'bg-white rounded-lg shadow-sm border border-gray-200';
-  const hoverClasses = hoverable ? 'hover:shadow-md transition-shadow cursor-pointer' : '';
+  const baseClasses = 'card';
+  const hoverClasses = hoverable ? 'hover:shadow-lg transition-all duration-200 cursor-pointer hover:scale-[1.02]' : '';
   const clickableClasses = onClick ? 'cursor-pointer' : '';
 
   const paddingClasses = {
-    sm: 'p-3',
+    sm: 'p-4',
     md: 'p-6',
     lg: 'p-8',
   };
@@ -34,14 +34,14 @@ const Card: React.FC<CardProps> = ({
   return (
     <div className={cardClasses} onClick={onClick}>
       {(title || subtitle) && (
-        <div className="mb-4">
+        <div className="mb-6">
           {title && (
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-semibold text-text mb-2">
               {title}
             </h3>
           )}
           {subtitle && (
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-text-secondary leading-relaxed">
               {subtitle}
             </p>
           )}

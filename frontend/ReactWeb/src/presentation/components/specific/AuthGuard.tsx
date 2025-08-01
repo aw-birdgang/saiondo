@@ -35,10 +35,10 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   // 로딩 중일 때
   if (loading) {
     return fallback || (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
+          <LoadingSpinner size="lg" color="primary" />
+          <p className="mt-6 text-text-secondary text-lg font-medium">
             {t('loading') || 'Loading...'}
           </p>
         </div>

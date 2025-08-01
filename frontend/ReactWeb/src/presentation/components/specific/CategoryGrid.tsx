@@ -25,7 +25,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${className}`}>
+    <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${className}`}>
       {categories.map((category) => (
         <CategoryCard
           key={category.id}

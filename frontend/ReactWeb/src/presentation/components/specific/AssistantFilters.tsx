@@ -26,7 +26,7 @@ const AssistantFilters: React.FC<AssistantFiltersProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-6 ${className}`}>
       <SearchInput
         value={searchTerm}
         onChange={onSearchChange}

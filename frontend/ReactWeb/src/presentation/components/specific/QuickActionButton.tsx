@@ -3,6 +3,7 @@ import React from "react";
 interface QuickActionButtonProps {
   icon: string;
   label: string;
+  description?: string;
   onClick: () => void;
   className?: string;
 }
@@ -10,19 +11,25 @@ interface QuickActionButtonProps {
 const QuickActionButton: React.FC<QuickActionButtonProps> = ({ 
   icon, 
   label, 
+  description,
   onClick, 
   className = "" 
 }) => {
   return (
     <button
       onClick={onClick}
-      className={`bg-white dark:bg-dark-secondary-container p-4 rounded-xl shadow-md hover:shadow-lg transition-shadow ${className}`}
+      className={`card p-6 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer ${className}`}
     >
       <div className="text-center">
-        <span className="text-2xl mb-2 block">{icon}</span>
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-3xl mb-4 block">{icon}</span>
+        <h3 className="text-sm font-semibold text-text mb-2 leading-tight">
           {label}
-        </span>
+        </h3>
+        {description && (
+          <p className="text-xs text-text-secondary leading-relaxed">
+            {description}
+          </p>
+        )}
       </div>
     </button>
   );

@@ -63,8 +63,9 @@ const Form: React.FC<FormProps> = ({
         fullWidth
         loading={loading}
         disabled={loading}
+        className="py-3 text-base font-semibold"
       >
-        {submitText || t('submit')}
+        {submitText || t('submit') || '제출'}
       </Button>
     </form>
   );

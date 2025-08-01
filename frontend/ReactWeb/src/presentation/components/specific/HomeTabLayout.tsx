@@ -10,7 +10,7 @@ const HomeTabLayout: React.FC<HomeTabLayoutProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`min-h-screen bg-blue-50 dark:bg-blue-900/10 ${className}`}>
+    <div className={`min-h-screen bg-background ${className}`}>
       {children}
     </div>
   );

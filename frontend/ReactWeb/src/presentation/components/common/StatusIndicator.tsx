@@ -24,7 +24,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
       case 'offline':
       case 'inactive':
         return {
-          color: 'bg-gray-400',
+          color: 'bg-text-secondary',
           label: '오프라인'
         };
       case 'away':
@@ -34,12 +34,12 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
         };
       case 'busy':
         return {
-          color: 'bg-red-500',
+          color: 'bg-error',
           label: '바쁨'
         };
       default:
         return {
-          color: 'bg-gray-400',
+          color: 'bg-text-secondary',
           label: '알 수 없음'
         };
     }
@@ -65,11 +65,11 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
     <div className={`flex items-center space-x-2 ${className}`}>
       <div
         className={`
-          ${sizeClasses} ${config.color} rounded-full
+          ${sizeClasses} ${config.color} rounded-full shadow-sm
         `}
       />
       {showLabel && (
-        <span className="text-xs text-gray-600 dark:text-gray-400">
+        <span className="text-xs text-text-secondary font-medium">
           {config.label}
         </span>
       )}

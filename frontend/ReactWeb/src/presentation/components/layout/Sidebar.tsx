@@ -99,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-overlay z-40 md:hidden"
           onClick={onClose}
         />
       )}
@@ -107,9 +107,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar */}
       <div
         className={`
-          fixed top-0 left-0 h-full bg-white dark:bg-dark-secondary-container
-          border-r border-gray-200 dark:border-gray-700 z-50
-          transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 h-full bg-surface border-r border-border z-50
+          transition-all duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           ${collapsed ? 'w-16' : 'w-64'}
           md:translate-x-0 md:static
@@ -117,17 +116,24 @@ const Sidebar: React.FC<SidebarProps> = ({
         `}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between p-4 border-b border-divider">
           {!collapsed && (
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              {t('app.name') || 'Saiondo'}
-            </h1>
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-on-primary font-bold text-sm">S</span>
+              </div>
+              <h1 className="text-xl font-bold text-text">
+                {t('app.name') || 'Saiondo'}
+              </h1>
+            </div>
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+            className="p-2 rounded-lg hover:bg-secondary text-text-secondary transition-colors duration-200"
           >
-            {collapsed ? '→' : '←'}
+            <span className="text-sm font-medium">
+              {collapsed ? '→' : '←'}
+            </span>
           </button>
         </div>
 
@@ -138,20 +144,24 @@ const Sidebar: React.FC<SidebarProps> = ({
               key={item.id}
               onClick={() => handleMenuItemClick(item.route)}
               className={`
-                w-full flex items-center gap-3 px-3 py-2 rounded-lg
-                transition-colors duration-200 text-left
+                w-full flex items-center gap-3 px-3 py-3 rounded-lg
+                transition-all duration-200 text-left group
                 ${item.isActive
-                  ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-primary/10 text-primary border-l-4 border-primary'
+                  : 'text-text-secondary hover:bg-secondary hover:text-text'
                 }
               `}
             >
-              <span className="text-lg flex-shrink-0">{item.icon}</span>
+              <span className={`text-lg flex-shrink-0 transition-transform duration-200 group-hover:scale-110 ${
+                item.isActive ? 'text-primary' : 'text-text-secondary'
+              }`}>
+                {item.icon}
+              </span>
               {!collapsed && (
                 <>
                   <span className="flex-1 font-medium">{item.label}</span>
                   {item.badge && (
-                    <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                    <span className="bg-error text-on-error text-xs rounded-full px-2 py-1 min-w-[20px] text-center font-medium">
                       {item.badge}
                     </span>
                   )}
@@ -163,8 +173,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Footer */}
         {!collapsed && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-divider bg-secondary">
+            <div className="text-xs text-text-secondary text-center">
               © 2024 Saiondo
             </div>
           </div>

@@ -24,23 +24,23 @@ const Text: React.FC<TextProps> = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'h1':
-        return 'text-4xl font-bold';
+        return 'text-4xl font-bold leading-tight';
       case 'h2':
-        return 'text-3xl font-bold';
+        return 'text-3xl font-bold leading-tight';
       case 'h3':
-        return 'text-2xl font-semibold';
+        return 'text-2xl font-semibold leading-tight';
       case 'h4':
-        return 'text-xl font-semibold';
+        return 'text-xl font-semibold leading-tight';
       case 'h5':
-        return 'text-lg font-medium';
+        return 'text-lg font-medium leading-tight';
       case 'h6':
-        return 'text-base font-medium';
+        return 'text-base font-medium leading-tight';
       case 'caption':
-        return 'text-sm';
+        return 'text-sm leading-relaxed';
       case 'overline':
-        return 'text-xs uppercase tracking-wide';
+        return 'text-xs uppercase tracking-wide font-semibold';
       default:
-        return 'text-base';
+        return 'text-base leading-relaxed';
     }
   };
 
@@ -60,24 +60,26 @@ const Text: React.FC<TextProps> = ({
 
   const getColorClass = () => {
     switch (color) {
+      case 'primary':
+        return 'text-primary';
       case 'secondary':
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-text-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
         return 'text-yellow-600 dark:text-yellow-400';
       case 'danger':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error';
       case 'info':
         return 'text-blue-600 dark:text-blue-400';
       case 'muted':
-        return 'text-gray-500 dark:text-gray-400';
+        return 'text-text-secondary';
       case 'white':
         return 'text-white';
       case 'black':
-        return 'text-gray-900 dark:text-white';
+        return 'text-text';
       default:
-        return 'text-gray-900 dark:text-white';
+        return 'text-text';
     }
   };
 

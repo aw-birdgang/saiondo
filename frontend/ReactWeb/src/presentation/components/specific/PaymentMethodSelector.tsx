@@ -47,8 +47,8 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   }
 
   return (
-    <div className={`space-y-3 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <div className={`space-y-4 ${className}`}>
+      <h3 className="text-xl font-bold text-text mb-6 leading-tight">
         결제 방법 선택
       </h3>
       

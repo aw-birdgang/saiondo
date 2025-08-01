@@ -32,10 +32,10 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
 
   const getEventColor = (type: Event['type']) => {
     switch (type) {
-      case 'meeting': return 'bg-blue-500';
-      case 'date': return 'bg-pink-500';
-      case 'anniversary': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'meeting': return 'bg-primary text-on-primary';
+      case 'date': return 'bg-pink-500 text-white';
+      case 'anniversary': return 'bg-red-500 text-white';
+      default: return 'bg-secondary text-text-secondary';
     }
   };
 
@@ -48,18 +48,19 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
     <div
       onClick={() => onDateClick(day)}
       className={`
-        min-h-[80px] p-2 border border-gray-200 dark:border-gray-600 cursor-pointer transition-colors
-        ${isCurrentMonth ? 'bg-white dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-700'}
-        ${isSelected ? 'ring-2 ring-blue-500' : ''}
-        ${isCurrentDay ? 'bg-blue-50 dark:bg-blue-900/20' : ''}
-        hover:bg-gray-50 dark:hover:bg-gray-700
+        min-h-[100px] p-3 border border-border cursor-pointer transition-all duration-200
+        ${isCurrentMonth ? 'bg-surface' : 'bg-secondary/50'}
+        ${isSelected ? 'ring-2 ring-primary shadow-lg' : ''}
+        ${isCurrentDay ? 'bg-primary/5 border-primary/30' : ''}
+        hover:bg-secondary hover:shadow-md hover:scale-[1.02]
         ${className}
       `}
     >
-      <div className="text-sm font-medium mb-1">
+      <div className="text-sm font-medium mb-2">
         <span className={`
-          ${isCurrentMonth ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}
-          ${isCurrentDay ? 'text-blue-600 dark:text-blue-400 font-bold' : ''}
+          ${isCurrentMonth ? 'text-text' : 'text-text-secondary'}
+          ${isCurrentDay ? 'text-primary font-bold' : ''}
+          ${isSelected ? 'text-primary' : ''}
         `}>
           {format(day, 'd')}
         </span>
@@ -70,14 +71,14 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
         {dayEvents.slice(0, 2).map((event) => (
           <div
             key={event.id}
-            className={`text-xs px-1 py-0.5 rounded ${getEventColor(event.type)} text-white truncate`}
+            className={`text-xs px-2 py-1 rounded-md ${getEventColor(event.type)} truncate font-medium`}
             title={event.title}
           >
             {event.title}
           </div>
         ))}
         {dayEvents.length > 2 && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
+          <div className="text-xs text-text-secondary font-medium">
             +{dayEvents.length - 2} more
           </div>
         )}

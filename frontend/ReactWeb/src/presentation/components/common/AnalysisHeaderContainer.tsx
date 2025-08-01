@@ -10,8 +10,8 @@ const AnalysisHeaderContainer: React.FC<AnalysisHeaderContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 py-4">
+    <div className={`bg-surface border-b border-border shadow-sm ${className}`}>
+      <div className="max-w-6xl mx-auto px-6 py-6">
         {children}
       </div>
     </div>

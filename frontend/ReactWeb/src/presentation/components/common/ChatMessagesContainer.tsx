@@ -10,7 +10,7 @@ const ChatMessagesContainer: React.FC<ChatMessagesContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm h-96 overflow-y-auto p-4 ${className}`}>
+    <div className={`bg-surface rounded-xl shadow-sm border border-border h-96 overflow-y-auto p-6 ${className}`}>
       {children}
     </div>
   );

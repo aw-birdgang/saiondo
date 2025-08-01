@@ -26,27 +26,27 @@ const Tabs: React.FC<TabsProps> = ({
     switch (variant) {
       case 'pills':
         return {
-          container: 'flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg',
-          tab: 'flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors',
-          active: 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm',
-          inactive: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white',
-          disabled: 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
+          container: 'flex space-x-1 bg-secondary p-1 rounded-lg',
+          tab: 'flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200',
+          active: 'bg-surface text-primary shadow-sm',
+          inactive: 'text-text-secondary hover:text-text hover:bg-secondary/50',
+          disabled: 'text-text-secondary/50 cursor-not-allowed'
         };
       case 'underline':
         return {
-          container: 'border-b border-gray-200 dark:border-gray-700',
-          tab: 'px-4 py-2 text-sm font-medium border-b-2 transition-colors',
-          active: 'border-blue-500 text-blue-600 dark:text-blue-400',
-          inactive: 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600',
-          disabled: 'text-gray-400 dark:text-gray-600 cursor-not-allowed border-transparent'
+          container: 'border-b border-border',
+          tab: 'px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200',
+          active: 'border-primary text-primary',
+          inactive: 'border-transparent text-text-secondary hover:text-text hover:border-border',
+          disabled: 'text-text-secondary/50 cursor-not-allowed border-transparent'
         };
       default:
         return {
           container: 'flex space-x-8',
-          tab: 'px-1 py-2 text-sm font-medium border-b-2 transition-colors',
-          active: 'border-blue-500 text-blue-600 dark:text-blue-400',
-          inactive: 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600',
-          disabled: 'text-gray-400 dark:text-gray-600 cursor-not-allowed border-transparent'
+          tab: 'px-1 py-3 text-sm font-medium border-b-2 transition-all duration-200',
+          active: 'border-primary text-primary',
+          inactive: 'border-transparent text-text-secondary hover:text-text hover:border-border',
+          disabled: 'text-text-secondary/50 cursor-not-allowed border-transparent'
         };
     }
   };
@@ -72,7 +72,7 @@ const Tabs: React.FC<TabsProps> = ({
             `}
           >
             <div className="flex items-center space-x-2">
-              {tab.icon && <span>{tab.icon}</span>}
+              {tab.icon && <span className="text-lg">{tab.icon}</span>}
               <span>{tab.label}</span>
             </div>
           </button>

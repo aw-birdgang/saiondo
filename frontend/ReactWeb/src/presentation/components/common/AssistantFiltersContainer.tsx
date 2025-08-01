@@ -10,8 +10,8 @@ const AssistantFiltersContainer: React.FC<AssistantFiltersContainerProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container border-b dark:border-dark-border ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 py-4">
+    <div className={`bg-surface border-b border-border shadow-sm ${className}`}>
+      <div className="max-w-6xl mx-auto px-6 py-6">
         {children}
       </div>
     </div>

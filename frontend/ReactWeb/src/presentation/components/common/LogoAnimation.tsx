@@ -19,10 +19,10 @@ const LogoAnimation: React.FC<LogoAnimationProps> = ({
         transition-all duration-1000 ease-out
         ${isActive ? 'scale-100 opacity-100' : 'scale-110 opacity-80'}
       `}>
-        <div className="text-6xl font-bold mb-4 animate-pulse">
+        <div className="text-6xl font-bold mb-6 animate-pulse">
           {icon}
         </div>
-        <h1 className="text-4xl font-bold mb-8 tracking-wider">
+        <h1 className="text-4xl font-bold mb-8 tracking-wider leading-tight">
           {appName}
         </h1>
       </div>

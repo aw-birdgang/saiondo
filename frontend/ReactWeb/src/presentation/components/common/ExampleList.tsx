@@ -15,12 +15,12 @@ const ExampleList: React.FC<ExampleListProps> = ({
 
   return (
     <div className={className}>
-      <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+      <h4 className="text-sm font-semibold text-text mb-3">
         예시 질문
       </h4>
-      <ul className="space-y-1">
+      <ul className="space-y-2">
         {displayExamples.map((example, index) => (
-          <li key={index} className="text-sm text-gray-600 dark:text-gray-400">
+          <li key={index} className="text-sm text-text-secondary leading-relaxed">
             • {example}
           </li>
         ))}

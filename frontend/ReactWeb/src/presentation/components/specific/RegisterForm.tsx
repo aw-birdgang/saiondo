@@ -37,35 +37,35 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
     // 이름 검증
     if (!formData.name.trim()) {
-      newErrors.name = t('enter_name');
+      newErrors.name = t('enter_name') || '이름을 입력해주세요';
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = t('name_min_length');
+      newErrors.name = t('name_min_length') || '이름은 2자 이상이어야 합니다';
     }
 
     // 이메일 검증
     if (!formData.email) {
-      newErrors.email = t('enter_email');
+      newErrors.email = t('enter_email') || '이메일을 입력해주세요';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('invalid_email_format');
+      newErrors.email = t('invalid_email_format') || '올바른 이메일 형식이 아닙니다';
     }
 
     // 비밀번호 검증
     if (!formData.password) {
-      newErrors.password = t('enter_password');
+      newErrors.password = t('enter_password') || '비밀번호를 입력해주세요';
     } else if (formData.password.length < 6) {
-      newErrors.password = t('password_min_length');
+      newErrors.password = t('password_min_length') || '비밀번호는 6자 이상이어야 합니다';
     }
 
     // 비밀번호 확인 검증
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = t('enter_confirm_password');
+      newErrors.confirmPassword = t('enter_confirm_password') || '비밀번호 확인을 입력해주세요';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = t('password_mismatch');
+      newErrors.confirmPassword = t('password_mismatch') || '비밀번호가 일치하지 않습니다';
     }
 
     // 성별 검증
     if (!formData.gender) {
-      newErrors.gender = t('select_gender');
+      newErrors.gender = t('select_gender') || '성별을 선택해주세요';
     }
 
     setErrors(newErrors);
@@ -97,9 +97,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   return (
     <div className={`max-w-md w-full space-y-8 ${className}`}>
       <AuthHeader
-        title={t('create_account')}
-        subtitle={t('or')}
-        linkText={t('sign_in_to_existing_account')}
+        title={t('create_account') || '계정 만들기'}
+        subtitle={t('or') || '또는'}
+        linkText={t('sign_in_to_existing_account') || '기존 계정으로 로그인'}
         linkTo="/login"
       />
       
@@ -108,43 +108,43 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           {
             name: 'name',
             type: 'text',
-            label: t('name'),
-            placeholder: t('name'),
+            label: t('name') || '이름',
+            placeholder: t('name') || '이름',
             required: true,
             autoComplete: 'name',
           },
           {
             name: 'email',
             type: 'email',
-            label: t('email_address'),
-            placeholder: t('email_address'),
+            label: t('email_address') || '이메일 주소',
+            placeholder: t('email_address') || '이메일 주소',
             required: true,
             autoComplete: 'email',
           },
           {
             name: 'password',
             type: 'password',
-            label: t('password'),
-            placeholder: t('password'),
+            label: t('password') || '비밀번호',
+            placeholder: t('password') || '비밀번호',
             required: true,
             autoComplete: 'new-password',
           },
           {
             name: 'confirmPassword',
             type: 'password',
-            label: t('confirm_password'),
-            placeholder: t('confirm_password'),
+            label: t('confirm_password') || '비밀번호 확인',
+            placeholder: t('confirm_password') || '비밀번호 확인',
             required: true,
             autoComplete: 'new-password',
           },
           {
             name: 'gender',
             type: 'select',
-            label: t('gender'),
+            label: t('gender') || '성별',
             required: true,
             options: [
-              { value: 'male', label: t('male') },
-              { value: 'female', label: t('female') },
+              { value: 'male', label: t('male') || '남성' },
+              { value: 'female', label: t('female') || '여성' },
             ],
           },
         ]}
@@ -152,7 +152,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         errors={errors}
         onChange={handleInputChange}
         onSubmit={handleSubmit}
-        submitText={loading ? t('creating_account') : t('create_account')}
+        submitText={loading ? t('creating_account') || '계정 생성 중...' : t('create_account') || '계정 만들기'}
         loading={loading}
       />
     </div>

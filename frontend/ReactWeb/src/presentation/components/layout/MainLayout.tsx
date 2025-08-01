@@ -88,25 +88,33 @@ const MainLayout: React.FC = () => {
   const SelectedComponent = tabs[selectedTab].component;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-surface shadow-sm border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <h1 className="text-xl font-semibold text-gray-900">
-                {t('app.name')}
-              </h1>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-on-primary font-bold text-sm">S</span>
+                </div>
+                <h1 className="text-xl font-semibold text-text">
+                  {t('app.name')}
+                </h1>
+              </div>
               {user && (
-                <span className="text-sm text-gray-500">
-                  {t('welcome')}, {user.name}
-                </span>
+                <div className="hidden sm:flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <span className="text-sm text-text-secondary">
+                    {t('welcome')}, {user.name}
+                  </span>
+                </div>
               )}
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                className="btn btn-outline text-sm px-4 py-2"
               >
                 {t('logout')}
               </button>
@@ -116,26 +124,33 @@ const MainLayout: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">
-        <SelectedComponent />
+      <main className="flex-1 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <SelectedComponent />
+        </div>
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="bg-white border-t fixed bottom-0 left-0 right-0">
+      <nav className="bg-surface border-t border-border fixed bottom-0 left-0 right-0 z-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-around">
             {tabs.map((tab, index) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabChange(index)}
-                className={`flex flex-col items-center py-2 px-4 flex-1 ${
+                className={`flex flex-col items-center py-3 px-4 flex-1 transition-all duration-200 ${
                   selectedTab === index
-                    ? 'text-blue-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary'
+                    : 'text-text-secondary hover:text-text'
                 }`}
               >
-                <span className="text-xl mb-1">{tab.icon}</span>
-                <span className="text-xs">{tab.label}</span>
+                <span className="text-xl mb-1 transition-transform duration-200 hover:scale-110">
+                  {tab.icon}
+                </span>
+                <span className="text-xs font-medium">{tab.label}</span>
+                {selectedTab === index && (
+                  <div className="w-1 h-1 bg-primary rounded-full mt-1"></div>
+                )}
               </button>
             ))}
           </div>

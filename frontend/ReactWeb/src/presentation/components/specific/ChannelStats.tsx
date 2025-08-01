@@ -68,12 +68,12 @@ const ChannelStats: React.FC<ChannelStatsProps> = ({
   ];
 
   return (
-    <Stack spacing="md" className={className}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+    <Stack spacing="lg" className={className}>
+      <h3 className="text-xl font-bold text-text leading-tight">
         {t('channel_stats') || '채널 통계'}
       </h3>
       
-      <Grid cols={{ sm: 1, md: 2, lg: 3 }} gap="md">
+      <Grid cols={{ sm: 1, md: 2, lg: 3 }} gap="lg">
         {statsData.map((stat, index) => (
           <ChannelStatItem
             key={index}

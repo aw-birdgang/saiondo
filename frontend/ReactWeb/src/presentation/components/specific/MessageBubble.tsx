@@ -35,8 +35,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   if (isSystemMessage) {
     return (
-      <div className={`flex justify-center my-2 ${className}`}>
-        <div className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs px-3 py-1 rounded-full">
+      <div className={`flex justify-center my-6 ${className}`}>
+        <div className="bg-secondary text-text-secondary text-xs px-6 py-3 rounded-full border border-border font-medium">
           {message.content}
         </div>
       </div>
@@ -44,12 +44,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   }
 
   return (
-    <div className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-3 ${className}`}>
+    <div className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'} mb-6 ${className}`}>
       <div className={`flex max-w-xs lg:max-w-md ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}>
         {/* Avatar */}
         {!isOwnMessage && (
-          <div className="flex-shrink-0 mr-2">
-            <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-medium">
+          <div className="flex-shrink-0 mr-4">
+            <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-sm font-medium border-2 border-border shadow-sm">
               {message.senderAvatar ? (
                 <img 
                   src={message.senderAvatar} 
@@ -67,7 +67,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}>
           {/* Sender Name */}
           {!isOwnMessage && message.senderName && (
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-1">
+            <div className="text-xs text-text-secondary mb-3 ml-1 font-medium">
               {message.senderName}
             </div>
           )}
@@ -75,15 +75,15 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           {/* Message Bubble */}
           <div
             className={`
-              px-4 py-2 rounded-lg max-w-full break-words
+              px-6 py-4 rounded-xl max-w-full break-words shadow-sm
               ${isOwnMessage 
-                ? 'bg-blue-500 text-white rounded-br-md' 
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-md'
+                ? 'bg-primary text-on-primary rounded-br-md' 
+                : 'bg-surface text-text rounded-bl-md border border-border'
               }
             `}
           >
             {message.type === 'text' && (
-              <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+              <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
             )}
             
             {message.type === 'image' && (
@@ -91,21 +91,21 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                 <img 
                   src={message.content} 
                   alt="Shared image" 
-                  className="max-w-full rounded"
+                  className="max-w-full rounded-lg"
                 />
               </div>
             )}
             
             {message.type === 'file' && (
-              <div className="text-sm flex items-center gap-2">
-                <span>📎</span>
+              <div className="text-sm flex items-center gap-3">
+                <span className="text-lg">📎</span>
                 <span>{message.content}</span>
               </div>
             )}
           </div>
 
           {/* Timestamp */}
-          <div className={`text-xs text-gray-400 mt-1 ${isOwnMessage ? 'mr-1' : 'ml-1'}`}>
+          <div className={`text-xs text-text-secondary mt-3 ${isOwnMessage ? 'mr-1' : 'ml-1'} font-medium`}>
             {formatTime(message.timestamp)}
           </div>
         </div>

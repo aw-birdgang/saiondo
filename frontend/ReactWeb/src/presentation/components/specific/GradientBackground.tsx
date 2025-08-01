@@ -8,7 +8,7 @@ interface GradientBackgroundProps {
 
 const GradientBackground: React.FC<GradientBackgroundProps> = ({ 
   children, 
-  gradient = "bg-gradient-to-br from-blue-500 to-purple-600", 
+  gradient = "bg-gradient-to-br from-primary to-primary-container", 
   className = "" 
 }) => {
   return (

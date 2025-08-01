@@ -16,13 +16,13 @@ const ContentCard: React.FC<ContentCardProps> = ({
   const getVariantClasses = () => {
     switch (variant) {
       case 'elevated':
-        return 'bg-white dark:bg-dark-secondary-container shadow-lg border border-gray-200 dark:border-gray-700';
+        return 'bg-surface shadow-xl border border-border';
       case 'outlined':
-        return 'bg-transparent border-2 border-gray-200 dark:border-gray-700';
+        return 'bg-transparent border-2 border-border';
       case 'filled':
-        return 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700';
+        return 'bg-secondary border border-border';
       default:
-        return 'bg-white dark:bg-dark-secondary-container shadow-sm border border-gray-200 dark:border-gray-700';
+        return 'bg-surface shadow-sm border border-border';
     }
   };
 
@@ -42,7 +42,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   };
 
   return (
-    <div className={`rounded-lg ${getVariantClasses()} ${getPaddingClasses()} ${className}`}>
+    <div className={`rounded-xl transition-all duration-200 hover:shadow-md ${getVariantClasses()} ${getPaddingClasses()} ${className}`}>
       {children}
     </div>
   );

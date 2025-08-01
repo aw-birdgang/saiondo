@@ -33,11 +33,11 @@ const Divider: React.FC<DividerProps> = ({
   const getColorClasses = () => {
     switch (color) {
       case 'light':
-        return 'border-gray-200 dark:border-gray-600';
+        return 'border-border/50';
       case 'dark':
-        return 'border-gray-400 dark:border-gray-500';
+        return 'border-border';
       default:
-        return 'border-gray-300 dark:border-gray-700';
+        return 'border-border';
     }
   };
 
@@ -46,11 +46,11 @@ const Divider: React.FC<DividerProps> = ({
       case 'none':
         return '';
       case 'sm':
-        return orientation === 'horizontal' ? 'my-2' : 'mx-2';
+        return orientation === 'horizontal' ? 'my-3' : 'mx-3';
       case 'lg':
-        return orientation === 'horizontal' ? 'my-6' : 'mx-6';
+        return orientation === 'horizontal' ? 'my-8' : 'mx-8';
       default:
-        return orientation === 'horizontal' ? 'my-4' : 'mx-4';
+        return orientation === 'horizontal' ? 'my-6' : 'mx-6';
     }
   };
 

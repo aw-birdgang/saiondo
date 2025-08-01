@@ -37,21 +37,21 @@ const Icon: React.FC<IconProps> = ({
   const getColorClass = () => {
     switch (color) {
       case 'primary':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-primary';
       case 'secondary':
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-text-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
         return 'text-yellow-600 dark:text-yellow-400';
       case 'danger':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error';
       case 'info':
         return 'text-blue-600 dark:text-blue-400';
       case 'white':
         return 'text-white';
       default:
-        return 'text-gray-500 dark:text-gray-400';
+        return 'text-text-secondary';
     }
   };
 
@@ -60,32 +60,33 @@ const Icon: React.FC<IconProps> = ({
     
     switch (background) {
       case 'primary':
-        return 'bg-blue-100 dark:bg-blue-900/20';
+        return 'bg-primary/10';
       case 'secondary':
-        return 'bg-gray-100 dark:bg-gray-900/20';
+        return 'bg-secondary';
       case 'success':
         return 'bg-green-100 dark:bg-green-900/20';
       case 'warning':
         return 'bg-yellow-100 dark:bg-yellow-900/20';
       case 'danger':
-        return 'bg-red-100 dark:bg-red-900/20';
+        return 'bg-error/10';
       case 'info':
         return 'bg-blue-100 dark:bg-blue-900/20';
       case 'gray':
-        return 'bg-gray-100 dark:bg-gray-900/20';
+        return 'bg-secondary';
       default:
         return '';
     }
   };
 
   const getRoundedClass = () => {
-    return rounded ? 'rounded-full' : '';
+    return rounded ? 'rounded-full' : 'rounded-lg';
   };
 
   return (
     <div
       className={`
-        flex items-center justify-center ${getSizeClasses()} ${getColorClass()} ${getBackgroundClass()} ${getRoundedClass()} ${className}
+        flex items-center justify-center transition-all duration-200 hover:scale-105
+        ${getSizeClasses()} ${getColorClass()} ${getBackgroundClass()} ${getRoundedClass()} ${className}
       `}
     >
       {icon}

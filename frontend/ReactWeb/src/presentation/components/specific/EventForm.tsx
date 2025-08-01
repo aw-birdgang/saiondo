@@ -85,43 +85,43 @@ const EventForm: React.FC<EventFormProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ${className}`}>
-      <div className="bg-white dark:bg-dark-secondary-container rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+    <div className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 ${className}`}>
+      <div className="card max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-text leading-tight">
               {event ? '일정 수정' : '새 일정'}
             </h2>
             <button
               onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="text-text-secondary hover:text-text transition-all duration-200 hover:scale-110 p-3"
             >
               ✕
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Event Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-text mb-4">
                 일정 유형
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-4">
                 {eventTypes.map((type) => (
                   <button
                     key={type.value}
                     type="button"
                     onClick={() => handleInputChange('type', type.value as Event['type'])}
                     className={`
-                      p-3 rounded-lg border text-left transition-colors
+                      p-6 rounded-xl border-2 text-left transition-all duration-200 hover:scale-105
                       ${formData.type === type.value
-                        ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                        ? 'border-primary bg-primary/5 shadow-md'
+                        : 'border-border hover:border-primary/30'
                       }
                     `}
                   >
-                    <div className="text-lg mb-1">{type.icon}</div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    <div className="text-3xl mb-3">{type.icon}</div>
+                    <div className="text-sm font-semibold text-text leading-tight">
                       {type.label}
                     </div>
                   </button>
@@ -131,14 +131,14 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-text mb-4">
                 제목 *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark-surface dark:text-white"
+                className="input w-full text-base"
                 placeholder="일정 제목을 입력하세요"
                 required
               />
@@ -146,70 +146,70 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-text mb-4">
                 날짜
               </label>
               <input
                 type="date"
                 value={formData.date.toISOString().split('T')[0]}
                 onChange={(e) => handleInputChange('date', new Date(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark-surface dark:text-white"
+                className="input w-full text-base"
               />
             </div>
 
             {/* Time */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-text mb-4">
                 시간
               </label>
               <input
                 type="time"
                 value={formData.time}
                 onChange={(e) => handleInputChange('time', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark-surface dark:text-white"
+                className="input w-full text-base"
               />
             </div>
 
             {/* Location */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-text mb-4">
                 장소
               </label>
               <input
                 type="text"
                 value={formData.location}
                 onChange={(e) => handleInputChange('location', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark-surface dark:text-white"
+                className="input w-full text-base"
                 placeholder="장소를 입력하세요"
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-text mb-4">
                 설명
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-dark-surface dark:text-white resize-none"
+                className="input w-full resize-none text-base"
                 placeholder="일정에 대한 설명을 입력하세요"
               />
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-4 pt-6">
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="btn btn-secondary flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="btn btn-primary flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
               >
                 {event ? '수정' : '추가'}
               </button>

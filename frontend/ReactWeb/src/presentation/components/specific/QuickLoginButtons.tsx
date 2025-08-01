@@ -20,16 +20,16 @@ const QuickLoginButtons: React.FC<QuickLoginButtonsProps> = ({
   };
 
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={`space-y-3 ${className}`}>
       <QuickLoginButton
         email="kim@example.com"
-        label={t('quick_login_kim')}
+        label={t('quick_login_kim') || "김 사용자로 로그인"}
         onClick={handleQuickLogin}
         loading={loading}
       />
       <QuickLoginButton
         email="lee@example.com"
-        label={t('quick_login_lee')}
+        label={t('quick_login_lee') || "이 사용자로 로그인"}
         onClick={handleQuickLogin}
         loading={loading}
       />

@@ -13,10 +13,12 @@ const LoadingState: React.FC<LoadingStateProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${className}`}>
+    <div className={`min-h-screen bg-background flex items-center justify-center ${className}`}>
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-gray-600">{message || t("loading")}</p>
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent mx-auto mb-6"></div>
+        <p className="text-text-secondary text-lg font-medium">
+          {message || t("loading") || "로딩 중..."}
+        </p>
       </div>
     </div>
   );

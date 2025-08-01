@@ -26,17 +26,19 @@ const ChannelList: React.FC<ChannelListProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-6 ${className}`}>
       {channels.length === 0 ? (
         <EmptyChannelState onCreateChannel={onCreateChannel} />
       ) : (
-        channels.map((channel) => (
-          <ChannelCard
-            key={channel.id}
-            channel={channel}
-            onClick={onChannelClick}
-          />
-        ))
+        <div className="grid gap-6">
+          {channels.map((channel) => (
+            <ChannelCard
+              key={channel.id}
+              channel={channel}
+              onClick={onChannelClick}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

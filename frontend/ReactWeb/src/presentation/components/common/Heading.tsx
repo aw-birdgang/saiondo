@@ -70,24 +70,26 @@ const Heading: React.FC<HeadingProps> = ({
 
   const getColorClass = () => {
     switch (color) {
+      case 'primary':
+        return 'text-primary';
       case 'secondary':
-        return 'text-gray-600 dark:text-gray-400';
+        return 'text-text-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
         return 'text-yellow-600 dark:text-yellow-400';
       case 'danger':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error';
       case 'info':
         return 'text-blue-600 dark:text-blue-400';
       case 'muted':
-        return 'text-gray-500 dark:text-gray-400';
+        return 'text-text-secondary';
       case 'white':
         return 'text-white';
       case 'black':
-        return 'text-gray-900 dark:text-white';
+        return 'text-text';
       default:
-        return 'text-gray-900 dark:text-white';
+        return 'text-text';
     }
   };
 
@@ -113,7 +115,7 @@ const Heading: React.FC<HeadingProps> = ({
   return (
     <Component
       className={`
-        ${getSizeClass()} ${getWeightClass()} ${getColorClass()} ${getAlignClass()} ${className}
+        ${getSizeClass()} ${getWeightClass()} ${getColorClass()} ${getAlignClass()} leading-tight ${className}
       `}
     >
       {children}

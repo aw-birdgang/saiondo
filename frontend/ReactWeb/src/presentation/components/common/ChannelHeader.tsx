@@ -15,12 +15,12 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`flex items-center mb-2 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+    <div className={`flex items-center mb-3 ${className}`}>
+      <h3 className="text-lg font-bold text-text">
         {name}
       </h3>
       {unreadCount > 0 && (
-        <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+        <span className="ml-3 bg-error text-on-error text-xs font-semibold rounded-full px-3 py-1 shadow-sm">
           {unreadCount}
         </span>
       )}

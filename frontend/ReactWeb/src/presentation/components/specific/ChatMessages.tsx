@@ -44,16 +44,16 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   if (messages.length === 0) {
     return (
       <div className={`flex items-center justify-center h-full ${className}`}>
-        <div className="text-center text-gray-500">
-          <p>{t("chat.no_messages")}</p>
-          <p className="text-sm mt-2">{t("chat.start_conversation")}</p>
+        <div className="text-center text-text-secondary">
+          <p className="text-lg font-medium">{t("chat.no_messages") || "메시지가 없습니다"}</p>
+          <p className="text-sm mt-3 leading-relaxed">{t("chat.start_conversation") || "대화를 시작해보세요"}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`space-y-6 ${className}`}>
       {messages.map((message) => (
         <MessageBubble
           key={message.id}

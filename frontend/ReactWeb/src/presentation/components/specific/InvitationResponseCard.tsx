@@ -47,27 +47,23 @@ const InvitationResponseCard: React.FC<InvitationResponseCardProps> = ({
     switch (invitation.status) {
       case 'pending':
         return {
-          status: 'pending' as const,
-          text: t('pending') || '대기 중',
-          color: 'yellow'
+          type: 'warning' as const,
+          text: t('pending') || '대기 중'
         };
       case 'accepted':
         return {
-          status: 'success' as const,
-          text: t('accepted') || '수락됨',
-          color: 'green'
+          type: 'success' as const,
+          text: t('accepted') || '수락됨'
         };
       case 'rejected':
         return {
-          status: 'error' as const,
-          text: t('rejected') || '거절됨',
-          color: 'red'
+          type: 'error' as const,
+          text: t('rejected') || '거절됨'
         };
       default:
         return {
-          status: 'inactive' as const,
-          text: t('unknown') || '알 수 없음',
-          color: 'gray'
+          type: 'default' as const,
+          text: t('unknown') || '알 수 없음'
         };
     }
   };
@@ -75,45 +71,45 @@ const InvitationResponseCard: React.FC<InvitationResponseCardProps> = ({
   const statusConfig = getStatusConfig();
 
   return (
-    <div className={`bg-white dark:bg-dark-secondary-container rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 ${className}`}>
+    <div className={`card p-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center space-x-4">
+          <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center shadow-md border-2 border-border">
             <span className="text-2xl">👥</span>
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+            <h3 className="font-semibold text-text leading-tight">
               {invitation.channelName || t('channel') || '채널'}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-text-secondary leading-relaxed">
               {t('invited_by') || '초대자'}: {invitation.inviterName || t('unknown_user') || '알 수 없는 사용자'}
             </p>
           </div>
         </div>
         <StatusBadge
-          status={statusConfig.status}
+          type={statusConfig.type}
           text={statusConfig.text}
           size="sm"
         />
       </div>
 
       {/* Content */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+          <span className="text-text-secondary font-medium">
             {t('invitation_code') || '초대 코드'}:
           </span>
-          <span className="font-mono text-gray-900 dark:text-white">
+          <span className="font-mono text-text font-semibold">
             {invitation.channelId}
           </span>
         </div>
         
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
+        <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+          <span className="text-text-secondary font-medium">
             {t('invited_at') || '초대 시간'}:
           </span>
-          <span className="text-gray-900 dark:text-white">
+          <span className="text-text font-semibold">
             {formatTime(invitation.createdAt)}
           </span>
         </div>
@@ -121,7 +117,7 @@ const InvitationResponseCard: React.FC<InvitationResponseCardProps> = ({
 
       {/* Actions */}
       {invitation.status === 'pending' && (
-        <div className="flex space-x-3 mt-6">
+        <div className="flex space-x-4 mt-8">
           <Button
             onClick={() => onAccept(invitation.id)}
             variant="primary"
@@ -141,10 +137,10 @@ const InvitationResponseCard: React.FC<InvitationResponseCardProps> = ({
 
       {/* Status Message */}
       {invitation.status !== 'pending' && (
-        <div className={`mt-4 p-3 rounded-lg text-sm ${
+        <div className={`mt-6 p-4 rounded-xl text-sm font-medium ${
           invitation.status === 'accepted'
-            ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200'
-            : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'
+            ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border-2 border-green-200 dark:border-green-800'
+            : 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border-2 border-red-200 dark:border-red-800'
         }`}>
           {invitation.status === 'accepted' 
             ? t('invitation_accepted_message') || '초대를 수락했습니다. 채널에 참여할 수 있습니다.'
