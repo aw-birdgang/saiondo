@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from "../../../shared/constants/app";
-import { Button, ChannelCard, LoadingSpinner } from '../../components/common';
+import React, {useEffect, useState} from 'react';
+
+import {useNavigate} from 'react-router-dom';
+import {ROUTES} from "../../../shared/constants/app";
+import {ChannelHeader, ChannelList, ChannelStats, LoadingState, PageLayout} from '../../components/specific';
+
 // import { useAuthStore } from '../../applicati../../application/stores/authStore'; // TODO: 사용 예정
 
 interface Channel {
@@ -16,12 +17,20 @@ interface Channel {
 }
 
 const ChannelTab: React.FC = () => {
-  const { t } = useTranslation();
+
   const navigate = useNavigate();
   // const { userId } = useAuthStore(); // TODO: 사용 예정
 
   const [channels, setChannels] = useState<Channel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalChannels: 0,
+    activeChannels: 0,
+    totalMessages: 0,
+    unreadMessages: 0,
+    averageResponseTime: '2분',
+    memberCount: 0
+  });
 
   useEffect(() => {
     // TODO: 실제 API 호출로 대체
@@ -48,6 +57,14 @@ const ChannelTab: React.FC = () => {
 
     setTimeout(() => {
       setChannels(mockChannels);
+      setStats({
+        totalChannels: mockChannels.length,
+        activeChannels: mockChannels.filter(c => c.lastMessageTime && c.lastMessageTime.includes('시간')).length,
+        totalMessages: mockChannels.reduce((sum, c) => sum + (c.unreadCount || 0), 0) + 45,
+        unreadMessages: mockChannels.reduce((sum, c) => sum + (c.unreadCount || 0), 0),
+        averageResponseTime: '2분',
+        memberCount: mockChannels.reduce((sum, c) => sum + c.memberCount, 0)
+      });
       setIsLoading(false);
     }, 1000);
   }, []);
@@ -61,68 +78,24 @@ const ChannelTab: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-surface">
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {t('my_channels')}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            {t('channel_description')}
-          </p>
-        </div>
+    <PageLayout>
+      {/* Header */}
+      <ChannelHeader onCreateChannel={handleCreateChannel} />
 
-        {/* Create Channel Button */}
-        <div className="mb-6">
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={handleCreateChannel}
-            icon="➕"
-          >
-            {t('create_new_channel')}
-          </Button>
-        </div>
+      {/* Channel Stats */}
+      <ChannelStats stats={stats} className="mb-6" />
 
-        {/* Channels List */}
-        <div className="space-y-4">
-          {channels.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">👥</div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                {t('no_channels')}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                {t('no_channels_description')}
-              </p>
-              <Button
-                variant="primary"
-                onClick={handleCreateChannel}
-              >
-                {t('create_first_channel')}
-              </Button>
-            </div>
-          ) : (
-            channels.map((channel) => (
-              <ChannelCard
-                key={channel.id}
-                channel={channel}
-                onClick={handleChannelClick}
-              />
-            ))
-          )}
-        </div>
-      </div>
-    </div>
+      {/* Channels List */}
+      <ChannelList
+        channels={channels}
+        onChannelClick={handleChannelClick}
+        onCreateChannel={handleCreateChannel}
+      />
+    </PageLayout>
   );
 };
 

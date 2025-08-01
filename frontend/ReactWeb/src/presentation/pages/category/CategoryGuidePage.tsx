@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../shared/constants/app";
+import { CategoryGrid, CategoryDetailCard, UsageGuide } from "../../components/specific";
+import { PageWrapper, PageContainer, PageHeader } from '../../components/layout';
+import { SectionHeader, ActionButtons } from '../../components/common';
 
 interface Category {
   id: string;
@@ -138,201 +141,84 @@ const CategoryGuideScreen: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageWrapper>
       {/* Header */}
-      <header className="bg-surface shadow-sm border-b border-border">
-        <div className="flex items-center justify-between h-16 px-4">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => navigate(ROUTES.HOME)}
-              className="text-text-secondary hover:text-text"
-            >
-              ← 뒤로
-            </button>
-            <h1 className="text-lg font-semibold text-text">
-              대화 카테고리 가이드
-            </h1>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="대화 카테고리 가이드"
+        showBackButton
+        onBackClick={() => navigate(ROUTES.HOME)}
+      />
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageContainer maxWidth="6xl" padding="lg">
         <div className="space-y-8">
           {/* Header Section */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-text mb-4">
-              대화 카테고리 가이드
-            </h2>
-            <p className="text-lg text-text-secondary max-w-3xl mx-auto">
-              Saiondo에서 제공하는 다양한 대화 카테고리를 통해 더 의미 있는
-              대화를 나누어보세요. 각 카테고리는 특정 주제에 집중하여 더 깊이
-              있는 소통을 도와줍니다.
-            </p>
-          </div>
+          <SectionHeader
+            title="대화 카테고리 가이드"
+            description="Saiondo에서 제공하는 다양한 대화 카테고리를 통해 더 의미 있는 대화를 나누어보세요. 각 카테고리는 특정 주제에 집중하여 더 깊이 있는 소통을 도와줍니다."
+            centered
+          />
 
           {/* Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category) => (
-              <div
-                key={category.id}
-                className={`card cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                  selectedCategory === category.id ? "ring-2 ring-primary" : ""
-                }`}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                <div className="card-body">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="text-3xl">{category.icon}</div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-text">
-                        {category.name}
-                      </h3>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${category.color}`}
-                      >
-                        {category.name}
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-text-secondary text-sm mb-4">
-                    {category.description}
-                  </p>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(ROUTES.CHAT);
-                    }}
-                    className="btn btn-primary w-full"
-                  >
-                    이 카테고리로 대화하기
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <CategoryGrid
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+          />
 
           {/* Selected Category Details */}
           {selectedCategoryData && (
-            <div className="card">
-              <div className="card-header">
-                <div className="flex items-center space-x-3">
-                  <div className="text-2xl">{selectedCategoryData.icon}</div>
-                  <h3 className="text-xl font-semibold text-text">
-                    {selectedCategoryData.name} 상세 가이드
-                  </h3>
-                </div>
-              </div>
-              <div className="card-body">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Examples */}
-                  <div>
-                    <h4 className="text-lg font-semibold text-text mb-4">
-                      이런 대화를 나누어보세요
-                    </h4>
-                    <ul className="space-y-3">
-                      {selectedCategoryData.examples.map((example, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                          <p className="text-text-secondary">{example}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Tips */}
-                  <div>
-                    <h4 className="text-lg font-semibold text-text mb-4">
-                      대화 팁
-                    </h4>
-                    <ul className="space-y-3">
-                      {selectedCategoryData.tips.map((tip, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                          <p className="text-text-secondary">{tip}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-border">
-                  <button
-                    onClick={() => navigate(ROUTES.CHAT)}
-                    className="btn btn-primary w-full"
-                  >
-                    {selectedCategoryData.name} 카테고리로 대화 시작하기
-                  </button>
-                </div>
-              </div>
-            </div>
+            <CategoryDetailCard
+              category={selectedCategoryData}
+              onClose={() => setSelectedCategory(null)}
+            />
           )}
 
           {/* How to Use */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="text-xl font-semibold text-text">
-                카테고리 활용 방법
-              </h3>
-            </div>
-            <div className="card-body">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                    1
-                  </div>
-                  <h4 className="font-semibold text-text mb-2">
-                    카테고리 선택
-                  </h4>
-                  <p className="text-sm text-text-secondary">
-                    관심 있는 주제나 현재 필요한 대화 카테고리를 선택하세요.
-                  </p>
-                </div>
-
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                    2
-                  </div>
-                  <h4 className="font-semibold text-text mb-2">AI와 대화</h4>
-                  <p className="text-sm text-text-secondary">
-                    선택한 카테고리에 맞는 전문적인 조언과 대화를 나누세요.
-                  </p>
-                </div>
-
-                <div className="text-center">
-                  <div className="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                    3
-                  </div>
-                  <h4 className="font-semibold text-text mb-2">관계 개선</h4>
-                  <p className="text-sm text-text-secondary">
-                    AI의 조언을 바탕으로 파트너와 더 나은 관계를 만들어가세요.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <UsageGuide
+            title="카테고리 활용 방법"
+            steps={[
+              {
+                number: 1,
+                title: "카테고리 선택",
+                description: "관심 있는 주제나 현재 필요한 대화 카테고리를 선택하세요.",
+                icon: "📋"
+              },
+              {
+                number: 2,
+                title: "AI와 대화",
+                description: "선택한 카테고리에 맞는 전문적인 조언과 대화를 나누세요.",
+                icon: "🤖"
+              },
+              {
+                number: 3,
+                title: "관계 개선",
+                description: "AI의 조언을 바탕으로 파트너와 더 나은 관계를 만들어가세요.",
+                icon: "💕"
+              }
+            ]}
+          />
 
           {/* Action Buttons */}
-          <div className="flex justify-center space-x-4">
-            <button
-              onClick={() => navigate(ROUTES.CHAT)}
-              className="btn btn-primary"
-            >
-              대화 시작하기
-            </button>
-            <button
-              onClick={() => navigate(ROUTES.HOME)}
-              className="btn btn-secondary"
-            >
-              홈으로 가기
-            </button>
-          </div>
+          <ActionButtons
+            actions={[
+              {
+                label: '대화 시작하기',
+                onClick: () => navigate(ROUTES.CHAT),
+                variant: 'primary'
+              },
+              {
+                label: '홈으로 가기',
+                onClick: () => navigate(ROUTES.HOME),
+                variant: 'secondary'
+              }
+            ]}
+          />
         </div>
-      </main>
-    </div>
+      </PageContainer>
+    </PageWrapper>
   );
 };
 
 export default CategoryGuideScreen;
+

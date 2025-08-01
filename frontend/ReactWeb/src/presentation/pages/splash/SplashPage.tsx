@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
-import { useAuthStore } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
-import { ROUTES } from "../../../shared/constants/app";
-import { SplashScreen } from '../../components/specific/splash';
+import React, {useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useAuthStore} from '../../../stores/authStore';
+import {useUserStore} from '../../../stores/userStore';
+import {ROUTES} from "../../../shared/constants/app";
+import {SplashAnimation} from '../../components/specific';
 
 const SplashPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,10 +18,10 @@ const SplashPage: React.FC = () => {
         while (authLoading || userLoading) {
           await new Promise(resolve => setTimeout(resolve, 50));
         }
-        
+
         // 최소 2초 대기 (스플래시 화면 표시 시간)
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         // 네비게이션
         if (isAuthenticated) {
           navigate(ROUTES.HOME, { replace: true });
@@ -39,7 +38,7 @@ const SplashPage: React.FC = () => {
   }, [authLoading, userLoading, isAuthenticated, navigate]);
 
   return (
-    <SplashScreen
+    <SplashAnimation
       appName="Saiondo"
       loadingMessage={authLoading || userLoading ? 'Loading...' : 'Welcome!'}
       onAnimationComplete={() => {

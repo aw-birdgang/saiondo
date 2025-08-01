@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { ROUTES } from "../../../shared/constants/app";
-import { useUser } from "../../../contexts/UserContext";
+import React, {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {toast} from "react-hot-toast";
+import {AnalysisContent, AnalysisHeader, AnalysisLayout, ErrorState, LoadingState} from "../../components/specific";
 
 interface AnalysisData {
   user1: {
@@ -36,7 +35,7 @@ const AnalysisPage: React.FC = () => {
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
-  const { user } = useUser();
+
 
   // Analysis state
   const [analysisState, setAnalysisState] = useState<AnalysisState>({
@@ -148,202 +147,30 @@ const AnalysisPage: React.FC = () => {
   };
 
   if (analysisState.isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">{t("loading")}</p>
-        </div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (!analysisState.data) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-gray-500 text-2xl">📊</span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t("analysis_load_fail")}
-            </h3>
-            <p className="text-gray-500 mb-4">
-              분석 데이터를 불러올 수 없습니다.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primaryContainer transition-colors"
-            >
-              다시 시도
-            </button>
-          </div>
-        </div>
-      </div>
+      <ErrorState
+        title={t("analysis_load_fail")}
+        message="분석 데이터를 불러올 수 없습니다."
+        onRetry={() => window.location.reload()}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AnalysisLayout>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate(ROUTES.HOME)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <span className="text-xl">←</span>
-              </button>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {t("analysis.title")}
-                </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  관계 분석 결과를 확인하세요
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={handleCreateAnalysis}
-              disabled={analysisState.isCreating}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                analysisState.isCreating
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-primary text-white hover:bg-primaryContainer"
-              }`}
-            >
-              {analysisState.isCreating ? (
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>분석 중...</span>
-                </div>
-              ) : (
-                "새 분석 생성"
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+      <AnalysisHeader
+        onCreateAnalysis={handleCreateAnalysis}
+        isCreating={analysisState.isCreating}
+      />
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="space-y-6">
-          {/* Couple Profile */}
-          <div className="bg-gradient-to-r from-pink-100 to-blue-50 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-white text-xl font-bold">
-                  {analysisState.data.user1.name.charAt(0)}
-                </span>
-              </div>
-              <div className="text-3xl text-pink-400">❤️</div>
-              <div className="w-16 h-16 bg-pink-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xl font-bold">
-                  {analysisState.data.user2.name.charAt(0)}
-                </span>
-              </div>
-            </div>
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-pink-600">
-                {analysisState.data.user1.name} ❤️ {analysisState.data.user2.name}
-              </h2>
-            </div>
-          </div>
-
-          {/* MBTI Match */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t("couple_mbti_match")}
-            </h3>
-            <div className="flex items-center space-x-4">
-              <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full font-medium">
-                {analysisState.data.user1.mbti}
-              </span>
-              <span className="text-pink-500">↔️</span>
-              <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full font-medium">
-                {analysisState.data.user2.mbti}
-              </span>
-              {analysisState.data.matchPercent && (
-                <span className="text-pink-600 font-bold">
-                  {analysisState.data.matchPercent}% {t("good_match")}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Keywords */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t("main_keywords")}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {analysisState.data.keywords.map((keyword, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
-                >
-                  {keyword}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Summary */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {t("analysis_summary")}
-            </h3>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              {analysisState.data.summary}
-            </p>
-          </div>
-
-          {/* Advice */}
-          {analysisState.data.advice && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {t("advice")}
-              </h3>
-              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                {analysisState.data.advice}
-              </p>
-            </div>
-          )}
-
-          {/* Personas */}
-          {(analysisState.data.persona1 || analysisState.data.persona2) && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                성향 분석
-              </h3>
-              {analysisState.data.persona1 && (
-                <div className="mb-4">
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                    {t("user1_persona")}
-                  </h4>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    {analysisState.data.persona1}
-                  </p>
-                </div>
-              )}
-              {analysisState.data.persona2 && (
-                <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
-                    {t("user2_persona")}
-                  </h4>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    {analysisState.data.persona2}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+      <AnalysisContent data={analysisState.data} />
+    </AnalysisLayout>
   );
 };
 

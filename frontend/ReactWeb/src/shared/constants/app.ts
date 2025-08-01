@@ -29,4 +29,9 @@ export const ROUTES = {
   CHANNELS: '/channels',
   PROFILE: '/profile',
   SETTINGS: '/settings',
+  ASSISTANT: '/assistant',
+  ANALYSIS: '/analysis',
+  CALENDAR: '/calendar',
+  PAYMENT: '/payment',
+  MYPAGE: '/mypage',
 } as const; 

@@ -1,10 +1,13 @@
 import React from 'react';
+import MessageContent from './MessageContent';
+import MessageTimestamp from './MessageTimestamp';
 
 interface MessageBubbleProps {
   content: string;
   timestamp: Date;
   isOwnMessage: boolean;
   senderName?: string;
+  messageType?: 'text' | 'image' | 'file' | 'system';
   className?: string;
 }
 
@@ -13,15 +16,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   timestamp,
   isOwnMessage,
   senderName,
+  messageType = 'text',
   className = '',
 }) => {
-  const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  };
-
   return (
     <div
       className={`flex ${
@@ -30,23 +27,25 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
     >
       <div className="max-w-xs lg:max-w-md">
         {!isOwnMessage && senderName && (
-          <p className="text-xs text-gray-500 mb-1 ml-1">{senderName}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-1">
+            {senderName}
+          </p>
         )}
         <div
           className={`px-4 py-2 rounded-lg ${
             isOwnMessage
               ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-900'
+              : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
           }`}
         >
-          <p className="text-sm break-words">{content}</p>
-          <p
-            className={`text-xs mt-1 ${
-              isOwnMessage ? 'text-blue-100' : 'text-gray-500'
-            }`}
-          >
-            {formatTime(timestamp)}
-          </p>
+          <MessageContent 
+            content={content} 
+            type={messageType}
+          />
+          <MessageTimestamp 
+            timestamp={timestamp} 
+            isOwnMessage={isOwnMessage}
+          />
         </div>
       </div>
     </div>

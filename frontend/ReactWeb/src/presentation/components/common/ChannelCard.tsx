@@ -1,6 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from './Card';
+import ChannelHeader from './ChannelHeader';
+import ChannelDescription from './ChannelDescription';
+import ChannelMeta from './ChannelMeta';
 
 interface Channel {
   id: string;
@@ -33,32 +36,18 @@ const ChannelCard: React.FC<ChannelCardProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <div className="flex items-center mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {channel.name}
-            </h3>
-            {channel.unreadCount > 0 && (
-              <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                {channel.unreadCount}
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            {channel.description}
-          </p>
-          <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            <span className="mr-4">
-              👥 {channel.memberCount} {t('members')}
-            </span>
-            {channel.lastMessage && (
-              <>
-                <span className="mr-4">
-                  💬 {channel.lastMessage}
-                </span>
-                <span>{channel.lastMessageTime}</span>
-              </>
-            )}
-          </div>
+          <ChannelHeader 
+            name={channel.name}
+            unreadCount={channel.unreadCount}
+          />
+          <ChannelDescription 
+            description={channel.description}
+          />
+          <ChannelMeta 
+            memberCount={channel.memberCount}
+            lastMessage={channel.lastMessage}
+            lastMessageTime={channel.lastMessageTime}
+          />
         </div>
         <div className="ml-4">
           <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

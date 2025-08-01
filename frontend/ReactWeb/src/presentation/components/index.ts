@@ -2,6 +2,7 @@
 export * from './common';
 
 // Specific components
+export * from './specific';
 export * from './specific/assistant';
 export * from './specific/payment';
 export * from './specific/calendar';

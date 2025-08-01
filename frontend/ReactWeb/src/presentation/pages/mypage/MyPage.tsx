@@ -6,6 +6,8 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
 import { UserProfile, Card, Button } from '../../components/common';
+import { PageWrapper, PageContainer } from '../../components/layout';
+import { MenuGrid } from '../../components/specific';
 
 const MyPage: React.FC = () => {
   const { t } = useTranslation();
@@ -60,8 +62,8 @@ const MyPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 py-6">
+    <PageWrapper>
+      <PageContainer>
         {/* Profile Section */}
         <UserProfile
           showEditButton
@@ -71,24 +73,7 @@ const MyPage: React.FC = () => {
         />
 
         {/* Menu Items */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          {menuItems.map((item) => (
-            <Card
-              key={item.id}
-              onClick={item.onClick}
-              hoverable
-              className="text-left"
-            >
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl">{item.icon}</span>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                  <p className="text-sm text-gray-600">{item.description}</p>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <MenuGrid items={menuItems} className="mb-6" />
 
         {/* Logout Button */}
         <Card>
@@ -102,8 +87,8 @@ const MyPage: React.FC = () => {
             {t('logout')}
           </Button>
         </Card>
-      </div>
-    </div>
+      </PageContainer>
+    </PageWrapper>
   );
 };
 

@@ -6,14 +6,21 @@ import { ROUTES } from "../../../shared/constants/app";
 import { 
   Header, 
   EmptyState,
-  LoadingSpinner
+  ErrorDisplay,
+  SectionHeader,
+  ActionButton,
+  SubscriptionFooter,
+  PaymentPageContainer,
+  PaymentContentContainer,
+  PaymentMethodSection,
+  PaymentButtonContainer,
+  HeaderContainer
 } from '../../components/common';
 import { 
-  ProductCard 
-} from '../../components/specific/payment';
-import { 
-  LoadingState 
-} from '../../components/specific/test';
+  ProductGrid,
+  LoadingState,
+  PaymentMethodSelector
+} from '../../components/specific';
 
 interface SubscriptionProduct {
   id: string;
@@ -26,6 +33,14 @@ interface SubscriptionProduct {
   popular?: boolean;
 }
 
+interface PaymentMethod {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  isAvailable: boolean;
+}
+
 const PaymentSubscriptionScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -35,6 +50,39 @@ const PaymentSubscriptionScreen: React.FC = () => {
   const [purchasePending, setPurchasePending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAvailable, setIsAvailable] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<SubscriptionProduct | null>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('');
+
+  const paymentMethods: PaymentMethod[] = [
+    {
+      id: 'card',
+      name: '신용카드',
+      icon: '💳',
+      description: 'Visa, MasterCard, American Express',
+      isAvailable: true
+    },
+    {
+      id: 'bank_transfer',
+      name: '계좌이체',
+      icon: '🏦',
+      description: '실시간 계좌이체',
+      isAvailable: true
+    },
+    {
+      id: 'mobile_payment',
+      name: '모바일 결제',
+      icon: '📱',
+      description: '카카오페이, 네이버페이, 페이코',
+      isAvailable: true
+    },
+    {
+      id: 'crypto',
+      name: '암호화폐',
+      icon: '₿',
+      description: 'Bitcoin, Ethereum',
+      isAvailable: false
+    }
+  ];
 
   useEffect(() => {
     fetchProducts();
@@ -114,17 +162,35 @@ const PaymentSubscriptionScreen: React.FC = () => {
     }
   };
 
-  const handlePurchase = async (product: SubscriptionProduct) => {
+  const handleProductSelect = (product: SubscriptionProduct) => {
+    setSelectedProduct(product);
+  };
+
+  const handlePaymentMethodSelect = (methodId: string) => {
+    setSelectedPaymentMethod(methodId);
+  };
+
+  const handlePurchase = async () => {
+    if (!selectedProduct) {
+      toast.error('구독 상품을 선택해주세요.');
+      return;
+    }
+
+    if (!selectedPaymentMethod) {
+      toast.error('결제 방법을 선택해주세요.');
+      return;
+    }
+
     try {
       setPurchasePending(true);
 
       // TODO: 실제 결제 API 호출로 대체
-      // await purchaseSubscription(product.id);
+      // await purchaseSubscription(selectedProduct.id, selectedPaymentMethod);
 
       // 시뮬레이션을 위한 지연
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      toast.success(`${product.title} 구독이 완료되었습니다!`);
+      toast.success(`${selectedProduct.title} 구독이 완료되었습니다!`);
       navigate(ROUTES.HOME);
 
     } catch (err) {
@@ -137,73 +203,50 @@ const PaymentSubscriptionScreen: React.FC = () => {
 
   if (purchasePending) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
-        <div className="text-center">
-          <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
-            {t('processing_payment') || '결제를 처리하는 중...'}
-          </p>
-        </div>
-      </div>
+      <LoadingState message={t('processing_payment') || '결제를 처리하는 중...'} />
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
-          <div className="text-6xl mb-4">❌</div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('payment_error') || '결제 오류'}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            {error}
-          </p>
-          <button
-            onClick={fetchProducts}
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            {t('retry') || '다시 시도'}
-          </button>
-        </div>
-      </div>
+      <ErrorDisplay
+        icon="❌"
+        title={t('payment_error') || '결제 오류'}
+        message={error}
+        action={{
+          label: t('retry') || '다시 시도',
+          onClick: fetchProducts
+        }}
+      />
     );
   }
 
   if (!isAvailable) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-surface flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('store_unavailable') || '스토어를 사용할 수 없습니다'}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
-            기기에서 Google Play/Apple App Store에 로그인되어 있는지,<br />
-            네트워크 연결 상태, 인앱결제 상품 등록 여부를 확인하세요.
-          </p>
-          <button
-            onClick={fetchProducts}
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          >
-            {t('retry') || '다시 시도'}
-          </button>
-        </div>
-      </div>
+      <ErrorDisplay
+        icon="⚠️"
+        title={t('store_unavailable') || '스토어를 사용할 수 없습니다'}
+        message="기기에서 Google Play/Apple App Store에 로그인되어 있는지, 네트워크 연결 상태, 인앱결제 상품 등록 여부를 확인하세요."
+        action={{
+          label: t('retry') || '다시 시도',
+          onClick: fetchProducts
+        }}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-surface">
+    <PaymentPageContainer>
       {/* Header */}
-      <Header
-        title={t('subscription_plans') || '구독 플랜'}
-        showBackButton
-        className="max-w-4xl mx-auto"
-      />
+      <HeaderContainer>
+        <Header
+          title={t('subscription_plans') || '구독 플랜'}
+          showBackButton
+        />
+      </HeaderContainer>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <PaymentContentContainer>
         {isLoading ? (
           <LoadingState />
         ) : products.length === 0 ? (
@@ -215,48 +258,47 @@ const PaymentSubscriptionScreen: React.FC = () => {
         ) : (
           <>
             {/* Header Info */}
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                {t('choose_your_plan') || '나에게 맞는 플랜을 선택하세요'}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                {t('subscription_description') || '더 많은 포인트와 고급 기능으로 AI 상담을 더욱 풍부하게 경험해보세요.'}
-              </p>
-            </div>
+            <SectionHeader
+              title={t('choose_your_plan') || '나에게 맞는 플랜을 선택하세요'}
+              description={t('subscription_description') || '더 많은 포인트와 고급 기능으로 AI 상담을 더욱 풍부하게 경험해보세요.'}
+              centered
+            />
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onPurchase={handlePurchase}
-                  loading={purchasePending}
+            <ProductGrid
+              products={products}
+              onPurchase={handleProductSelect}
+              purchasePending={purchasePending}
+            />
+
+            {/* Payment Method Selection */}
+            {selectedProduct && (
+              <PaymentMethodSection>
+                <PaymentMethodSelector
+                  methods={paymentMethods}
+                  selectedMethod={selectedPaymentMethod}
+                  onMethodSelect={handlePaymentMethodSelect}
                 />
-              ))}
-            </div>
+                
+                <PaymentButtonContainer>
+                  <ActionButton
+                    onClick={handlePurchase}
+                    disabled={!selectedPaymentMethod}
+                    loading={purchasePending}
+                    size="lg"
+                  >
+                    {purchasePending ? '처리 중...' : `${selectedProduct.price}로 구독하기`}
+                  </ActionButton>
+                </PaymentButtonContainer>
+              </PaymentMethodSection>
+            )}
 
             {/* Footer Info */}
-            <div className="mt-12 text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                {t('subscription_terms') || '구독은 언제든지 취소할 수 있습니다.'}
-              </p>
-              <div className="flex justify-center space-x-6 text-xs text-gray-400">
-                <a href="#" className="hover:text-gray-600 dark:hover:text-gray-300">
-                  {t('terms_of_service') || '이용약관'}
-                </a>
-                <a href="#" className="hover:text-gray-600 dark:hover:text-gray-300">
-                  {t('privacy_policy') || '개인정보처리방침'}
-                </a>
-                <a href="#" className="hover:text-gray-600 dark:hover:text-gray-300">
-                  {t('refund_policy') || '환불정책'}
-                </a>
-              </div>
-            </div>
+            <SubscriptionFooter />
           </>
         )}
-      </div>
-    </div>
+      </PaymentContentContainer>
+    </PaymentPageContainer>
   );
 };
 

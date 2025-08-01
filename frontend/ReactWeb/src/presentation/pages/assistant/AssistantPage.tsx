@@ -1,21 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { ROUTES } from "../../../shared/constants/app";
-import { 
-  Header, 
-  EmptyState 
-} from '../../components/common';
-import { 
-  SearchBar, 
-  CategoryFilter, 
-  AssistantCard 
-} from '../../components/specific/assistant';
-import { 
-  LoadingState, 
-  ErrorState 
-} from '../../components/specific/test';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-hot-toast';
+import {ROUTES} from "../../../shared/constants/app";
+import {EmptyState, Header, CategoryBadge} from '../../components/common';
+import {PageHeader, PageContainer} from '../../components/layout';
+import {AssistantFilters, AssistantGrid, ErrorState, LoadingState} from '../../components/specific';
+import {AssistantPageContainer, AssistantFiltersContainer, AssistantContentContainer} from '../../components/common';
 
 interface Assistant {
   id: string;
@@ -122,53 +113,7 @@ const AssistantListScreen: React.FC = () => {
     navigate(`${ROUTES.CHAT}?assistantId=${assistant.id}`);
   };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'relationship':
-        return 'bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-200';
-      case 'emotion':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-200';
-      case 'communication':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
-      case 'conflict':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200';
-      case 'planning':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200';
-    }
-  };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'relationship':
-        return '💕';
-      case 'emotion':
-        return '❤️';
-      case 'communication':
-        return '💬';
-      case 'conflict':
-        return '⚡';
-      case 'planning':
-        return '🎯';
-      default:
-        return '🤖';
-    }
-  };
-
-  const formatTime = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (minutes < 1) return '방금 전';
-    if (minutes < 60) return `${minutes}분 전`;
-    if (hours < 24) return `${hours}시간 전`;
-    if (days < 7) return `${days}일 전`;
-    return date.toLocaleDateString();
-  };
 
   const categories = [
     { id: 'all', name: t('all_categories') || '전체', icon: '📋' },
@@ -181,7 +126,7 @@ const AssistantListScreen: React.FC = () => {
 
   if (isLoading) {
     return (
-      <LoadingState 
+      <LoadingState
         message={t('loading_assistants') || 'AI 상담사를 불러오는 중...'}
       />
     );
@@ -193,46 +138,32 @@ const AssistantListScreen: React.FC = () => {
         title={t('error_loading_assistants') || 'AI 상담사 로딩 오류'}
         message={error}
         onRetry={fetchAssistants}
-        retryText={t('retry') || '다시 시도'}
       />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-surface">
+    <AssistantPageContainer>
       {/* Header */}
-      <Header
+      <PageHeader
         title={t('ai_assistants') || 'AI 상담사'}
+        subtitle={`${assistants.length}명의 상담사`}
         showBackButton
-        className="max-w-4xl mx-auto"
-      >
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          {assistants.length}명의 상담사
-        </div>
-      </Header>
+      />
 
       {/* Search and Filter */}
-      <div className="bg-white dark:bg-dark-secondary-container border-b dark:border-dark-border">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          {/* Search Bar */}
-          <SearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder={t('search_assistants') || 'AI 상담사 검색...'}
-            className="mb-4"
-          />
-
-          {/* Category Filter */}
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-          />
-        </div>
-      </div>
+      <AssistantFiltersContainer>
+        <AssistantFilters
+          searchTerm={searchTerm}
+          selectedCategory={selectedCategory}
+          categories={categories}
+          onSearchChange={setSearchTerm}
+          onCategoryChange={setSelectedCategory}
+        />
+      </AssistantFiltersContainer>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <AssistantContentContainer>
         {filteredAssistants.length === 0 ? (
           <EmptyState
             icon="🤖"
@@ -240,21 +171,13 @@ const AssistantListScreen: React.FC = () => {
             description={t('no_assistants_found_description') || '다른 검색어나 카테고리를 시도해보세요.'}
           />
         ) : (
-          <div className="space-y-4">
-            {filteredAssistants.map((assistant) => (
-              <AssistantCard
-                key={assistant.id}
-                assistant={assistant}
-                categoryName={categories.find(c => c.id === assistant.category)?.name || assistant.category}
-                categoryColor={getCategoryColor(assistant.category)}
-                categoryIcon={getCategoryIcon(assistant.category)}
-                onClick={handleAssistantSelect}
-              />
-            ))}
-          </div>
+          <AssistantGrid
+            assistants={filteredAssistants}
+            onAssistantSelect={handleAssistantSelect}
+          />
         )}
-      </div>
-    </div>
+      </AssistantContentContainer>
+    </AssistantPageContainer>
   );
 };
 
