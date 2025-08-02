@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useModal } from '../../hooks/useModal';
 
 interface ModalProps {
   isOpen: boolean;
@@ -21,24 +22,12 @@ const Modal: React.FC<ModalProps> = ({
   closeOnOverlayClick = true,
   className = ''
 }) => {
-  // ESC 키로 모달 닫기
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden'; // 스크롤 방지
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, onClose]);
+  // Use custom hook for modal management
+  const { closeOnOverlayClick: modalCloseOnOverlayClick } = useModal(isOpen, onClose, {
+    closeOnEscape: true,
+    closeOnOverlayClick,
+    preventScroll: true
+  });
 
   const getSizeClasses = () => {
     switch (size) {
@@ -62,7 +51,7 @@ const Modal: React.FC<ModalProps> = ({
       {/* Overlay */}
       <div 
         className="fixed inset-0 bg-overlay transition-opacity duration-300"
-        onClick={closeOnOverlayClick ? onClose : undefined}
+        onClick={modalCloseOnOverlayClick ? onClose : undefined}
       />
 
       {/* Modal */}

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, type ReactNode } from 'react';
-import { useUserStore } from '../stores/userStore';
+import React, { createContext, useContext, type ReactNode } from 'react';
+import { useUserManager } from '../presentation/hooks/useUserManager';
 
 interface UserContextType {
   currentUser: any | null;
@@ -14,35 +14,19 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const userStore = useUserStore();
-
-  const refreshUser = async (): Promise<void> => {
-    try {
-      // TODO: Implement actual user refresh logic
-  
-    } catch (error) {
-      console.error('Failed to refresh user:', error);
+  // Use custom hook for user management
+  const { currentUser, refreshUser, updateUser } = useUserManager({
+    autoLoad: true,
+    onUserLoad: (user) => {
+      console.log('User loaded:', user);
+    },
+    onUserUpdate: (user) => {
+      console.log('User updated:', user);
     }
-  };
-
-  const updateUser = async (userData: any): Promise<void> => {
-    try {
-      // TODO: Implement actual user update logic
-  
-    } catch (error) {
-      console.error('Failed to update user:', error);
-    }
-  };
-
-  useEffect(() => {
-    // Load user data on mount if not already loaded
-    if (!userStore.currentUser) {
-      refreshUser();
-    }
-  }, []);
+  });
 
   const value: UserContextType = {
-    currentUser: userStore.currentUser,
+    currentUser,
     refreshUser,
     updateUser,
   };

@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useCallback } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { useAutoScroll } from "../../hooks/useAutoScroll";
 import { MessageBubble, LoadingSpinner } from "../common";
 
 interface Message {
@@ -23,15 +24,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   className = "" 
 }) => {
   const { t } = useTranslation();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+  
+  // Use custom hook for auto scroll
+  const { targetRef } = useAutoScroll<HTMLDivElement>(
+    [messages],
+    { enabled: messages.length > 0 }
+  );
 
   if (loading && messages.length === 0) {
     return (
@@ -62,7 +60,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
           isOwnMessage={message.senderId === currentUserId}
         />
       ))}
-      <div ref={messagesEndRef} />
+      <div ref={targetRef} />
     </div>
   );
 };

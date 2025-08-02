@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { useAnimation } from '../../../hooks/useAnimation';
+import { useTimeout } from '../../../hooks/useTimeout';
 
 interface SplashScreenProps {
   appName?: string;
@@ -15,40 +17,25 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
   onAnimationComplete,
   className = '',
 }) => {
-  const [animationProgress, setAnimationProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const animationRef = useRef<number | undefined>(undefined);
 
-  // 하트 애니메이션
-  useEffect(() => {
-    const animate = () => {
-      setAnimationProgress(prev => {
-        const newProgress = prev + 0.02;
-        return newProgress >= 1 ? 0 : newProgress;
-      });
-      animationRef.current = requestAnimationFrame(animate);
-    };
-    
-    animationRef.current = requestAnimationFrame(animate);
-    
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, []);
+  // Use custom hook for heart animation
+  const { progress: animationProgress } = useAnimation(1, {
+    duration: 2000,
+    easing: 'linear',
+    autoStart: true,
+    loop: true
+  });
 
-  // 로딩 상태 시뮬레이션
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  // Use custom hook for loading timeout
+  useTimeout(
+    () => {
       setIsLoading(false);
-      if (onAnimationComplete) {
-        onAnimationComplete();
-      }
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [onAnimationComplete]);
+      onAnimationComplete?.();
+    },
+    2000,
+    { autoStart: true }
+  );
 
   // 하트 애니메이션 계산
   const dx = 40 * (1 - animationProgress);

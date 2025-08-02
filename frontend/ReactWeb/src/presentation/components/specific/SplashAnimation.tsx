@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useAnimation } from '../../hooks/useAnimation';
+import { useTimeout } from '../../hooks/useTimeout';
 import { LogoAnimation, LoadingDots, SplashProgressBar, SplashTagline } from '../common';
 
 interface SplashAnimationProps {
@@ -17,37 +19,31 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
   className = ''
 }) => {
   const [animationPhase, setAnimationPhase] = useState<'logo' | 'loading' | 'complete'>('logo');
-  const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    // 로고 애니메이션 (0-40%)
-    const logoTimer = setTimeout(() => {
+  // Use custom hook for progress animation
+  const { progress } = useAnimation(100, {
+    duration,
+    easing: 'linear',
+    autoStart: true
+  });
+
+  // Use custom hook for phase transitions
+  useTimeout(
+    () => {
       setAnimationPhase('loading');
-    }, duration * 0.4);
+    },
+    duration * 0.4,
+    { autoStart: true }
+  );
 
-    // 로딩 애니메이션 (40-90%)
-    const loadingTimer = setTimeout(() => {
+  useTimeout(
+    () => {
       setAnimationPhase('complete');
       onAnimationComplete?.();
-    }, duration * 0.9);
-
-    // 프로그레스 바 애니메이션
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, duration / 100);
-
-    return () => {
-      clearTimeout(logoTimer);
-      clearTimeout(loadingTimer);
-      clearInterval(progressInterval);
-    };
-  }, [duration, onAnimationComplete]);
+    },
+    duration * 0.9,
+    { autoStart: true }
+  );
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-primary via-primary-container to-error flex items-center justify-center ${className}`}>

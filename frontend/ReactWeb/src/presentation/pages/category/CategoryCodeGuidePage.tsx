@@ -1,37 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { toast } from 'react-hot-toast';
-import { 
-  LoadingState, 
-  CategoryCodeErrorState,
-  CategoryCodeHeader,
-  CategoryCodeSearchBar,
-  CategoryCodeList,
-  PageBackground,
-  PageContainer,
-  CategoryCodeDetailModal
-} from '../../components/specific';
+import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useNavigate} from 'react-router-dom';
+import {useDataLoader} from '../../hooks/useDataLoader';
+import {CategoryCodeCard, CategoryCodeModal, LoadingState} from '../../components/specific';
+import {PageContainer, PageHeader} from '../../components/layout';
+import {CategoryCodeGrid, CategoryCodeGuideContainer, SearchBar} from '../../components/common';
 import type {CategoryCode} from '../../../domain/types';
 
 const CategoryCodeGuideScreen: React.FC = () => {
   const { t } = useTranslation();
-  
-  const [codes, setCodes] = useState<CategoryCode[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCode, setSelectedCode] = useState<CategoryCode | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchCategoryCodes();
-  }, []);
-
-  const fetchCategoryCodes = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      
+  // Use custom hook for data loading
+  const { data: codes = [], loading: isLoading, error } = useDataLoader(
+    async () => {
       // TODO: 실제 API 호출로 대체
       // const response = await getCategoryCodes();
       
@@ -112,20 +98,19 @@ const CategoryCodeGuideScreen: React.FC = () => {
         },
       ];
       
-      setCodes(mockCodes);
-    } catch (err) {
-      console.error('Failed to fetch category codes:', err);
-      setError('카테고리 코드를 불러오는데 실패했습니다.');
-      toast.error('카테고리 코드를 불러오는데 실패했습니다.');
-    } finally {
-      setIsLoading(false);
+      return mockCodes;
+    },
+    [],
+    {
+      autoLoad: true,
+      errorMessage: '카테고리 코드를 불러오는데 실패했습니다.'
     }
-  };
+  );
 
   const filteredCodes = codes.filter(code =>
     code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
     code.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    code.category.toLowerCase().includes(searchTerm.toLowerCase())
+    code.examples.some(example => example.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleCodeClick = (code: CategoryCode) => {
@@ -138,8 +123,6 @@ const CategoryCodeGuideScreen: React.FC = () => {
     setSelectedCode(null);
   };
 
-
-
   if (isLoading) {
     return (
       <LoadingState message={t('loading_category_codes') || '카테고리 코드를 불러오는 중...'} />
@@ -148,39 +131,62 @@ const CategoryCodeGuideScreen: React.FC = () => {
 
   if (error) {
     return (
-      <CategoryCodeErrorState
-        error={error}
-        onRetry={fetchCategoryCodes}
-      />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            {t('error_loading_codes') || '코드 로딩 오류'}
+          </h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            {t('retry') || '다시 시도'}
+          </button>
+        </div>
+      </div>
     );
   }
 
   return (
-    <PageBackground>
+    <CategoryCodeGuideContainer>
       {/* Header */}
-      <CategoryCodeHeader codesCount={codes.length} />
-
-      {/* Search Bar */}
-      <CategoryCodeSearchBar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
+      <PageHeader
+        title={t('category_code_guide') || '카테고리 코드 가이드'}
+        subtitle={t('category_code_description') || '대화 분석에 사용되는 카테고리 코드들을 확인하세요'}
+        showBackButton
       />
 
       {/* Content */}
       <PageContainer>
-        <CategoryCodeList 
-          codes={filteredCodes} 
-          onCodeClick={handleCodeClick}
+        {/* Search */}
+        <SearchBar
+          value={searchTerm}
+          onChange={setSearchTerm}
+          placeholder={t('search_codes') || '코드 검색...'}
         />
-      </PageContainer>
 
-      {/* Category Code Detail Modal */}
-      <CategoryCodeDetailModal
-        code={selectedCode}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
-    </PageBackground>
+        {/* Codes Grid */}
+        <CategoryCodeGrid>
+          {filteredCodes.map((code) => (
+            <CategoryCodeCard
+              key={code.id}
+              code={code}
+              onClick={() => handleCodeClick(code)}
+            />
+          ))}
+        </CategoryCodeGrid>
+
+        {/* Modal */}
+        {selectedCode && (
+          <CategoryCodeModal
+            code={selectedCode}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+          />
+        )}
+      </PageContainer>
+    </CategoryCodeGuideContainer>
   );
 };
 

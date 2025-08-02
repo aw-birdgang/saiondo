@@ -1,8 +1,9 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuthStore} from '../../../stores/authStore';
 import {useUserStore} from '../../../stores/userStore';
 import {ROUTES} from "../../../shared/constants/app";
+import { useTimeout } from '../../hooks/useTimeout';
 import {SplashAnimation} from '../../components/specific';
 
 const SplashPage: React.FC = () => {
@@ -10,32 +11,33 @@ const SplashPage: React.FC = () => {
   const { isAuthenticated, loading: authLoading } = useAuthStore();
   const { loading: userLoading } = useUserStore();
 
-  // 인증 상태 확인 및 네비게이션
-  useEffect(() => {
-    const checkAuthAndNavigate = async () => {
-      try {
-        // 로딩 완료까지 대기
-        while (authLoading || userLoading) {
-          await new Promise(resolve => setTimeout(resolve, 50));
-        }
-
-        // 최소 2초 대기 (스플래시 화면 표시 시간)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // 네비게이션
+  // Use custom hook for splash timeout and navigation
+  useTimeout(
+    () => {
+      const navigateToPage = () => {
         if (isAuthenticated) {
           navigate(ROUTES.HOME, { replace: true });
         } else {
           navigate(ROUTES.LOGIN, { replace: true });
         }
-      } catch (error) {
+      };
+
+      // 로딩 완료까지 대기
+      const waitForLoading = async () => {
+        while (authLoading || userLoading) {
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
+        navigateToPage();
+      };
+
+      waitForLoading().catch(error => {
         console.error('Splash screen error:', error);
         navigate(ROUTES.LOGIN, { replace: true });
-      }
-    };
-
-    checkAuthAndNavigate();
-  }, [authLoading, userLoading, isAuthenticated, navigate]);
+      });
+    },
+    2000, // 최소 2초 대기 (스플래시 화면 표시 시간)
+    { autoStart: true }
+  );
 
   return (
     <SplashAnimation

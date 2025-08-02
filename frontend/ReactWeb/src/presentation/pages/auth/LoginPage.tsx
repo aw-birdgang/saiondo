@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../../shared/constants/app';
 import { useAuth } from '../../../presentation/hooks/useAuth';
+import { useErrorHandler } from '../../hooks/useErrorHandler';
 import { LoginForm, AuthLayout, QuickLoginButtons, AuthGuard } from '../../components/specific';
 import { LoginPageContainer } from '../../components/common';
 
@@ -18,12 +18,13 @@ const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // 에러 처리
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
+  // Use custom hook for error handling
+  useErrorHandler(error, {
+    showToast: true,
+    onError: (errorMsg) => {
+      console.error('Login error:', errorMsg);
     }
-  }, [error]);
+  });
 
   const handleSubmit = async (formData: { email: string; password: string }) => {
     try {

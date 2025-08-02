@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useEffect, type ReactNode } from 'react';
+import React, { createContext, useContext, type ReactNode } from 'react';
 import { useAuthStore } from '../stores/authStore';
+import { useAuthInitializer } from '../presentation/hooks/useAuthInitializer';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -18,14 +19,16 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const authStore = useAuthStore();
 
-  useEffect(() => {
-    // Check for existing token on mount
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      authStore.setToken(token);
-      // You might want to validate the token here
+  // Use custom hook for auth initialization
+  useAuthInitializer({
+    autoInitialize: true,
+    onTokenFound: (token) => {
+      console.log('Token found and set');
+    },
+    onTokenNotFound: () => {
+      console.log('No token found');
     }
-  }, [authStore]);
+  });
 
   const value: AuthContextType = {
     isAuthenticated: authStore.isAuthenticated,

@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-
+import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ROUTES} from "../../../shared/constants/app";
+import { useDataLoader } from "../../hooks/useDataLoader";
 import {ChannelHeader, ChannelList, ChannelStats, LoadingState, PageLayout} from '../../components/specific';
 import type {ChannelListItem, ChannelStats as ChannelStatsType} from '../../../domain/types';
 
@@ -10,7 +10,6 @@ const ChannelTab: React.FC = () => {
   const navigate = useNavigate();
 
   const [channels, setChannels] = useState<ChannelListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<ChannelStatsType>({
     totalChannels: 0,
     activeChannels: 0,
@@ -20,30 +19,33 @@ const ChannelTab: React.FC = () => {
     memberCount: 0
   });
 
-  useEffect(() => {
-    // TODO: 실제 API 호출로 대체
-    const mockChannels: ChannelListItem[] = [
-      {
-        id: '1',
-        name: '커플 채널',
-        description: '우리만의 특별한 공간',
-        memberCount: 2,
-        lastMessage: '오늘 날씨가 정말 좋네요!',
-        lastMessageTime: '2시간 전',
-        unreadCount: 3,
-      },
-      {
-        id: '2',
-        name: '가족 채널',
-        description: '가족들과의 소통 공간',
-        memberCount: 4,
-        lastMessage: '주말에 뭐 할까요?',
-        lastMessageTime: '1일 전',
-        unreadCount: 0,
-      },
-    ];
+  // Use custom hook for data loading
+  const { loading: isLoading } = useDataLoader(
+    async () => {
+      // TODO: 실제 API 호출로 대체
+      const mockChannels: ChannelListItem[] = [
+        {
+          id: '1',
+          name: '커플 채널',
+          description: '우리만의 특별한 공간',
+          memberCount: 2,
+          lastMessage: '오늘 날씨가 정말 좋네요!',
+          lastMessageTime: '2시간 전',
+          unreadCount: 3,
+        },
+        {
+          id: '2',
+          name: '가족 채널',
+          description: '가족들과의 소통 공간',
+          memberCount: 4,
+          lastMessage: '주말에 뭐 할까요?',
+          lastMessageTime: '1일 전',
+          unreadCount: 0,
+        },
+      ];
 
-    setTimeout(() => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setChannels(mockChannels);
       setStats({
         totalChannels: mockChannels.length,
@@ -53,9 +55,10 @@ const ChannelTab: React.FC = () => {
         averageResponseTime: '2분',
         memberCount: mockChannels.reduce((sum, c) => sum + c.memberCount, 0)
       });
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    },
+    [],
+    { autoLoad: true }
+  );
 
   const handleChannelClick = (channelId: string) => {
     navigate(`${ROUTES.CHAT}/${channelId}`);

@@ -33,3 +33,6 @@ export * from './payment';
 
 // Splash Pages
 export * from './splash';
+
+// Examples Pages
+export * from './examples';

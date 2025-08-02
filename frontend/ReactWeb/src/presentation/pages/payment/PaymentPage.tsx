@@ -1,80 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from "../../../shared/constants/app";
-import { 
-  Header, 
-  EmptyState,
-  ErrorDisplay,
-  SectionHeader,
-  ActionButton,
-  SubscriptionFooter,
-  PaymentPageContainer,
-  PaymentContentContainer,
-  PaymentMethodSection,
-  PaymentButtonContainer,
-  HeaderContainer
-} from '../../components/common';
-import { 
-  ProductGrid,
-  LoadingState,
-  PaymentMethodSelector
-} from '../../components/specific';
-import type {SubscriptionProduct, PaymentMethod} from '../../../domain/types';
+import { useAuthStore } from "../../../stores/authStore";
+import { useDataLoader } from '../../hooks/useDataLoader';
+import { LoadingState, PaymentMethodSelector, ProductCard, PurchaseConfirmation } from '../../components/specific';
+import { PageHeader, PageContainer } from '../../components/layout';
+import { PaymentPageContainer, ProductGrid, PaymentSection } from '../../components/common';
+import type { SubscriptionProduct, PaymentMethod } from '../../../domain/types';
 
 const PaymentSubscriptionScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
 
-  const [products, setProducts] = useState<SubscriptionProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [purchasePending, setPurchasePending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isAvailable, setIsAvailable] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<SubscriptionProduct | null>(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('card');
+  const [isAvailable, setIsAvailable] = useState(false);
 
-  const paymentMethods: PaymentMethod[] = [
-    {
-      id: 'card',
-      name: '신용카드',
-      icon: '💳',
-      description: 'Visa, MasterCard, American Express',
-      isAvailable: true
-    },
-    {
-      id: 'bank_transfer',
-      name: '계좌이체',
-      icon: '🏦',
-      description: '실시간 계좌이체',
-      isAvailable: true
-    },
-    {
-      id: 'mobile_payment',
-      name: '모바일 결제',
-      icon: '📱',
-      description: '카카오페이, 네이버페이, 페이코',
-      isAvailable: true
-    },
-    {
-      id: 'crypto',
-      name: '암호화폐',
-      icon: '₿',
-      description: 'Bitcoin, Ethereum',
-      isAvailable: false
-    }
-  ];
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
+  // Use custom hook for data loading
+  const { data: products = [], loading: isLoading, error } = useDataLoader(
+    async () => {
       // TODO: 실제 API 호출로 대체
       // const response = await getSubscriptionProducts();
 
@@ -133,16 +80,46 @@ const PaymentSubscriptionScreen: React.FC = () => {
         },
       ];
 
-      setProducts(mockProducts);
       setIsAvailable(true);
-    } catch (err) {
-      console.error('Failed to fetch products:', err);
-      setError('구독 상품을 불러오는데 실패했습니다.');
-      setIsAvailable(false);
-    } finally {
-      setIsLoading(false);
+      return mockProducts;
+    },
+    [],
+    {
+      autoLoad: true,
+      errorMessage: '구독 상품을 불러오는데 실패했습니다.'
     }
-  };
+  );
+
+  const paymentMethods: PaymentMethod[] = [
+    {
+      id: 'card',
+      name: '신용카드',
+      icon: '💳',
+      description: 'Visa, Mastercard, Amex',
+      isAvailable: true
+    },
+    {
+      id: 'bank',
+      name: '계좌이체',
+      icon: '🏦',
+      description: '실시간 계좌이체',
+      isAvailable: true
+    },
+    {
+      id: 'mobile',
+      name: '휴대폰 결제',
+      icon: '📱',
+      description: '통신사 결제',
+      isAvailable: true
+    },
+    {
+      id: 'crypto',
+      name: '암호화폐',
+      icon: '₿',
+      description: 'Bitcoin, Ethereum',
+      isAvailable: false
+    }
+  ];
 
   const handleProductSelect = (product: SubscriptionProduct) => {
     setSelectedProduct(product);
@@ -164,122 +141,101 @@ const PaymentSubscriptionScreen: React.FC = () => {
     }
 
     try {
-      setPurchasePending(true);
-
-      // TODO: 실제 결제 API 호출로 대체
-      // await purchaseSubscription(selectedProduct.id, selectedPaymentMethod);
+      // TODO: 실제 결제 API 호출
+      // await processPayment({
+      //   productId: selectedProduct.id,
+      //   paymentMethod: selectedPaymentMethod,
+      //   userId: user?.id
+      // });
 
       // 시뮬레이션을 위한 지연
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      toast.success(`${selectedProduct.title} 구독이 완료되었습니다!`);
+      toast.success('구독이 성공적으로 완료되었습니다!');
       navigate(ROUTES.HOME);
-
-    } catch (err) {
-      console.error('Purchase failed:', err);
+    } catch (error) {
+      console.error('Payment failed:', error);
       toast.error('결제에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setPurchasePending(false);
     }
   };
 
-  if (purchasePending) {
+  if (isLoading) {
     return (
-      <LoadingState message={t('processing_payment') || '결제를 처리하는 중...'} />
+      <LoadingState message={t('loading_products') || '구독 상품을 불러오는 중...'} />
     );
   }
 
   if (error) {
     return (
-      <ErrorDisplay
-        icon="❌"
-        title={t('payment_error') || '결제 오류'}
-        message={error}
-        action={{
-          label: t('retry') || '다시 시도',
-          onClick: fetchProducts
-        }}
-      />
-    );
-  }
-
-  if (!isAvailable) {
-    return (
-      <ErrorDisplay
-        icon="⚠️"
-        title={t('store_unavailable') || '스토어를 사용할 수 없습니다'}
-        message="기기에서 Google Play/Apple App Store에 로그인되어 있는지, 네트워크 연결 상태, 인앱결제 상품 등록 여부를 확인하세요."
-        action={{
-          label: t('retry') || '다시 시도',
-          onClick: fetchProducts
-        }}
-      />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">
+            {t('error_loading_products') || '상품 로딩 오류'}
+          </h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            {t('retry') || '다시 시도'}
+          </button>
+        </div>
+      </div>
     );
   }
 
   return (
     <PaymentPageContainer>
       {/* Header */}
-      <HeaderContainer>
-        <Header
-          title={t('subscription_plans') || '구독 플랜'}
-          showBackButton
-        />
-      </HeaderContainer>
+      <PageHeader
+        title={t('subscription') || '구독'}
+        subtitle={t('choose_your_plan') || '원하는 플랜을 선택하세요'}
+        showBackButton
+      />
 
       {/* Content */}
-      <PaymentContentContainer>
-        {isLoading ? (
-          <LoadingState />
-        ) : products.length === 0 ? (
-          <EmptyState
-            icon="📦"
-            title={t('no_products') || '구독 상품이 없습니다'}
-            description={t('no_products_description') || '현재 이용 가능한 구독 상품이 없습니다.'}
-          />
-        ) : (
-          <>
-            {/* Header Info */}
-            <SectionHeader
-              title={t('choose_your_plan') || '나에게 맞는 플랜을 선택하세요'}
-              description={t('subscription_description') || '더 많은 포인트와 고급 기능으로 AI 상담을 더욱 풍부하게 경험해보세요.'}
-              centered
+      <PageContainer>
+        {/* Product Selection */}
+        <PaymentSection>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            {t('select_plan') || '플랜 선택'}
+          </h2>
+          <ProductGrid>
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                isSelected={selectedProduct?.id === product.id}
+                onSelect={handleProductSelect}
+              />
+            ))}
+          </ProductGrid>
+        </PaymentSection>
+
+        {/* Payment Method Selection */}
+        {selectedProduct && (
+          <PaymentSection>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              {t('payment_method') || '결제 방법'}
+            </h2>
+            <PaymentMethodSelector
+              methods={paymentMethods}
+              selectedMethod={selectedPaymentMethod}
+              onSelect={handlePaymentMethodSelect}
             />
-
-            {/* Products Grid */}
-            <ProductGrid
-              products={products}
-              onPurchase={handleProductSelect}
-              purchasePending={purchasePending}
-            />
-
-            {/* Payment Method Selection */}
-            {selectedProduct && (
-              <PaymentMethodSection>
-                <PaymentMethodSelector
-                  methods={paymentMethods}
-                  selectedMethod={selectedPaymentMethod}
-                  onMethodSelect={handlePaymentMethodSelect}
-                />
-                
-                <PaymentButtonContainer>
-                  <ActionButton
-                    onClick={handlePurchase}
-                    disabled={!selectedPaymentMethod}
-                    loading={purchasePending}
-                    size="lg"
-                  >
-                    {purchasePending ? '처리 중...' : `${selectedProduct.price}로 구독하기`}
-                  </ActionButton>
-                </PaymentButtonContainer>
-              </PaymentMethodSection>
-            )}
-
-            {/* Footer Info */}
-            <SubscriptionFooter />
-          </>
+          </PaymentSection>
         )}
-      </PaymentContentContainer>
+
+        {/* Purchase Confirmation */}
+        {selectedProduct && selectedPaymentMethod && (
+          <PurchaseConfirmation
+            product={selectedProduct}
+            paymentMethod={paymentMethods.find(m => m.id === selectedPaymentMethod)!}
+            onPurchase={handlePurchase}
+            isAvailable={isAvailable}
+          />
+        )}
+      </PageContainer>
     </PaymentPageContainer>
   );
 };

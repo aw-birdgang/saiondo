@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useFormInitialization } from '../../hooks/useFormInitialization';
 
 interface Event {
   id?: string;
@@ -27,15 +28,6 @@ const EventForm: React.FC<EventFormProps> = ({
   isOpen,
   className = ''
 }) => {
-  const [formData, setFormData] = useState<Event>({
-    title: '',
-    date: selectedDate,
-    type: 'other',
-    description: '',
-    time: '',
-    location: ''
-  });
-
   const eventTypes = [
     { value: 'meeting', label: '미팅', icon: '🤝' },
     { value: 'date', label: '데이트', icon: '💕' },
@@ -43,20 +35,19 @@ const EventForm: React.FC<EventFormProps> = ({
     { value: 'other', label: '기타', icon: '📅' }
   ];
 
-  useEffect(() => {
-    if (event) {
-      setFormData(event);
-    } else {
-      setFormData({
-        title: '',
-        date: selectedDate,
-        type: 'other',
-        description: '',
-        time: '',
-        location: ''
-      });
-    }
-  }, [event, selectedDate]);
+  // Use custom hook for form initialization
+  const { formData, updateFormData } = useFormInitialization({
+    initialData: event,
+    defaultData: {
+      title: '',
+      date: selectedDate,
+      type: 'other' as const,
+      description: '',
+      time: '',
+      location: ''
+    },
+    dependencies: [selectedDate]
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,10 +67,7 @@ const EventForm: React.FC<EventFormProps> = ({
   };
 
   const handleInputChange = (field: keyof Event, value: string | Date) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    updateFormData({ [field]: value } as Partial<Event>);
   };
 
   if (!isOpen) return null;
@@ -138,9 +126,8 @@ const EventForm: React.FC<EventFormProps> = ({
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                className="input w-full text-base"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="일정 제목을 입력하세요"
-                required
               />
             </div>
 
@@ -153,7 +140,7 @@ const EventForm: React.FC<EventFormProps> = ({
                 type="date"
                 value={formData.date.toISOString().split('T')[0]}
                 onChange={(e) => handleInputChange('date', new Date(e.target.value))}
-                className="input w-full text-base"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -166,7 +153,7 @@ const EventForm: React.FC<EventFormProps> = ({
                 type="time"
                 value={formData.time}
                 onChange={(e) => handleInputChange('time', e.target.value)}
-                className="input w-full text-base"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
@@ -179,7 +166,7 @@ const EventForm: React.FC<EventFormProps> = ({
                 type="text"
                 value={formData.location}
                 onChange={(e) => handleInputChange('location', e.target.value)}
-                className="input w-full text-base"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
                 placeholder="장소를 입력하세요"
               />
             </div>
@@ -193,23 +180,23 @@ const EventForm: React.FC<EventFormProps> = ({
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 rows={3}
-                className="input w-full resize-none text-base"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                 placeholder="일정에 대한 설명을 입력하세요"
               />
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-4 pt-6">
+            {/* Buttons */}
+            <div className="flex gap-4 pt-4">
               <button
                 type="button"
                 onClick={onCancel}
-                className="btn btn-secondary flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
+                className="flex-1 px-6 py-3 border border-border rounded-lg text-txt-secondary hover:bg-secondary transition-all duration-200"
               >
                 취소
               </button>
               <button
                 type="submit"
-                className="btn btn-primary flex-1 px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
+                className="flex-1 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all duration-200"
               >
                 {event ? '수정' : '추가'}
               </button>

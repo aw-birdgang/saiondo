@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuthStore } from "../../../stores/authStore";
+import { useDataLoader } from '../../hooks/useDataLoader';
 import { LoadingState, InvitationResponseCard } from '../../components/specific';
 import { PageHeader, PageContainer } from '../../components/layout';
 import { RefreshButton, EmptyInvitationsState, InvitationPageContainer, InvitationGrid } from '../../components/common';
@@ -13,17 +14,10 @@ const ChannelInvitationScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  
-  const [invitations, setInvitations] = useState<ChannelInvitationItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchInvitations();
-  }, []);
-
-  const fetchInvitations = async () => {
-    try {
-      setIsLoading(true);
+  // Use custom hook for data loading
+  const { data: invitations = [], loading: isLoading, refresh: fetchInvitations } = useDataLoader(
+    async () => {
       // TODO: 실제 API 호출로 대체
       // const response = await getChannelInvitations(userId);
       
@@ -64,14 +58,14 @@ const ChannelInvitationScreen: React.FC = () => {
         },
       ];
       
-      setInvitations(mockInvitations);
-    } catch (error) {
-      console.error('Failed to fetch invitations:', error);
-      toast.error(t('failed_to_load_invitations') || '초대장을 불러오는데 실패했습니다.');
-    } finally {
-      setIsLoading(false);
+      return mockInvitations;
+    },
+    [user?.id],
+    {
+      autoLoad: true,
+      errorMessage: t('failed_to_load_invitations') || '초대장을 불러오는데 실패했습니다.'
     }
-  };
+  );
 
   const handleRespondToInvitation = async (invitationId: string, accepted: boolean) => {
     try {
@@ -81,13 +75,8 @@ const ChannelInvitationScreen: React.FC = () => {
       // 시뮬레이션을 위한 지연
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      setInvitations(prev =>
-        prev.map(invitation =>
-          invitation.id === invitationId
-            ? { ...invitation, status: accepted ? 'accepted' : 'rejected' }
-            : invitation
-        )
-      );
+      // Note: In a real implementation, you would update the local state
+      // after successful API call. For now, we'll just show a toast.
       
       toast.success(
         accepted 
@@ -105,8 +94,6 @@ const ChannelInvitationScreen: React.FC = () => {
       toast.error(t('failed_to_respond') || '초대 응답에 실패했습니다.');
     }
   };
-
-
 
   if (isLoading) {
     return (

@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
+import { useRouteChange } from '../../hooks/useRouteChange';
 
 export const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    // Close sidebar on route change
-    setSidebarOpen(false);
-  }, [location.pathname]);
+  // Use custom hook for route change handling
+  useRouteChange({
+    onRouteChange: (pathname) => {
+      // Close sidebar on route change
+      setSidebarOpen(false);
+    }
+  });
 
   const tabs = [
     { name: 'Home', href: '/', icon: '🏠' },
@@ -18,6 +22,7 @@ export const MainLayout: React.FC = () => {
     { name: 'Analysis', href: '/analysis', icon: '📊' },
     { name: 'Calendar', href: '/calendar', icon: '📅' },
     { name: 'My Page', href: '/mypage', icon: '👤' },
+    { name: 'Examples', href: '/examples', icon: '🧪' },
   ];
 
   return (

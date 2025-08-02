@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, type ReactNode } from 'react';
-import { useThemeStore } from '../stores/themeStore';
+import React, { createContext, useContext, type ReactNode } from 'react';
+import { useThemeManager } from '../presentation/hooks/useThemeManager';
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -14,22 +14,18 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const themeStore = useThemeStore();
-
-  useEffect(() => {
-    // Apply theme to document on mount and theme change
-    const root = document.documentElement;
-    if (themeStore.isDarkMode) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
+  // Use custom hook for theme management
+  const { isDarkMode, toggleTheme, setTheme } = useThemeManager({
+    autoApply: true,
+    onThemeChange: (isDark) => {
+      console.log('Theme changed to:', isDark ? 'dark' : 'light');
     }
-  }, [themeStore.isDarkMode]);
+  });
 
   const value: ThemeContextType = {
-    isDarkMode: themeStore.isDarkMode,
-    toggleTheme: themeStore.toggleTheme,
-    setTheme: themeStore.setTheme,
+    isDarkMode,
+    toggleTheme,
+    setTheme,
   };
 
   return (

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
 import { useMessages } from "../../hooks/useMessages";
+import { useErrorHandler } from "../../hooks/useErrorHandler";
 import {
   ChatHeader,
   ChatContainer,
@@ -33,14 +34,13 @@ const ChatPage: React.FC = () => {
     sendMessage,
   } = useMessages(channelId);
 
-
-
-  // Handle error
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
+  // Use custom hook for error handling
+  useErrorHandler(error, {
+    showToast: true,
+    onError: (errorMsg) => {
+      console.error('Chat error:', errorMsg);
     }
-  }, [error]);
+  });
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || loading) return;

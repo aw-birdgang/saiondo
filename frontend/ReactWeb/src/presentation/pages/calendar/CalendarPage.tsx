@@ -1,12 +1,7 @@
 import React, {useState} from 'react';
 import {eachDayOfInterval, endOfMonth, startOfMonth} from 'date-fns';
-import {
-  CalendarHeader,
-  CalendarGrid,
-  EventList,
-  EventForm
-} from '../../components/specific';
-import { PageWrapper, PageContainer } from '../../components/layout';
+import {CalendarGrid, CalendarHeader, EventForm, EventList} from '../../components/specific';
+import {PageContainer, PageWrapper} from '../../components/layout';
 
 interface Event {
   id?: string;

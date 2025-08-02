@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../../shared/constants/app';
-import { useAuthStore } from '../../../stores/authStore';
+import { useAuthGuard } from '../../hooks/useAuthGuard';
 import { LoadingSpinner } from '../common';
 
 interface AuthGuardProps {
@@ -19,21 +18,15 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   fallback
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { user, loading } = useAuthStore();
-
-  useEffect(() => {
-    if (!loading) {
-      if (requireAuth && !user) {
-        navigate(redirectTo, { replace: true });
-      } else if (!requireAuth && user) {
-        navigate(ROUTES.HOME, { replace: true });
-      }
-    }
-  }, [user, loading, requireAuth, redirectTo, navigate]);
+  
+  // Use custom hook for auth guard
+  const { isLoading, shouldRender } = useAuthGuard({
+    requireAuth,
+    redirectTo
+  });
 
   // 로딩 중일 때
-  if (loading) {
+  if (isLoading) {
     return fallback || (
       <div className="min-h-screen bg-bg flex items-center justify-center">
         <div className="text-center">
@@ -46,14 +39,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
     );
   }
 
-  // 인증이 필요한 페이지인데 사용자가 로그인하지 않은 경우
-  if (requireAuth && !user) {
-    return null; // 리다이렉트 중이므로 아무것도 렌더링하지 않음
-  }
-
-  // 인증이 필요하지 않은 페이지인데 사용자가 로그인한 경우
-  if (!requireAuth && user) {
-    return null; // 리다이렉트 중이므로 아무것도 렌더링하지 않음
+  // 조건을 만족하지 않는 경우 아무것도 렌더링하지 않음 (리다이렉트 중)
+  if (!shouldRender) {
+    return null;
   }
 
   // 조건을 만족하는 경우 자식 컴포넌트 렌더링

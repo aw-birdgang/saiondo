@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { usePeriodicUpdate } from './usePeriodicUpdate';
 import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
 import type { 
   WebSocketConfig, 
@@ -269,19 +270,24 @@ export const useProductionFeatures = (config: ProductionConfig = {}) => {
     }
   }, [isConnected]);
 
-  // Periodic stats updates
-  useEffect(() => {
-    const updateStats = async () => {
+  // Use custom hook for periodic stats updates
+  usePeriodicUpdate(
+    async () => {
       await Promise.all([
         getCacheStats(),
         getAPMStats(),
         getAlerts(),
       ]);
-    };
-
-    const interval = setInterval(updateStats, 30000); // Update every 30 seconds
-    return () => clearInterval(interval);
-  }, [getCacheStats, getAPMStats, getAlerts]);
+    },
+    30000, // Update every 30 seconds
+    [getCacheStats, getAPMStats, getAlerts],
+    {
+      enabled: isConnected,
+      onCleanup: () => {
+        console.log('Periodic stats update stopped');
+      }
+    }
+  );
 
   // Cleanup on unmount
   useEffect(() => {

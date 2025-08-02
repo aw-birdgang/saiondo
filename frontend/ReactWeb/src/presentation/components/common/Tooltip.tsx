@@ -1,36 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
+import { useTooltip } from '../../hooks/useTooltip';
 
 interface TooltipProps {
   content: string;
   children: React.ReactNode;
   position?: 'top' | 'bottom' | 'left' | 'right';
   className?: string;
+  delay?: number;
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({ 
   content, 
   children, 
   position = 'top',
-  className = '' 
+  className = '',
+  delay = 0
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const triggerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleMouseEnter = () => setIsVisible(true);
-    const handleMouseLeave = () => setIsVisible(false);
-
-    const trigger = triggerRef.current;
-    if (trigger) {
-      trigger.addEventListener('mouseenter', handleMouseEnter);
-      trigger.addEventListener('mouseleave', handleMouseLeave);
-
-      return () => {
-        trigger.removeEventListener('mouseenter', handleMouseEnter);
-        trigger.removeEventListener('mouseleave', handleMouseLeave);
-      };
-    }
-  }, []);
+  // Use custom hook for tooltip management
+  const { isVisible, triggerRef } = useTooltip({
+    delay,
+    showOnHover: true,
+    showOnFocus: true
+  });
 
   const getPositionClasses = () => {
     switch (position) {

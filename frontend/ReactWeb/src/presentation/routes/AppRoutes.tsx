@@ -15,7 +15,8 @@ import {
   ChannelInvitationPage,
   InvitePartnerPage,
   PaymentPage,
-  SplashPage
+  SplashPage,
+  ExamplesPage
 } from "../pages";
 
 export const AppRoutes: React.FC = () => {
@@ -51,7 +52,8 @@ export const AppRoutes: React.FC = () => {
       {/* Profile */}
       <Route path="/profile" element={<MyPage />} />
       
-
+      {/* Examples */}
+      <Route path="/examples" element={<ExamplesPage />} />
     </Routes>
   );
 };

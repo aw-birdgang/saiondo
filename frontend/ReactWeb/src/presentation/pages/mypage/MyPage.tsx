@@ -13,7 +13,6 @@ const MyPage: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {

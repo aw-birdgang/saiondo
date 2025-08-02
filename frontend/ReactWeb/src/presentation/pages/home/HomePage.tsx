@@ -1,8 +1,9 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useTranslation} from "react-i18next";
 import {useAuthStore} from '../../../stores/authStore';
 import {useUserStore} from '../../../stores/userStore';
 import {useChannelStore} from '../../../stores/channelStore';
+import {useDataLoader} from "../../hooks/useDataLoader";
 import {Header} from "../../components/common";
 import {PageWrapper} from "../../components/layout";
 import {HomeContent} from "../../components/specific";
@@ -13,13 +14,19 @@ const HomePage: React.FC = () => {
   const { loading, fetchCurrentUser } = useUserStore();
   const { channels, fetchChannelsByUserId } = useChannelStore();
 
-  // Load current user and channels on component mount
-  useEffect(() => {
-    if (user?.id) {
-      fetchCurrentUser();
-      fetchChannelsByUserId(user.id);
-    }
-  }, [user?.id, fetchCurrentUser, fetchChannelsByUserId]);
+  // Use custom hook for data loading
+  const { loadData: loadHomeData } = useDataLoader(
+    async () => {
+      if (user?.id) {
+        await Promise.all([
+          fetchCurrentUser(),
+          fetchChannelsByUserId(user.id)
+        ]);
+      }
+    },
+    [user?.id, fetchCurrentUser, fetchChannelsByUserId],
+    { autoLoad: !!user?.id }
+  );
 
   return (
     <PageWrapper background="gradient">

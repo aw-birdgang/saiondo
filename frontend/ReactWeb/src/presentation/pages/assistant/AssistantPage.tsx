@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
-import {toast} from 'react-hot-toast';
 import {ROUTES} from "../../../shared/constants/app";
+import { useDataLoader } from '../../hooks/useDataLoader';
 import {EmptyState} from '../../components/common';
 import {AssistantFilters, AssistantGrid, ErrorState, LoadingState} from '../../components/specific';
 import {AssistantPageContainer, AssistantFiltersContainer, AssistantContentContainer} from '../../components/common';
@@ -12,21 +12,12 @@ const AssistantListScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [assistants, setAssistants] = useState<Assistant[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  useEffect(() => {
-    fetchAssistants();
-  }, []);
-
-  const fetchAssistants = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
+  // Use custom hook for data loading
+  const { data: assistants = [], loading: isLoading, error } = useDataLoader(
+    async () => {
       // TODO: 실제 API 호출로 대체
       // const response = await getAssistants();
 
@@ -80,15 +71,14 @@ const AssistantListScreen: React.FC = () => {
         },
       ];
 
-      setAssistants(mockAssistants);
-    } catch (err) {
-      console.error('Failed to fetch assistants:', err);
-      setError('AI 상담사를 불러오는데 실패했습니다.');
-      toast.error('AI 상담사를 불러오는데 실패했습니다.');
-    } finally {
-      setIsLoading(false);
+      return mockAssistants;
+    },
+    [],
+    {
+      autoLoad: true,
+      errorMessage: 'AI 상담사를 불러오는데 실패했습니다.'
     }
-  };
+  );
 
   const filteredAssistants = assistants.filter(assistant => {
     const matchesSearch = assistant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -101,8 +91,6 @@ const AssistantListScreen: React.FC = () => {
     // TODO: 실제 채팅 화면으로 이동
     navigate(`${ROUTES.CHAT}?assistantId=${assistant.id}`);
   };
-
-
 
   const categories: AssistantCategory[] = [
     { id: 'all', name: t('all_categories') || '전체', icon: '📋' },
@@ -126,7 +114,7 @@ const AssistantListScreen: React.FC = () => {
       <ErrorState
         title={t('error_loading_assistants') || 'AI 상담사 로딩 오류'}
         message={error}
-        onRetry={fetchAssistants}
+        onRetry={() => window.location.reload()}
       />
     );
   }
