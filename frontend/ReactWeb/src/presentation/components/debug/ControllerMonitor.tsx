@@ -16,7 +16,7 @@ interface FlowInfo {
 export const ControllerMonitor: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState(5000);
-  const [activeTab, setActiveTab] = useState<'overview' | 'flows' | 'performance' | 'factory'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'flows' | 'performance' | 'factory' | 'middleware'>('overview');
   const stats = useControllerStats();
 
   // 자동 갱신
@@ -103,7 +103,8 @@ export const ControllerMonitor: React.FC = () => {
           { id: 'overview', label: '개요' },
           { id: 'flows', label: '흐름' },
           { id: 'performance', label: '성능' },
-          { id: 'factory', label: 'Factory' }
+          { id: 'factory', label: 'Factory' },
+          { id: 'middleware', label: '미들웨어' }
         ].map(tab => (
           <button
             key={tab.id}
@@ -202,6 +203,52 @@ export const ControllerMonitor: React.FC = () => {
                 <div>총 Controller: {getFactoryInfo().totalControllers}</div>
                 <div>활성 Controller: {getFactoryInfo().activeControllers}</div>
                 <div>Controller 타입: {getFactoryInfo().controllerTypes.join(', ')}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'middleware' && (
+          <div className="space-y-4">
+            <h4 className="font-medium text-gray-900 dark:text-white">미들웨어 상태</h4>
+            
+            {/* Validation Middleware */}
+            <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3">
+              <h5 className="font-medium text-orange-900 dark:text-orange-100 mb-2">Validation Middleware</h5>
+              <div className="space-y-1 text-xs text-orange-700 dark:text-orange-300">
+                <div>우선순위: 5 (최고)</div>
+                <div>기능: 입력 파라미터 검증</div>
+                <div>상태: 활성</div>
+              </div>
+            </div>
+
+            {/* Logging Middleware */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+              <h5 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Logging Middleware</h5>
+              <div className="space-y-1 text-xs text-blue-700 dark:text-blue-300">
+                <div>우선순위: 10</div>
+                <div>기능: 실행 전후 로깅</div>
+                <div>상태: 활성</div>
+              </div>
+            </div>
+
+            {/* Caching Middleware */}
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+              <h5 className="font-medium text-green-900 dark:text-green-100 mb-2">Caching Middleware</h5>
+              <div className="space-y-1 text-xs text-green-700 dark:text-green-300">
+                <div>우선순위: 30</div>
+                <div>기능: 결과 캐싱</div>
+                <div>상태: 활성</div>
+              </div>
+            </div>
+
+            {/* Performance Middleware */}
+            <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3">
+              <h5 className="font-medium text-indigo-900 dark:text-indigo-100 mb-2">Performance Middleware</h5>
+              <div className="space-y-1 text-xs text-indigo-700 dark:text-indigo-300">
+                <div>우선순위: 20</div>
+                <div>기능: 성능 메트릭 추적</div>
+                <div>상태: 활성</div>
               </div>
             </div>
           </div>

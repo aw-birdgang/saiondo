@@ -6,6 +6,8 @@ import type { IMiddlewareChain } from './interfaces/IControllerMiddleware';
 import { MiddlewareChain } from './middleware/MiddlewareChain';
 import { LoggingMiddleware } from './middleware/LoggingMiddleware';
 import { PerformanceMiddleware } from './middleware/PerformanceMiddleware';
+import { CachingMiddleware } from './middleware/CachingMiddleware';
+import { ValidationMiddleware } from './middleware/ValidationMiddleware';
 
 /**
  * Base Controller - 모든 Controller의 기본 클래스
@@ -43,7 +45,9 @@ export abstract class BaseController implements IController {
    * 기본 미들웨어 설정
    */
   private setupDefaultMiddlewares(): void {
+    this.middlewareChain.addMiddleware(new ValidationMiddleware());
     this.middlewareChain.addMiddleware(new LoggingMiddleware());
+    this.middlewareChain.addMiddleware(new CachingMiddleware());
     this.middlewareChain.addMiddleware(new PerformanceMiddleware());
   }
 

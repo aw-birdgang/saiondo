@@ -14,8 +14,10 @@ ReactWeb 프로젝트의 Controller 패턴을 대폭 개선하여 흐름 추적�
 
 ### 2. 미들웨어 시스템
 
-- **LoggingMiddleware**: 실행 전후 상세 로깅
-- **PerformanceMiddleware**: 성능 메트릭 추적
+- **ValidationMiddleware**: 입력 파라미터 검증 (우선순위: 5)
+- **LoggingMiddleware**: 실행 전후 상세 로깅 (우선순위: 10)
+- **PerformanceMiddleware**: 성능 메트릭 추적 (우선순위: 20)
+- **CachingMiddleware**: 결과 캐싱으로 성능 최적화 (우선순위: 30)
 - **확장 가능한 구조**: 새로운 미들웨어 쉽게 추가 가능
 
 ### 3. Controller Factory 패턴
@@ -36,13 +38,18 @@ ReactWeb 프로젝트의 Controller 패턴을 대폭 개선하여 흐름 추적�
 src/application/controllers/
 ├── interfaces/
 │   ├── IController.ts              # Controller 기본 인터페이스
-│   └── IControllerMiddleware.ts    # 미들웨어 인터페이스
+│   ├── IControllerMiddleware.ts    # 미들웨어 인터페이스
+│   └── index.ts                    # 인터페이스 인덱스
 ├── middleware/
 │   ├── MiddlewareChain.ts          # 미들웨어 체인 구현
 │   ├── LoggingMiddleware.ts        # 로깅 미들웨어
-│   └── PerformanceMiddleware.ts    # 성능 모니터링 미들웨어
+│   ├── PerformanceMiddleware.ts    # 성능 모니터링 미들웨어
+│   ├── ValidationMiddleware.ts     # 검증 미들웨어
+│   ├── CachingMiddleware.ts        # 캐싱 미들웨어
+│   └── index.ts                    # 미들웨어 인덱스
 ├── ControllerFactory.ts            # Controller Factory
 ├── BaseController.ts               # 개선된 기본 Controller
+├── index.ts                        # 전체 인덱스
 └── [각종 Controller들]...
 ```
 
@@ -89,6 +96,15 @@ class CustomMiddleware extends BaseMiddleware {
 }
 ```
 
+### 3. 미들웨어 체인 사용
+
+```typescript
+import { createDefaultMiddlewareChain } from './middleware';
+
+const middlewareChain = createDefaultMiddlewareChain();
+// 모든 기본 미들웨어가 우선순위 순서대로 추가됨
+```
+
 ### 3. Factory 사용
 
 ```typescript
@@ -109,6 +125,7 @@ const stats = factory.getControllerStats();
 - **흐름 탭**: 현재 활성화된 작업 흐름
 - **성능 탭**: 상세 성능 메트릭
 - **Factory 탭**: Factory 상태 및 관리 정보
+- **미들웨어 탭**: 미들웨어 상태 및 통계
 
 ### 실시간 메트릭
 
@@ -121,9 +138,11 @@ const stats = factory.getControllerStats();
 
 1. **흐름 추적 개선**: 모든 Controller 작업의 실행 흐름을 명확하게 추적
 2. **성능 모니터링**: 실시간 성능 메트릭으로 병목 지점 식별
-3. **확장성**: 새로운 Controller와 미들웨어 쉽게 추가
-4. **유지보수성**: 인터페이스 기반 설계로 코드 일관성 보장
-5. **디버깅**: 상세한 로깅과 에러 추적
+3. **입력 검증**: 자동화된 파라미터 검증으로 데이터 무결성 보장
+4. **캐싱 최적화**: 자동 캐싱으로 반복 요청 성능 향상
+5. **확장성**: 새로운 Controller와 미들웨어 쉽게 추가
+6. **유지보수성**: 인터페이스 기반 설계로 코드 일관성 보장
+7. **디버깅**: 상세한 로깅과 에러 추적
 
 ## 향후 계획
 

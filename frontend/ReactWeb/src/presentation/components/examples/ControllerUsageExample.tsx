@@ -46,7 +46,7 @@ export const ControllerUsageExample: React.FC = () => {
     try {
       const user = await userController.executeWithTracking(
         'authenticateUser',
-        { email: 'test@example.com' },
+        { email: 'test@example.com', password: 'password123' },
         async () => {
           // 실제 인증 로직 시뮬레이션
           await new Promise(resolve => setTimeout(resolve, 1500));
@@ -54,6 +54,38 @@ export const ControllerUsageExample: React.FC = () => {
             id: '2',
             name: 'Jane Smith',
             email: 'jane@example.com',
+            avatar: 'https://via.placeholder.com/150'
+          };
+        }
+      );
+      
+      setResult(user);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegisterUser = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const user = await userController.executeWithTracking(
+        'registerUser',
+        { 
+          email: 'newuser@example.com', 
+          password: 'password123', 
+          name: 'New User' 
+        },
+        async () => {
+          // 실제 등록 로직 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return {
+            id: '3',
+            name: 'New User',
+            email: 'newuser@example.com',
             avatar: 'https://via.placeholder.com/150'
           };
         }
@@ -106,6 +138,14 @@ export const ControllerUsageExample: React.FC = () => {
                 className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? '실행 중...' : '사용자 인증'}
+              </button>
+
+              <button
+                onClick={handleRegisterUser}
+                disabled={loading}
+                className="w-full px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? '실행 중...' : '사용자 등록'}
               </button>
             </div>
 
@@ -172,6 +212,8 @@ export const ControllerUsageExample: React.FC = () => {
               <div>✅ 흐름 추적 및 성능 모니터링</div>
               <div>✅ 에러 처리 및 로깅</div>
               <div>✅ Factory 패턴으로 동적 Controller 관리</div>
+              <div>✅ 검증 미들웨어로 입력 파라미터 검증</div>
+              <div>✅ 캐싱 미들웨어로 성능 최적화</div>
             </div>
           </div>
         </div>
