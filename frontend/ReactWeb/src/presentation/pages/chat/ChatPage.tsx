@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuthStore } from '../../../stores/authStore';
@@ -16,8 +15,7 @@ import {
 
 
 const ChatPage: React.FC = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+
   const params = useParams();
   const location = useLocation();
   const { user } = useAuthStore();
@@ -78,7 +76,7 @@ const ChatPage: React.FC = () => {
 
       {/* Chat Content */}
       <ChatContent
-        messages={messages as any}
+        messages={messages}
         loading={loading}
         currentUserId={user?.id || currentUser?.id || ''}
         onSendMessage={handleSendMessage}

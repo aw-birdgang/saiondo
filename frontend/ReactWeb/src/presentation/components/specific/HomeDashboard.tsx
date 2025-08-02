@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../shared/constants/app';
-import { InfoCard, Grid, Flex, Stack, Icon, Heading, Caption } from '../common';
+import { InfoCard, Grid, Stack, Heading, Caption } from '../common';
 import { 
   AiAdviceCard, 
   QuickActionsGrid, 
@@ -28,10 +28,6 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const handleStartAIChat = () => {
-    navigate(ROUTES.CHAT);
-  };
 
   const quickActions = [
     {
@@ -115,7 +111,7 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
           {/* Main Card */}
           <div className="flex justify-center">
             <div className="max-w-md w-full">
-              <AiAdviceCard onStartChat={handleStartAIChat} />
+              <AiAdviceCard />
             </div>
           </div>
 

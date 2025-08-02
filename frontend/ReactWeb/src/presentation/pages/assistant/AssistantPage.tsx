@@ -3,8 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-hot-toast';
 import {ROUTES} from "../../../shared/constants/app";
-import {EmptyState, Header, CategoryBadge} from '../../components/common';
-import {PageHeader, PageContainer} from '../../components/layout';
+import {EmptyState} from '../../components/common';
 import {AssistantFilters, AssistantGrid, ErrorState, LoadingState} from '../../components/specific';
 import {AssistantPageContainer, AssistantFiltersContainer, AssistantContentContainer} from '../../components/common';
 

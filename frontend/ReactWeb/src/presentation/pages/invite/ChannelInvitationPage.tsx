@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuthStore } from "../../../stores/authStore";
-import { LoadingState, InvitationList, InvitationResponseCard } from '../../components/specific';
+import { LoadingState, InvitationResponseCard } from '../../components/specific';
 import { PageHeader, PageContainer } from '../../components/layout';
 import { RefreshButton, EmptyInvitationsState, InvitationPageContainer, InvitationGrid } from '../../components/common';
 

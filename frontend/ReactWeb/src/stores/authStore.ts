@@ -30,7 +30,7 @@ export interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Initial state
       user: null,
       token: null,
@@ -44,7 +44,7 @@ export const useAuthStore = create<AuthState>()(
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
       
-      login: async (email: string, password: string) => {
+      login: async (email: string) => {
         set({ loading: true, error: null });
         try {
           // TODO: Implement actual login logic
@@ -71,7 +71,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       
-      register: async (email: string, password: string, username: string) => {
+      register: async (email: string, username: string) => {
         set({ loading: true, error: null });
         try {
           // TODO: Implement actual registration logic

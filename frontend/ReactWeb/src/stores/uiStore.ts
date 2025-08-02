@@ -12,7 +12,7 @@ export interface Notification {
 export interface ModalState {
   isOpen: boolean;
   type: string | null;
-  data: any;
+  data: unknown;
 }
 
 export interface UIState {
@@ -30,7 +30,7 @@ export interface UIState {
   addNotification: (notification: Omit<Notification, 'id' | 'createdAt'>) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
-  openModal: (type: string, data?: any) => void;
+  openModal: (type: string, data?: unknown) => void;
   closeModal: (type: string) => void;
   setLoading: (key: string, loading: boolean) => void;
   setError: (key: string, error: string | null) => void;

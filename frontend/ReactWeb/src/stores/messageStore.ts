@@ -43,7 +43,7 @@ export interface MessageState {
   clearAllMessages: () => void;
 }
 
-export const useMessageStore = create<MessageState>()((set, get) => ({
+export const useMessageStore = create<MessageState>()((set) => ({
   // Initial state
   messages: {},
   loading: false,

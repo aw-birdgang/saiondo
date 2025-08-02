@@ -30,7 +30,7 @@ export class ChannelService {
   async fetchChannelsByUserId(userId: string): Promise<Channels> {
     try {
       const response = await apiClient.get<Channels>(ENDPOINTS.CHANNEL_BY_USER_ID(userId));
-      console.log('[ChannelService] fetchChannelsByUserId response:', response);
+  
       return response;
     } catch (error: any) {
       const message = error.response?.data?.message || error.message || '사용자 채널 조회 실패';

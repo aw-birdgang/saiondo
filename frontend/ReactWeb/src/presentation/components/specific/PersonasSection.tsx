@@ -1,6 +1,5 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import AnalysisSection from "./AnalysisSection";
 
 interface PersonasSectionProps {
   persona1?: string;

@@ -11,8 +11,7 @@ interface SplashContainerProps {
 const SplashContainer: React.FC<SplashContainerProps> = ({ 
   appName, 
   loadingMessage, 
-  onAnimationComplete, 
-  className = "" 
+  onAnimationComplete
 }) => {
   return (
     <SplashScreen

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { InteractiveCard, Avatar, Text, Badge, StatusIndicator, AssistantStats, ChatAction, ArrowIcon } from '../../common';
 
 interface Assistant {
@@ -25,12 +24,11 @@ interface AssistantCardProps {
 const AssistantCard: React.FC<AssistantCardProps> = ({
   assistant,
   categoryName,
-  categoryColor,
   categoryIcon,
   onClick,
   className = '',
 }) => {
-  const { t } = useTranslation();
+
 
   return (
     <InteractiveCard

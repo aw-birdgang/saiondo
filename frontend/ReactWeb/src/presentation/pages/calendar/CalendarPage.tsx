@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
 import {eachDayOfInterval, endOfMonth, startOfMonth} from 'date-fns';
 import {
   CalendarHeader,
@@ -20,7 +19,7 @@ interface Event {
 }
 
 const CalendarTab: React.FC = () => {
-  const { t } = useTranslation();
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [events, setEvents] = useState<Event[]>([]);

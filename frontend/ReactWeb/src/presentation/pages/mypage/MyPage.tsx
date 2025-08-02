@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuth } from '../../../contexts/AuthContext';
-import { useAuthStore } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
 import { UserProfile, Card, Button } from '../../components/common';
 import { PageWrapper, PageContainer } from '../../components/layout';
 import { MenuGrid } from '../../components/specific';
@@ -13,8 +11,7 @@ const MyPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const { user } = useAuthStore();
-  const { currentUser } = useUserStore();
+
   
   const [isLoading, setIsLoading] = useState(false);
 

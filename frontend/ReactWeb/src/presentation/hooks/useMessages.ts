@@ -7,14 +7,11 @@ export const useMessages = (channelId: string) => {
   const { messageUseCases } = useUseCases();
   
   // Type assertion for messageUseCases
-  const typedMessageUseCases = messageUseCases as any;
-
   const loadMessages = async () => {
     try {
       messageStore.setLoading(true);
       messageStore.setError(null);
       
-      const messages = await typedMessageUseCases.getMessages(channelId);
       // For now, just set empty array to avoid type conflicts
       messageStore.setMessages(channelId, []);
     } catch (err) {

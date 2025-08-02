@@ -21,7 +21,7 @@ export class UserService {
 
   async fetchUserById(id: string): Promise<UserWithWallet> {
     try {
-      console.log('[UserService] fetchUserById 요청:', id);
+  
       const response = await apiClient.get<UserWithWallet>(ENDPOINTS.USER_BY_ID(id));
       return response;
     } catch (error: any) {
@@ -42,7 +42,7 @@ export class UserService {
 
   async fetchUserAssistants(userId: string): Promise<Assistant[]> {
     try {
-      console.log('[UserService] fetchUserAssistants 요청:', userId);
+  
       const response = await apiClient.get<{ assistants: Assistant[] }>(ENDPOINTS.USER_ASSISTANTS(userId));
       return response.assistants;
     } catch (error: any) {
@@ -64,7 +64,7 @@ export class UserService {
   async fetchPersonaProfiles(userId: string): Promise<PersonaProfile[]> {
     try {
       const url = ENDPOINTS.PERSONA_PROFILES(userId);
-      console.log('[UserService] fetchPersonaProfiles 요청 URL:', url);
+  
       const response = await apiClient.get<PersonaProfile[]>(url);
       return response;
     } catch (error: any) {

@@ -19,7 +19,6 @@ interface MessageBubbleProps {
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   currentUserId,
-  isLastMessage = false,
   className = ''
 }) => {
   const isOwnMessage = message.senderId === currentUserId;

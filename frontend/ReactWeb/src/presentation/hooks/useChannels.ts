@@ -6,15 +6,11 @@ export const useChannels = () => {
   const channelStore = useChannelStore();
   const { channelUseCases } = useUseCases();
   
-  // Type assertion for channelUseCases
-  const typedChannelUseCases = channelUseCases as any;
-
   const loadChannels = async () => {
     try {
       channelStore.setLoading(true);
       channelStore.setError(null);
       
-      const channels = await typedChannelUseCases.getChannels();
       // For now, just set empty array to avoid type conflicts
       channelStore.setChannels([]);
     } catch (err) {

@@ -1,6 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Grid, Flex, Icon, StepGuide } from '../common';
+import { Grid } from '../common';
 
 interface Step {
   number: number;
@@ -23,7 +22,7 @@ const UsageGuide: React.FC<UsageGuideProps> = ({
   steps,
   className = ''
 }) => {
-  const { t } = useTranslation();
+
 
   const getStepColor = (index: number) => {
     const colors = [

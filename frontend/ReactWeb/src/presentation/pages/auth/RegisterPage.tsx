@@ -25,7 +25,7 @@ const RegisterPage: React.FC = () => {
     }
   }, [error]);
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async (formData: { email: string; password: string; name: string }) => {
     try {
       await register(formData.email.trim(), formData.password, formData.name.trim());
       toast.success(t('register_success'));

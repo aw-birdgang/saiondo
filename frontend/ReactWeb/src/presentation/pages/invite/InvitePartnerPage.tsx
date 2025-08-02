@@ -16,7 +16,7 @@ const InvitePartnerScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleInvite = async (email: string) => {
+  const handleInvite = async () => {
     if (!user?.id) {
       setError(t('no_login') || '로그인 정보가 없습니다.');
       return;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { 
   LoadingState, 
@@ -23,7 +22,6 @@ interface CategoryCode {
 
 const CategoryCodeGuideScreen: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   
   const [codes, setCodes] = useState<CategoryCode[]>([]);
   const [isLoading, setIsLoading] = useState(true);

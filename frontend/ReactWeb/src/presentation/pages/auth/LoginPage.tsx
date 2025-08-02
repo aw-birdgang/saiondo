@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../../shared/constants/app';
@@ -8,7 +7,7 @@ import { LoginForm, AuthLayout, QuickLoginButtons, AuthGuard } from '../../compo
 import { LoginPageContainer } from '../../components/common';
 
 const LoginPage: React.FC = () => {
-  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const { login, isAuthenticated, loading, error } = useAuth();
 
@@ -26,7 +25,7 @@ const LoginPage: React.FC = () => {
     }
   }, [error]);
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async (formData: { email: string; password: string }) => {
     try {
       await login(formData.email.trim(), formData.password);
     } catch (error) {

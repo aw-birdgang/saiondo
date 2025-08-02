@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+
 import { ROUTES } from '../../../shared/constants/app';
 import { Button } from '../common';
 
@@ -25,7 +25,7 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
   onClose,
   className = ''
 }) => {
-  const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   const handleStartChat = () => {

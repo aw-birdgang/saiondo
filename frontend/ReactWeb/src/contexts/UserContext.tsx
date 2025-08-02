@@ -19,7 +19,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const refreshUser = async (): Promise<void> => {
     try {
       // TODO: Implement actual user refresh logic
-      console.log('Refreshing user data...');
+  
     } catch (error) {
       console.error('Failed to refresh user:', error);
     }
@@ -28,7 +28,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const updateUser = async (userData: any): Promise<void> => {
     try {
       // TODO: Implement actual user update logic
-      console.log('Updating user data:', userData);
+  
     } catch (error) {
       console.error('Failed to update user:', error);
     }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, TextArea, IconButton } from "../common";
+import { Button } from "../common";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -34,12 +34,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleAttachFile = () => {
     // TODO: 파일 첨부 기능 구현
-    console.log("Attach file clicked");
+
   };
 
   const handleEmoji = () => {
     // TODO: 이모지 선택 기능 구현
-    console.log("Emoji clicked");
+
   };
 
   return (
