@@ -1,13 +1,32 @@
-import type { User, UserProfile } from '../entities/User';
 import type { IUserRepository } from '../repositories/IUserRepository';
+import type { User } from '../entities/User';
+import { DomainErrorFactory } from '../errors/DomainError';
 
-export const createUpdateUserUseCase = (userRepository: IUserRepository) => {
-  return async (id: string, userData: Partial<UserProfile>): Promise<User> => {
+export interface UpdateUserRequest {
+  id: string;
+  updates: Partial<User>;
+}
+
+export interface UpdateUserResponse {
+  user: User;
+}
+
+export class UpdateUserUseCase {
+  constructor(private readonly userRepository: IUserRepository) {}
+
+  async execute(request: UpdateUserRequest): Promise<UpdateUserResponse> {
     try {
-      return await userRepository.updateUser(id, userData);
+      if (!request.id || request.id.trim().length === 0) {
+        throw DomainErrorFactory.createUserValidation('User ID is required');
+      }
+
+      const updatedUser = await this.userRepository.update(request.id, request.updates);
+      return { user: updatedUser.toJSON() };
     } catch (error) {
-      console.error('UpdateUserUseCase error:', error);
-      throw new Error('Failed to update user');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to update user');
     }
-  };
-}; 
+  }
+} 

@@ -1,4 +1,6 @@
-// User Types
+// ============================================================================
+// USER TYPES
+// ============================================================================
 export interface User {
   id: string;
   email: string;
@@ -17,7 +19,9 @@ export interface UserWithPointHistory extends User {
   pointHistory?: PointHistory[];
 }
 
-// Wallet Types
+// ============================================================================
+// WALLET TYPES
+// ============================================================================
 export interface Wallet {
   id: string;
   userId: string;
@@ -27,7 +31,9 @@ export interface Wallet {
   updatedAt: string;
 }
 
-// Point Types
+// ============================================================================
+// POINT TYPES
+// ============================================================================
 export interface PointHistory {
   id: string;
   userId: string;
@@ -37,7 +43,9 @@ export interface PointHistory {
   createdAt: string;
 }
 
-// Channel Types
+// ============================================================================
+// CHANNEL TYPES
+// ============================================================================
 export interface Channel {
   id: string;
   name?: string;
@@ -61,7 +69,9 @@ export interface Channels {
   memberChannels: Channel[];
 }
 
-// Channel Invitation Types
+// ============================================================================
+// CHANNEL INVITATION TYPES
+// ============================================================================
 export interface ChannelInvitation {
   id: string;
   channelId: string;
@@ -75,7 +85,9 @@ export interface ChannelInvitation {
   invitee?: User;
 }
 
-// Assistant Types
+// ============================================================================
+// ASSISTANT TYPES
+// ============================================================================
 export interface Assistant {
   id: string;
   userId: string;
@@ -86,7 +98,9 @@ export interface Assistant {
   updatedAt: string;
 }
 
-// Persona Profile Types
+// ============================================================================
+// PERSONA PROFILE TYPES
+// ============================================================================
 export interface PersonaProfile {
   id: string;
   userId: string;
@@ -100,7 +114,9 @@ export interface PersonaProfileRequest {
   profile: Record<string, any>;
 }
 
-// Chat Types
+// ============================================================================
+// CHAT TYPES
+// ============================================================================
 export interface ChatMessage {
   id: string;
   channelId?: string;
@@ -122,7 +138,9 @@ export interface ChatHistory {
   updatedAt: string;
 }
 
-// Event Types
+// ============================================================================
+// EVENT TYPES
+// ============================================================================
 export interface Event {
   id: string;
   userId: string;
@@ -134,7 +152,9 @@ export interface Event {
   updatedAt: string;
 }
 
-// Couple Analysis Types
+// ============================================================================
+// ANALYSIS TYPES
+// ============================================================================
 export interface CoupleAnalysis {
   id: string;
   channelId: string;
@@ -144,7 +164,6 @@ export interface CoupleAnalysis {
   updatedAt: string;
 }
 
-// Advice Types
 export interface Advice {
   id: string;
   channelId: string;
@@ -154,7 +173,9 @@ export interface Advice {
   updatedAt: string;
 }
 
-// Payment Subscription Types
+// ============================================================================
+// PAYMENT & SUBSCRIPTION TYPES
+// ============================================================================
 export interface PaymentSubscription {
   id: string;
   userId: string;
@@ -166,7 +187,9 @@ export interface PaymentSubscription {
   updatedAt: string;
 }
 
-// Auth Types
+// ============================================================================
+// AUTH TYPES
+// ============================================================================
 export interface LoginRequest {
   email: string;
   password: string;
@@ -184,7 +207,9 @@ export interface AuthResponse {
   user: User;
 }
 
-// API Response Types
+// ============================================================================
+// API RESPONSE TYPES
+// ============================================================================
 export interface ApiResponse<T> {
   data: T;
   message?: string;

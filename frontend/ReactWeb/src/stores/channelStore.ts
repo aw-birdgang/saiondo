@@ -1,7 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { channelService } from '../infrastructure/api/services/channelService';
-import type { Channel, Channels, ChannelInvitation } from '../domain/types';
+import { container } from '../di/container';
+import type { Channel } from '../domain/entities/Channel';
+import type { ChannelInvitation } from '../domain/types';
+
+export interface Channels {
+  ownedChannels: Channel[];
+  memberChannels: Channel[];
+}
 
 export interface ChannelState {
   // State
@@ -19,17 +25,22 @@ export interface ChannelState {
   setError: (error: string | null) => void;
   clearChannelData: () => void;
 
-  // API Actions
+  // API Actions using Repository Pattern
   fetchChannelsByUserId: (userId: string) => Promise<void>;
   fetchChannelById: (channelId: string) => Promise<void>;
-  createChannel: (userId: string) => Promise<void>;
+  createChannel: (channelData: {
+    name: string;
+    description?: string;
+    type: 'public' | 'private' | 'direct';
+    ownerId: string;
+    members: string[];
+  }) => Promise<void>;
   joinByInvite: (inviteCode: string, userId: string) => Promise<void>;
-  leaveChannel: (userId: string) => Promise<void>;
+  leaveChannel: (channelId: string, userId: string) => Promise<void>;
   deleteChannel: (channelId: string) => Promise<void>;
-  createInviteCode: (channelId: string, userId: string) => Promise<string>;
-  fetchInvitationsForUser: (userId: string) => Promise<void>;
-  respondInvitation: (invitationId: string, response: 'ACCEPT' | 'REJECT') => Promise<void>;
-  createInvitation: (channelId: string, inviterId: string, inviteeId: string) => Promise<void>;
+  addMember: (channelId: string, userId: string) => Promise<void>;
+  removeMember: (channelId: string, userId: string) => Promise<void>;
+  markAsRead: (channelId: string) => Promise<void>;
 }
 
 export const useChannelStore = create<ChannelState>()(
@@ -56,12 +67,30 @@ export const useChannelStore = create<ChannelState>()(
         error: null,
       }),
 
-      // API Actions
+      // API Actions using Repository Pattern
       fetchChannelsByUserId: async (userId: string) => {
         try {
           set({ loading: true, error: null });
-          const channels = await channelService.fetchChannelsByUserId(userId);
-          set({ channels, loading: false });
+          const channelRepository = container.getChannelRepository();
+          const userChannels = await channelRepository.findByUserId(userId);
+          
+          // Separate owned and member channels
+          const ownedChannels: Channel[] = [];
+          const memberChannels: Channel[] = [];
+          
+          userChannels.forEach(channelEntity => {
+            const channel = channelEntity.toJSON();
+            if (channelEntity.isOwner(userId)) {
+              ownedChannels.push(channel);
+            } else {
+              memberChannels.push(channel);
+            }
+          });
+          
+          set({ 
+            channels: { ownedChannels, memberChannels }, 
+            loading: false 
+          });
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch channels';
           set({ error: errorMessage, loading: false });
@@ -71,24 +100,39 @@ export const useChannelStore = create<ChannelState>()(
       fetchChannelById: async (channelId: string) => {
         try {
           set({ loading: true, error: null });
-          const channel = await channelService.fetchChannelById(channelId);
-          set({ currentChannel: channel, loading: false });
+          const channelRepository = container.getChannelRepository();
+          const channelEntity = await channelRepository.findById(channelId);
+          
+          if (channelEntity) {
+            set({ currentChannel: channelEntity.toJSON(), loading: false });
+          } else {
+            set({ currentChannel: null, loading: false });
+          }
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch channel';
           set({ error: errorMessage, loading: false });
         }
       },
 
-      createChannel: async (userId: string) => {
+      createChannel: async (channelData) => {
         try {
           set({ loading: true, error: null });
-          const newChannel = await channelService.createChannel(userId);
+          const channelRepository = container.getChannelRepository();
+          
+          // Create channel entity
+          const { ChannelEntity } = await import('../domain/entities/Channel');
+          const channelEntity = ChannelEntity.create(channelData);
+          
+          const savedChannel = await channelRepository.save(channelEntity);
+          const channel = savedChannel.toJSON();
+          
+          // Update local state
           const { channels } = get();
           if (channels) {
             set({ 
               channels: {
                 ...channels,
-                ownedChannels: [...channels.ownedChannels, newChannel]
+                ownedChannels: [...channels.ownedChannels, channel]
               },
               loading: false 
             });
@@ -102,27 +146,21 @@ export const useChannelStore = create<ChannelState>()(
       joinByInvite: async (inviteCode: string, userId: string) => {
         try {
           set({ loading: true, error: null });
-          const channel = await channelService.joinByInvite(inviteCode, userId);
-          const { channels } = get();
-          if (channels) {
-            set({ 
-              channels: {
-                ...channels,
-                memberChannels: [...channels.memberChannels, channel]
-              },
-              loading: false 
-            });
-          }
+          // This would need to be implemented in the API
+          // For now, we'll just refresh the channels
+          await get().fetchChannelsByUserId(userId);
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to join channel';
           set({ error: errorMessage, loading: false });
         }
       },
 
-      leaveChannel: async (userId: string) => {
+      leaveChannel: async (channelId: string, userId: string) => {
         try {
           set({ loading: true, error: null });
-          await channelService.leaveChannel(userId);
+          const channelRepository = container.getChannelRepository();
+          await channelRepository.removeMember(channelId, userId);
+          
           // Refresh channels after leaving
           await get().fetchChannelsByUserId(userId);
         } catch (error) {
@@ -134,7 +172,10 @@ export const useChannelStore = create<ChannelState>()(
       deleteChannel: async (channelId: string) => {
         try {
           set({ loading: true, error: null });
-          await channelService.deleteChannel(channelId);
+          const channelRepository = container.getChannelRepository();
+          await channelRepository.delete(channelId);
+          
+          // Update local state
           const { channels } = get();
           if (channels) {
             set({ 
@@ -151,53 +192,44 @@ export const useChannelStore = create<ChannelState>()(
         }
       },
 
-      createInviteCode: async (channelId: string, userId: string) => {
+      addMember: async (channelId: string, userId: string) => {
         try {
           set({ loading: true, error: null });
-          const result = await channelService.createInviteCode(channelId, userId);
-          set({ loading: false });
-          return result.inviteCode;
+          const channelRepository = container.getChannelRepository();
+          await channelRepository.addMember(channelId, userId);
+          
+          // Refresh current channel
+          await get().fetchChannelById(channelId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to create invite code';
-          set({ error: errorMessage, loading: false });
-          throw error;
-        }
-      },
-
-      fetchInvitationsForUser: async (userId: string) => {
-        try {
-          set({ loading: true, error: null });
-          const invitations = await channelService.fetchInvitationsForUser(userId);
-          set({ invitations, loading: false });
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch invitations';
+          const errorMessage = error instanceof Error ? error.message : 'Failed to add member';
           set({ error: errorMessage, loading: false });
         }
       },
 
-      respondInvitation: async (invitationId: string, response: 'ACCEPT' | 'REJECT') => {
+      removeMember: async (channelId: string, userId: string) => {
         try {
           set({ loading: true, error: null });
-          await channelService.respondInvitation(invitationId, response);
-          // Remove the invitation from the list
-          const { invitations } = get();
-          set({ 
-            invitations: invitations.filter(inv => inv.id !== invitationId),
-            loading: false 
-          });
+          const channelRepository = container.getChannelRepository();
+          await channelRepository.removeMember(channelId, userId);
+          
+          // Refresh current channel
+          await get().fetchChannelById(channelId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to respond to invitation';
+          const errorMessage = error instanceof Error ? error.message : 'Failed to remove member';
           set({ error: errorMessage, loading: false });
         }
       },
 
-      createInvitation: async (channelId: string, inviterId: string, inviteeId: string) => {
+      markAsRead: async (channelId: string) => {
         try {
           set({ loading: true, error: null });
-          await channelService.createInvitation(channelId, inviterId, inviteeId);
-          set({ loading: false });
+          const channelRepository = container.getChannelRepository();
+          await channelRepository.markAsRead(channelId);
+          
+          // Refresh current channel
+          await get().fetchChannelById(channelId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to create invitation';
+          const errorMessage = error instanceof Error ? error.message : 'Failed to mark as read';
           set({ error: errorMessage, loading: false });
         }
       },

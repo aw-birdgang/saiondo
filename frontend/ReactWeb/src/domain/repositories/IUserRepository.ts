@@ -1,12 +1,19 @@
-import type { User } from '../entities/User';
+import type { User, UserEntity } from '../entities/User';
 
 export interface IUserRepository {
-  findById(id: string): Promise<User | null>;
-  findByEmail(email: string): Promise<User | null>;
-  save(user: User): Promise<User>;
-  update(id: string, user: Partial<User>): Promise<User>;
+  // Basic CRUD operations
+  findById(id: string): Promise<UserEntity | null>;
+  findByEmail(email: string): Promise<UserEntity | null>;
+  save(user: UserEntity): Promise<UserEntity>;
+  update(id: string, user: Partial<User>): Promise<UserEntity>;
   delete(id: string): Promise<void>;
-  findAll(): Promise<User[]>;
-  search(query: string): Promise<User[]>;
-  getCurrentUser(): Promise<User | null>;
+  
+  // Query operations
+  findAll(): Promise<UserEntity[]>;
+  search(query: string): Promise<UserEntity[]>;
+  getCurrentUser(): Promise<UserEntity | null>;
+  
+  // Business operations
+  updateOnlineStatus(id: string, isOnline: boolean): Promise<UserEntity>;
+  updateProfile(id: string, displayName?: string, avatar?: string): Promise<UserEntity>;
 } 

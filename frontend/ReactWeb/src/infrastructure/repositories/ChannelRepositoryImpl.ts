@@ -1,15 +1,17 @@
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import type { Channel } from '../../domain/entities/Channel';
+import { ChannelEntity } from '../../domain/entities/Channel';
 import { ApiClient } from '../api/ApiClient';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
 
 export class ChannelRepositoryImpl implements IChannelRepository {
   constructor(private readonly apiClient: ApiClient) {}
 
-  async findById(id: string): Promise<Channel | null> {
+  // Basic CRUD operations
+  async findById(id: string): Promise<ChannelEntity | null> {
     try {
       const response = await this.apiClient.get<Channel>(`/channels/${id}`);
-      return response;
+      return response ? ChannelEntity.fromData(response) : null;
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -18,10 +20,11 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async save(channel: Channel): Promise<Channel> {
+  async save(channel: ChannelEntity): Promise<ChannelEntity> {
     try {
-      const response = await this.apiClient.post<Channel>('/channels', channel);
-      return response;
+      const channelData = channel.toJSON();
+      const response = await this.apiClient.post<Channel>('/channels', channelData);
+      return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -30,10 +33,10 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async update(id: string, channel: Partial<Channel>): Promise<Channel> {
+  async update(id: string, channel: Partial<Channel>): Promise<ChannelEntity> {
     try {
       const response = await this.apiClient.put<Channel>(`/channels/${id}`, channel);
-      return response;
+      return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -53,10 +56,11 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async findAll(): Promise<Channel[]> {
+  // Query operations
+  async findAll(): Promise<ChannelEntity[]> {
     try {
       const response = await this.apiClient.get<Channel[]>('/channels');
-      return response;
+      return response.map(channel => ChannelEntity.fromData(channel));
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -65,10 +69,10 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async findByUserId(userId: string): Promise<Channel[]> {
+  async findByUserId(userId: string): Promise<ChannelEntity[]> {
     try {
       const response = await this.apiClient.get<Channel[]>(`/channels/user/${userId}`);
-      return response;
+      return response.map(channel => ChannelEntity.fromData(channel));
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -77,10 +81,10 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async findByType(type: 'public' | 'private' | 'direct'): Promise<Channel[]> {
+  async findByType(type: 'public' | 'private' | 'direct'): Promise<ChannelEntity[]> {
     try {
       const response = await this.apiClient.get<Channel[]>(`/channels/type/${type}`);
-      return response;
+      return response.map(channel => ChannelEntity.fromData(channel));
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -89,10 +93,17 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async addMember(channelId: string, userId: string): Promise<Channel> {
+  // Business operations
+  async addMember(channelId: string, userId: string): Promise<ChannelEntity> {
     try {
+      const currentChannel = await this.findById(channelId);
+      if (!currentChannel) {
+        throw DomainErrorFactory.createChannelNotFound(channelId);
+      }
+
+      const updatedChannel = currentChannel.addMember(userId);
       const response = await this.apiClient.post<Channel>(`/channels/${channelId}/members`, { userId });
-      return response;
+      return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -101,10 +112,16 @@ export class ChannelRepositoryImpl implements IChannelRepository {
     }
   }
 
-  async removeMember(channelId: string, userId: string): Promise<Channel> {
+  async removeMember(channelId: string, userId: string): Promise<ChannelEntity> {
     try {
+      const currentChannel = await this.findById(channelId);
+      if (!currentChannel) {
+        throw DomainErrorFactory.createChannelNotFound(channelId);
+      }
+
+      const updatedChannel = currentChannel.removeMember(userId);
       const response = await this.apiClient.delete<Channel>(`/channels/${channelId}/members/${userId}`);
-      return response;
+      return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -115,13 +132,53 @@ export class ChannelRepositoryImpl implements IChannelRepository {
 
   async isMember(channelId: string, userId: string): Promise<boolean> {
     try {
-      const response = await this.apiClient.get<{ isMember: boolean }>(`/channels/${channelId}/members/${userId}/check`);
-      return response.isMember;
+      const currentChannel = await this.findById(channelId);
+      if (!currentChannel) {
+        return false;
+      }
+
+      return currentChannel.isMember(userId);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
       throw DomainErrorFactory.createChannelValidation('Failed to check channel membership');
+    }
+  }
+
+  async updateLastMessage(channelId: string): Promise<ChannelEntity> {
+    try {
+      const currentChannel = await this.findById(channelId);
+      if (!currentChannel) {
+        throw DomainErrorFactory.createChannelNotFound(channelId);
+      }
+
+      const updatedChannel = currentChannel.updateLastMessage();
+      const response = await this.apiClient.put<Channel>(`/channels/${channelId}/last-message`, {});
+      return ChannelEntity.fromData(response);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to update last message');
+    }
+  }
+
+  async markAsRead(channelId: string): Promise<ChannelEntity> {
+    try {
+      const currentChannel = await this.findById(channelId);
+      if (!currentChannel) {
+        throw DomainErrorFactory.createChannelNotFound(channelId);
+      }
+
+      const updatedChannel = currentChannel.markAsRead();
+      const response = await this.apiClient.put<Channel>(`/channels/${channelId}/mark-read`, {});
+      return ChannelEntity.fromData(response);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to mark channel as read');
     }
   }
 } 

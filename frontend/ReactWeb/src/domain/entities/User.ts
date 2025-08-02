@@ -1,3 +1,4 @@
+// Data Transfer Objects (DTOs)
 export interface User {
   id: string;
   email: string;
@@ -10,6 +11,25 @@ export interface User {
   updatedAt: Date;
 }
 
+export interface UserProfile extends User {
+  bio?: string;
+  phoneNumber?: string;
+  preferences: UserPreferences;
+}
+
+export interface UserPreferences {
+  theme: 'light' | 'dark';
+  language: string;
+  notifications: NotificationSettings;
+}
+
+export interface NotificationSettings {
+  email: boolean;
+  push: boolean;
+  sms: boolean;
+}
+
+// Domain Entity with Business Logic
 export class UserEntity {
   private constructor(
     private readonly _id: string,
@@ -25,7 +45,7 @@ export class UserEntity {
     this.validate();
   }
 
-  // Factory method
+  // Factory methods
   static create(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): UserEntity {
     return new UserEntity(
       crypto.randomUUID(),
@@ -132,22 +152,4 @@ export class UserEntity {
       updatedAt: this._updatedAt,
     };
   }
-}
-
-export interface UserProfile extends User {
-  bio?: string;
-  phoneNumber?: string;
-  preferences: UserPreferences;
-}
-
-export interface UserPreferences {
-  theme: 'light' | 'dark';
-  language: string;
-  notifications: NotificationSettings;
-}
-
-export interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  sms: boolean;
 } 

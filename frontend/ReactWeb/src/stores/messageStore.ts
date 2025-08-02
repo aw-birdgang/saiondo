@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { container } from '../di/container';
+import type { Message } from '../domain/entities/Message';
 
 export interface MessageReaction {
   id: string;
@@ -6,20 +8,6 @@ export interface MessageReaction {
   userId: string;
   emoji: string;
   createdAt: Date;
-}
-
-export interface Message {
-  id: string;
-  content: string;
-  type: 'text' | 'image' | 'file' | 'system';
-  channelId: string;
-  senderId: string;
-  senderName?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  reactions: MessageReaction[];
-  isEdited?: boolean;
-  replyTo?: string;
 }
 
 export interface MessageState {
@@ -41,9 +29,22 @@ export interface MessageState {
   setHasMore: (channelId: string, hasMore: boolean) => void;
   clearMessages: (channelId: string) => void;
   clearAllMessages: () => void;
+
+  // API Actions using Repository Pattern
+  fetchMessages: (channelId: string, limit?: number, offset?: number) => Promise<void>;
+  sendMessage: (messageData: {
+    content: string;
+    channelId: string;
+    senderId: string;
+    type: 'text' | 'image' | 'file' | 'system';
+    metadata?: Record<string, unknown>;
+    replyTo?: string;
+  }) => Promise<void>;
+  editMessage: (messageId: string, newContent: string) => Promise<void>;
+  deleteMessage: (messageId: string) => Promise<void>;
 }
 
-export const useMessageStore = create<MessageState>()((set) => ({
+export const useMessageStore = create<MessageState>()((set, get) => ({
   // Initial state
   messages: {},
   loading: false,
@@ -83,12 +84,12 @@ export const useMessageStore = create<MessageState>()((set) => ({
     },
   })),
 
-  addReaction: (channelId, messageId, reaction) => set((state) => ({
+  addReaction: (channelId, messageId, reaction: MessageReaction) => set((state) => ({
     messages: {
       ...state.messages,
       [channelId]: (state.messages[channelId] || []).map((message) =>
         message.id === messageId
-          ? { ...message, reactions: [...message.reactions, reaction] }
+          ? { ...message, reactions: [...((message as any).reactions || []), reaction] }
           : message
       ),
     },
@@ -101,8 +102,8 @@ export const useMessageStore = create<MessageState>()((set) => ({
         message.id === messageId
           ? {
               ...message,
-              reactions: message.reactions.filter(
-                (reaction) => !(reaction.userId === userId && reaction.emoji === emoji)
+              reactions: ((message as any).reactions || []).filter(
+                (reaction: MessageReaction) => !(reaction.userId === userId && reaction.emoji === emoji)
               ),
             }
           : message
@@ -127,4 +128,103 @@ export const useMessageStore = create<MessageState>()((set) => ({
   }),
 
   clearAllMessages: () => set({ messages: {}, hasMore: {} }),
+
+  // API Actions using Repository Pattern
+  fetchMessages: async (channelId: string, limit = 50, offset = 0) => {
+    try {
+      set({ loading: true, error: null });
+      const messageRepository = container.getMessageRepository();
+      const messages = await messageRepository.findByChannelId(channelId, limit, offset);
+      
+      const messageData = messages.map(message => message.toJSON());
+      set((state) => ({
+        messages: {
+          ...state.messages,
+          [channelId]: offset === 0 ? messageData : [...(state.messages[channelId] || []), ...messageData],
+        },
+        hasMore: {
+          ...state.hasMore,
+          [channelId]: messageData.length === limit,
+        },
+        loading: false,
+      }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch messages';
+      set({ error: errorMessage, loading: false });
+    }
+  },
+
+  sendMessage: async (messageData) => {
+    try {
+      set({ loading: true, error: null });
+      const messageRepository = container.getMessageRepository();
+      
+      // Create message entity
+      const { MessageEntity } = await import('../domain/entities/Message');
+      const messageEntity = MessageEntity.create(messageData);
+      
+      const savedMessage = await messageRepository.save(messageEntity);
+      const message = savedMessage.toJSON();
+      
+      // Add to local state
+      get().addMessage(messageData.channelId, message);
+      set({ loading: false });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send message';
+      set({ error: errorMessage, loading: false });
+    }
+  },
+
+  editMessage: async (messageId: string, newContent: string) => {
+    try {
+      set({ loading: true, error: null });
+      const messageRepository = container.getMessageRepository();
+      
+      const updatedMessage = await messageRepository.editContent(messageId, newContent);
+      const message = updatedMessage.toJSON();
+      
+      // Find the channel ID for this message
+      const { messages } = get();
+      let channelId: string | null = null;
+      
+      for (const [cid, msgs] of Object.entries(messages)) {
+        if (msgs.some(msg => msg.id === messageId)) {
+          channelId = cid;
+          break;
+        }
+      }
+      
+      if (channelId) {
+        get().updateMessage(channelId, messageId, message);
+      }
+      
+      set({ loading: false });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to edit message';
+      set({ error: errorMessage, loading: false });
+    }
+  },
+
+  deleteMessage: async (messageId: string) => {
+    try {
+      set({ loading: true, error: null });
+      const messageRepository = container.getMessageRepository();
+      
+      await messageRepository.delete(messageId);
+      
+      // Find and remove from local state
+      const { messages } = get();
+      for (const [channelId, msgs] of Object.entries(messages)) {
+        if (msgs.some(msg => msg.id === messageId)) {
+          get().removeMessage(channelId, messageId);
+          break;
+        }
+      }
+      
+      set({ loading: false });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete message';
+      set({ error: errorMessage, loading: false });
+    }
+  },
 })); 

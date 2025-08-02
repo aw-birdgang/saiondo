@@ -1,12 +1,19 @@
-import type { Message } from '../entities/Message';
+import type { Message, MessageEntity } from '../entities/Message';
 
 export interface IMessageRepository {
-  findById(id: string): Promise<Message | null>;
-  save(message: Message): Promise<Message>;
-  update(id: string, message: Partial<Message>): Promise<Message>;
+  // Basic CRUD operations
+  findById(id: string): Promise<MessageEntity | null>;
+  save(message: MessageEntity): Promise<MessageEntity>;
+  update(id: string, message: Partial<Message>): Promise<MessageEntity>;
   delete(id: string): Promise<void>;
-  findByChannelId(channelId: string, limit?: number, offset?: number): Promise<Message[]>;
-  findByUserId(userId: string): Promise<Message[]>;
-  findRecentByChannelId(channelId: string, limit: number): Promise<Message[]>;
+  
+  // Query operations
+  findByChannelId(channelId: string, limit?: number, offset?: number): Promise<MessageEntity[]>;
+  findByUserId(userId: string): Promise<MessageEntity[]>;
+  findRecentByChannelId(channelId: string, limit: number): Promise<MessageEntity[]>;
   countByChannelId(channelId: string): Promise<number>;
+  
+  // Business operations
+  editContent(id: string, newContent: string): Promise<MessageEntity>;
+  addMetadata(id: string, key: string, value: unknown): Promise<MessageEntity>;
 } 

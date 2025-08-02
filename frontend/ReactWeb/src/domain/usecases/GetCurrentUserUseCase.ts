@@ -4,7 +4,7 @@ import { UserId } from '../value-objects/UserId';
 import { DomainErrorFactory } from '../errors/DomainError';
 
 export interface GetCurrentUserRequest {
-  userId: string;
+  userId?: string; // Optional for current user
 }
 
 export interface GetCurrentUserResponse {
@@ -14,16 +14,25 @@ export interface GetCurrentUserResponse {
 export class GetCurrentUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(request: GetCurrentUserRequest): Promise<GetCurrentUserResponse> {
+  async execute(request?: GetCurrentUserRequest): Promise<GetCurrentUserResponse> {
     try {
-      const userId = UserId.create(request.userId);
-      const user = await this.userRepository.findById(userId.getValue());
+      let user;
+      
+      if (request?.userId) {
+        // Get specific user by ID
+        const userId = UserId.create(request.userId);
+        user = await this.userRepository.findById(userId.getValue());
+      } else {
+        // Get current user
+        user = await this.userRepository.getCurrentUser();
+      }
       
       if (!user) {
-        throw DomainErrorFactory.createUserNotFound(userId.getValue());
+        const errorId = request?.userId || 'current user';
+        throw DomainErrorFactory.createUserNotFound(errorId);
       }
 
-      return { user };
+      return { user: user.toJSON() };
     } catch (error) {
       if (error instanceof Error) {
         throw error;

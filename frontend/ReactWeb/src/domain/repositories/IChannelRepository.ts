@@ -1,14 +1,21 @@
-import type { Channel } from '../entities/Channel';
+import type { Channel, ChannelEntity } from '../entities/Channel';
 
 export interface IChannelRepository {
-  findById(id: string): Promise<Channel | null>;
-  save(channel: Channel): Promise<Channel>;
-  update(id: string, channel: Partial<Channel>): Promise<Channel>;
+  // Basic CRUD operations
+  findById(id: string): Promise<ChannelEntity | null>;
+  save(channel: ChannelEntity): Promise<ChannelEntity>;
+  update(id: string, channel: Partial<Channel>): Promise<ChannelEntity>;
   delete(id: string): Promise<void>;
-  findAll(): Promise<Channel[]>;
-  findByUserId(userId: string): Promise<Channel[]>;
-  findByType(type: 'public' | 'private' | 'direct'): Promise<Channel[]>;
-  addMember(channelId: string, userId: string): Promise<Channel>;
-  removeMember(channelId: string, userId: string): Promise<Channel>;
+  
+  // Query operations
+  findAll(): Promise<ChannelEntity[]>;
+  findByUserId(userId: string): Promise<ChannelEntity[]>;
+  findByType(type: 'public' | 'private' | 'direct'): Promise<ChannelEntity[]>;
+  
+  // Business operations
+  addMember(channelId: string, userId: string): Promise<ChannelEntity>;
+  removeMember(channelId: string, userId: string): Promise<ChannelEntity>;
   isMember(channelId: string, userId: string): Promise<boolean>;
+  updateLastMessage(channelId: string): Promise<ChannelEntity>;
+  markAsRead(channelId: string): Promise<ChannelEntity>;
 } 
