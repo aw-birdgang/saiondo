@@ -3,13 +3,23 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf node_modules dist",
+    "reinstall": "pnpm clean && pnpm install",
+    "update-deps": "pnpm update --latest",
+    "audit": "pnpm audit",
+    "outdated": "pnpm outdated"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.83.0",

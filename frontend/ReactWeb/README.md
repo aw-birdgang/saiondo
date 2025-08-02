@@ -2,6 +2,29 @@
 
 A modern React application built with TypeScript, Vite, and Clean Architecture principles, featuring an advanced Dependency Injection (DI) pattern with Zustand state management.
 
+## 🚀 Package Manager
+
+This project uses **pnpm** as the package manager for better performance and disk space efficiency.
+
+### Why pnpm?
+- ⚡ **Faster installation** - Symlinks and hard links for efficient storage
+- 💾 **Disk space efficient** - Shared dependencies across projects
+- 🔒 **Strict dependency management** - Prevents phantom dependencies
+- 🛡️ **Better security** - Isolated node_modules structure
+- 📦 **Monorepo support** - Built-in workspace management
+
+### Quick Setup
+```bash
+# Install pnpm globally (if not already installed)
+npm install -g pnpm
+
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+```
+
 ## 🏗️ Architecture Overview
 
 This project follows Clean Architecture principles with an advanced DI pattern that provides:
@@ -205,25 +228,45 @@ Message management with channel-specific state.
 ## 📦 Installation
 
 ```bash
-npm install
+# pnpm 설치 (전역)
+npm install -g pnpm
+
+# 의존성 설치
+pnpm install
 ```
 
 ## 🚀 Development
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ## 🏗️ Build
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ## 🧪 Testing
 
 ```bash
-npm run test
+pnpm test
+```
+
+## 🔧 Additional Commands
+
+```bash
+# 의존성 업데이트
+pnpm update-deps
+
+# 보안 감사
+pnpm audit
+
+# 오래된 패키지 확인
+pnpm outdated
+
+# 완전 재설치
+pnpm reinstall
 ```
 
 ## 📁 DI System Details
@@ -311,6 +354,75 @@ mocks.apiClient.get.mockResolvedValue({ data: 'test' });
 // Clean up after tests
 afterEach(reset);
 ```
+
+## 🎯 Benefits
+
+- **Type Safety**: Full TypeScript support with compile-time checking
+- **Testability**: Easy mock injection and isolated testing
+- **Maintainability**: Clear separation of concerns and dependencies
+- **Scalability**: Modular architecture that grows with your application
+- **Performance**: Efficient service lifecycle management
+- **Developer Experience**: Intuitive API and comprehensive tooling
+
+## 🔧 Configuration
+
+### Environment Variables
+```env
+VITE_API_BASE_URL=http://localhost:3000
+VITE_SOCKET_URL=ws://localhost:3000
+VITE_ENVIRONMENT=development
+```
+
+### DI Configuration
+```typescript
+const config = createAppConfig({
+  api: {
+    baseURL: 'https://api.example.com',
+    timeout: 10000,
+  },
+  websocket: {
+    url: 'wss://ws.example.com',
+    options: { autoConnect: true }
+  },
+  environment: 'production',
+  debug: false
+});
+```
+
+## 📝 Usage Examples
+
+### Authentication with DI
+```typescript
+const { authService } = useServices();
+const { user, isAuthenticated } = useAuthStore();
+
+const handleLogin = async () => {
+  await authService.login({ email, password });
+};
+```
+
+### Theme Management with DI
+```typescript
+const { theme, isDarkMode, toggleTheme } = useThemeStore();
+
+return (
+  <button onClick={toggleTheme}>
+    {isDarkMode ? '🌞' : '🌙'}
+  </button>
+);
+```
+
+### Channel Management with DI
+```typescript
+const { channelUseCases } = useUseCases();
+const { channels, createChannel } = useChannels();
+
+const handleCreateChannel = async () => {
+  await createChannel({ name: 'New Channel', type: 'public' });
+};
+```
+
+This advanced DI pattern provides a robust, scalable, and maintainable foundation for modern React applications with powerful dependency management capabilities.
 
 ## 🎯 Benefits
 

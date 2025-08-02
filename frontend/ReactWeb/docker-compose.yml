@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  reactweb:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3000
+    networks:
+      - saiondo-network
+    depends_on:
+      - backend
+
+  reactweb-prod:
+    build:
+      context: .
+      target: production
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - saiondo-network
+    depends_on:
+      - backend
+
+  backend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ../../backend/api:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm run start:dev
+    networks:
+      - saiondo-network
+
+networks:
+  saiondo-network:
+    driver: bridge
