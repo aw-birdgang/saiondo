@@ -8,7 +8,7 @@ interface PageBackgroundProps {
 
 const PageBackground: React.FC<PageBackgroundProps> = ({ 
   children, 
-  background = "bg-background", 
+  background = "bg-bg", 
   className = "" 
 }) => {
   return (

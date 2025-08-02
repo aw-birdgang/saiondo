@@ -29,7 +29,7 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
       case 'emotion':
         return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-200 border border-purple-200 dark:border-purple-800';
       default:
-        return 'bg-secondary text-text-secondary border border-border';
+        return 'bg-secondary text-txt-secondary border border-border';
     }
   };
 
@@ -76,7 +76,7 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-3 mb-3">
-                <h3 className="text-lg font-semibold text-text leading-tight">
+                <h3 className="text-lg font-semibold text-txt leading-tight">
                   {code.code}
                 </h3>
                 <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getCategoryColor(code.category)}`}>
@@ -84,7 +84,7 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
                 </span>
               </div>
               
-              <p className="text-text-secondary mb-4 leading-relaxed">
+              <p className="text-txt-secondary mb-4 leading-relaxed">
                 {code.description}
               </p>
               
@@ -93,7 +93,7 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
                   {code.examples.map((example, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 bg-secondary text-text-secondary rounded-lg text-xs font-medium border border-border"
+                      className="px-3 py-1.5 bg-secondary text-txt-secondary rounded-lg text-xs font-medium border border-border"
                     >
                       {example}
                     </span>

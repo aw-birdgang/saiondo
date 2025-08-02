@@ -22,7 +22,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
       backRoute={backRoute}
       className={`max-w-6xl mx-auto ${className}`}
     >
-      <div className="text-sm text-text-secondary font-medium">
+      <div className="text-sm text-txt-secondary font-medium">
         Channel: {channelId}
       </div>
     </Header>

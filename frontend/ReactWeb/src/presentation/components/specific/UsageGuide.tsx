@@ -41,11 +41,11 @@ const UsageGuide: React.FC<UsageGuideProps> = ({
     <div className={`card p-8 ${className}`}>
       {/* Header */}
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-text mb-4 leading-tight">
+        <h3 className="text-2xl font-bold text-txt mb-4 leading-tight">
           {title}
         </h3>
         {description && (
-          <p className="text-text-secondary leading-relaxed">
+          <p className="text-txt-secondary leading-relaxed">
             {description}
           </p>
         )}
@@ -70,10 +70,10 @@ const UsageGuide: React.FC<UsageGuideProps> = ({
             </div>
 
             {/* Step Content */}
-            <h4 className="font-semibold text-text mb-3 leading-tight">
+            <h4 className="font-semibold text-txt mb-3 leading-tight">
               {step.title}
             </h4>
-            <p className="text-sm text-text-secondary leading-relaxed">
+            <p className="text-sm text-txt-secondary leading-relaxed">
               {step.description}
             </p>
           </div>

@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap");
-@reference "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,7 +11,7 @@
   }
 
   body {
-    @apply m-0 p-0 bg-background text-text transition-colors duration-300;
+    @apply m-0 p-0 bg-bg text-txt transition-colors duration-300;
   }
 
   * {
@@ -72,7 +71,7 @@
 
   /* Input Components */
   .input {
-    @apply w-full px-4 py-3 border border-border rounded-lg text-sm bg-surface text-text transition-all duration-200;
+    @apply w-full px-4 py-3 border border-border rounded-lg text-sm bg-surface text-txt transition-all duration-200;
   }
 
   .input:focus {
@@ -113,39 +112,6 @@
   .toast {
     @apply rounded-lg shadow-lg;
   }
-}
-
-@layer utilities {
-  /* Text Colors */
-  .text-primary { @apply text-primary; }
-  .text-secondary { @apply text-text-secondary; }
-  .text-error { @apply text-error; }
-
-  /* Background Colors */
-  .bg-primary { @apply bg-primary; }
-  .bg-secondary { @apply bg-secondary; }
-  .bg-surface { @apply bg-surface; }
-
-  /* Border Colors */
-  .border-primary { @apply border-primary; }
-  .border-secondary { @apply border-border; }
-
-  /* Shadows */
-  .shadow-sm { @apply shadow-sm; }
-  .shadow-md { @apply shadow-md; }
-  .shadow-lg { @apply shadow-lg; }
-
-  /* Border Radius */
-  .rounded-sm { @apply rounded-sm; }
-  .rounded-md { @apply rounded-md; }
-  .rounded-lg { @apply rounded-lg; }
-  .rounded-xl { @apply rounded-xl; }
-
-  /* Transitions */
-  .transition { @apply transition-all duration-200; }
-  .transition-colors { @apply transition-colors duration-200; }
-  .transition-opacity { @apply transition-opacity duration-200; }
-  .transition-transform { @apply transition-transform duration-200; }
 }
 
 /* Responsive Design */

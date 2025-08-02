@@ -47,7 +47,7 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
       case 'emotion':
         return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200 border border-red-200 dark:border-red-800';
       default:
-        return 'bg-secondary text-text-secondary border border-border';
+        return 'bg-secondary text-txt-secondary border border-border';
     }
   };
 
@@ -63,10 +63,10 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
         <div className="flex items-center space-x-4 p-6 bg-secondary rounded-xl">
           <div className="text-4xl">{getCategoryIcon(code.category)}</div>
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-text leading-tight">
+            <h3 className="text-2xl font-bold text-txt leading-tight">
               {code.code}
             </h3>
-            <p className="text-text-secondary leading-relaxed">
+            <p className="text-txt-secondary leading-relaxed">
               {code.description}
             </p>
           </div>
@@ -78,21 +78,21 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
         {/* Code Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h4 className="text-xl font-bold text-text mb-4 leading-tight">
+            <h4 className="text-xl font-bold text-txt mb-4 leading-tight">
               코드 정보
             </h4>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-                <span className="text-text-secondary font-medium">코드 ID:</span>
-                <span className="font-mono text-text font-semibold">{code.id}</span>
+                <span className="text-txt-secondary font-medium">코드 ID:</span>
+                <span className="font-mono text-txt font-semibold">{code.id}</span>
               </div>
               <div className="flex justify-between items-center p-3 bg-secondary rounded-lg">
-                <span className="text-text-secondary font-medium">카테고리:</span>
-                <span className="text-text font-semibold capitalize">{code.category}</span>
+                <span className="text-txt-secondary font-medium">카테고리:</span>
+                <span className="text-txt font-semibold capitalize">{code.category}</span>
               </div>
               <div className="flex justify-between items-start p-3 bg-secondary rounded-lg">
-                <span className="text-text-secondary font-medium">설명:</span>
-                <span className="text-text font-semibold text-right">{code.description}</span>
+                <span className="text-txt-secondary font-medium">설명:</span>
+                <span className="text-txt font-semibold text-right">{code.description}</span>
               </div>
             </div>
           </div>
@@ -100,7 +100,7 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
           {/* Examples */}
           {code.examples && code.examples.length > 0 && (
             <div>
-              <h4 className="text-xl font-bold text-text mb-4 leading-tight">
+              <h4 className="text-xl font-bold text-txt mb-4 leading-tight">
                 사용 예시
               </h4>
               <div className="space-y-3">
@@ -110,7 +110,7 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
                     className="flex items-center space-x-3 p-4 bg-primary/5 rounded-lg border border-primary/20"
                   >
                     <span className="text-primary text-lg font-bold">•</span>
-                    <span className="text-text leading-relaxed">{example}</span>
+                    <span className="text-txt leading-relaxed">{example}</span>
                   </div>
                 ))}
               </div>

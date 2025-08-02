@@ -60,7 +60,7 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Examples */}
           <div>
-            <h4 className="text-xl font-bold text-text mb-6 flex items-center leading-tight">
+            <h4 className="text-xl font-bold text-txt mb-6 flex items-center leading-tight">
               <span className="w-3 h-3 bg-primary rounded-full mr-4"></span>
               이런 대화를 나누어보세요
             </h4>
@@ -68,7 +68,7 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
               {category.examples.map((example, index) => (
                 <li key={index} className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-text-secondary text-base leading-relaxed">
+                  <p className="text-txt-secondary text-base leading-relaxed">
                     {example}
                   </p>
                 </li>
@@ -78,7 +78,7 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
 
           {/* Tips */}
           <div>
-            <h4 className="text-xl font-bold text-text mb-6 flex items-center leading-tight">
+            <h4 className="text-xl font-bold text-txt mb-6 flex items-center leading-tight">
               <span className="w-3 h-3 bg-green-500 rounded-full mr-4"></span>
               대화 팁
             </h4>
@@ -86,7 +86,7 @@ const CategoryDetailCard: React.FC<CategoryDetailCardProps> = ({
               {category.tips.map((tip, index) => (
                 <li key={index} className="flex items-start space-x-4">
                   <div className="w-3 h-3 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-text-secondary text-base leading-relaxed">
+                  <p className="text-txt-secondary text-base leading-relaxed">
                     {tip}
                   </p>
                 </li>

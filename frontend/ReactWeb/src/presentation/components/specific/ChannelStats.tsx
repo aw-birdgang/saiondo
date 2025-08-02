@@ -69,7 +69,7 @@ const ChannelStats: React.FC<ChannelStatsProps> = ({
 
   return (
     <Stack spacing="lg" className={className}>
-      <h3 className="text-xl font-bold text-text leading-tight">
+      <h3 className="text-xl font-bold text-txt leading-tight">
         {t('channel_stats') || '채널 통계'}
       </h3>
       

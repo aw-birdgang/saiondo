@@ -73,7 +73,7 @@ const Heading: React.FC<HeadingProps> = ({
       case 'primary':
         return 'text-primary';
       case 'secondary':
-        return 'text-text-secondary';
+        return 'text-txt-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
@@ -83,13 +83,13 @@ const Heading: React.FC<HeadingProps> = ({
       case 'info':
         return 'text-blue-600 dark:text-blue-400';
       case 'muted':
-        return 'text-text-secondary';
+        return 'text-txt-secondary';
       case 'white':
         return 'text-white';
       case 'black':
-        return 'text-text';
+        return 'text-txt';
       default:
-        return 'text-text';
+        return 'text-txt';
     }
   };
 

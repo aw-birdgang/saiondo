@@ -70,14 +70,14 @@ const InfoCard: React.FC<InfoCardProps> = ({
           )}
           
           {title && (
-            <h3 className="text-sm font-medium text-text-secondary mb-2">
+            <h3 className="text-sm font-medium text-txt-secondary mb-2">
               {title}
             </h3>
           )}
           
           {value !== undefined && (
             <div className="flex items-baseline gap-3 mb-2">
-              <span className="text-3xl font-bold text-text">
+              <span className="text-3xl font-bold text-txt">
                 {value}
               </span>
               {trend && (
@@ -89,13 +89,13 @@ const InfoCard: React.FC<InfoCardProps> = ({
           )}
           
           {subtitle && (
-            <p className="text-sm text-text-secondary mb-2">
+            <p className="text-sm text-txt-secondary mb-2">
               {subtitle}
             </p>
           )}
           
           {description && (
-            <p className="text-xs text-text-secondary leading-relaxed">
+            <p className="text-xs text-txt-secondary leading-relaxed">
               {description}
             </p>
           )}

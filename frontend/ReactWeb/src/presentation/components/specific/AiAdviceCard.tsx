@@ -33,4 +33,6 @@ export const AiAdviceCard: React.FC<AiAdviceCardProps> = ({
       </p>
     </div>
   );
-}; 
+};
+
+export default AiAdviceCard; 

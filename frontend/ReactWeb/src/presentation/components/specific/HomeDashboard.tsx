@@ -141,10 +141,10 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
                     <span className="text-xl">💬</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-text leading-tight">
+                    <p className="text-sm font-medium text-txt leading-tight">
                       {t('ai_chat_started') || 'AI 상담사와 대화를 시작했습니다'}
                     </p>
-                    <Caption size="xs" className="text-text-secondary mt-1">
+                    <Caption size="xs" className="text-txt-secondary mt-1">
                       {currentStats.lastActivity}
                     </Caption>
                   </div>
@@ -155,10 +155,10 @@ const HomeDashboard: React.FC<HomeDashboardProps> = ({
                     <span className="text-xl">👥</span>
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-text leading-tight">
+                    <p className="text-sm font-medium text-txt leading-tight">
                       {t('channel_joined') || '새로운 채널에 참여했습니다'}
                     </p>
-                    <Caption size="xs" className="text-text-secondary mt-1">
+                    <Caption size="xs" className="text-txt-secondary mt-1">
                       {t('yesterday') || '어제'}
                     </Caption>
                   </div>

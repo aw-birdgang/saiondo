@@ -79,10 +79,10 @@ const InvitationResponseCard: React.FC<InvitationResponseCardProps> = ({
             <span className="text-2xl">👥</span>
           </div>
           <div>
-            <h3 className="font-semibold text-text leading-tight">
+            <h3 className="font-semibold text-txt leading-tight">
               {invitation.channelName || t('channel') || '채널'}
             </h3>
-            <p className="text-sm text-text-secondary leading-relaxed">
+            <p className="text-sm text-txt-secondary leading-relaxed">
               {t('invited_by') || '초대자'}: {invitation.inviterName || t('unknown_user') || '알 수 없는 사용자'}
             </p>
           </div>
@@ -97,19 +97,19 @@ const InvitationResponseCard: React.FC<InvitationResponseCardProps> = ({
       {/* Content */}
       <div className="space-y-4">
         <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
-          <span className="text-text-secondary font-medium">
+          <span className="text-txt-secondary font-medium">
             {t('invitation_code') || '초대 코드'}:
           </span>
-          <span className="font-mono text-text font-semibold">
+          <span className="font-mono text-txt font-semibold">
             {invitation.channelId}
           </span>
         </div>
         
         <div className="flex items-center justify-between p-3 bg-secondary rounded-lg">
-          <span className="text-text-secondary font-medium">
+          <span className="text-txt-secondary font-medium">
             {t('invited_at') || '초대 시간'}:
           </span>
-          <span className="text-text font-semibold">
+          <span className="text-txt font-semibold">
             {formatTime(invitation.createdAt)}
           </span>
         </div>

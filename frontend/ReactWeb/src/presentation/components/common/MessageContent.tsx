@@ -26,20 +26,20 @@ const MessageContent: React.FC<MessageContentProps> = ({
           target.style.display = 'none';
         }}
       />
-      <p className="text-xs text-text-secondary font-medium">📷 Image</p>
+      <p className="text-xs text-txt-secondary font-medium">📷 Image</p>
     </div>
   );
 
   const renderFileContent = () => (
     <div className="flex items-center space-x-3 p-3 bg-secondary rounded-lg border border-border">
       <span className="text-lg">📎</span>
-      <span className="text-sm font-semibold text-text">{content}</span>
+      <span className="text-sm font-semibold text-txt">{content}</span>
     </div>
   );
 
   const renderSystemContent = () => (
     <div className="text-center">
-      <span className="text-xs text-text-secondary bg-secondary px-4 py-2 rounded-full font-medium">
+      <span className="text-xs text-txt-secondary bg-secondary px-4 py-2 rounded-full font-medium">
         {content}
       </span>
     </div>

@@ -45,7 +45,7 @@ const EventList: React.FC<EventListProps> = ({
   return (
     <div className={`card p-6 ${className}`}>
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-xl font-bold text-text leading-tight">
+        <h3 className="text-xl font-bold text-txt leading-tight">
           {format(selectedDate, 'yyyy년 M월 d일', { locale: ko })}
         </h3>
         <button
@@ -58,7 +58,7 @@ const EventList: React.FC<EventListProps> = ({
 
       <div className="space-y-6">
         {events.length === 0 ? (
-          <p className="text-text-secondary text-center py-12 text-lg font-medium">
+          <p className="text-txt-secondary text-center py-12 text-lg font-medium">
             {t('no_events') || '등록된 이벤트가 없습니다'}
           </p>
         ) : (

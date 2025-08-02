@@ -48,4 +48,6 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
       </div>
     </div>
   );
-}; 
+};
+
+export default ChannelHeader; 

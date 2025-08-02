@@ -24,7 +24,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
       {items.map((item, index) => (
         <React.Fragment key={index}>
           {index > 0 && (
-            <span className="text-text-secondary">
+            <span className="text-txt-secondary">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -34,7 +34,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
           {item.path && index < items.length - 1 ? (
             <Link
               to={item.path}
-              className="flex items-center space-x-1 text-text-secondary hover:text-primary transition-colors duration-200 px-2 py-1 rounded-md hover:bg-secondary"
+              className="flex items-center space-x-1 text-txt-secondary hover:text-primary transition-colors duration-200 px-2 py-1 rounded-md hover:bg-secondary"
             >
               {item.icon && <span className="text-lg">{item.icon}</span>}
               <span>{t(item.label) || item.label}</span>
@@ -42,8 +42,8 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
           ) : (
             <span className={`flex items-center space-x-1 px-2 py-1 rounded-md ${
               index === items.length - 1
-                ? 'text-text font-semibold bg-primary/10'
-                : 'text-text-secondary'
+                ? 'text-txt font-semibold bg-primary/10'
+                : 'text-txt-secondary'
             }`}>
               {item.icon && <span className="text-lg">{item.icon}</span>}
               <span>{t(item.label) || item.label}</span>

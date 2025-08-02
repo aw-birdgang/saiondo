@@ -10,7 +10,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-background py-12 px-6 sm:px-8 lg:px-10 ${className}`}>
+    <div className={`min-h-screen flex items-center justify-center bg-bg py-12 px-6 sm:px-8 lg:px-10 ${className}`}>
       {children}
     </div>
   );

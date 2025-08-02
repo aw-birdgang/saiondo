@@ -43,10 +43,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           size="md"
         />
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-text mb-3 leading-tight">
+          <h3 className="text-lg font-semibold text-txt mb-3 leading-tight">
             {category.name}
           </h3>
-          <p className="text-text-secondary mb-6 leading-relaxed">
+          <p className="text-txt-secondary mb-6 leading-relaxed">
             {category.description}
           </p>
           

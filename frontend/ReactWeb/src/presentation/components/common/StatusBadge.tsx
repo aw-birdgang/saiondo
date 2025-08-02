@@ -21,7 +21,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800',
       error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-200 dark:border-red-800',
       info: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-800',
-      default: 'bg-secondary text-text-secondary border border-border',
+      default: 'bg-secondary text-txt-secondary border border-border',
     };
     return typeClasses[type];
   };

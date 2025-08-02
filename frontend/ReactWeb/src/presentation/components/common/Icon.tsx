@@ -39,7 +39,7 @@ const Icon: React.FC<IconProps> = ({
       case 'primary':
         return 'text-primary';
       case 'secondary':
-        return 'text-text-secondary';
+        return 'text-txt-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
@@ -51,7 +51,7 @@ const Icon: React.FC<IconProps> = ({
       case 'white':
         return 'text-white';
       default:
-        return 'text-text-secondary';
+        return 'text-txt-secondary';
     }
   };
 

@@ -18,15 +18,15 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div className={`text-center py-16 ${className}`}>
       {icon && (
-        <div className="mx-auto h-16 w-16 text-text-secondary mb-6">
+        <div className="mx-auto h-16 w-16 text-txt-secondary mb-6">
           {icon}
         </div>
       )}
-      <h3 className="text-xl font-semibold text-text mb-3">
+      <h3 className="text-xl font-semibold text-txt mb-3">
         {title}
       </h3>
       {description && (
-        <p className="text-text-secondary mb-8 max-w-md mx-auto leading-relaxed">
+        <p className="text-txt-secondary mb-8 max-w-md mx-auto leading-relaxed">
           {description}
         </p>
       )}

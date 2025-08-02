@@ -45,7 +45,7 @@ const ChannelInfoCard: React.FC<ChannelInfoCardProps> = ({
         <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
           <span className="text-xl">📺</span>
         </div>
-        <h3 className="text-xl font-semibold text-text leading-tight">
+        <h3 className="text-xl font-semibold text-txt leading-tight">
           {t("channel_info") || "채널 정보"}
         </h3>
       </div>

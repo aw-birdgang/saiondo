@@ -28,7 +28,7 @@ const MbtiMatch: React.FC<MbtiMatchProps> = ({
         <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
           <span className="text-xl">🧠</span>
         </div>
-        <h3 className="text-xl font-semibold text-text leading-tight">
+        <h3 className="text-xl font-semibold text-txt leading-tight">
           {t("couple_mbti_match") || "MBTI 호환성"}
         </h3>
       </div>
@@ -38,7 +38,7 @@ const MbtiMatch: React.FC<MbtiMatchProps> = ({
           <div className="px-6 py-3 bg-primary/10 text-primary rounded-full font-semibold text-lg mb-3 shadow-sm">
             {user1.mbti || 'N/A'}
           </div>
-          <p className="text-sm text-text-secondary font-medium">{user1.name}</p>
+          <p className="text-sm text-txt-secondary font-medium">{user1.name}</p>
         </div>
         
         <div className="flex flex-col items-center">
@@ -46,7 +46,7 @@ const MbtiMatch: React.FC<MbtiMatchProps> = ({
           {matchPercent && (
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">{matchPercent}%</div>
-              <div className="text-sm text-text-secondary font-medium">{t("good_match") || "좋은 조합"}</div>
+              <div className="text-sm text-txt-secondary font-medium">{t("good_match") || "좋은 조합"}</div>
             </div>
           )}
         </div>
@@ -55,12 +55,12 @@ const MbtiMatch: React.FC<MbtiMatchProps> = ({
           <div className="px-6 py-3 bg-primary/10 text-primary rounded-full font-semibold text-lg mb-3 shadow-sm">
             {user2.mbti || 'N/A'}
           </div>
-          <p className="text-sm text-text-secondary font-medium">{user2.name}</p>
+          <p className="text-sm text-txt-secondary font-medium">{user2.name}</p>
         </div>
       </div>
       
       <div className="text-center">
-        <p className="text-sm text-text-secondary leading-relaxed">
+        <p className="text-sm text-txt-secondary leading-relaxed">
           {t("mbti_description") || "MBTI 성향을 기반으로 한 호환성 분석입니다"}
         </p>
       </div>

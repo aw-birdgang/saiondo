@@ -10,7 +10,7 @@ interface PageLayoutProps {
 
 const PageLayout: React.FC<PageLayoutProps> = ({ 
   children, 
-  background = "bg-background", 
+  background = "bg-bg", 
   maxWidth = "max-w-6xl", 
   padding = "px-6 py-8", 
   className = "" 

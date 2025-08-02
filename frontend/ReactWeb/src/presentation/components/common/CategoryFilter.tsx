@@ -29,7 +29,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
             flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105
             ${selectedCategory === category.id
               ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
-              : 'bg-secondary text-text-secondary hover:bg-secondary/80 hover:text-text border border-transparent'
+              : 'bg-secondary text-txt-secondary hover:bg-secondary/80 hover:text-txt border border-transparent'
             }
           `}
         >

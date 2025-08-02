@@ -17,6 +17,7 @@ import {
   PaymentPage,
   SplashPage
 } from "../pages";
+import TailwindTestPage from "../pages/test/TailwindTestPage";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -50,6 +51,9 @@ export const AppRoutes: React.FC = () => {
       
       {/* Profile */}
       <Route path="/profile" element={<MyPage />} />
+      
+      {/* Test */}
+      <Route path="/test/tailwind" element={<TailwindTestPage />} />
     </Routes>
   );
 };

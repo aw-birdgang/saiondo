@@ -31,7 +31,7 @@ const SystemStatusCard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-bold text-text leading-tight">
+      <h3 className="text-xl font-bold text-txt leading-tight">
         {t("system_status") || "시스템 상태"}
       </h3>
       

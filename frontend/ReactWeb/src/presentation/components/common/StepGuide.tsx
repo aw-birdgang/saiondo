@@ -20,7 +20,7 @@ const StepGuide: React.FC<StepGuideProps> = ({
 }) => {
   return (
     <div className={`card p-6 ${className}`}>
-      <h3 className="text-lg font-bold text-text mb-6">
+      <h3 className="text-lg font-bold text-txt mb-6">
         {title}
       </h3>
       <div className="space-y-6">
@@ -32,11 +32,11 @@ const StepGuide: React.FC<StepGuideProps> = ({
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
                 <span className="text-lg">{step.icon}</span>
-                <h4 className="font-semibold text-text">
+                <h4 className="font-semibold text-txt">
                   {step.title}
                 </h4>
               </div>
-              <p className="text-text-secondary text-sm leading-relaxed">
+              <p className="text-txt-secondary text-sm leading-relaxed">
                 {step.description}
               </p>
             </div>

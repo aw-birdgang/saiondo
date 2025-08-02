@@ -23,19 +23,19 @@ const CategoryCodeHeader: React.FC<CategoryCodeHeaderProps> = ({
               onClick={() => navigate(-1)}
               className="p-3 hover:bg-secondary rounded-full transition-all duration-200 hover:scale-105"
             >
-              <svg className="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-txt-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             <div className="flex items-center space-x-3">
               <span className="text-3xl">📋</span>
-              <h1 className="text-2xl font-bold text-text leading-tight">
+              <h1 className="text-2xl font-bold text-txt leading-tight">
                 {t('category_code_guide') || '카테고리 코드 안내'}
               </h1>
             </div>
           </div>
           
-          <div className="text-sm text-text-secondary font-medium">
+          <div className="text-sm text-txt-secondary font-medium">
             총 {codesCount}개 코드
           </div>
         </div>

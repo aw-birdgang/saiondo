@@ -89,12 +89,12 @@ const EventForm: React.FC<EventFormProps> = ({
       <div className="card max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="p-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-text leading-tight">
+            <h2 className="text-2xl font-bold text-txt leading-tight">
               {event ? '일정 수정' : '새 일정'}
             </h2>
             <button
               onClick={onCancel}
-              className="text-text-secondary hover:text-text transition-all duration-200 hover:scale-110 p-3"
+              className="text-txt-secondary hover:text-txt transition-all duration-200 hover:scale-110 p-3"
             >
               ✕
             </button>
@@ -103,7 +103,7 @@ const EventForm: React.FC<EventFormProps> = ({
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Event Type */}
             <div>
-              <label className="block text-sm font-semibold text-text mb-4">
+              <label className="block text-sm font-semibold text-txt mb-4">
                 일정 유형
               </label>
               <div className="grid grid-cols-2 gap-4">
@@ -121,7 +121,7 @@ const EventForm: React.FC<EventFormProps> = ({
                     `}
                   >
                     <div className="text-3xl mb-3">{type.icon}</div>
-                    <div className="text-sm font-semibold text-text leading-tight">
+                    <div className="text-sm font-semibold text-txt leading-tight">
                       {type.label}
                     </div>
                   </button>
@@ -131,7 +131,7 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-semibold text-text mb-4">
+              <label className="block text-sm font-semibold text-txt mb-4">
                 제목 *
               </label>
               <input
@@ -146,7 +146,7 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-semibold text-text mb-4">
+              <label className="block text-sm font-semibold text-txt mb-4">
                 날짜
               </label>
               <input
@@ -159,7 +159,7 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Time */}
             <div>
-              <label className="block text-sm font-semibold text-text mb-4">
+              <label className="block text-sm font-semibold text-txt mb-4">
                 시간
               </label>
               <input
@@ -172,7 +172,7 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Location */}
             <div>
-              <label className="block text-sm font-semibold text-text mb-4">
+              <label className="block text-sm font-semibold text-txt mb-4">
                 장소
               </label>
               <input
@@ -186,7 +186,7 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-semibold text-text mb-4">
+              <label className="block text-sm font-semibold text-txt mb-4">
                 설명
               </label>
               <textarea

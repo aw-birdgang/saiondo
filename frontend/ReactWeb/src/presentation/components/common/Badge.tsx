@@ -20,7 +20,7 @@ const Badge: React.FC<BadgeProps> = ({
       case 'primary':
         return 'bg-primary/10 text-primary border border-primary/20';
       case 'secondary':
-        return 'bg-secondary text-text-secondary border border-border';
+        return 'bg-secondary text-txt-secondary border border-border';
       case 'success':
         return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-200 border border-green-200 dark:border-green-800';
       case 'warning':
@@ -30,7 +30,7 @@ const Badge: React.FC<BadgeProps> = ({
       case 'info':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200 border border-blue-200 dark:border-blue-800';
       case 'outline':
-        return 'bg-transparent border border-border text-text-secondary';
+        return 'bg-transparent border border-border text-txt-secondary';
       default:
         return 'bg-primary/10 text-primary border border-primary/20';
     }

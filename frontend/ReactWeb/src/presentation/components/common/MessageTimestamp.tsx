@@ -37,7 +37,7 @@ const MessageTimestamp: React.FC<MessageTimestampProps> = ({
       className={`text-xs mt-2 font-medium ${
         isOwnMessage 
           ? 'text-on-primary/80' 
-          : 'text-text-secondary'
+          : 'text-txt-secondary'
       } ${className}`}
     >
       {formatTime(timestamp)}

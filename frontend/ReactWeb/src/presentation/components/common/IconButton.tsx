@@ -27,9 +27,9 @@ const IconButton: React.FC<IconButtonProps> = ({
   const getVariantClasses = (variant: IconButtonVariant) => {
     const variantClasses = {
       primary: 'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary/20 shadow-sm',
-      secondary: 'bg-secondary text-text-secondary hover:bg-secondary/80 hover:text-text focus:ring-secondary/20',
+      secondary: 'bg-secondary text-txt-secondary hover:bg-secondary/80 hover:text-txt focus:ring-secondary/20',
       danger: 'bg-error text-on-error hover:bg-error/90 focus:ring-error/20 shadow-sm',
-      ghost: 'bg-transparent text-text-secondary hover:bg-secondary hover:text-text focus:ring-secondary/20',
+      ghost: 'bg-transparent text-txt-secondary hover:bg-secondary hover:text-txt focus:ring-secondary/20',
     };
     return variantClasses[variant];
   };

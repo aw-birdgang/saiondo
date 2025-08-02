@@ -15,12 +15,12 @@ const TipList: React.FC<TipListProps> = ({
 
   return (
     <div className={className}>
-      <h4 className="text-sm font-semibold text-text mb-3">
+      <h4 className="text-sm font-semibold text-txt mb-3">
         팁
       </h4>
       <ul className="space-y-2">
         {displayTips.map((tip, index) => (
-          <li key={index} className="text-sm text-text-secondary leading-relaxed">
+          <li key={index} className="text-sm text-txt-secondary leading-relaxed">
             • {tip}
           </li>
         ))}

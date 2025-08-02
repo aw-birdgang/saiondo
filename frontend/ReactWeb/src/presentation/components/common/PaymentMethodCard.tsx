@@ -43,10 +43,10 @@ const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
         <div className="flex items-center gap-4">
           <div className="text-3xl">{method.icon}</div>
           <div className="flex-1">
-            <div className="font-semibold text-text text-lg">
+            <div className="font-semibold text-txt text-lg">
               {method.name}
             </div>
-            <div className="text-sm text-text-secondary mt-1">
+            <div className="text-sm text-txt-secondary mt-1">
               {method.description}
             </div>
           </div>
@@ -70,7 +70,7 @@ const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
       {/* Additional details when expanded */}
       {isExpanded && method.isAvailable && (
         <div className="mt-6 pt-4 border-t border-divider">
-          <div className="text-sm text-text-secondary leading-relaxed">
+          <div className="text-sm text-txt-secondary leading-relaxed">
             {method.name}로 결제하시면 즉시 구독이 활성화됩니다.
           </div>
         </div>

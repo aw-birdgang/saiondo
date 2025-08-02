@@ -27,7 +27,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
     <div className="space-y-4">
       {data.map((item, index) => (
         <div key={index} className="flex items-center gap-4">
-          <div className="w-24 text-sm text-text-secondary truncate font-medium">
+          <div className="w-24 text-sm text-txt-secondary truncate font-medium">
             {item.label}
           </div>
           <div className="flex-1 bg-secondary rounded-full h-4 overflow-hidden">
@@ -38,7 +38,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
               style={{ width: `${(item.value / max) * 100}%` }}
             />
           </div>
-          <div className="w-16 text-sm font-semibold text-text text-right">
+          <div className="w-16 text-sm font-semibold text-txt text-right">
             {item.value}%
           </div>
         </div>
@@ -75,10 +75,10 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-xl font-bold text-text">
+            <div className="text-xl font-bold text-txt">
               {Math.round(data.reduce((acc, item) => acc + item.value, 0) / data.length)}%
             </div>
-            <div className="text-xs text-text-secondary">평균</div>
+            <div className="text-xs text-txt-secondary">평균</div>
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
 
   return (
     <div className={`card p-6 ${className}`}>
-      <h3 className="text-xl font-bold text-text mb-6">
+      <h3 className="text-xl font-bold text-txt mb-6">
         {title}
       </h3>
       {renderChart()}
@@ -168,7 +168,7 @@ const AnalysisChart: React.FC<AnalysisChartProps> = ({
                 className="w-4 h-4 rounded-full shadow-sm"
                 style={{ backgroundColor: item.color || '#d21e1d' }}
               />
-              <span className="text-text-secondary font-medium">{item.label}</span>
+              <span className="text-txt-secondary font-medium">{item.label}</span>
             </div>
           ))}
         </div>

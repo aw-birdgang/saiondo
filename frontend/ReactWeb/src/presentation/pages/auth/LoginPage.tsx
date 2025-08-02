@@ -28,10 +28,7 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
-      await login({
-        email: formData.email.trim(),
-        password: formData.password,
-      });
+      await login(formData.email.trim(), formData.password);
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -39,10 +36,7 @@ const LoginPage: React.FC = () => {
 
   const handleQuickLogin = async (email: string) => {
     try {
-      await login({
-        email,
-        password: 'password123', // 테스트용 기본 비밀번호
-      });
+      await login(email, 'password123'); // 테스트용 기본 비밀번호
     } catch (error) {
       console.error('Quick login error:', error);
     }

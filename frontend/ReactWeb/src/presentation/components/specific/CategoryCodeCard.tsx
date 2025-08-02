@@ -23,7 +23,7 @@ const CategoryCodeCard: React.FC<CategoryCodeCardProps> = ({
       case 'topic': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800';
       case 'emotion': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border border-green-200 dark:border-green-800';
       case 'communication': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400 border border-purple-200 dark:border-purple-800';
-      default: return 'bg-secondary text-text-secondary border border-border';
+      default: return 'bg-secondary text-txt-secondary border border-border';
     }
   };
 
@@ -55,7 +55,7 @@ const CategoryCodeCard: React.FC<CategoryCodeCardProps> = ({
             {getCategoryIcon(code.category)}
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-text leading-tight">
+            <h3 className="text-lg font-semibold text-txt leading-tight">
               {code.code}
             </h3>
             <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getCategoryColor(code.category)}`}>
@@ -67,24 +67,24 @@ const CategoryCodeCard: React.FC<CategoryCodeCardProps> = ({
 
       <div className="space-y-4">
         <div>
-          <h4 className="font-semibold text-text mb-3 leading-tight">
+          <h4 className="font-semibold text-txt mb-3 leading-tight">
             설명
           </h4>
-          <p className="text-text-secondary text-sm leading-relaxed">
+          <p className="text-txt-secondary text-sm leading-relaxed">
             {code.description}
           </p>
         </div>
 
         {code.examples && code.examples.length > 0 && (
           <div>
-            <h4 className="font-semibold text-text mb-3 leading-tight">
+            <h4 className="font-semibold text-txt mb-3 leading-tight">
               예시
             </h4>
             <div className="flex flex-wrap gap-3">
               {code.examples.map((example, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1.5 bg-secondary text-text-secondary rounded-lg text-xs font-medium border border-border"
+                  className="px-3 py-1.5 bg-secondary text-txt-secondary rounded-lg text-xs font-medium border border-border"
                 >
                   {example}
                 </span>

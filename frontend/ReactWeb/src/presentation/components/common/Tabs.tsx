@@ -29,24 +29,24 @@ const Tabs: React.FC<TabsProps> = ({
           container: 'flex space-x-1 bg-secondary p-1 rounded-lg',
           tab: 'flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200',
           active: 'bg-surface text-primary shadow-sm',
-          inactive: 'text-text-secondary hover:text-text hover:bg-secondary/50',
-          disabled: 'text-text-secondary/50 cursor-not-allowed'
+          inactive: 'text-txt-secondary hover:text-txt hover:bg-secondary/50',
+          disabled: 'text-txt-secondary/50 cursor-not-allowed'
         };
       case 'underline':
         return {
           container: 'border-b border-border',
           tab: 'px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200',
           active: 'border-primary text-primary',
-          inactive: 'border-transparent text-text-secondary hover:text-text hover:border-border',
-          disabled: 'text-text-secondary/50 cursor-not-allowed border-transparent'
+          inactive: 'border-transparent text-txt-secondary hover:text-txt hover:border-border',
+          disabled: 'text-txt-secondary/50 cursor-not-allowed border-transparent'
         };
       default:
         return {
           container: 'flex space-x-8',
           tab: 'px-1 py-3 text-sm font-medium border-b-2 transition-all duration-200',
           active: 'border-primary text-primary',
-          inactive: 'border-transparent text-text-secondary hover:text-text hover:border-border',
-          disabled: 'text-text-secondary/50 cursor-not-allowed border-transparent'
+          inactive: 'border-transparent text-txt-secondary hover:text-txt hover:border-border',
+          disabled: 'text-txt-secondary/50 cursor-not-allowed border-transparent'
         };
     }
   };

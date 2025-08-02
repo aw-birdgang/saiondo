@@ -32,10 +32,10 @@ const InvitationList: React.FC<InvitationListProps> = ({
     return (
       <div className={`text-center py-16 ${className}`}>
         <div className="text-6xl mb-6 animate-pulse">📨</div>
-        <h3 className="text-2xl font-bold text-text mb-4 leading-tight">
+        <h3 className="text-2xl font-bold text-txt mb-4 leading-tight">
           {t('no_invitations') || '초대장이 없습니다'}
         </h3>
-        <p className="text-text-secondary text-lg leading-relaxed">
+        <p className="text-txt-secondary text-lg leading-relaxed">
           {t('no_invitations_description') || '현재 받은 채널 초대장이 없습니다.'}
         </p>
       </div>

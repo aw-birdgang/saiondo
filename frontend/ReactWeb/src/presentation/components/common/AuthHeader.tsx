@@ -19,4 +19,6 @@ export const AuthHeader: React.FC<AuthHeaderProps> = ({ title }) => {
       </button>
     </div>
   );
-}; 
+};
+
+export default AuthHeader; 

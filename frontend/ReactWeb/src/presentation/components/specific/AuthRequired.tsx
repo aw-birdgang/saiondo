@@ -15,10 +15,10 @@ const AuthRequired: React.FC<AuthRequiredProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className={`min-h-screen bg-background flex items-center justify-center ${className}`}>
+    <div className={`min-h-screen bg-bg flex items-center justify-center ${className}`}>
       <div className="text-center max-w-md mx-auto px-6">
         <div className="text-6xl mb-6 animate-pulse">🔐</div>
-        <h2 className="text-2xl font-bold text-text mb-6 leading-tight">
+        <h2 className="text-2xl font-bold text-txt mb-6 leading-tight">
           {t("auth.login_required") || "로그인이 필요합니다"}
         </h2>
         <button

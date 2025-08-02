@@ -10,7 +10,7 @@ const AnalysisLayout: React.FC<AnalysisLayoutProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`min-h-screen bg-background ${className}`}>
+    <div className={`min-h-screen bg-bg ${className}`}>
       {children}
     </div>
   );

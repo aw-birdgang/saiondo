@@ -25,7 +25,7 @@ const PersonasSection: React.FC<PersonasSectionProps> = ({
         <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
           <span className="text-lg">👥</span>
         </div>
-        <h3 className="text-xl font-semibold text-text">
+        <h3 className="text-xl font-semibold text-txt">
           성향 분석
         </h3>
       </div>
@@ -33,13 +33,13 @@ const PersonasSection: React.FC<PersonasSectionProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {persona1 && (
           <div className="bg-secondary rounded-lg p-6">
-            <h4 className="font-semibold text-text mb-3 flex items-center">
+            <h4 className="font-semibold text-txt mb-3 flex items-center">
               <span className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mr-2">
                 <span className="text-xs">1</span>
               </span>
               {t("user1_persona") || "사용자 1 성향"}
             </h4>
-            <p className="text-text-secondary leading-relaxed">
+            <p className="text-txt-secondary leading-relaxed">
               {persona1}
             </p>
           </div>
@@ -47,13 +47,13 @@ const PersonasSection: React.FC<PersonasSectionProps> = ({
         
         {persona2 && (
           <div className="bg-secondary rounded-lg p-6">
-            <h4 className="font-semibold text-text mb-3 flex items-center">
+            <h4 className="font-semibold text-txt mb-3 flex items-center">
               <span className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mr-2">
                 <span className="text-xs">2</span>
               </span>
               {t("user2_persona") || "사용자 2 성향"}
             </h4>
-            <p className="text-text-secondary leading-relaxed">
+            <p className="text-txt-secondary leading-relaxed">
               {persona2}
             </p>
           </div>

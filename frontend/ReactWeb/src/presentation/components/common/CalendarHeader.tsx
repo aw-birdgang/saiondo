@@ -12,7 +12,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ className = '' }) => {
       {daysOfWeek.map((day) => (
         <div
           key={day}
-          className="p-3 text-center text-sm font-semibold text-text-secondary bg-secondary/50 rounded-lg"
+          className="p-3 text-center text-sm font-semibold text-txt-secondary bg-secondary/50 rounded-lg"
         >
           {day}
         </div>

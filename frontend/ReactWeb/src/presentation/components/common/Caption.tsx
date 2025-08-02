@@ -27,9 +27,9 @@ const Caption: React.FC<CaptionProps> = ({
   const getColorClass = () => {
     switch (color) {
       case 'primary':
-        return 'text-text';
+        return 'text-txt';
       case 'secondary':
-        return 'text-text-secondary';
+        return 'text-txt-secondary';
       case 'success':
         return 'text-green-600 dark:text-green-400';
       case 'warning':
@@ -39,7 +39,7 @@ const Caption: React.FC<CaptionProps> = ({
       case 'info':
         return 'text-blue-600 dark:text-blue-400';
       default:
-        return 'text-text-secondary';
+        return 'text-txt-secondary';
     }
   };
 

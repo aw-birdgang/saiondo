@@ -1,9 +1,7 @@
 import { useAuthStore } from '../../stores/authStore';
-import { useAuth as useAuthContext } from '../../contexts/AuthContext';
 
 export const useAuth = () => {
   const authStore = useAuthStore();
-  const authContext = useAuthContext();
 
   return {
     // State from Zustand store
@@ -13,11 +11,11 @@ export const useAuth = () => {
     loading: authStore.loading,
     error: authStore.error,
 
-    // Actions from Context
-    login: authContext.login,
-    register: authContext.register,
-    logout: authContext.logout,
-    clearError: authContext.clearError,
+    // Actions from Zustand store
+    login: authStore.login,
+    register: authStore.register,
+    logout: authStore.logout,
+    clearError: authStore.clearError,
 
     // Additional Zustand actions
     setUser: authStore.setUser,

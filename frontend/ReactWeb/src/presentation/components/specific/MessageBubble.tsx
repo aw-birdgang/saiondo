@@ -36,7 +36,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
   if (isSystemMessage) {
     return (
       <div className={`flex justify-center my-6 ${className}`}>
-        <div className="bg-secondary text-text-secondary text-xs px-6 py-3 rounded-full border border-border font-medium">
+        <div className="bg-secondary text-txt-secondary text-xs px-6 py-3 rounded-full border border-border font-medium">
           {message.content}
         </div>
       </div>
@@ -67,7 +67,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}>
           {/* Sender Name */}
           {!isOwnMessage && message.senderName && (
-            <div className="text-xs text-text-secondary mb-3 ml-1 font-medium">
+            <div className="text-xs text-txt-secondary mb-3 ml-1 font-medium">
               {message.senderName}
             </div>
           )}
@@ -78,7 +78,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               px-6 py-4 rounded-xl max-w-full break-words shadow-sm
               ${isOwnMessage 
                 ? 'bg-primary text-on-primary rounded-br-md' 
-                : 'bg-surface text-text rounded-bl-md border border-border'
+                : 'bg-surface text-txt rounded-bl-md border border-border'
               }
             `}
           >
@@ -105,7 +105,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
 
           {/* Timestamp */}
-          <div className={`text-xs text-text-secondary mt-3 ${isOwnMessage ? 'mr-1' : 'ml-1'} font-medium`}>
+          <div className={`text-xs text-txt-secondary mt-3 ${isOwnMessage ? 'mr-1' : 'ml-1'} font-medium`}>
             {formatTime(message.timestamp)}
           </div>
         </div>

@@ -36,12 +36,12 @@ const Card: React.FC<CardProps> = ({
       {(title || subtitle) && (
         <div className="mb-6">
           {title && (
-            <h3 className="text-lg font-semibold text-text mb-2">
+            <h3 className="text-lg font-semibold text-txt mb-2">
               {title}
             </h3>
           )}
           {subtitle && (
-            <p className="text-sm text-text-secondary leading-relaxed">
+            <p className="text-sm text-txt-secondary leading-relaxed">
               {subtitle}
             </p>
           )}

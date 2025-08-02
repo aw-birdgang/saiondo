@@ -60,10 +60,10 @@ const AnalysisContent: React.FC<AnalysisContentProps> = ({
       <div className="space-y-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-text mb-4 leading-tight">
+          <h1 className="text-3xl font-bold text-txt mb-4 leading-tight">
             {t("relationship_analysis") || "관계 분석"}
           </h1>
-          <p className="text-text-secondary text-lg leading-relaxed">
+          <p className="text-txt-secondary text-lg leading-relaxed">
             {t("analysis_description") || "AI가 분석한 당신의 관계에 대한 인사이트"}
           </p>
         </div>

@@ -43,4 +43,6 @@ export const AssistantFilters: React.FC<AssistantFiltersProps> = ({
       </div>
     </div>
   );
-}; 
+};
+
+export default AssistantFilters; 

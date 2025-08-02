@@ -49,7 +49,7 @@ const Avatar: React.FC<AvatarProps> = ({
       case 'solid':
         return getColorClass();
       default:
-        return 'bg-secondary text-text-secondary';
+        return 'bg-secondary text-txt-secondary';
     }
   };
 
@@ -58,7 +58,7 @@ const Avatar: React.FC<AvatarProps> = ({
       case 'primary':
         return 'bg-primary text-on-primary';
       case 'secondary':
-        return 'bg-secondary text-text-secondary';
+        return 'bg-secondary text-txt-secondary';
       case 'success':
         return 'bg-green-500 text-white';
       case 'warning':

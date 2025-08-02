@@ -3,14 +3,14 @@ import { DI_TOKENS } from './tokens';
 import type { AppConfig } from './config';
 
 /**
- * Creates a test DI container with mock services
+ * Creates a test container with test configuration
  */
 export const createTestContainer = (config?: Partial<AppConfig>): DIContainer => {
   const testConfig: AppConfig = {
     api: {
       baseURL: 'http://localhost:3000',
       timeout: 5000,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {},
     },
     websocket: {
       url: 'ws://localhost:3000',
@@ -37,43 +37,55 @@ export const createMockService = <T>(mockImplementation: T) => {
 };
 
 /**
+ * Creates a mock function
+ */
+const createMockFn = () => {
+  const mockFn = (...args: any[]) => mockFn.mock.calls.push(args);
+  mockFn.mock = { calls: [] as any[][] };
+  mockFn.mockReset = () => {
+    mockFn.mock.calls = [];
+  };
+  return mockFn;
+};
+
+/**
  * Common mock services for testing
  */
 export const mockServices = {
   apiClient: {
-    get: jest.fn(),
-    post: jest.fn(),
-    put: jest.fn(),
-    delete: jest.fn(),
+    get: createMockFn(),
+    post: createMockFn(),
+    put: createMockFn(),
+    delete: createMockFn(),
   },
   webSocketClient: {
-    connect: jest.fn(),
-    disconnect: jest.fn(),
-    emit: jest.fn(),
-    on: jest.fn(),
+    connect: createMockFn(),
+    disconnect: createMockFn(),
+    emit: createMockFn(),
+    on: createMockFn(),
   },
   userRepository: {
-    getCurrentUser: jest.fn(),
-    updateUser: jest.fn(),
-    deleteUser: jest.fn(),
+    getCurrentUser: createMockFn(),
+    updateUser: createMockFn(),
+    deleteUser: createMockFn(),
   },
   channelRepository: {
-    getChannels: jest.fn(),
-    createChannel: jest.fn(),
-    updateChannel: jest.fn(),
-    deleteChannel: jest.fn(),
+    getChannels: createMockFn(),
+    createChannel: createMockFn(),
+    updateChannel: createMockFn(),
+    deleteChannel: createMockFn(),
   },
   messageRepository: {
-    getMessages: jest.fn(),
-    sendMessage: jest.fn(),
-    updateMessage: jest.fn(),
-    deleteMessage: jest.fn(),
+    getMessages: createMockFn(),
+    sendMessage: createMockFn(),
+    updateMessage: createMockFn(),
+    deleteMessage: createMockFn(),
   },
   authService: {
-    login: jest.fn(),
-    register: jest.fn(),
-    logout: jest.fn(),
-    getToken: jest.fn(),
+    login: createMockFn(),
+    register: createMockFn(),
+    logout: createMockFn(),
+    getToken: createMockFn(),
   },
 };
 
@@ -102,7 +114,7 @@ export const resetMocks = (): void => {
     if (typeof service === 'object' && service !== null) {
       Object.values(service).forEach(mock => {
         if (typeof mock === 'function' && 'mockReset' in mock) {
-          (mock as jest.Mock).mockReset();
+          (mock as any).mockReset();
         }
       });
     }

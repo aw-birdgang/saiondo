@@ -19,7 +19,7 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
 }) => {
   const getVariantClasses = (variant: 'default' | 'primary' | 'success' | 'warning' | 'error') => {
     const variantClasses = {
-      default: 'bg-secondary text-text-secondary border border-border',
+      default: 'bg-secondary text-txt-secondary border border-border',
       primary: 'bg-primary/10 text-primary border border-primary/20',
       success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800',
       warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800',

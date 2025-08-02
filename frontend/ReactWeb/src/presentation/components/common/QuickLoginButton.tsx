@@ -25,4 +25,6 @@ export const QuickLoginButton: React.FC<QuickLoginButtonProps> = ({
       Quick Login
     </button>
   );
-}; 
+};
+
+export default QuickLoginButton; 

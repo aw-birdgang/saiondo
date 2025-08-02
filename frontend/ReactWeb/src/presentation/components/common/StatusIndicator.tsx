@@ -69,7 +69,7 @@ const StatusIndicator: React.FC<StatusIndicatorProps> = ({
         `}
       />
       {showLabel && (
-        <span className="text-xs text-text-secondary font-medium">
+        <span className="text-xs text-txt-secondary font-medium">
           {config.label}
         </span>
       )}

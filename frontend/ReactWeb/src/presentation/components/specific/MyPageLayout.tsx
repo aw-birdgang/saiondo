@@ -10,7 +10,7 @@ const MyPageLayout: React.FC<MyPageLayoutProps> = ({
   className = "" 
 }) => {
   return (
-    <div className={`min-h-screen bg-background ${className}`}>
+    <div className={`min-h-screen bg-bg ${className}`}>
       <div className="max-w-6xl mx-auto px-6 py-8">
         {children}
       </div>

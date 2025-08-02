@@ -96,4 +96,5 @@ export { default as PaymentContentContainer } from './PaymentContentContainer';
 export { default as PaymentMethodSection } from './PaymentMethodSection';
 export { default as PaymentButtonContainer } from './PaymentButtonContainer';
 export { default as ErrorStateContainer } from './ErrorStateContainer';
-export { default as HeaderContainer } from './HeaderContainer'; 
+export { default as HeaderContainer } from './HeaderContainer';
+export { TailwindTest } from './TailwindTest'; 

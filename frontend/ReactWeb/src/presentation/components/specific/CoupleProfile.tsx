@@ -27,9 +27,9 @@ const CoupleProfile: React.FC<CoupleProfileProps> = ({
             profileUrl={user1.profileUrl}
             size="lg"
           />
-          <p className="text-sm font-medium text-text mt-3 leading-tight">{user1.name}</p>
+          <p className="text-sm font-medium text-txt mt-3 leading-tight">{user1.name}</p>
           {user1.mbti && (
-            <span className="inline-block px-3 py-1.5 bg-secondary text-text-secondary text-xs rounded-full mt-2 font-medium">
+            <span className="inline-block px-3 py-1.5 bg-secondary text-txt-secondary text-xs rounded-full mt-2 font-medium">
               {user1.mbti}
             </span>
           )}
@@ -40,7 +40,7 @@ const CoupleProfile: React.FC<CoupleProfileProps> = ({
             size="lg"
             animated={true}
           />
-          <p className="text-xs text-text-secondary mt-3 font-medium">커플</p>
+          <p className="text-xs text-txt-secondary mt-3 font-medium">커플</p>
         </div>
         
         <div className="text-center">
@@ -49,9 +49,9 @@ const CoupleProfile: React.FC<CoupleProfileProps> = ({
             profileUrl={user2.profileUrl}
             size="lg"
           />
-          <p className="text-sm font-medium text-text mt-3 leading-tight">{user2.name}</p>
+          <p className="text-sm font-medium text-txt mt-3 leading-tight">{user2.name}</p>
           {user2.mbti && (
-            <span className="inline-block px-3 py-1.5 bg-secondary text-text-secondary text-xs rounded-full mt-2 font-medium">
+            <span className="inline-block px-3 py-1.5 bg-secondary text-txt-secondary text-xs rounded-full mt-2 font-medium">
               {user2.mbti}
             </span>
           )}
@@ -59,11 +59,11 @@ const CoupleProfile: React.FC<CoupleProfileProps> = ({
       </div>
       
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-text mb-3 leading-tight">
+        <h2 className="text-2xl font-bold text-txt mb-3 leading-tight">
           {user1.name} & {user2.name}
         </h2>
         {user1.mbti && user2.mbti && (
-          <p className="text-sm text-text-secondary leading-relaxed">
+          <p className="text-sm text-txt-secondary leading-relaxed">
             {user1.mbti} × {user2.mbti} 조합
           </p>
         )}

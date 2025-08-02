@@ -1,11 +1,12 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export class ApiClient {
   private client: AxiosInstance;
   private baseURL: string;
 
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
+    this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
     
     this.client = axios.create({
       baseURL: this.baseURL,

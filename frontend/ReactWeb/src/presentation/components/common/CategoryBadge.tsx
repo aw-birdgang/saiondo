@@ -71,7 +71,7 @@ const CategoryBadge: React.FC<CategoryBadgeProps> = ({
         };
       default:
         return {
-          color: 'bg-secondary text-text-secondary border border-border',
+          color: 'bg-secondary text-txt-secondary border border-border',
           icon: '📝',
           label: category
         };

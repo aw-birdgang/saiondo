@@ -16,4 +16,6 @@ export const AnalysisSection: React.FC<AnalysisSectionProps> = ({ title, childre
       </div>
     </section>
   );
-}; 
+};
+
+export default AnalysisSection; 

@@ -77,14 +77,14 @@ const Modal: React.FC<ModalProps> = ({
           {(title || showCloseButton) && (
             <div className="flex items-center justify-between p-6 border-b border-divider">
               {title && (
-                <h3 className="text-lg font-semibold text-text">
+                <h3 className="text-lg font-semibold text-txt">
                   {title}
                 </h3>
               )}
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-2 text-text-secondary hover:text-text hover:bg-secondary rounded-lg transition-all duration-200"
+                  className="p-2 text-txt-secondary hover:text-txt hover:bg-secondary rounded-lg transition-all duration-200"
                   aria-label="Close modal"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

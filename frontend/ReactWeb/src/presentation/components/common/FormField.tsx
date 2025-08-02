@@ -38,7 +38,7 @@ const FormField: React.FC<FormFieldProps> = ({
 
   const renderSelectField = () => (
     <div className={`space-y-2 ${className}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-text">
+      <label htmlFor={name} className="block text-sm font-medium text-txt">
         {label}
         {required && <span className="text-error ml-1">*</span>}
       </label>

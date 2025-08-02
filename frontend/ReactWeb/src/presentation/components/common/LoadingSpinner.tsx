@@ -23,8 +23,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   const getColorClasses = (color: 'primary' | 'secondary' | 'text') => {
     const colorClasses = {
       primary: 'text-primary',
-      secondary: 'text-text-secondary',
-      text: 'text-text',
+      secondary: 'text-txt-secondary',
+      text: 'text-txt',
     };
     return colorClasses[color];
   };

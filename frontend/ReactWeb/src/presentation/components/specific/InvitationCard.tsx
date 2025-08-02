@@ -33,7 +33,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
       case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800';
       case 'accepted': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border border-green-200 dark:border-green-800';
       case 'rejected': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 border border-red-200 dark:border-red-800';
-      default: return 'bg-secondary text-text-secondary border border-border';
+      default: return 'bg-secondary text-txt-secondary border border-border';
     }
   };
 
@@ -65,7 +65,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-4 mb-3">
-            <h3 className="text-lg font-semibold text-text leading-tight">
+            <h3 className="text-lg font-semibold text-txt leading-tight">
               {invitation.channelName || '채널'}
             </h3>
             <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getStatusColor(invitation.status)}`}>
@@ -73,11 +73,11 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
             </span>
           </div>
           
-          <p className="text-text-secondary mb-4 leading-relaxed">
+          <p className="text-txt-secondary mb-4 leading-relaxed">
             {invitation.inviterName || '사용자'}님이 초대했습니다
           </p>
           
-          <div className="text-sm text-text-secondary font-medium">
+          <div className="text-sm text-txt-secondary font-medium">
             {formatTime(invitation.createdAt)}
           </div>
         </div>

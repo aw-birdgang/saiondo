@@ -84,4 +84,6 @@ export const MainLayout: React.FC = () => {
       </div>
     </div>
   );
-}; 
+};
+
+export default MainLayout; 

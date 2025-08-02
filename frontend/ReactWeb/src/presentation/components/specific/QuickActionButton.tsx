@@ -22,11 +22,11 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
     >
       <div className="text-center">
         <span className="text-3xl mb-4 block">{icon}</span>
-        <h3 className="text-sm font-semibold text-text mb-2 leading-tight">
+        <h3 className="text-sm font-semibold text-txt mb-2 leading-tight">
           {label}
         </h3>
         {description && (
-          <p className="text-xs text-text-secondary leading-relaxed">
+          <p className="text-xs text-txt-secondary leading-relaxed">
             {description}
           </p>
         )}

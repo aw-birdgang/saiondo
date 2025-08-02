@@ -37,7 +37,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   return (
     <div className="space-y-2">
       {label && (
-        <label htmlFor={textareaId} className="block text-sm font-medium text-text">
+        <label htmlFor={textareaId} className="block text-sm font-medium text-txt">
           {label}
           {required && <span className="text-error ml-1">*</span>}
         </label>
@@ -67,7 +67,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         </p>
       )}
       {maxLength && (
-        <p className="text-xs text-text-secondary text-right">
+        <p className="text-xs text-txt-secondary text-right">
           {value.length}/{maxLength}
         </p>
       )}

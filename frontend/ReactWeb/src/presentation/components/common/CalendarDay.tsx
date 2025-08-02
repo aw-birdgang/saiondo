@@ -35,7 +35,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
       case 'meeting': return 'bg-primary text-on-primary';
       case 'date': return 'bg-pink-500 text-white';
       case 'anniversary': return 'bg-red-500 text-white';
-      default: return 'bg-secondary text-text-secondary';
+      default: return 'bg-secondary text-txt-secondary';
     }
   };
 
@@ -58,7 +58,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
     >
       <div className="text-sm font-medium mb-2">
         <span className={`
-          ${isCurrentMonth ? 'text-text' : 'text-text-secondary'}
+          ${isCurrentMonth ? 'text-txt' : 'text-txt-secondary'}
           ${isCurrentDay ? 'text-primary font-bold' : ''}
           ${isSelected ? 'text-primary' : ''}
         `}>
@@ -78,7 +78,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
           </div>
         ))}
         {dayEvents.length > 2 && (
-          <div className="text-xs text-text-secondary font-medium">
+          <div className="text-xs text-txt-secondary font-medium">
             +{dayEvents.length - 2} more
           </div>
         )}

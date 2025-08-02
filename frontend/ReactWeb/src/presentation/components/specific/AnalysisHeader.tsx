@@ -26,13 +26,13 @@ const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
               onClick={() => navigate(ROUTES.HOME)}
               className="p-3 hover:bg-secondary rounded-full transition-all duration-200 hover:scale-105"
             >
-              <span className="text-xl text-text-secondary">←</span>
+              <span className="text-xl text-txt-secondary">←</span>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-text leading-tight">
+              <h1 className="text-2xl font-bold text-txt leading-tight">
                 {t("analysis.title") || "관계 분석"}
               </h1>
-              <p className="text-sm text-text-secondary leading-relaxed">
+              <p className="text-sm text-txt-secondary leading-relaxed">
                 관계 분석 결과를 확인하세요
               </p>
             </div>
@@ -42,7 +42,7 @@ const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
             disabled={isCreating}
             className={`btn px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
               isCreating
-                ? "bg-secondary text-text-secondary cursor-not-allowed opacity-50"
+                ? "bg-secondary text-txt-secondary cursor-not-allowed opacity-50"
                 : "btn-primary"
             }`}
           >

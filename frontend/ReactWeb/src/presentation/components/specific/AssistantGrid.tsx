@@ -30,7 +30,7 @@ const AssistantGrid: React.FC<AssistantGridProps> = ({
       case 'communication': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 border border-green-200 dark:border-green-800';
       case 'conflict': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400 border border-orange-200 dark:border-orange-800';
       case 'planning': return 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400 border border-purple-200 dark:border-purple-800';
-      default: return 'bg-secondary text-text-secondary border border-border';
+      default: return 'bg-secondary text-txt-secondary border border-border';
     }
   };
 

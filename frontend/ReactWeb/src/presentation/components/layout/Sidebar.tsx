@@ -122,14 +122,14 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-on-primary font-bold text-sm">S</span>
               </div>
-              <h1 className="text-xl font-bold text-text">
+              <h1 className="text-xl font-bold text-txt">
                 {t('app.name') || 'Saiondo'}
               </h1>
             </div>
           )}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg hover:bg-secondary text-text-secondary transition-colors duration-200"
+            className="p-2 rounded-lg hover:bg-secondary text-txt-secondary transition-colors duration-200"
           >
             <span className="text-sm font-medium">
               {collapsed ? '→' : '←'}
@@ -148,12 +148,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 transition-all duration-200 text-left group
                 ${item.isActive
                   ? 'bg-primary/10 text-primary border-l-4 border-primary'
-                  : 'text-text-secondary hover:bg-secondary hover:text-text'
+                  : 'text-txt-secondary hover:bg-secondary hover:text-txt'
                 }
               `}
             >
               <span className={`text-lg flex-shrink-0 transition-transform duration-200 group-hover:scale-110 ${
-                item.isActive ? 'text-primary' : 'text-text-secondary'
+                item.isActive ? 'text-primary' : 'text-txt-secondary'
               }`}>
                 {item.icon}
               </span>
@@ -174,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* Footer */}
         {!collapsed && (
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-divider bg-secondary">
-            <div className="text-xs text-text-secondary text-center">
+            <div className="text-xs text-txt-secondary text-center">
               © 2024 Saiondo
             </div>
           </div>
