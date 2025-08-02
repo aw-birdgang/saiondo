@@ -22,6 +22,10 @@ export const useAnimation = (
   const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number | undefined>(undefined);
+  
+  // ref를 사용하여 최신 값을 참조
+  const optionsRef = useRef({ duration, easing, targetValue, loop });
+  optionsRef.current = { duration, easing, targetValue, loop };
 
   const easeFunctions = {
     linear: (t: number) => t,
@@ -35,6 +39,7 @@ export const useAnimation = (
       startTimeRef.current = timestamp;
     }
 
+    const { duration, easing, targetValue, loop } = optionsRef.current;
     const elapsed = timestamp - startTimeRef.current;
     const easedProgress = Math.min(elapsed / duration, 1);
     const easedValue = easeFunctions[easing](easedProgress);
@@ -48,10 +53,10 @@ export const useAnimation = (
       if (loop) {
         startTimeRef.current = undefined;
         setProgress(0);
-        start();
+        // loop일 때는 다시 시작하지 않음 - useEffect에서 처리
       }
     }
-  }, [duration, easing, targetValue, loop]);
+  }, []); // 의존성 배열을 비워서 함수가 재생성되지 않도록 함
 
   const start = useCallback(() => {
     if (isAnimating) return;
@@ -84,7 +89,19 @@ export const useAnimation = (
     return () => {
       stop();
     };
-  }, [autoStart, start, stop]);
+  }, [autoStart]); // start, stop을 의존성에서 제거
+
+  // loop 처리
+  useEffect(() => {
+    if (loop && !isAnimating && progress >= targetValue) {
+      // 애니메이션이 완료되고 loop가 true일 때 다시 시작
+      const timer = setTimeout(() => {
+        start();
+      }, 100); // 약간의 지연을 두어 무한 루프 방지
+      
+      return () => clearTimeout(timer);
+    }
+  }, [loop, isAnimating, progress, targetValue, start]);
 
   return {
     progress,
