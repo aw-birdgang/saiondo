@@ -1,163 +1,87 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { ROUTES } from '../../../shared/constants/app';
-import { useAuth } from '../../../contexts/AuthContext';
-import { useAuthStore } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
-import HomeTabComponent from '../../pages/home/HomeTabComponent';
-import ChannelPage from '../../pages/channel/ChannelPage';
-import CalendarPage from '../../pages/calendar/CalendarPage';
-import MyPage from '../../pages/mypage/MyPage';
+import { Outlet, useLocation, Link } from 'react-router-dom';
 
-interface TabItem {
-  id: string;
-  label: string;
-  icon: string;
-  component: React.ComponentType;
-  route: string;
-}
-
-const MainLayout: React.FC = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+export const MainLayout: React.FC = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const { logout } = useAuth();
-  const { user } = useAuthStore();
-  const { currentUser } = useUserStore();
-  
-  const [selectedTab, setSelectedTab] = useState(0);
 
-  // 탭 정의
-  const tabs: TabItem[] = [
-    {
-      id: 'home',
-      label: t('home'),
-      icon: '🏠',
-      component: HomeTabComponent,
-      route: ROUTES.HOME,
-    },
-    {
-      id: 'channels',
-      label: t('channels'),
-      icon: '👥',
-      component: ChannelPage,
-      route: ROUTES.CHANNELS,
-    },
-    {
-      id: 'calendar',
-      label: t('calendar'),
-      icon: '📅',
-      component: CalendarPage,
-      route: ROUTES.PROFILE, // 임시로 PROFILE 사용
-    },
-    {
-      id: 'profile',
-      label: t('profile'),
-      icon: '👤',
-      component: MyPage,
-      route: ROUTES.PROFILE,
-    },
-  ];
-
-  // URL에 따른 탭 선택
   useEffect(() => {
-    const currentPath = location.pathname;
-    const tabIndex = tabs.findIndex(tab => tab.route === currentPath);
-    if (tabIndex !== -1) {
-      setSelectedTab(tabIndex);
-    }
+    // Close sidebar on route change
+    setSidebarOpen(false);
   }, [location.pathname]);
 
-  const handleTabChange = (index: number) => {
-    setSelectedTab(index);
-    navigate(tabs[index].route);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      toast.success(t('logout_success'));
-      navigate(ROUTES.LOGIN);
-    } catch {
-      toast.error(t('logout_error'));
-    }
-  };
-
-  const SelectedComponent = tabs[selectedTab].component;
+  const tabs = [
+    { name: 'Home', href: '/', icon: '🏠' },
+    { name: 'Chat', href: '/chat', icon: '💬' },
+    { name: 'Channels', href: '/channels', icon: '📢' },
+    { name: 'Assistant', href: '/assistant', icon: '🤖' },
+    { name: 'Analysis', href: '/analysis', icon: '📊' },
+    { name: 'Calendar', href: '/calendar', icon: '📅' },
+    { name: 'My Page', href: '/mypage', icon: '👤' },
+  ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="bg-surface shadow-sm border-b border-border sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+      {/* Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Saiondo</h1>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <nav className="mt-8">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.href}
+              to={tab.href}
+              className={`flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                location.pathname === tab.href ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400' : ''
+              }`}
+            >
+              <span className="mr-3">{tab.icon}</span>
+              {tab.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between h-16 px-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div className="flex-1"></div>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-on-primary font-bold text-sm">S</span>
-                </div>
-                <h1 className="text-xl font-semibold text-text">
-                  {t('app.name')}
-                </h1>
-              </div>
-              {user && (
-                <div className="hidden sm:flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span className="text-sm text-text-secondary">
-                    {t('welcome')}, {user.name}
-                  </span>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={handleLogout}
-                className="btn btn-outline text-sm px-4 py-2"
-              >
-                {t('logout')}
+              <button className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
+                </svg>
               </button>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main Content */}
-      <main className="flex-1 pb-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <SelectedComponent />
-        </div>
-      </main>
-
-      {/* Bottom Navigation */}
-      <nav className="bg-surface border-t border-border fixed bottom-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-around">
-            {tabs.map((tab, index) => (
-              <button
-                key={tab.id}
-                onClick={() => handleTabChange(index)}
-                className={`flex flex-col items-center py-3 px-4 flex-1 transition-all duration-200 ${
-                  selectedTab === index
-                    ? 'text-primary'
-                    : 'text-text-secondary hover:text-text'
-                }`}
-              >
-                <span className="text-xl mb-1 transition-transform duration-200 hover:scale-110">
-                  {tab.icon}
-                </span>
-                <span className="text-xs font-medium">{tab.label}</span>
-                {selectedTab === index && (
-                  <div className="w-1 h-1 bg-primary rounded-full mt-1"></div>
-                )}
-              </button>
-            ))}
+        {/* Main content area */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-900">
+          <div className="container mx-auto px-4 py-6">
+            <Outlet />
           </div>
-        </div>
-      </nav>
+        </main>
+      </div>
     </div>
   );
-};
-
-export default MainLayout; 
+}; 

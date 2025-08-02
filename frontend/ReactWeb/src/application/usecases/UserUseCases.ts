@@ -1,55 +1,145 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User, UserProfile } from '../../domain/entities/User';
+import type { User } from '../../domain/entities/User';
+import { UserEntity } from '../../domain/entities/User';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import { Email } from '../../domain/value-objects/Email';
+
+export interface CreateUserRequest {
+  email: string;
+  username: string;
+  displayName?: string;
+  avatar?: string;
+}
+
+export interface CreateUserResponse {
+  user: User;
+}
+
+export interface UpdateUserRequest {
+  id: string;
+  displayName?: string;
+  avatar?: string;
+  isOnline?: boolean;
+}
+
+export interface UpdateUserResponse {
+  user: User;
+}
+
+export interface GetUserRequest {
+  id: string;
+}
+
+export interface GetUserResponse {
+  user: User;
+}
+
+export interface SearchUsersRequest {
+  query: string;
+}
+
+export interface SearchUsersResponse {
+  users: User[];
+}
 
 export class UserUseCases {
-  private userRepository: IUserRepository;
+  constructor(private readonly userRepository: IUserRepository) {}
 
-  constructor(userRepository: IUserRepository) {
-    this.userRepository = userRepository;
-  }
-
-  async getCurrentUser(): Promise<User | null> {
+  async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {
     try {
-      return await this.userRepository.getCurrentUser();
+      const email = Email.create(request.email);
+      
+      // Check if user already exists
+      const existingUser = await this.userRepository.findByEmail(email.getValue());
+      if (existingUser) {
+        throw DomainErrorFactory.createUserValidation('User with this email already exists');
+      }
+
+      const userEntity = UserEntity.create({
+        email: email.getValue(),
+        username: request.username,
+        displayName: request.displayName,
+        avatar: request.avatar,
+        isOnline: false,
+      });
+
+      const user = await this.userRepository.save(userEntity.toJSON());
+      return { user };
     } catch (error) {
-      console.error('Failed to get current user:', error);
-      throw new Error('Failed to get current user');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to create user');
     }
   }
 
-  async getUserById(id: string): Promise<User | null> {
+  async updateUser(request: UpdateUserRequest): Promise<UpdateUserResponse> {
     try {
-      return await this.userRepository.getUserById(id);
+      const existingUser = await this.userRepository.findById(request.id);
+      if (!existingUser) {
+        throw DomainErrorFactory.createUserNotFound(request.id);
+      }
+
+      const userEntity = UserEntity.fromData(existingUser);
+      const updatedUserEntity = userEntity.updateProfile(request.displayName, request.avatar);
+      
+      if (request.isOnline !== undefined) {
+        const onlineStatusUpdated = updatedUserEntity.updateOnlineStatus(request.isOnline);
+        const user = await this.userRepository.save(onlineStatusUpdated.toJSON());
+        return { user };
+      }
+
+      const user = await this.userRepository.save(updatedUserEntity.toJSON());
+      return { user };
     } catch (error) {
-      console.error('Failed to get user by id:', error);
-      throw new Error('Failed to get user');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to update user');
     }
   }
 
-  async updateUser(id: string, data: Partial<UserProfile>): Promise<User> {
+  async getUser(request: GetUserRequest): Promise<GetUserResponse> {
     try {
-      return await this.userRepository.updateUser(id, data);
+      const user = await this.userRepository.findById(request.id);
+      if (!user) {
+        throw DomainErrorFactory.createUserNotFound(request.id);
+      }
+
+      return { user };
     } catch (error) {
-      console.error('Failed to update user:', error);
-      throw new Error('Failed to update user');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to get user');
     }
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async searchUsers(request: SearchUsersRequest): Promise<SearchUsersResponse> {
     try {
-      await this.userRepository.deleteUser(id);
+      const users = await this.userRepository.search(request.query);
+      return { users };
     } catch (error) {
-      console.error('Failed to delete user:', error);
-      throw new Error('Failed to delete user');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to search users');
     }
   }
 
-  async searchUsers(query: string): Promise<User[]> {
+  async getCurrentUser(): Promise<GetUserResponse> {
     try {
-      return await this.userRepository.searchUsers(query);
+      const user = await this.userRepository.getCurrentUser();
+      if (!user) {
+        throw DomainErrorFactory.createAuthentication('User not authenticated');
+      }
+
+      return { user };
     } catch (error) {
-      console.error('Failed to search users:', error);
-      throw new Error('Failed to search users');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to get current user');
     }
   }
 } 

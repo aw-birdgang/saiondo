@@ -1,35 +1,19 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
 
 interface AnalysisSectionProps {
   title: string;
-  content: string;
-  className?: string;
+  children: React.ReactNode;
 }
 
-const AnalysisSection: React.FC<AnalysisSectionProps> = ({ 
-  title, 
-  content, 
-  className = "" 
-}) => {
+export const AnalysisSection: React.FC<AnalysisSectionProps> = ({ title, children }) => {
   return (
-    <div className={`space-y-6 ${className}`}>
-      <div className="flex items-center space-x-4">
-        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-          <span className="text-xl">📝</span>
-        </div>
-        <h3 className="text-xl font-semibold text-text leading-tight">
-          {title}
-        </h3>
+    <section className="mb-8">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        {title}
+      </h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+        {children}
       </div>
-      
-      <div className="bg-secondary rounded-lg p-6">
-        <p className="text-text-secondary leading-relaxed">
-          {content}
-        </p>
-      </div>
-    </div>
+    </section>
   );
-};
-
-export default AnalysisSection; 
+}; 

@@ -1,52 +1,22 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 
 interface AuthHeaderProps {
   title: string;
-  subtitle?: string;
-  linkText?: string;
-  linkTo?: string;
-  className?: string;
 }
 
-const AuthHeader: React.FC<AuthHeaderProps> = ({
-  title,
-  subtitle,
-  linkText,
-  linkTo,
-  className = '',
-}) => {
-  const { t } = useTranslation();
+export const AuthHeader: React.FC<AuthHeaderProps> = ({ title }) => {
+  const { logout } = useAuth();
 
   return (
-    <div className={`text-center ${className}`}>
-      <div className="mb-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-          <span className="text-2xl text-on-primary font-bold">S</span>
-        </div>
-        <h2 className="text-3xl font-bold text-text mb-4">
-          {title}
-        </h2>
-        {subtitle && (
-          <p className="text-text-secondary">
-            {subtitle}
-            {linkText && linkTo && (
-              <>
-                {' '}
-                <Link
-                  to={linkTo}
-                  className="font-semibold text-primary hover:text-primary-container transition-colors duration-200"
-                >
-                  {linkText}
-                </Link>
-              </>
-            )}
-          </p>
-        )}
-      </div>
+    <div className="flex justify-between items-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h1>
+      <button
+        onClick={logout}
+        className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+      >
+        Logout
+      </button>
     </div>
   );
-};
-
-export default AuthHeader; 
+}; 

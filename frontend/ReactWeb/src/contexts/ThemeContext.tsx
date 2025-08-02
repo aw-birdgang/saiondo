@@ -2,9 +2,9 @@ import React, { createContext, useContext, useEffect, type ReactNode } from 'rea
 import { useThemeStore } from '../stores/themeStore';
 
 interface ThemeContextType {
-  // Zustand store actions
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  isDarkMode: boolean;
   toggleTheme: () => void;
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -16,23 +16,20 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const themeStore = useThemeStore();
 
-  // Listen for system theme changes
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (themeStore.theme === 'system') {
-        themeStore.setDarkMode(e.matches);
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [themeStore.theme]);
+    // Apply theme to document on mount and theme change
+    const root = document.documentElement;
+    if (themeStore.isDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [themeStore.isDarkMode]);
 
   const value: ThemeContextType = {
-    setTheme: themeStore.setTheme,
+    isDarkMode: themeStore.isDarkMode,
     toggleTheme: themeStore.toggleTheme,
+    setTheme: themeStore.setTheme,
   };
 
   return (

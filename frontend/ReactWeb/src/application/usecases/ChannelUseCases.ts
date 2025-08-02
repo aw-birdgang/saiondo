@@ -1,82 +1,198 @@
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Channel, ChannelMember } from '../../domain/entities/Channel';
+import type { Channel } from '../../domain/entities/Channel';
+import { ChannelEntity } from '../../domain/entities/Channel';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+
+export interface CreateChannelRequest {
+  name: string;
+  description?: string;
+  type: 'public' | 'private' | 'direct';
+  ownerId: string;
+  members: string[];
+}
+
+export interface CreateChannelResponse {
+  channel: Channel;
+}
+
+export interface GetChannelRequest {
+  id: string;
+}
+
+export interface GetChannelResponse {
+  channel: Channel;
+}
+
+export interface GetChannelsRequest {
+  userId?: string;
+  type?: 'public' | 'private' | 'direct';
+}
+
+export interface GetChannelsResponse {
+  channels: Channel[];
+}
+
+export interface UpdateChannelRequest {
+  id: string;
+  name?: string;
+  description?: string;
+}
+
+export interface UpdateChannelResponse {
+  channel: Channel;
+}
+
+export interface AddMemberRequest {
+  channelId: string;
+  userId: string;
+}
+
+export interface AddMemberResponse {
+  channel: Channel;
+}
+
+export interface RemoveMemberRequest {
+  channelId: string;
+  userId: string;
+}
+
+export interface RemoveMemberResponse {
+  channel: Channel;
+}
 
 export class ChannelUseCases {
-  private channelRepository: IChannelRepository;
+  constructor(private readonly channelRepository: IChannelRepository) {}
 
-  constructor(channelRepository: IChannelRepository) {
-    this.channelRepository = channelRepository;
-  }
-
-  async getChannels(): Promise<Channel[]> {
+  async createChannel(request: CreateChannelRequest): Promise<CreateChannelResponse> {
     try {
-      return await this.channelRepository.getChannels();
+      const channelEntity = ChannelEntity.create({
+        name: request.name,
+        description: request.description,
+        type: request.type,
+        ownerId: request.ownerId,
+        members: request.members,
+      });
+
+      const channel = await this.channelRepository.save(channelEntity.toJSON());
+      return { channel };
     } catch (error) {
-      console.error('Failed to get channels:', error);
-      throw new Error('Failed to get channels');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to create channel');
     }
   }
 
-  async getChannelById(id: string): Promise<Channel | null> {
+  async getChannel(request: GetChannelRequest): Promise<GetChannelResponse> {
     try {
-      return await this.channelRepository.getChannelById(id);
+      const channel = await this.channelRepository.findById(request.id);
+      if (!channel) {
+        throw DomainErrorFactory.createChannelNotFound(request.id);
+      }
+
+      return { channel };
     } catch (error) {
-      console.error('Failed to get channel by id:', error);
-      throw new Error('Failed to get channel');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to get channel');
     }
   }
 
-  async createChannel(channel: Omit<Channel, 'id' | 'createdAt' | 'updatedAt'>): Promise<Channel> {
+  async getChannels(request: GetChannelsRequest): Promise<GetChannelsResponse> {
     try {
-      return await this.channelRepository.createChannel(channel);
+      let channels: Channel[];
+
+      if (request.userId) {
+        channels = await this.channelRepository.findByUserId(request.userId);
+      } else if (request.type) {
+        channels = await this.channelRepository.findByType(request.type);
+      } else {
+        channels = await this.channelRepository.findAll();
+      }
+
+      return { channels };
     } catch (error) {
-      console.error('Failed to create channel:', error);
-      throw new Error('Failed to create channel');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to get channels');
     }
   }
 
-  async updateChannel(id: string, data: Partial<Channel>): Promise<Channel> {
+  async updateChannel(request: UpdateChannelRequest): Promise<UpdateChannelResponse> {
     try {
-      return await this.channelRepository.updateChannel(id, data);
+      const existingChannel = await this.channelRepository.findById(request.id);
+      if (!existingChannel) {
+        throw DomainErrorFactory.createChannelNotFound(request.id);
+      }
+      
+      // Create updated channel with new data
+      const updatedChannel = {
+        ...existingChannel,
+        name: request.name ?? existingChannel.name,
+        description: request.description ?? existingChannel.description,
+        updatedAt: new Date(),
+      };
+
+      const channel = await this.channelRepository.save(updatedChannel);
+      return { channel };
     } catch (error) {
-      console.error('Failed to update channel:', error);
-      throw new Error('Failed to update channel');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to update channel');
     }
   }
 
-  async deleteChannel(id: string): Promise<void> {
+  async addMember(request: AddMemberRequest): Promise<AddMemberResponse> {
     try {
-      await this.channelRepository.deleteChannel(id);
+      const existingChannel = await this.channelRepository.findById(request.channelId);
+      if (!existingChannel) {
+        throw DomainErrorFactory.createChannelNotFound(request.channelId);
+      }
+
+      const channelEntity = ChannelEntity.fromData(existingChannel);
+      const updatedChannelEntity = channelEntity.addMember(request.userId);
+
+      const channel = await this.channelRepository.save(updatedChannelEntity.toJSON());
+      return { channel };
     } catch (error) {
-      console.error('Failed to delete channel:', error);
-      throw new Error('Failed to delete channel');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to add member to channel');
     }
   }
 
-  async addMember(channelId: string, member: Omit<ChannelMember, 'joinedAt'>): Promise<void> {
+  async removeMember(request: RemoveMemberRequest): Promise<RemoveMemberResponse> {
     try {
-      await this.channelRepository.addMember(channelId, member);
+      const existingChannel = await this.channelRepository.findById(request.channelId);
+      if (!existingChannel) {
+        throw DomainErrorFactory.createChannelNotFound(request.channelId);
+      }
+
+      const channelEntity = ChannelEntity.fromData(existingChannel);
+      const updatedChannelEntity = channelEntity.removeMember(request.userId);
+
+      const channel = await this.channelRepository.save(updatedChannelEntity.toJSON());
+      return { channel };
     } catch (error) {
-      console.error('Failed to add member:', error);
-      throw new Error('Failed to add member');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to remove member from channel');
     }
   }
 
-  async removeMember(channelId: string, userId: string): Promise<void> {
+  async isMember(channelId: string, userId: string): Promise<boolean> {
     try {
-      await this.channelRepository.removeMember(channelId, userId);
+      return await this.channelRepository.isMember(channelId, userId);
     } catch (error) {
-      console.error('Failed to remove member:', error);
-      throw new Error('Failed to remove member');
-    }
-  }
-
-  async updateMemberRole(channelId: string, userId: string, role: ChannelMember['role']): Promise<void> {
-    try {
-      await this.channelRepository.updateMemberRole(channelId, userId, role);
-    } catch (error) {
-      console.error('Failed to update member role:', error);
-      throw new Error('Failed to update member role');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to check channel membership');
     }
   }
 } 

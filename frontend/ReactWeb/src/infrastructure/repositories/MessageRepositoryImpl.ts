@@ -1,52 +1,107 @@
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { Message, MessageReaction } from '../../domain/entities/Message';
+import type { Message } from '../../domain/entities/Message';
 import { ApiClient } from '../api/ApiClient';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
 
 export class MessageRepositoryImpl implements IMessageRepository {
-  private apiClient: ApiClient;
+  constructor(private readonly apiClient: ApiClient) {}
 
-  constructor(apiClient: ApiClient) {
-    this.apiClient = apiClient;
-  }
-
-  async getMessages(channelId: string, limit?: number, offset?: number): Promise<Message[]> {
-    const params = new URLSearchParams();
-    if (limit) params.append('limit', limit.toString());
-    if (offset) params.append('offset', offset.toString());
-    
-    const response = await this.apiClient.get<Message[]>(`/channels/${channelId}/messages?${params.toString()}`);
-    return response;
-  }
-
-  async getMessageById(id: string): Promise<Message | null> {
+  async findById(id: string): Promise<Message | null> {
     try {
       const response = await this.apiClient.get<Message>(`/messages/${id}`);
       return response;
     } catch (error) {
-      console.error('Failed to get message by id:', error);
-      return null;
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to find message by ID');
     }
   }
 
-  async createMessage(message: Omit<Message, 'id' | 'createdAt' | 'updatedAt'>): Promise<Message> {
-    const response = await this.apiClient.post<Message>(`/channels/${message.channelId}/messages`, message);
-    return response;
+  async save(message: Message): Promise<Message> {
+    try {
+      const response = await this.apiClient.post<Message>('/messages', message);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to save message');
+    }
   }
 
-  async updateMessage(id: string, content: string): Promise<Message> {
-    const response = await this.apiClient.put<Message>(`/messages/${id}`, { content });
-    return response;
+  async update(id: string, message: Partial<Message>): Promise<Message> {
+    try {
+      const response = await this.apiClient.put<Message>(`/messages/${id}`, message);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to update message');
+    }
   }
 
-  async deleteMessage(id: string): Promise<void> {
-    await this.apiClient.delete(`/messages/${id}`);
+  async delete(id: string): Promise<void> {
+    try {
+      await this.apiClient.delete(`/messages/${id}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to delete message');
+    }
   }
 
-  async addReaction(messageId: string, reaction: Omit<MessageReaction, 'id' | 'createdAt'>): Promise<void> {
-    await this.apiClient.post(`/messages/${messageId}/reactions`, reaction);
+  async findByChannelId(channelId: string, limit?: number, offset?: number): Promise<Message[]> {
+    try {
+      const params = new URLSearchParams();
+      if (limit) params.append('limit', limit.toString());
+      if (offset) params.append('offset', offset.toString());
+      
+      const response = await this.apiClient.get<Message[]>(`/messages/channel/${channelId}?${params.toString()}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get messages by channel ID');
+    }
   }
 
-  async removeReaction(messageId: string, userId: string, emoji: string): Promise<void> {
-    await this.apiClient.delete(`/messages/${messageId}/reactions/${userId}/${encodeURIComponent(emoji)}`);
+  async findByUserId(userId: string): Promise<Message[]> {
+    try {
+      const response = await this.apiClient.get<Message[]>(`/messages/user/${userId}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get messages by user ID');
+    }
+  }
+
+  async findRecentByChannelId(channelId: string, limit: number): Promise<Message[]> {
+    try {
+      const response = await this.apiClient.get<Message[]>(`/messages/channel/${channelId}/recent?limit=${limit}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get recent messages by channel ID');
+    }
+  }
+
+  async countByChannelId(channelId: string): Promise<number> {
+    try {
+      const response = await this.apiClient.get<{ count: number }>(`/messages/channel/${channelId}/count`);
+      return response.count;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get message count by channel ID');
+    }
   }
 } 

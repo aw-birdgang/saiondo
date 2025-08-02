@@ -4,39 +4,33 @@ interface TooltipProps {
   content: string;
   children: React.ReactNode;
   position?: 'top' | 'bottom' | 'left' | 'right';
-  delay?: number;
   className?: string;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({
-  content,
-  children,
+export const Tooltip: React.FC<TooltipProps> = ({ 
+  content, 
+  children, 
   position = 'top',
-  delay = 200,
-  className = ''
+  className = '' 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const triggerRef = useRef<HTMLDivElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const showTooltip = () => {
-    timeoutRef.current = setTimeout(() => {
-      if (triggerRef.current) {
-        const rect = triggerRef.current.getBoundingClientRect();
-        setCoords({ x: rect.left, y: rect.top });
-        setIsVisible(true);
-      }
-    }, delay);
-  };
+  useEffect(() => {
+    const handleMouseEnter = () => setIsVisible(true);
+    const handleMouseLeave = () => setIsVisible(false);
 
-  const hideTooltip = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+    const trigger = triggerRef.current;
+    if (trigger) {
+      trigger.addEventListener('mouseenter', handleMouseEnter);
+      trigger.addEventListener('mouseleave', handleMouseLeave);
+
+      return () => {
+        trigger.removeEventListener('mouseenter', handleMouseEnter);
+        trigger.removeEventListener('mouseleave', handleMouseLeave);
+      };
     }
-    setIsVisible(false);
-  };
+  }, []);
 
   const getPositionClasses = () => {
     switch (position) {
@@ -51,59 +45,21 @@ const Tooltip: React.FC<TooltipProps> = ({
     }
   };
 
-  const getArrowClasses = () => {
-    switch (position) {
-      case 'bottom':
-        return 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-full border-b-surface';
-      case 'left':
-        return 'top-1/2 right-0 transform translate-x-full -translate-y-1/2 border-l-surface';
-      case 'right':
-        return 'top-1/2 left-0 transform -translate-x-full -translate-y-1/2 border-r-surface';
-      default: // top
-        return 'bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full border-t-surface';
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <div
-      ref={triggerRef}
-      className={`relative inline-block ${className}`}
-      onMouseEnter={showTooltip}
-      onMouseLeave={hideTooltip}
-      onFocus={showTooltip}
-      onBlur={hideTooltip}
-    >
+    <div className={`relative inline-block ${className}`} ref={triggerRef}>
       {children}
-      
       {isVisible && (
         <div
-          ref={tooltipRef}
           className={`
-            absolute z-50 px-4 py-2 text-sm text-on-surface bg-surface rounded-lg shadow-xl border border-border
+            absolute z-50 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg
             whitespace-nowrap pointer-events-none
             ${getPositionClasses()}
-            animate-fade-in
           `}
-          role="tooltip"
         >
           {content}
-          {/* Arrow */}
-          <div className={`
-            absolute w-0 h-0 border-4 border-transparent
-            ${getArrowClasses()}
-          `} />
+          <div className="absolute w-2 h-2 bg-gray-900 transform rotate-45"></div>
         </div>
       )}
     </div>
   );
-};
-
-export default Tooltip; 
+}; 

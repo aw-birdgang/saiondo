@@ -56,8 +56,7 @@ class DIContainer {
 
     // Infrastructure Layer
     this.register(DI_TOKENS.API_CLIENT, () => {
-      const config = this.get<typeof this.config.api>(DI_TOKENS.API_CONFIG);
-      return new ApiClient(config.baseURL);
+      return new ApiClient();
     }, true);
 
     this.register(DI_TOKENS.WEBSOCKET_CLIENT, () => {

@@ -1,44 +1,46 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { SearchInput, CategoryFilter } from "../common";
-
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-}
+import React from 'react';
 
 interface AssistantFiltersProps {
-  searchTerm: string;
+  categories: string[];
   selectedCategory: string;
-  categories: Category[];
-  onSearchChange: (term: string) => void;
   onCategoryChange: (category: string) => void;
-  className?: string;
 }
 
-const AssistantFilters: React.FC<AssistantFiltersProps> = ({ 
-  searchTerm, 
+export const AssistantFilters: React.FC<AssistantFiltersProps> = ({ 
+  categories, 
   selectedCategory, 
-  categories,
-  onSearchChange, 
-  onCategoryChange, 
-  className = "" 
+  onCategoryChange 
 }) => {
   return (
-    <div className={`space-y-6 ${className}`}>
-      <SearchInput
-        value={searchTerm}
-        onChange={onSearchChange}
-        placeholder="어시스턴트 검색..."
-      />
-      <CategoryFilter
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={onCategoryChange}
-      />
+    <div className="mb-6">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        Filter by Category
+      </h3>
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => onCategoryChange('all')}
+          className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+            selectedCategory === 'all'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+          }`}
+        >
+          All
+        </button>
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => onCategoryChange(category)}
+            className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+              selectedCategory === category
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
     </div>
   );
-};
-
-export default AssistantFilters; 
+}; 

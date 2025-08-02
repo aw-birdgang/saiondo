@@ -1,14 +1,12 @@
 import React, { createContext, useContext, useEffect, type ReactNode } from 'react';
 import { useAuthStore } from '../stores/authStore';
-import { authService } from '../infrastructure/api/services/authService';
-import type { LoginRequest, RegisterRequest } from '../domain/types';
 
 interface AuthContextType {
-  // Zustand store actions
-  login: (credentials: LoginRequest) => Promise<void>;
-  register: (data: RegisterRequest) => Promise<void>;
-  logout: () => Promise<void>;
-  clearError: () => void;
+  isAuthenticated: boolean;
+  user: any | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  register: (email: string, password: string, username: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,72 +18,21 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const authStore = useAuthStore();
 
-  const login = async (credentials: LoginRequest): Promise<void> => {
-    try {
-      authStore.setLoading(true);
-      authStore.setError(null);
-      
-      const response = await authService.login(credentials);
-      authStore.login(response.user, response.accessToken);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      authStore.setError(errorMessage);
-      throw err;
-    } finally {
-      authStore.setLoading(false);
-    }
-  };
-
-  const register = async (data: RegisterRequest): Promise<void> => {
-    try {
-      authStore.setLoading(true);
-      authStore.setError(null);
-      
-      const response = await authService.register(data);
-      authStore.login(response.user, response.accessToken);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
-      authStore.setError(errorMessage);
-      throw err;
-    } finally {
-      authStore.setLoading(false);
-    }
-  };
-
-  const logout = async (): Promise<void> => {
-    try {
-      authService.logout();
-    } catch (err) {
-      console.error('Logout error:', err);
-    } finally {
-      authStore.logout();
-    }
-  };
-
-  const clearError = (): void => {
-    authStore.clearError();
-  };
-
-  // Initialize auth state from storage
   useEffect(() => {
-    const checkAuth = (): void => {
-      const token = authService.getToken();
-      if (token && !authStore.isAuthenticated) {
-        // Token exists but not authenticated, try to validate
-        // This could be enhanced with a token validation API call
-        authStore.setToken(token);
-        authStore.setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
+    // Check for existing token on mount
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      authStore.setToken(token);
+      // You might want to validate the token here
+    }
+  }, [authStore]);
 
   const value: AuthContextType = {
-    login,
-    register,
-    logout,
-    clearError,
+    isAuthenticated: authStore.isAuthenticated,
+    user: authStore.user,
+    login: authStore.login,
+    logout: authStore.logout,
+    register: authStore.register,
   };
 
   return (

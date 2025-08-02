@@ -1,13 +1,10 @@
 import React, { createContext, useContext, useEffect, type ReactNode } from 'react';
-import { useUseCases } from '../app/di';
 import { useUserStore } from '../stores/userStore';
-import type { User } from '../domain/entities/User';
 
 interface UserContextType {
-  // Zustand store actions
+  currentUser: any | null;
   refreshUser: () => Promise<void>;
-  updateUser: (updates: Partial<User>) => Promise<void>;
-  clearUser: () => void;
+  updateUser: (userData: any) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -17,71 +14,37 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const { userUseCases } = useUseCases();
   const userStore = useUserStore();
-  
-  // Type assertion for userUseCases
-  const typedUserUseCases = userUseCases as any;
 
   const refreshUser = async (): Promise<void> => {
     try {
-      userStore.setLoading(true);
-      userStore.setError(null);
-      
-      const currentUser = await typedUserUseCases.getCurrentUser();
-      if (currentUser) {
-        userStore.setCurrentUser({
-          ...currentUser,
-          avatar: undefined,
-          bio: undefined,
-          preferences: {
-            notifications: true,
-            emailNotifications: true,
-            language: 'ko',
-          },
-        });
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load user';
-      userStore.setError(errorMessage);
-    } finally {
-      userStore.setLoading(false);
+      // TODO: Implement actual user refresh logic
+      console.log('Refreshing user data...');
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
     }
   };
 
-  const updateUser = async (updates: Partial<User>): Promise<void> => {
+  const updateUser = async (userData: any): Promise<void> => {
     try {
-      userStore.setLoading(true);
-      userStore.setError(null);
-      
-      if (userStore.currentUser) {
-        const updatedUser = await typedUserUseCases.updateUser(userStore.currentUser.id, updates);
-        userStore.updateUserProfile(updatedUser);
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update user';
-      userStore.setError(errorMessage);
-      throw err;
-    } finally {
-      userStore.setLoading(false);
+      // TODO: Implement actual user update logic
+      console.log('Updating user data:', userData);
+    } catch (error) {
+      console.error('Failed to update user:', error);
     }
   };
 
-  const clearUser = (): void => {
-    userStore.clearUserData();
-  };
-
-  // Initialize user data if authenticated
   useEffect(() => {
+    // Load user data on mount if not already loaded
     if (!userStore.currentUser) {
       refreshUser();
     }
   }, []);
 
   const value: UserContextType = {
+    currentUser: userStore.currentUser,
     refreshUser,
     updateUser,
-    clearUser,
   };
 
   return (

@@ -22,7 +22,8 @@ export interface AuthState {
   setToken: (token: string | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  login: (user: User, token: string) => void;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, username: string) => Promise<void>;
   logout: () => void;
   clearError: () => void;
 }
@@ -43,12 +44,59 @@ export const useAuthStore = create<AuthState>()(
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
       
-      login: (user, token) => set({
-        user,
-        token,
-        isAuthenticated: true,
-        error: null,
-      }),
+      login: async (email: string, password: string) => {
+        set({ loading: true, error: null });
+        try {
+          // TODO: Implement actual login logic
+          const mockUser: User = {
+            id: '1',
+            email,
+            name: email.split('@')[0],
+          };
+          const mockToken = 'mock-token';
+          
+          set({
+            user: mockUser,
+            token: mockToken,
+            isAuthenticated: true,
+            loading: false,
+            error: null,
+          });
+        } catch (error) {
+          set({
+            loading: false,
+            error: error instanceof Error ? error.message : 'Login failed',
+          });
+          throw error;
+        }
+      },
+      
+      register: async (email: string, password: string, username: string) => {
+        set({ loading: true, error: null });
+        try {
+          // TODO: Implement actual registration logic
+          const mockUser: User = {
+            id: '1',
+            email,
+            name: username,
+          };
+          const mockToken = 'mock-token';
+          
+          set({
+            user: mockUser,
+            token: mockToken,
+            isAuthenticated: true,
+            loading: false,
+            error: null,
+          });
+        } catch (error) {
+          set({
+            loading: false,
+            error: error instanceof Error ? error.message : 'Registration failed',
+          });
+          throw error;
+        }
+      },
       
       logout: () => set({
         user: null,

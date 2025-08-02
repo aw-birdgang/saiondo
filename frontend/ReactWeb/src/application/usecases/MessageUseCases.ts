@@ -1,73 +1,182 @@
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { Message, MessageReaction } from '../../domain/entities/Message';
+import type { Message } from '../../domain/entities/Message';
+import { MessageEntity } from '../../domain/entities/Message';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+
+export interface CreateMessageRequest {
+  content: string;
+  channelId: string;
+  senderId: string;
+  type: 'text' | 'image' | 'file' | 'system';
+  metadata?: Record<string, unknown>;
+  replyTo?: string;
+}
+
+export interface CreateMessageResponse {
+  message: Message;
+}
+
+export interface GetMessageRequest {
+  id: string;
+}
+
+export interface GetMessageResponse {
+  message: Message;
+}
+
+export interface GetMessagesRequest {
+  channelId: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface GetMessagesResponse {
+  messages: Message[];
+}
+
+export interface UpdateMessageRequest {
+  id: string;
+  content: string;
+  userId: string; // For authorization check
+}
+
+export interface UpdateMessageResponse {
+  message: Message;
+}
+
+export interface DeleteMessageRequest {
+  id: string;
+  userId: string; // For authorization check
+}
+
+export interface DeleteMessageResponse {
+  success: boolean;
+}
 
 export class MessageUseCases {
-  private messageRepository: IMessageRepository;
+  constructor(private readonly messageRepository: IMessageRepository) {}
 
-  constructor(messageRepository: IMessageRepository) {
-    this.messageRepository = messageRepository;
-  }
-
-  async getMessages(channelId: string, limit?: number, offset?: number): Promise<Message[]> {
+  async createMessage(request: CreateMessageRequest): Promise<CreateMessageResponse> {
     try {
-      return await this.messageRepository.getMessages(channelId, limit, offset);
+      const messageEntity = MessageEntity.create({
+        content: request.content,
+        channelId: request.channelId,
+        senderId: request.senderId,
+        type: request.type,
+        metadata: request.metadata,
+        replyTo: request.replyTo,
+      });
+
+      const message = await this.messageRepository.save(messageEntity.toJSON());
+      return { message };
     } catch (error) {
-      console.error('Failed to get messages:', error);
-      throw new Error('Failed to get messages');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to create message');
     }
   }
 
-  async getMessageById(id: string): Promise<Message | null> {
+  async getMessage(request: GetMessageRequest): Promise<GetMessageResponse> {
     try {
-      return await this.messageRepository.getMessageById(id);
+      const message = await this.messageRepository.findById(request.id);
+      if (!message) {
+        throw DomainErrorFactory.createMessageNotFound(request.id);
+      }
+
+      return { message };
     } catch (error) {
-      console.error('Failed to get message by id:', error);
-      throw new Error('Failed to get message');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get message');
     }
   }
 
-  async createMessage(message: Omit<Message, 'id' | 'createdAt' | 'updatedAt'>): Promise<Message> {
+  async getMessages(request: GetMessagesRequest): Promise<GetMessagesResponse> {
     try {
-      return await this.messageRepository.createMessage(message);
+      const messages = await this.messageRepository.findByChannelId(
+        request.channelId,
+        request.limit,
+        request.offset
+      );
+
+      return { messages };
     } catch (error) {
-      console.error('Failed to create message:', error);
-      throw new Error('Failed to create message');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get messages');
     }
   }
 
-  async updateMessage(id: string, content: string): Promise<Message> {
+  async updateMessage(request: UpdateMessageRequest): Promise<UpdateMessageResponse> {
     try {
-      return await this.messageRepository.updateMessage(id, content);
+      const existingMessage = await this.messageRepository.findById(request.id);
+      if (!existingMessage) {
+        throw DomainErrorFactory.createMessageNotFound(request.id);
+      }
+
+      // Check if user can edit this message
+      if (existingMessage.senderId !== request.userId) {
+        throw DomainErrorFactory.createMessageEditNotAllowed(request.id, request.userId);
+      }
+
+      const messageEntity = MessageEntity.fromData(existingMessage);
+      const updatedMessageEntity = messageEntity.editContent(request.content);
+
+      const message = await this.messageRepository.save(updatedMessageEntity.toJSON());
+      return { message };
     } catch (error) {
-      console.error('Failed to update message:', error);
-      throw new Error('Failed to update message');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to update message');
     }
   }
 
-  async deleteMessage(id: string): Promise<void> {
+  async deleteMessage(request: DeleteMessageRequest): Promise<DeleteMessageResponse> {
     try {
-      await this.messageRepository.deleteMessage(id);
+      const existingMessage = await this.messageRepository.findById(request.id);
+      if (!existingMessage) {
+        throw DomainErrorFactory.createMessageNotFound(request.id);
+      }
+
+      // Check if user can delete this message
+      if (existingMessage.senderId !== request.userId) {
+        throw DomainErrorFactory.createMessageEditNotAllowed(request.id, request.userId);
+      }
+
+      await this.messageRepository.delete(request.id);
+      return { success: true };
     } catch (error) {
-      console.error('Failed to delete message:', error);
-      throw new Error('Failed to delete message');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to delete message');
     }
   }
 
-  async addReaction(messageId: string, reaction: Omit<MessageReaction, 'id' | 'createdAt'>): Promise<void> {
+  async getRecentMessages(channelId: string, limit: number): Promise<GetMessagesResponse> {
     try {
-      await this.messageRepository.addReaction(messageId, reaction);
+      const messages = await this.messageRepository.findRecentByChannelId(channelId, limit);
+      return { messages };
     } catch (error) {
-      console.error('Failed to add reaction:', error);
-      throw new Error('Failed to add reaction');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get recent messages');
     }
   }
 
-  async removeReaction(messageId: string, userId: string, emoji: string): Promise<void> {
+  async getMessageCount(channelId: string): Promise<number> {
     try {
-      await this.messageRepository.removeReaction(messageId, userId, emoji);
+      return await this.messageRepository.countByChannelId(channelId);
     } catch (error) {
-      console.error('Failed to remove reaction:', error);
-      throw new Error('Failed to remove reaction');
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createMessageValidation('Failed to get message count');
     }
   }
 } 

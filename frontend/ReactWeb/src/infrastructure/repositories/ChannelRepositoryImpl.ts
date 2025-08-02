@@ -1,52 +1,127 @@
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Channel, ChannelMember } from '../../domain/entities/Channel';
+import type { Channel } from '../../domain/entities/Channel';
 import { ApiClient } from '../api/ApiClient';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
 
 export class ChannelRepositoryImpl implements IChannelRepository {
-  private apiClient: ApiClient;
+  constructor(private readonly apiClient: ApiClient) {}
 
-  constructor(apiClient: ApiClient) {
-    this.apiClient = apiClient;
-  }
-
-  async getChannels(): Promise<Channel[]> {
-    const response = await this.apiClient.get<Channel[]>('/channels');
-    return response;
-  }
-
-  async getChannelById(id: string): Promise<Channel | null> {
+  async findById(id: string): Promise<Channel | null> {
     try {
       const response = await this.apiClient.get<Channel>(`/channels/${id}`);
       return response;
     } catch (error) {
-      console.error('Failed to get channel by id:', error);
-      return null;
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to find channel by ID');
     }
   }
 
-  async createChannel(channel: Omit<Channel, 'id' | 'createdAt' | 'updatedAt'>): Promise<Channel> {
-    const response = await this.apiClient.post<Channel>('/channels', channel);
-    return response;
+  async save(channel: Channel): Promise<Channel> {
+    try {
+      const response = await this.apiClient.post<Channel>('/channels', channel);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to save channel');
+    }
   }
 
-  async updateChannel(id: string, data: Partial<Channel>): Promise<Channel> {
-    const response = await this.apiClient.put<Channel>(`/channels/${id}`, data);
-    return response;
+  async update(id: string, channel: Partial<Channel>): Promise<Channel> {
+    try {
+      const response = await this.apiClient.put<Channel>(`/channels/${id}`, channel);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to update channel');
+    }
   }
 
-  async deleteChannel(id: string): Promise<void> {
-    await this.apiClient.delete(`/channels/${id}`);
+  async delete(id: string): Promise<void> {
+    try {
+      await this.apiClient.delete(`/channels/${id}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to delete channel');
+    }
   }
 
-  async addMember(channelId: string, member: Omit<ChannelMember, 'joinedAt'>): Promise<void> {
-    await this.apiClient.post(`/channels/${channelId}/members`, member);
+  async findAll(): Promise<Channel[]> {
+    try {
+      const response = await this.apiClient.get<Channel[]>('/channels');
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to get all channels');
+    }
   }
 
-  async removeMember(channelId: string, userId: string): Promise<void> {
-    await this.apiClient.delete(`/channels/${channelId}/members/${userId}`);
+  async findByUserId(userId: string): Promise<Channel[]> {
+    try {
+      const response = await this.apiClient.get<Channel[]>(`/channels/user/${userId}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to get channels by user ID');
+    }
   }
 
-  async updateMemberRole(channelId: string, userId: string, role: ChannelMember['role']): Promise<void> {
-    await this.apiClient.patch(`/channels/${channelId}/members/${userId}`, { role });
+  async findByType(type: 'public' | 'private' | 'direct'): Promise<Channel[]> {
+    try {
+      const response = await this.apiClient.get<Channel[]>(`/channels/type/${type}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to get channels by type');
+    }
+  }
+
+  async addMember(channelId: string, userId: string): Promise<Channel> {
+    try {
+      const response = await this.apiClient.post<Channel>(`/channels/${channelId}/members`, { userId });
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to add member to channel');
+    }
+  }
+
+  async removeMember(channelId: string, userId: string): Promise<Channel> {
+    try {
+      const response = await this.apiClient.delete<Channel>(`/channels/${channelId}/members/${userId}`);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to remove member from channel');
+    }
+  }
+
+  async isMember(channelId: string, userId: string): Promise<boolean> {
+    try {
+      const response = await this.apiClient.get<{ isMember: boolean }>(`/channels/${channelId}/members/${userId}/check`);
+      return response.isMember;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createChannelValidation('Failed to check channel membership');
+    }
   }
 } 
