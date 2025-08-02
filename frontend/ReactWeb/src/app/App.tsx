@@ -7,6 +7,8 @@ import { UseCaseProvider } from "../contexts/UseCaseContext";
 import { AuthProvider } from "../contexts/AuthContext";
 import { UserProvider } from "../contexts/UserContext";
 import { ThemeProvider } from "../contexts/ThemeContext";
+import { ControllerProvider } from "../presentation/providers/ControllerProvider";
+import { ControllerMonitor } from "../presentation/components/debug/ControllerMonitor";
 import { useThemeStore } from "../stores/themeStore";
 import QueryProvider from "./di/QueryProvider.tsx";
 import "./di/i18n.ts"; // Initialize i18n
@@ -46,6 +48,8 @@ const AppContent: React.FC = () => {
           },
         }}
       />
+      {/* 개발 환경에서만 Controller 모니터링 표시 */}
+      {process.env.NODE_ENV === 'development' && <ControllerMonitor />}
     </div>
   );
 };
@@ -55,15 +59,17 @@ const App: React.FC = () => {
     <BrowserRouter>
       <HelmetProvider>
         <QueryProvider>
-          <UseCaseProvider>
-            <AuthProvider>
-              <ThemeProvider>
-                <UserProvider>
-                  <AppContent />
-                </UserProvider>
-              </ThemeProvider>
-            </AuthProvider>
-          </UseCaseProvider>
+          <ControllerProvider>
+            <UseCaseProvider>
+              <AuthProvider>
+                <ThemeProvider>
+                  <UserProvider>
+                    <AppContent />
+                  </UserProvider>
+                </ThemeProvider>
+              </AuthProvider>
+            </UseCaseProvider>
+          </ControllerProvider>
         </QueryProvider>
       </HelmetProvider>
     </BrowserRouter>
