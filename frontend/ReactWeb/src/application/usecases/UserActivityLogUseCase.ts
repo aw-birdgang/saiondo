@@ -1,53 +1,17 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface ActivityLog {
-  id: string;
-  userId: string;
-  action: string;
-  resource: string;
-  resourceId?: string;
-  details?: Record<string, unknown>;
-  timestamp: Date;
-  ipAddress?: string;
-  userAgent?: string;
-  sessionId?: string;
-}
-
-export interface ActivityLogRequest {
-  userId: string;
-  action: string;
-  resource: string;
-  resourceId?: string;
-  details?: Record<string, unknown>;
-  ipAddress?: string;
-  userAgent?: string;
-  sessionId?: string;
-}
-
-export interface ActivityLogResponse {
-  success: boolean;
-  logId: string;
-}
-
-export interface ActivityStats {
-  totalActions: number;
-  actionsByType: Record<string, number>;
-  mostActiveUsers: Array<{ userId: string; actionCount: number }>;
-  recentActivity: ActivityLog[];
-}
-
-export interface UserActivitySummary {
-  userId: string;
-  totalActions: number;
-  lastActivity: Date;
-  actionsByType: Record<string, number>;
-  channelsJoined: number;
-  messagesSent: number;
-  filesUploaded: number;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {
+  ActivityLog,
+  ActivityLogRequest,
+  ActivityLogResponse,
+  ActivityStats,
+  UserActivitySummary,
+  ActivitySearchRequest,
+  ActivityExportRequest,
+  ActivityExportResponse
+} from '../dto/UserActivityDto';
 
 export class UserActivityLogUseCase {
   private activityLogs: ActivityLog[] = [];

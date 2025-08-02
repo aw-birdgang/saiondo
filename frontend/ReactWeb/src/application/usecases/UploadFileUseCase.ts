@@ -1,22 +1,9 @@
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { Message } from '../entities/Message';
-import { MessageEntity } from '../entities/Message';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface FileUploadRequest {
-  file: File;
-  channelId: string;
-  senderId: string;
-  description?: string;
-}
-
-export interface FileUploadResponse {
-  message: Message;
-  fileUrl: string;
-  fileSize: number;
-  fileName: string;
-}
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { Message } from '../../domain/dto/MessageDto';
+import { MessageEntity } from '../../domain/entities/Message';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { FileUploadRequest, FileUploadResponse } from '../dto/UploadFileDto';
 
 export class UploadFileUseCase {
   constructor(

@@ -1,52 +1,15 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface Permission {
-  id: string;
-  name: string;
-  description: string;
-  resource: string;
-  action: string;
-}
-
-export interface Role {
-  id: string;
-  name: string;
-  description: string;
-  permissions: Permission[];
-}
-
-export interface UserRole {
-  userId: string;
-  roleId: string;
-  assignedAt: Date;
-  assignedBy: string;
-}
-
-export interface CheckPermissionRequest {
-  userId: string;
-  resource: string;
-  action: string;
-  context?: Record<string, unknown>;
-}
-
-export interface CheckPermissionResponse {
-  hasPermission: boolean;
-  role?: string;
-  reason?: string;
-}
-
-export interface AssignRoleRequest {
-  userId: string;
-  roleId: string;
-  assignedBy: string;
-}
-
-export interface AssignRoleResponse {
-  success: boolean;
-  userRole: UserRole;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {
+  Permission,
+  Role,
+  UserRole,
+  CheckPermissionRequest,
+  CheckPermissionResponse,
+  AssignRoleRequest,
+  AssignRoleResponse
+} from '../dto/UserPermissionDto';
 
 export class UserPermissionUseCase {
   constructor(

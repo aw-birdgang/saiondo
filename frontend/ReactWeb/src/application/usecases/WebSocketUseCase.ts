@@ -1,53 +1,43 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface WebSocketConfig {
-  url: string;
-  protocols?: string | string[];
-  reconnectInterval?: number;
-  maxReconnectAttempts?: number;
-  heartbeatInterval?: number;
-}
-
-export interface WebSocketMessage {
-  type: string;
-  data: any;
-  timestamp: number;
-  userId?: string;
-  channelId?: string;
-  messageId?: string;
-}
-
-export interface WebSocketConnection {
-  id: string;
-  userId: string;
-  connectedAt: Date;
-  lastHeartbeat: Date;
-  channels: string[];
-  isActive: boolean;
-}
-
-export interface WebSocketStats {
-  totalConnections: number;
-  activeConnections: number;
-  messagesSent: number;
-  messagesReceived: number;
-  reconnections: number;
-  errors: number;
-}
-
-export interface WebSocketEvent {
-  type: 'open' | 'message' | 'close' | 'error' | 'reconnect';
-  data?: any;
-  timestamp: Date;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {
+  WebSocketConfig,
+  WebSocketMessage,
+  WebSocketConnection,
+  WebSocketStats,
+  WebSocketEvent,
+  ConnectWebSocketRequest,
+  ConnectWebSocketResponse,
+  DisconnectWebSocketRequest,
+  DisconnectWebSocketResponse,
+  SendMessageRequest,
+  SendMessageResponse,
+  JoinChannelRequest,
+  JoinChannelResponse,
+  LeaveChannelRequest,
+  LeaveChannelResponse,
+  BroadcastToChannelRequest,
+  BroadcastToChannelResponse,
+  SendTypingIndicatorRequest,
+  SendTypingIndicatorResponse,
+  SendReadReceiptRequest,
+  SendReadReceiptResponse,
+  GetConnectionInfoRequest,
+  GetConnectionInfoResponse,
+  GetActiveConnectionsRequest,
+  GetActiveConnectionsResponse,
+  GetWebSocketStatsRequest,
+  GetWebSocketStatsResponse,
+  IsConnectedRequest,
+  IsConnectedResponse
+} from '../dto/WebSocketDto';
 
 export class WebSocketUseCase {
   private ws: WebSocket | null = null;
   private config: WebSocketConfig;
-  private isConnected = false;
+  private _isConnected = false;
   private reconnectAttempts = 0;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private reconnectTimer: NodeJS.Timeout | null = null;
@@ -78,11 +68,11 @@ export class WebSocketUseCase {
     };
   }
 
-  async connect(userId: string): Promise<boolean> {
+  async connect(request: ConnectWebSocketRequest): Promise<ConnectWebSocketResponse> {
     try {
-      if (this.isConnected) {
+      if (this._isConnected) {
         console.log('WebSocket already connected');
-        return true;
+        return { success: true };
       }
 
       console.log('Connecting to WebSocket server...');
@@ -91,17 +81,17 @@ export class WebSocketUseCase {
       this.ws = new WebSocket(this.config.url, this.config.protocols);
       
       // Set up event handlers
-      this.setupEventHandlers(userId);
+      this.setupEventHandlers(request.userId);
       
       // Wait for connection to establish
       return new Promise((resolve) => {
         const timeout = setTimeout(() => {
-          resolve(false);
+          resolve({ success: false, error: 'Connection timeout' });
         }, 10000); // 10 second timeout
 
         this.ws!.onopen = () => {
           clearTimeout(timeout);
-          this.isConnected = true;
+          this._isConnected = true;
           this.reconnectAttempts = 0;
           this.stats.totalConnections++;
           this.stats.activeConnections++;
@@ -111,31 +101,33 @@ export class WebSocketUseCase {
           
           // Send authentication message
           this.sendMessage({
-            type: 'auth',
-            data: { userId },
-            timestamp: Date.now(),
-            userId,
+            message: {
+              type: 'auth',
+              data: { userId: request.userId },
+              timestamp: Date.now(),
+              userId: request.userId,
+            }
           });
           
-          this.emitEvent('open', { userId });
-          resolve(true);
+          this.emitEvent('open', { userId: request.userId });
+          resolve({ success: true, connectionId: request.userId });
         };
 
         this.ws!.onerror = (error) => {
           clearTimeout(timeout);
           this.stats.errors++;
-          this.emitEvent('error', { error, userId });
-          resolve(false);
+          this.emitEvent('error', { error, userId: request.userId });
+          resolve({ success: false, error: 'Connection failed' });
         };
       });
     } catch (error) {
       console.error('Failed to connect to WebSocket:', error);
       this.stats.errors++;
-      return false;
+      return { success: false, error: 'Connection failed' };
     }
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect(request: DisconnectWebSocketRequest): Promise<DisconnectWebSocketResponse> {
     try {
       if (this.ws) {
         this.stopHeartbeat();
@@ -143,66 +135,73 @@ export class WebSocketUseCase {
         
         // Send disconnect message
         this.sendMessage({
-          type: 'disconnect',
-          data: {},
-          timestamp: Date.now(),
+          message: {
+            type: 'disconnect',
+            data: {},
+            timestamp: Date.now(),
+          }
         });
         
         this.ws.close();
         this.ws = null;
-        this.isConnected = false;
+        this._isConnected = false;
         this.stats.activeConnections = Math.max(0, this.stats.activeConnections - 1);
         
         this.emitEvent('close', {});
+        return { success: true, message: 'Disconnected successfully' };
       }
+      return { success: true, message: 'Already disconnected' };
     } catch (error) {
       console.error('Failed to disconnect from WebSocket:', error);
+      return { success: false, message: 'Failed to disconnect' };
     }
   }
 
-  async sendMessage(message: WebSocketMessage): Promise<boolean> {
+  async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
     try {
-      if (!this.isConnected || !this.ws) {
+      if (!this._isConnected || !this.ws) {
         console.warn('WebSocket not connected, cannot send message');
-        return false;
+        return { success: false, error: 'Not connected' };
       }
 
-      const messageStr = JSON.stringify(message);
+      const messageStr = JSON.stringify(request.message);
       this.ws.send(messageStr);
       this.stats.messagesSent++;
       
-      return true;
+      return { success: true };
     } catch (error) {
       console.error('Failed to send WebSocket message:', error);
       this.stats.errors++;
-      return false;
+      return { success: false, error: 'Failed to send message' };
     }
   }
 
-  async joinChannel(userId: string, channelId: string): Promise<boolean> {
+  async joinChannel(request: JoinChannelRequest): Promise<JoinChannelResponse> {
     try {
       const success = await this.sendMessage({
-        type: 'join_channel',
-        data: { channelId },
-        timestamp: Date.now(),
-        userId,
-        channelId,
+        message: {
+          type: 'join_channel',
+          data: { channelId: request.channelId },
+          timestamp: Date.now(),
+          userId: request.userId,
+          channelId: request.channelId,
+        }
       });
 
-      if (success) {
+      if (success.success) {
         // Update connection info
-        const connection = this.connections.get(userId);
+        const connection = this.connections.get(request.userId);
         if (connection) {
-          if (!connection.channels.includes(channelId)) {
-            connection.channels.push(channelId);
+          if (!connection.channels.includes(request.channelId)) {
+            connection.channels.push(request.channelId);
           }
         } else {
-          this.connections.set(userId, {
-            id: userId,
-            userId,
+          this.connections.set(request.userId, {
+            id: request.userId,
+            userId: request.userId,
             connectedAt: new Date(),
             lastHeartbeat: new Date(),
-            channels: [channelId],
+            channels: [request.channelId],
             isActive: true,
           });
         }
@@ -211,76 +210,87 @@ export class WebSocketUseCase {
       return success;
     } catch (error) {
       console.error('Failed to join channel:', error);
-      return false;
+      return { success: false, error: 'Failed to join channel' };
     }
   }
 
-  async leaveChannel(userId: string, channelId: string): Promise<boolean> {
+  async leaveChannel(request: LeaveChannelRequest): Promise<LeaveChannelResponse> {
     try {
       const success = await this.sendMessage({
-        type: 'leave_channel',
-        data: { channelId },
-        timestamp: Date.now(),
-        userId,
-        channelId,
+        message: {
+          type: 'leave_channel',
+          data: { channelId: request.channelId },
+          timestamp: Date.now(),
+          userId: request.userId,
+          channelId: request.channelId,
+        }
       });
 
-      if (success) {
+      if (success.success) {
         // Update connection info
-        const connection = this.connections.get(userId);
+        const connection = this.connections.get(request.userId);
         if (connection) {
-          connection.channels = connection.channels.filter(id => id !== channelId);
+          connection.channels = connection.channels.filter(id => id !== request.channelId);
         }
       }
 
       return success;
     } catch (error) {
       console.error('Failed to leave channel:', error);
-      return false;
+      return { success: false, error: 'Failed to leave channel' };
     }
   }
 
-  async broadcastToChannel(channelId: string, message: WebSocketMessage): Promise<boolean> {
+  async broadcastToChannel(request: BroadcastToChannelRequest): Promise<BroadcastToChannelResponse> {
     try {
-      return await this.sendMessage({
-        ...message,
-        channelId,
-        timestamp: Date.now(),
+      const success = await this.sendMessage({
+        message: {
+          ...request.message,
+          channelId: request.channelId,
+          timestamp: Date.now(),
+        }
       });
+      return success;
     } catch (error) {
       console.error('Failed to broadcast to channel:', error);
-      return false;
+      return { success: false, error: 'Failed to broadcast' };
     }
   }
 
-  async sendTypingIndicator(userId: string, channelId: string, isTyping: boolean): Promise<boolean> {
+  async sendTypingIndicator(request: SendTypingIndicatorRequest): Promise<SendTypingIndicatorResponse> {
     try {
-      return await this.sendMessage({
-        type: 'typing',
-        data: { isTyping },
-        timestamp: Date.now(),
-        userId,
-        channelId,
+      const success = await this.sendMessage({
+        message: {
+          type: 'typing',
+          data: { isTyping: request.isTyping },
+          timestamp: Date.now(),
+          userId: request.userId,
+          channelId: request.channelId,
+        }
       });
+      return success;
     } catch (error) {
       console.error('Failed to send typing indicator:', error);
-      return false;
+      return { success: false, error: 'Failed to send typing indicator' };
     }
   }
 
-  async sendReadReceipt(userId: string, messageId: string, channelId: string): Promise<boolean> {
+  async sendReadReceipt(request: SendReadReceiptRequest): Promise<SendReadReceiptResponse> {
     try {
-      return await this.sendMessage({
-        type: 'read_receipt',
-        data: { messageId },
-        timestamp: Date.now(),
-        userId,
-        channelId,
-        messageId,
+      const success = await this.sendMessage({
+        message: {
+          type: 'read_receipt',
+          data: { messageId: request.messageId },
+          timestamp: Date.now(),
+          userId: request.userId,
+          channelId: request.channelId,
+          messageId: request.messageId,
+        }
       });
+      return success;
     } catch (error) {
       console.error('Failed to send read receipt:', error);
-      return false;
+      return { success: false, error: 'Failed to send read receipt' };
     }
   }
 
@@ -298,20 +308,20 @@ export class WebSocketUseCase {
     this.eventHandlers.get(eventType)!.push(handler);
   }
 
-  async getConnectionInfo(userId: string): Promise<WebSocketConnection | null> {
-    return this.connections.get(userId) || null;
+  async getConnectionInfo(request: GetConnectionInfoRequest): Promise<GetConnectionInfoResponse> {
+    return { connection: this.connections.get(request.userId) || null };
   }
 
-  async getActiveConnections(): Promise<WebSocketConnection[]> {
-    return Array.from(this.connections.values()).filter(conn => conn.isActive);
+  async getActiveConnections(request: GetActiveConnectionsRequest): Promise<GetActiveConnectionsResponse> {
+    return { connections: Array.from(this.connections.values()).filter(conn => conn.isActive) };
   }
 
-  async getWebSocketStats(): Promise<WebSocketStats> {
-    return { ...this.stats };
+  async getWebSocketStats(request: GetWebSocketStatsRequest): Promise<GetWebSocketStatsResponse> {
+    return { stats: { ...this.stats } };
   }
 
-  async isConnected(): Promise<boolean> {
-    return this.isConnected;
+  async checkConnectionStatus(request: IsConnectedRequest): Promise<IsConnectedResponse> {
+    return { connected: this._isConnected };
   }
 
   private setupEventHandlers(userId: string): void {
@@ -358,7 +368,7 @@ export class WebSocketUseCase {
     };
 
     this.ws.onclose = (event) => {
-      this.isConnected = false;
+      this._isConnected = false;
       this.stats.activeConnections = Math.max(0, this.stats.activeConnections - 1);
       this.stopHeartbeat();
       
@@ -382,11 +392,13 @@ export class WebSocketUseCase {
     }
 
     this.heartbeatTimer = setInterval(() => {
-      if (this.isConnected && this.ws) {
+      if (this._isConnected && this.ws) {
         this.sendMessage({
-          type: 'heartbeat',
-          data: { timestamp: Date.now() },
-          timestamp: Date.now(),
+          message: {
+            type: 'heartbeat',
+            data: { timestamp: Date.now() },
+            timestamp: Date.now(),
+          }
         });
       }
     }, this.config.heartbeatInterval);
@@ -406,8 +418,8 @@ export class WebSocketUseCase {
     console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.config.maxReconnectAttempts})...`);
     
     this.reconnectTimer = setTimeout(async () => {
-      const success = await this.connect(userId);
-      if (success) {
+      const success = await this.connect({ userId });
+      if (success.success) {
         this.emitEvent('reconnect', { attempt: this.reconnectAttempts });
       }
     }, this.config.reconnectInterval);

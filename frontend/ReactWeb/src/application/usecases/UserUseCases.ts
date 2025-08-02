@@ -1,46 +1,20 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User } from '../../domain/entities/User';
+import type { User } from '../../domain/dto/UserDto';
 import { UserEntity } from '../../domain/entities/User';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import { Email } from '../../domain/value-objects/Email';
-
-export interface CreateUserRequest {
-  email: string;
-  username: string;
-  displayName?: string;
-  avatar?: string;
-}
-
-export interface CreateUserResponse {
-  user: User;
-}
-
-export interface UpdateUserRequest {
-  id: string;
-  displayName?: string;
-  avatar?: string;
-  isOnline?: boolean;
-}
-
-export interface UpdateUserResponse {
-  user: User;
-}
-
-export interface GetUserRequest {
-  id: string;
-}
-
-export interface GetUserResponse {
-  user: User;
-}
-
-export interface SearchUsersRequest {
-  query: string;
-}
-
-export interface SearchUsersResponse {
-  users: User[];
-}
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+  UpdateUserRequest,
+  UpdateUserResponse,
+  GetUserRequest,
+  GetUserResponse,
+  SearchUsersRequest,
+  SearchUsersResponse,
+  GetCurrentUserRequest,
+  GetCurrentUserResponse
+} from '../dto/UserDto';
 
 export class UserUseCases {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -118,7 +92,11 @@ export class UserUseCases {
   async searchUsers(request: SearchUsersRequest): Promise<SearchUsersResponse> {
     try {
       const users = await this.userRepository.search(request.query);
-      return { users };
+      return { 
+        users, 
+        total: users.length, 
+        hasMore: false 
+      };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -127,11 +105,21 @@ export class UserUseCases {
     }
   }
 
-  async getCurrentUser(): Promise<GetUserResponse> {
+  async getCurrentUser(request?: GetCurrentUserRequest): Promise<GetCurrentUserResponse> {
     try {
-      const user = await this.userRepository.getCurrentUser();
+      let user;
+      
+      if (request?.userId) {
+        // Get specific user by ID
+        user = await this.userRepository.findById(request.userId);
+      } else {
+        // Get current user
+        user = await this.userRepository.getCurrentUser();
+      }
+      
       if (!user) {
-        throw DomainErrorFactory.createAuthentication('User not authenticated');
+        const errorId = request?.userId || 'current user';
+        throw DomainErrorFactory.createUserNotFound(errorId);
       }
 
       return { user };

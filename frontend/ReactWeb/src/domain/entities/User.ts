@@ -1,33 +1,4 @@
-// Data Transfer Objects (DTOs)
-export interface User {
-  id: string;
-  email: string;
-  username: string;
-  displayName?: string;
-  avatar?: string;
-  isOnline: boolean;
-  lastSeen?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserProfile extends User {
-  bio?: string;
-  phoneNumber?: string;
-  preferences: UserPreferences;
-}
-
-export interface UserPreferences {
-  theme: 'light' | 'dark';
-  language: string;
-  notifications: NotificationSettings;
-}
-
-export interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  sms: boolean;
-}
+import type { User } from '../dto/UserDto';
 
 // Domain Entity with Business Logic
 export class UserEntity {
@@ -54,7 +25,7 @@ export class UserEntity {
       userData.displayName,
       userData.avatar,
       userData.isOnline,
-      userData.lastSeen,
+      userData.lastSeenAt,
       new Date(),
       new Date()
     );
@@ -68,7 +39,7 @@ export class UserEntity {
       userData.displayName,
       userData.avatar,
       userData.isOnline,
-      userData.lastSeen,
+      userData.lastSeenAt,
       userData.createdAt,
       userData.updatedAt
     );
@@ -118,8 +89,8 @@ export class UserEntity {
       this._id,
       this._email,
       this._username,
-      displayName,
-      avatar,
+      displayName ?? this._displayName,
+      avatar ?? this._avatar,
       this._isOnline,
       this._lastSeen,
       this._createdAt,
@@ -147,7 +118,7 @@ export class UserEntity {
       displayName: this._displayName,
       avatar: this._avatar,
       isOnline: this._isOnline,
-      lastSeen: this._lastSeen,
+      lastSeenAt: this._lastSeen,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
     };

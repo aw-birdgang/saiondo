@@ -1,17 +1,7 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { User } from '../entities/User';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface AuthenticateUserRequest {
-  email: string;
-  password: string;
-}
-
-export interface AuthenticateUserResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { User } from '../../domain/dto/UserDto';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { AuthenticateUserRequest, AuthenticateUserResponse } from '../dto/AuthDto';
 
 export class AuthenticateUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}

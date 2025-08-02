@@ -16,4 +16,16 @@ export type {
   MessageListResponse,
   MessageMetadata,
   MessageReaction
-} from './MessageDto'; 
+} from './MessageDto';
+
+// User DTOs
+export type {
+  User,
+  UserPreferences,
+  NotificationSettings,
+  PrivacySettings,
+  CreateUserRequest,
+  UpdateUserRequest,
+  UserResponse,
+  UserListResponse
+} from './UserDto'; 
