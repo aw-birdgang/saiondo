@@ -1,19 +1,8 @@
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { Channel } from '../entities/Channel';
-import { ChannelEntity } from '../entities/Channel';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface CreateChannelRequest {
-  name: string;
-  description?: string;
-  type: 'public' | 'private' | 'direct';
-  ownerId: string;
-  members: string[];
-}
-
-export interface CreateChannelResponse {
-  channel: Channel;
-}
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { Channel } from '../../domain/dto/ChannelDto';
+import { ChannelEntity } from '../../domain/entities/Channel';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { CreateChannelRequest, CreateChannelResponse } from '../dto/CreateChannelDto';
 
 export class CreateChannelUseCase {
   constructor(private readonly channelRepository: IChannelRepository) {}

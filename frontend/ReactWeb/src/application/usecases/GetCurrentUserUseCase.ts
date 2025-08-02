@@ -1,15 +1,8 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { User } from '../entities/User';
-import { UserId } from '../value-objects/UserId';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface GetCurrentUserRequest {
-  userId?: string; // Optional for current user
-}
-
-export interface GetCurrentUserResponse {
-  user: User;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { User } from '../../domain/dto/UserDto';
+import { UserId } from '../../domain/value-objects/UserId';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { GetCurrentUserRequest, GetCurrentUserResponse } from '../dto/GetCurrentUserDto';
 
 export class GetCurrentUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}

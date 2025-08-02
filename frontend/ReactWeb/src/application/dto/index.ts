@@ -151,4 +151,144 @@ export type {
   GetWebSocketStatsResponse,
   IsConnectedRequest,
   IsConnectedResponse
-} from './WebSocketDto'; 
+} from './WebSocketDto';
+
+// GetCurrentUser DTOs
+export type {
+  GetCurrentUserRequest,
+  GetCurrentUserResponse
+} from './GetCurrentUserDto';
+
+// CreateChannel DTOs
+export type {
+  CreateChannelRequest,
+  CreateChannelResponse
+} from './CreateChannelDto';
+
+// SendMessage DTOs
+export type {
+  SendMessageRequest,
+  SendMessageResponse
+} from './SendMessageDto';
+
+// RegisterUser DTOs
+export type {
+  RegisterUserRequest,
+  RegisterUserResponse
+} from './RegisterUserDto';
+
+// UpdateUser DTOs
+export type {
+  UpdateUserRequest,
+  UpdateUserResponse
+} from './UpdateUserDto';
+
+// LogoutUser DTOs
+export type {
+  LogoutUserRequest,
+  LogoutUserResponse
+} from './LogoutUserDto';
+
+// InviteToChannel DTOs
+export type {
+  InviteToChannelRequest,
+  InviteToChannelResponse
+} from './InviteToChannelDto';
+
+// LeaveChannel DTOs
+export type {
+  LeaveChannelRequest,
+  LeaveChannelResponse
+} from './LeaveChannelDto';
+
+// SearchMessages DTOs
+export type {
+  SearchMessagesRequest,
+  SearchMessagesResponse
+} from './SearchMessagesDto';
+
+// FileDownload DTOs
+export type {
+  FileDownloadRequest,
+  FileDownloadResponse,
+  FileDownloadProgress
+} from './FileDownloadDto';
+
+// Notification DTOs
+export type {
+  NotificationRequest,
+  NotificationResponse,
+  NotificationSettings,
+  UpdateNotificationSettingsRequest,
+  UpdateNotificationSettingsResponse
+} from './NotificationDto';
+
+// Cache DTOs
+export type {
+  CacheRequest,
+  CacheResponse,
+  GetCacheRequest,
+  GetCacheResponse,
+  DeleteCacheRequest,
+  DeleteCacheResponse,
+  CacheStats
+} from './CacheDto';
+
+// RedisCache DTOs
+export type {
+  RedisConfig,
+  RedisCacheRequest,
+  RedisCacheResponse,
+  GetRedisCacheRequest,
+  GetRedisCacheResponse,
+  DeleteRedisCacheRequest,
+  DeleteRedisCacheResponse,
+  RedisCacheStats
+} from './RedisCacheDto';
+
+// RealTimeChat DTOs
+export type {
+  RealTimeMessage,
+  SendRealTimeMessageRequest,
+  SendRealTimeMessageResponse,
+  TypingIndicatorRequest,
+  TypingIndicatorResponse,
+  ReadReceiptRequest,
+  ReadReceiptResponse,
+  JoinChatRoomRequest,
+  JoinChatRoomResponse,
+  LeaveChatRoomRequest,
+  LeaveChatRoomResponse
+} from './RealTimeChatDto';
+
+// Monitoring DTOs
+export type {
+  SystemMetrics,
+  ApplicationMetrics,
+  HealthCheckRequest,
+  HealthCheckResponse,
+  PerformanceMetrics,
+  GetPerformanceMetricsRequest,
+  GetPerformanceMetricsResponse
+} from './MonitoringDto';
+
+// APMMonitoring DTOs
+export type {
+  Trace,
+  Span,
+  Alert,
+  CreateTraceRequest,
+  CreateTraceResponse,
+  EndTraceRequest,
+  EndTraceResponse,
+  CreateSpanRequest,
+  CreateSpanResponse,
+  EndSpanRequest,
+  EndSpanResponse,
+  CreateAlertRequest,
+  CreateAlertResponse,
+  GetTracesRequest,
+  GetTracesResponse,
+  GetAlertsRequest,
+  GetAlertsResponse
+} from './APMMonitoringDto'; 

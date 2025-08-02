@@ -1,21 +1,9 @@
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { Message } from '../entities/Message';
-import { MessageEntity } from '../entities/Message';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface SendMessageRequest {
-  content: string;
-  channelId: string;
-  senderId: string;
-  type: 'text' | 'image' | 'file' | 'system';
-  metadata?: Record<string, unknown>;
-  replyTo?: string;
-}
-
-export interface SendMessageResponse {
-  message: Message;
-}
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { Message } from '../../domain/dto/MessageDto';
+import { MessageEntity } from '../../domain/entities/Message';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { SendMessageRequest, SendMessageResponse } from '../dto/SendMessageDto';
 
 export class SendMessageUseCase {
   constructor(
