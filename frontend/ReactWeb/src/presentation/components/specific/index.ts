@@ -61,6 +61,7 @@ export { default as LoginForm } from './LoginForm';
 // Category Code Page Components
 export { default as CategoryCodeCard } from './CategoryCodeCard';
 export { default as CategoryCodeGrid } from './CategoryCodeGrid';
+export { default as CategoryCodeModal } from './CategoryCodeModal';
 export { default as CategoryCodeSearch } from './CategoryCodeSearch';
 export { default as CategoryCodeErrorState } from './CategoryCodeErrorState';
 export { default as CategoryCodeHeader } from './CategoryCodeHeader';

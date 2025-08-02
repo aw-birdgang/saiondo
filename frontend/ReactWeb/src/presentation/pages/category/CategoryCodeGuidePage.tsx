@@ -1,11 +1,10 @@
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {useNavigate} from 'react-router-dom';
-import {useDataLoader} from '../../hooks/useDataLoader';
-import {CategoryCodeCard, CategoryCodeModal, LoadingState} from '../../components/specific';
-import {PageContainer, PageHeader} from '../../components/layout';
-import {CategoryCodeGrid, CategoryCodeGuideContainer, SearchBar} from '../../components/common';
-import type {CategoryCode} from '../../../domain/types';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useDataLoader } from '../../hooks/useDataLoader';
+import { CategoryCodeCard, CategoryCodeModal, LoadingState } from '../../components/specific';
+import { CategoryCodeGrid } from '../../components/specific';
+import type { CategoryCode } from '../../../domain/types';
 
 const CategoryCodeGuideScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -99,18 +98,17 @@ const CategoryCodeGuideScreen: React.FC = () => {
       ];
       
       return mockCodes;
-    },
-    [],
-    {
-      autoLoad: true,
-      errorMessage: '카테고리 코드를 불러오는데 실패했습니다.'
     }
   );
 
-  const filteredCodes = codes.filter(code =>
+  // 검색 필터링
+  const filteredCodes = (codes || []).filter(code =>
     code.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
     code.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    code.examples.some(example => example.toLowerCase().includes(searchTerm.toLowerCase()))
+    code.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    code.examples?.some(example => 
+      example.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   const handleCodeClick = (code: CategoryCode) => {
@@ -124,24 +122,24 @@ const CategoryCodeGuideScreen: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <LoadingState message={t('loading_category_codes') || '카테고리 코드를 불러오는 중...'} />
-    );
+    return <LoadingState />;
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
-            {t('error_loading_codes') || '코드 로딩 오류'}
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            오류가 발생했습니다
           </h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            카테고리 코드를 불러오는 중 문제가 발생했습니다.
+          </p>
           <button
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
           >
-            {t('retry') || '다시 시도'}
+            다시 시도
           </button>
         </div>
       </div>
@@ -149,44 +147,62 @@ const CategoryCodeGuideScreen: React.FC = () => {
   }
 
   return (
-    <CategoryCodeGuideContainer>
-      {/* Header */}
-      <PageHeader
-        title={t('category_code_guide') || '카테고리 코드 가이드'}
-        subtitle={t('category_code_description') || '대화 분석에 사용되는 카테고리 코드들을 확인하세요'}
-        showBackButton
-      />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* 헤더 */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                카테고리 코드 가이드
+              </h1>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">
+                대화 분석에 사용되는 카테고리 코드들을 확인하세요
+              </p>
+            </div>
+            <button
+              onClick={() => navigate(-1)}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+            >
+              뒤로 가기
+            </button>
+          </div>
+        </div>
+      </div>
 
-      {/* Content */}
-      <PageContainer>
-        {/* Search */}
-        <SearchBar
-          value={searchTerm}
-          onChange={setSearchTerm}
-          placeholder={t('search_codes') || '코드 검색...'}
+      {/* 검색 */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="mb-6">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="코드, 설명, 카테고리로 검색..."
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          />
+        </div>
+
+        {/* 결과 */}
+        <div className="mb-6">
+          <p className="text-gray-600 dark:text-gray-400">
+            {filteredCodes.length}개의 카테고리 코드를 찾았습니다.
+          </p>
+        </div>
+
+        {/* 카테고리 코드 그리드 */}
+        <CategoryCodeGrid 
+          codes={filteredCodes} 
+          onCodeClick={handleCodeClick}
         />
 
-        {/* Codes Grid */}
-        <CategoryCodeGrid>
-          {filteredCodes.map((code) => (
-            <CategoryCodeCard
-              key={code.id}
-              code={code}
-              onClick={() => handleCodeClick(code)}
-            />
-          ))}
-        </CategoryCodeGrid>
-
-        {/* Modal */}
-        {selectedCode && (
-          <CategoryCodeModal
-            code={selectedCode}
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-          />
-        )}
-      </PageContainer>
-    </CategoryCodeGuideContainer>
+        {/* 모달 */}
+        <CategoryCodeModal
+          code={selectedCode}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      </div>
+    </div>
   );
 };
 

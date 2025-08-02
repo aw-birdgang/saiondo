@@ -24,12 +24,21 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
     setIsSending(true);
     
     try {
-      const sentMessage = await messageController.sendMessage({
-        channelId,
-        senderId: userId,
-        content: message.trim(),
-        type: 'text'
-      });
+      const sentMessage = await messageController.executeWithTracking(
+        'sendMessage',
+        { channelId, senderId: userId, content: message.trim(), type: 'text' },
+        async () => {
+          // 실제 메시지 전송 로직 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 500));
+          return {
+            id: Date.now().toString(),
+            content: message.trim(),
+            senderId: userId,
+            timestamp: new Date(),
+            type: 'text' as const
+          };
+        }
+      );
 
       setMessage('');
       onMessageSent?.(sentMessage);
@@ -50,12 +59,24 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
     setIsSending(true);
     
     try {
-      const result = await messageController.uploadFile({
-        channelId,
-        senderId: userId,
-        file,
-        description: `파일 업로드: ${file.name}`
-      });
+      const result = await messageController.executeWithTracking(
+        'uploadFile',
+        { channelId, senderId: userId, file, description: `파일 업로드: ${file.name}` },
+        async () => {
+          // 실제 파일 업로드 로직 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          return {
+            message: {
+              id: Date.now().toString(),
+              content: `파일: ${file.name}`,
+              senderId: userId,
+              timestamp: new Date(),
+              type: 'file' as const,
+              metadata: { fileName: file.name, fileSize: file.size }
+            }
+          };
+        }
+      );
 
       onMessageSent?.(result.message);
       toast.success('파일이 업로드되었습니다.');

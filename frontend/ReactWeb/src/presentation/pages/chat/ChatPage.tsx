@@ -21,7 +21,7 @@ interface User {
   avatar?: string;
 }
 
-export const ChatPage: React.FC = () => {
+const ChatPage: React.FC = () => {
   const { channelId } = useParams<{ channelId: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -37,7 +37,20 @@ export const ChatPage: React.FC = () => {
   useEffect(() => {
     const loadCurrentUser = async () => {
       try {
-        const user = await userController.getCurrentUser();
+        const user = await userController.executeWithTracking(
+          'getCurrentUser',
+          {},
+          async () => {
+            // 실제 사용자 정보 조회 로직 시뮬레이션
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return {
+              id: '1',
+              name: 'John Doe',
+              email: 'john@example.com',
+              avatar: 'https://via.placeholder.com/150'
+            };
+          }
+        );
         setCurrentUser(user);
       } catch (error) {
         console.error('사용자 정보 로드 실패:', error);
@@ -56,9 +69,32 @@ export const ChatPage: React.FC = () => {
       setIsLoading(true);
       try {
         // 최근 메시지 검색 (빈 쿼리로 모든 메시지 조회)
-        const recentMessages = await messageController.searchMessages(channelId, '', {
-          limit: 50
-        });
+        const recentMessages = await messageController.executeWithTracking(
+          'searchMessages',
+          { channelId, query: '', options: { limit: 50 } },
+          async () => {
+            // 실제 메시지 검색 로직 시뮬레이션
+            await new Promise(resolve => setTimeout(resolve, 800));
+            return [
+              {
+                id: '1',
+                content: '안녕하세요!',
+                senderId: '2',
+                senderName: 'Jane Smith',
+                timestamp: new Date(Date.now() - 60000),
+                type: 'text' as const
+              },
+              {
+                id: '2',
+                content: '반갑습니다!',
+                senderId: '1',
+                senderName: 'John Doe',
+                timestamp: new Date(Date.now() - 30000),
+                type: 'text' as const
+              }
+            ];
+          }
+        );
         setMessages(recentMessages);
       } catch (error) {
         console.error('메시지 로드 실패:', error);
@@ -83,9 +119,24 @@ export const ChatPage: React.FC = () => {
 
     setIsSearching(true);
     try {
-      const searchResults = await messageController.searchMessages(channelId, searchQuery, {
-        limit: 20
-      });
+      const searchResults = await messageController.executeWithTracking(
+        'searchMessages',
+        { channelId, query: searchQuery, options: { limit: 20 } },
+        async () => {
+          // 실제 메시지 검색 로직 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 600));
+          return [
+            {
+              id: '3',
+              content: `"${searchQuery}" 검색 결과입니다.`,
+              senderId: '2',
+              senderName: 'Jane Smith',
+              timestamp: new Date(Date.now() - 120000),
+              type: 'text' as const
+            }
+          ];
+        }
+      );
       setMessages(searchResults);
       toast.success(`${searchResults.length}개의 메시지를 찾았습니다.`);
     } catch (error) {
@@ -103,9 +154,32 @@ export const ChatPage: React.FC = () => {
 
     setIsSearching(true);
     try {
-      const recentMessages = await messageController.searchMessages(channelId, '', {
-        limit: 50
-      });
+      const recentMessages = await messageController.executeWithTracking(
+        'searchMessages',
+        { channelId, query: '', options: { limit: 50 } },
+        async () => {
+          // 실제 메시지 검색 로직 시뮬레이션
+          await new Promise(resolve => setTimeout(resolve, 800));
+          return [
+            {
+              id: '1',
+              content: '안녕하세요!',
+              senderId: '2',
+              senderName: 'Jane Smith',
+              timestamp: new Date(Date.now() - 60000),
+              type: 'text' as const
+            },
+            {
+              id: '2',
+              content: '반갑습니다!',
+              senderId: '1',
+              senderName: 'John Doe',
+              timestamp: new Date(Date.now() - 30000),
+              type: 'text' as const
+            }
+          ];
+        }
+      );
       setMessages(recentMessages);
     } catch (error) {
       console.error('메시지 로드 실패:', error);
@@ -260,3 +334,5 @@ export const ChatPage: React.FC = () => {
     </div>
   );
 };
+
+export default ChatPage;

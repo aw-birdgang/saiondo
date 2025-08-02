@@ -12,11 +12,13 @@ interface CategoryCode {
 interface CategoryCodeGridProps {
   codes: CategoryCode[];
   className?: string;
+  onCodeClick?: (code: CategoryCode) => void;
 }
 
 const CategoryCodeGrid: React.FC<CategoryCodeGridProps> = ({ 
   codes, 
-  className = "" 
+  className = "",
+  onCodeClick
 }) => {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${className}`}>
@@ -24,6 +26,7 @@ const CategoryCodeGrid: React.FC<CategoryCodeGridProps> = ({
         <CategoryCodeCard
           key={code.id}
           code={code}
+          onClick={() => onCodeClick?.(code)}
         />
       ))}
     </div>

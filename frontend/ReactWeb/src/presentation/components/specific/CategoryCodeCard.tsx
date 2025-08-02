@@ -11,11 +11,13 @@ interface CategoryCode {
 interface CategoryCodeCardProps {
   code: CategoryCode;
   className?: string;
+  onClick?: () => void;
 }
 
 const CategoryCodeCard: React.FC<CategoryCodeCardProps> = ({ 
   code, 
-  className = "" 
+  className = "",
+  onClick
 }) => {
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -48,7 +50,10 @@ const CategoryCodeCard: React.FC<CategoryCodeCardProps> = ({
   };
 
   return (
-    <div className={`card p-6 hover:shadow-lg transition-all duration-200 hover:scale-[1.02] ${className}`}>
+    <div 
+      className={`card p-6 hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer ${className}`}
+      onClick={onClick}
+    >
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center space-x-4">
           <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl shadow-md ${getCategoryColor(code.category)}`}>
