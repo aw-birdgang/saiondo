@@ -17,6 +17,9 @@ import { RealTimeChatUseCase } from './RealTimeChatUseCase';
 import { FileDownloadUseCase } from './FileDownloadUseCase';
 import { UserActivityLogUseCase } from './UserActivityLogUseCase';
 import { MonitoringUseCase } from './MonitoringUseCase';
+import { RedisCacheUseCase } from './RedisCacheUseCase';
+import { WebSocketUseCase } from './WebSocketUseCase';
+import { APMMonitoringUseCase } from './APMMonitoringUseCase';
 
 /**
  * Use Case Factory
@@ -128,6 +131,26 @@ export class UseCaseFactory {
     );
   }
 
+  // Redis cache use cases
+  static createRedisCacheUseCase(config?: any): RedisCacheUseCase {
+    return new RedisCacheUseCase(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository(),
+      config
+    );
+  }
+
+  // WebSocket use cases
+  static createWebSocketUseCase(config?: any): WebSocketUseCase {
+    return new WebSocketUseCase(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository(),
+      config
+    );
+  }
+
   // Activity logging use cases
   static createUserActivityLogUseCase(): UserActivityLogUseCase {
     return new UserActivityLogUseCase(
@@ -143,6 +166,16 @@ export class UseCaseFactory {
       container.getUserRepository(),
       container.getChannelRepository(),
       container.getMessageRepository()
+    );
+  }
+
+  // APM monitoring use cases
+  static createAPMMonitoringUseCase(config?: any): APMMonitoringUseCase {
+    return new APMMonitoringUseCase(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository(),
+      config
     );
   }
 
@@ -207,6 +240,13 @@ export class UseCaseFactory {
   static createCacheUseCases() {
     return {
       cache: this.createCacheUseCase(),
+      redis: this.createRedisCacheUseCase(),
+    };
+  }
+
+  static createWebSocketUseCases() {
+    return {
+      websocket: this.createWebSocketUseCase(),
     };
   }
 
@@ -219,6 +259,7 @@ export class UseCaseFactory {
   static createMonitoringUseCases() {
     return {
       monitoring: this.createMonitoringUseCase(),
+      apm: this.createAPMMonitoringUseCase(),
     };
   }
 
@@ -234,6 +275,7 @@ export class UseCaseFactory {
       notification: this.createNotificationUseCases(),
       permission: this.createPermissionUseCases(),
       cache: this.createCacheUseCases(),
+      websocket: this.createWebSocketUseCases(),
       activity: this.createActivityUseCases(),
       monitoring: this.createMonitoringUseCases(),
     };

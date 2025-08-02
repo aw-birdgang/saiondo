@@ -16,6 +16,9 @@ export { RealTimeChatUseCase } from './RealTimeChatUseCase';
 export { FileDownloadUseCase } from './FileDownloadUseCase';
 export { UserActivityLogUseCase } from './UserActivityLogUseCase';
 export { MonitoringUseCase } from './MonitoringUseCase';
+export { RedisCacheUseCase } from './RedisCacheUseCase';
+export { WebSocketUseCase } from './WebSocketUseCase';
+export { APMMonitoringUseCase } from './APMMonitoringUseCase';
 export { UseCaseFactory } from './UseCaseFactory';
 
 // Export types
@@ -79,4 +82,26 @@ export type {
   ErrorLog,
   MonitoringRequest,
   MonitoringResponse
-} from './MonitoringUseCase'; 
+} from './MonitoringUseCase';
+export type {
+  RedisConfig,
+  CacheOperation,
+  CacheStats as RedisCacheStats,
+  CachePattern
+} from './RedisCacheUseCase';
+export type {
+  WebSocketConfig,
+  WebSocketMessage as WSMessage,
+  WebSocketConnection,
+  WebSocketStats,
+  WebSocketEvent
+} from './WebSocketUseCase';
+export type {
+  APMConfig,
+  Trace,
+  Span,
+  PerformanceMetric as APMMetric,
+  APMStats,
+  AlertRule,
+  Alert
+} from './APMMonitoringUseCase'; 
