@@ -11,14 +11,7 @@ import {
   PageContainer,
   CategoryCodeDetailModal
 } from '../../components/specific';
-
-interface CategoryCode {
-  id: string;
-  code: string;
-  description: string;
-  category: string;
-  examples?: string[];
-}
+import type {CategoryCode} from '../../../domain/types';
 
 const CategoryCodeGuideScreen: React.FC = () => {
   const { t } = useTranslation();

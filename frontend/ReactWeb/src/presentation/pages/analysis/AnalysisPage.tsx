@@ -3,32 +3,7 @@ import {useTranslation} from "react-i18next";
 import {useLocation, useParams} from "react-router-dom";
 import {toast} from "react-hot-toast";
 import {AnalysisContent, AnalysisHeader, AnalysisLayout, ErrorState, LoadingState} from "../../components/specific";
-
-interface AnalysisData {
-  user1: {
-    name: string;
-    profileUrl?: string;
-    mbti?: string;
-  };
-  user2: {
-    name: string;
-    profileUrl?: string;
-    mbti?: string;
-  };
-  matchPercent?: string;
-  keywords: string[];
-  summary?: string;
-  advice?: string;
-  persona1?: string;
-  persona2?: string;
-}
-
-interface AnalysisState {
-  data: AnalysisData | null;
-  isLoading: boolean;
-  isCreating: boolean;
-  error: string | null;
-}
+import type {AnalysisData, AnalysisState} from "../../../domain/types";
 
 const AnalysisPage: React.FC = () => {
   const { t } = useTranslation();

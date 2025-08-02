@@ -88,15 +88,32 @@ export interface ChannelInvitation {
 // ============================================================================
 // ASSISTANT TYPES
 // ============================================================================
-export interface Assistant {
-  id: string;
-  userId: string;
-  name: string;
-  description?: string;
-  personality?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export * from './assistant';
+
+// ============================================================================
+// CHANNEL TYPES
+// ============================================================================
+export * from './channel';
+
+// ============================================================================
+// CATEGORY TYPES
+// ============================================================================
+export * from './category';
+
+// ============================================================================
+// PAYMENT TYPES
+// ============================================================================
+export * from './payment';
+
+// ============================================================================
+// INVITE TYPES
+// ============================================================================
+export * from './invite';
+
+// ============================================================================
+// MYPAGE TYPES
+// ============================================================================
+export * from './mypage';
 
 // ============================================================================
 // PERSONA PROFILE TYPES
@@ -155,23 +172,7 @@ export interface Event {
 // ============================================================================
 // ANALYSIS TYPES
 // ============================================================================
-export interface CoupleAnalysis {
-  id: string;
-  channelId: string;
-  analysis: Record<string, any>;
-  score?: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Advice {
-  id: string;
-  channelId: string;
-  content: string;
-  type: string;
-  createdAt: string;
-  updatedAt: string;
-}
+export * from './analysis';
 
 // ============================================================================
 // PAYMENT & SUBSCRIPTION TYPES

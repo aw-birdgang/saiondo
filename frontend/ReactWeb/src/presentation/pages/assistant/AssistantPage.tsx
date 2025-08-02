@@ -6,17 +6,7 @@ import {ROUTES} from "../../../shared/constants/app";
 import {EmptyState} from '../../components/common';
 import {AssistantFilters, AssistantGrid, ErrorState, LoadingState} from '../../components/specific';
 import {AssistantPageContainer, AssistantFiltersContainer, AssistantContentContainer} from '../../components/common';
-
-interface Assistant {
-  id: string;
-  name: string;
-  description: string;
-  avatar?: string;
-  category: string;
-  isActive: boolean;
-  lastUsed?: Date;
-  messageCount: number;
-}
+import type {Assistant, AssistantCategory} from '../../../domain/types';
 
 const AssistantListScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -114,7 +104,7 @@ const AssistantListScreen: React.FC = () => {
 
 
 
-  const categories = [
+  const categories: AssistantCategory[] = [
     { id: 'all', name: t('all_categories') || '전체', icon: '📋' },
     { id: 'relationship', name: t('relationship') || '관계', icon: '💕' },
     { id: 'emotion', name: t('emotion') || '감정', icon: '❤️' },

@@ -50,6 +50,14 @@ export class ApiClient {
     );
   }
 
+  public setAuthToken(token: string): void {
+    localStorage.setItem('accessToken', token);
+  }
+
+  public removeAuthToken(): void {
+    localStorage.removeItem('accessToken');
+  }
+
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.get<T>(url, config);
     return response.data;

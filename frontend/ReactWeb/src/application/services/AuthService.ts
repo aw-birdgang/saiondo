@@ -1,69 +1,46 @@
-import { ApiClient } from '../../infrastructure/api/ApiClient';
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterData {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
-}
+import {ApiClient} from '../../infrastructure/api/ApiClient';
+import type { LoginRequest, RegisterRequest, AuthResponse, ApiResponse } from '../../domain/types';
 
 export class AuthService {
-  private apiClient: ApiClient;
+    private apiClient: ApiClient;
 
-  constructor(apiClient: ApiClient) {
-    this.apiClient = apiClient;
-  }
-
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await this.apiClient.post<AuthResponse>('/auth/login', credentials);
-    localStorage.setItem('authToken', response.token);
-    this.apiClient.setAuthToken(response.token);
-    return response;
-  }
-
-  async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await this.apiClient.post<AuthResponse>('/auth/register', data);
-    localStorage.setItem('authToken', response.token);
-    this.apiClient.setAuthToken(response.token);
-    return response;
-  }
-
-  async logout(): Promise<void> {
-    try {
-      await this.apiClient.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('authToken');
-      this.apiClient.removeAuthToken();
+    constructor(apiClient: ApiClient) {
+        this.apiClient = apiClient;
     }
-  }
 
-  async refreshToken(): Promise<AuthResponse> {
-    const response = await this.apiClient.post<AuthResponse>('/auth/refresh');
-    localStorage.setItem('authToken', response.token);
-    this.apiClient.setAuthToken(response.token);
-    return response;
-  }
+    async login(credentials: LoginRequest): Promise<AuthResponse> {
+        const response = await this.apiClient.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
+        this.apiClient.setAuthToken(response.data.accessToken);
+        return response.data;
+    }
 
-  isAuthenticated(): boolean {
-    return !!localStorage.getItem('authToken');
-  }
+    async register(data: RegisterRequest): Promise<AuthResponse> {
+        const response = await this.apiClient.post<ApiResponse<AuthResponse>>('/auth/register', data);
+        this.apiClient.setAuthToken(response.data.accessToken);
+        return response.data;
+    }
 
-  getToken(): string | null {
-    return localStorage.getItem('authToken');
-  }
+    async logout(): Promise<void> {
+        try {
+            await this.apiClient.post('/auth/logout');
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            this.apiClient.removeAuthToken();
+        }
+    }
+
+    async refreshToken(): Promise<AuthResponse> {
+        const response = await this.apiClient.post<ApiResponse<AuthResponse>>('/auth/refresh');
+        this.apiClient.setAuthToken(response.data.accessToken);
+        return response.data;
+    }
+
+    isAuthenticated(): boolean {
+        return !!localStorage.getItem('accessToken');
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('accessToken');
+    }
 } 

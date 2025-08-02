@@ -3,27 +3,15 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ROUTES} from "../../../shared/constants/app";
 import {ChannelHeader, ChannelList, ChannelStats, LoadingState, PageLayout} from '../../components/specific';
-
-// import { useAuthStore } from '../../applicati../../application/stores/authStore'; // TODO: 사용 예정
-
-interface Channel {
-  id: string;
-  name: string;
-  description: string;
-  memberCount: number;
-  lastMessage?: string;
-  lastMessageTime?: string;
-  unreadCount: number;
-}
+import type {ChannelListItem, ChannelStats as ChannelStatsType} from '../../../domain/types';
 
 const ChannelTab: React.FC = () => {
 
   const navigate = useNavigate();
-  // const { userId } = useAuthStore(); // TODO: 사용 예정
 
-  const [channels, setChannels] = useState<Channel[]>([]);
+  const [channels, setChannels] = useState<ChannelListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<ChannelStatsType>({
     totalChannels: 0,
     activeChannels: 0,
     totalMessages: 0,
@@ -34,7 +22,7 @@ const ChannelTab: React.FC = () => {
 
   useEffect(() => {
     // TODO: 실제 API 호출로 대체
-    const mockChannels: Channel[] = [
+    const mockChannels: ChannelListItem[] = [
       {
         id: '1',
         name: '커플 채널',

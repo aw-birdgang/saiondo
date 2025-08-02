@@ -4,16 +4,7 @@ import { ROUTES } from "../../../shared/constants/app";
 import { CategoryGrid, CategoryDetailCard, UsageGuide } from "../../components/specific";
 import { PageWrapper, PageContainer, PageHeader } from '../../components/layout';
 import { SectionHeader, ActionButtons } from '../../components/common';
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  color: string;
-  examples: string[];
-  tips: string[];
-}
+import type {Category} from '../../../domain/types';
 
 const CategoryGuideScreen: React.FC = () => {
   const navigate = useNavigate();

@@ -1,19 +1,19 @@
 import { apiClient } from '../ApiClient';
 import { ENDPOINTS } from '../endpoints';
-import type { LoginRequest, RegisterRequest, AuthResponse } from '../../../domain/types';
+import type { LoginRequest, RegisterRequest, AuthResponse, ApiResponse } from '../../../domain/types';
 
 export class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<AuthResponse>(
+      const response = await apiClient.post<ApiResponse<AuthResponse>>(
         ENDPOINTS.AUTH_LOGIN,
         credentials
       );
       
       // Store token in localStorage
-      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('accessToken', response.data.accessToken);
       
-      return response;
+      return response.data;
     } catch (error: any) {
       const message = error.response?.data?.message || error.message || '로그인 실패';
       throw new Error(`로그인 실패: ${message}`);
@@ -22,15 +22,15 @@ export class AuthService {
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<AuthResponse>(
+      const response = await apiClient.post<ApiResponse<AuthResponse>>(
         ENDPOINTS.AUTH_REGISTER,
         userData
       );
       
       // Store token in localStorage
-      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('accessToken', response.data.accessToken);
       
-      return response;
+      return response.data;
     } catch (error: any) {
       const message = error.response?.data?.message || error.message || '회원가입 실패';
       throw new Error(`회원가입 실패: ${message}`);

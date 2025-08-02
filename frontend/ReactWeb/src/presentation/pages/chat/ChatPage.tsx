@@ -13,7 +13,6 @@ import {
 } from "../../components/specific";
 
 
-
 const ChatPage: React.FC = () => {
 
   const params = useParams();

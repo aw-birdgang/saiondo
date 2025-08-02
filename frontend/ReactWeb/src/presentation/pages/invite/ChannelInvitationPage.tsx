@@ -7,24 +7,14 @@ import { useAuthStore } from "../../../stores/authStore";
 import { LoadingState, InvitationResponseCard } from '../../components/specific';
 import { PageHeader, PageContainer } from '../../components/layout';
 import { RefreshButton, EmptyInvitationsState, InvitationPageContainer, InvitationGrid } from '../../components/common';
-
-interface ChannelInvitation {
-  id: string;
-  inviterId: string;
-  inviteeId: string;
-  channelId: string;
-  status: 'pending' | 'accepted' | 'rejected';
-  createdAt: Date;
-  inviterName?: string;
-  channelName?: string;
-}
+import type {ChannelInvitationItem} from '../../../domain/types';
 
 const ChannelInvitationScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuthStore();
   
-  const [invitations, setInvitations] = useState<ChannelInvitation[]>([]);
+  const [invitations, setInvitations] = useState<ChannelInvitationItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -41,7 +31,7 @@ const ChannelInvitationScreen: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Mock 데이터
-      const mockInvitations: ChannelInvitation[] = [
+      const mockInvitations: ChannelInvitationItem[] = [
         {
           id: '1',
           inviterId: 'user1',

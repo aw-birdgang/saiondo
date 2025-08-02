@@ -6,6 +6,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { UserProfile, Card, Button } from '../../components/common';
 import { PageWrapper, PageContainer } from '../../components/layout';
 import { MenuGrid } from '../../components/specific';
+import type {MenuItem} from '../../../domain/types';
 
 const MyPage: React.FC = () => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ const MyPage: React.FC = () => {
     }
   };
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     {
       id: 'profile',
       title: t('profile'),

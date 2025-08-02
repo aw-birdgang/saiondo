@@ -21,25 +21,7 @@ import {
   LoadingState,
   PaymentMethodSelector
 } from '../../components/specific';
-
-interface SubscriptionProduct {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  originalPrice?: string;
-  discount?: string;
-  features: string[];
-  popular?: boolean;
-}
-
-interface PaymentMethod {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  isAvailable: boolean;
-}
+import type {SubscriptionProduct, PaymentMethod} from '../../../domain/types';
 
 const PaymentSubscriptionScreen: React.FC = () => {
   const { t } = useTranslation();
