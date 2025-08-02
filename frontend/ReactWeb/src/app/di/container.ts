@@ -6,6 +6,7 @@ import { MessageRepositoryImpl } from '../../infrastructure/repositories/Message
 import { UserUseCases } from '../../application/usecases/UserUseCases';
 import { ChannelUseCases } from '../../application/usecases/ChannelUseCases';
 import { MessageUseCases } from '../../application/usecases/MessageUseCases';
+import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
 import { AuthService } from '../../application/services/AuthService';
 import { NotificationService } from '../../application/services/NotificationService';
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
@@ -104,6 +105,11 @@ class DIContainer {
     this.register(DI_TOKENS.MESSAGE_USE_CASES, () => {
       const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
       return new MessageUseCases(messageRepository);
+    }, true);
+
+    // Use Case Factory
+    this.register(DI_TOKENS.USE_CASE_FACTORY, () => {
+      return UseCaseFactory;
     }, true);
 
     // Zustand Stores

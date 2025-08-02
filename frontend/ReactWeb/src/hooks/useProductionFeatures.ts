@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { UseCaseFactory } from '../domain/usecases/UseCaseFactory';
+import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
 import type { 
   WebSocketConfig, 
   RedisConfig, 
@@ -7,7 +7,7 @@ import type {
   WSMessage as WebSocketMessage,
   Trace,
   Alert
-} from '../domain/usecases';
+} from '../application/usecases';
 
 export interface ProductionConfig {
   websocket?: WebSocketConfig;

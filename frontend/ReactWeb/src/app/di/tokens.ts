@@ -15,6 +15,7 @@ export const NOTIFICATION_SERVICE = Symbol('NotificationService');
 export const USER_USE_CASES = Symbol('UserUseCases');
 export const CHANNEL_USE_CASES = Symbol('ChannelUseCases');
 export const MESSAGE_USE_CASES = Symbol('MessageUseCases');
+export const USE_CASE_FACTORY = Symbol('UseCaseFactory');
 
 // Configuration Tokens
 export const API_CONFIG = Symbol('ApiConfig');
@@ -47,6 +48,7 @@ export const DI_TOKENS = {
   USER_USE_CASES,
   CHANNEL_USE_CASES,
   MESSAGE_USE_CASES,
+  USE_CASE_FACTORY,
   
   // Configuration
   API_CONFIG,

@@ -5,6 +5,7 @@ import type { IMessageRepository } from '../domain/repositories/IMessageReposito
 import { UserRepositoryImpl } from '../infrastructure/repositories/UserRepositoryImpl';
 import { ChannelRepositoryImpl } from '../infrastructure/repositories/ChannelRepositoryImpl';
 import { MessageRepositoryImpl } from '../infrastructure/repositories/MessageRepositoryImpl';
+import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
 
 /**
  * Dependency Injection Container
@@ -71,6 +72,11 @@ export class DIContainer {
 
   public getApiClient(): ApiClient {
     return this.get<ApiClient>('ApiClient');
+  }
+
+  // Use Case Factory access
+  public getUseCaseFactory(): typeof UseCaseFactory {
+    return UseCaseFactory;
   }
 }
 
