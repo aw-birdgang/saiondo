@@ -1,5 +1,5 @@
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Channel } from '../../domain/entities/Channel';
+import type { Channel } from '../../domain/dto/ChannelDto';
 import { ChannelEntity } from '../../domain/entities/Channel';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
 

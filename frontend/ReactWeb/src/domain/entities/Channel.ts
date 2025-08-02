@@ -1,15 +1,4 @@
-export interface Channel {
-  id: string;
-  name: string;
-  description?: string;
-  type: 'public' | 'private' | 'direct';
-  ownerId: string;
-  members: string[];
-  createdAt: Date;
-  updatedAt: Date;
-  lastMessageAt?: Date;
-  unreadCount?: number;
-}
+import type { Channel } from '../dto/ChannelDto';
 
 export class ChannelEntity {
   private constructor(

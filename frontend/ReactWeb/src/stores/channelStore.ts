@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { container } from '../di/container';
-import type { Channel } from '../domain/entities/Channel';
+import type { Channel } from '../domain/dto/ChannelDto';
 import type { ChannelInvitation } from '../domain/types';
 
 export interface Channels {

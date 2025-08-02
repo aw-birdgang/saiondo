@@ -1,4 +1,5 @@
-import type { Channel, ChannelEntity } from '../entities/Channel';
+import type { Channel } from '../dto/ChannelDto';
+import type { ChannelEntity } from '../entities/Channel';
 
 export interface IChannelRepository {
   // Basic CRUD operations

@@ -1,15 +1,4 @@
-export interface Message {
-  id: string;
-  content: string;
-  channelId: string;
-  senderId: string;
-  type: 'text' | 'image' | 'file' | 'system';
-  metadata?: Record<string, unknown>;
-  createdAt: Date;
-  updatedAt: Date;
-  isEdited: boolean;
-  replyTo?: string;
-}
+import type { Message, MessageMetadata, MessageReaction } from '../dto/MessageDto';
 
 export class MessageEntity {
   private constructor(
@@ -165,21 +154,4 @@ export class MessageEntity {
       replyTo: this._replyTo,
     };
   }
-}
-
-export interface MessageMetadata {
-  fileUrl?: string;
-  fileName?: string;
-  fileSize?: number;
-  imageUrl?: string;
-  thumbnailUrl?: string;
-  replyTo?: string;
-}
-
-export interface MessageReaction {
-  id: string;
-  messageId: string;
-  userId: string;
-  emoji: string;
-  createdAt: Date;
 } 

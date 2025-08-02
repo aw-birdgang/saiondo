@@ -1,14 +1,8 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { container } from '../di/container';
-import type { Message } from '../domain/entities/Message';
-
-export interface MessageReaction {
-  id: string;
-  messageId: string;
-  userId: string;
-  emoji: string;
-  createdAt: Date;
-}
+import type { Message } from '../domain/dto/MessageDto';
+import type { MessageReaction } from '../domain/dto/MessageDto';
 
 export interface MessageState {
   // State

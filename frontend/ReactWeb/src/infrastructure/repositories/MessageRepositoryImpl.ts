@@ -1,5 +1,5 @@
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { Message } from '../../domain/entities/Message';
+import type { Message } from '../../domain/dto/MessageDto';
 import { MessageEntity } from '../../domain/entities/Message';
 import { ApiClient } from '../api/ApiClient';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';

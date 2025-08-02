@@ -1,4 +1,5 @@
-import type { Message, MessageEntity } from '../entities/Message';
+import type { Message } from '../dto/MessageDto';
+import type { MessageEntity } from '../entities/Message';
 
 export interface IMessageRepository {
   // Basic CRUD operations
