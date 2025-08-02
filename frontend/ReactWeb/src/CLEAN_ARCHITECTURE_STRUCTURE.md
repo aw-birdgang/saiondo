@@ -104,9 +104,9 @@ frontend/ReactWeb/src/
 │   └── websocket/                # WebSocket Client
 ├── presentation/                 # ✅ Presentation Layer
 │   ├── components/               # React Components
-│   └── pages/                    # React Pages
+│   ├── pages/                    # React Pages
+│   └── hooks/                    # ✅ React Hooks (6개)
 ├── stores/                       # Zustand Stores
-├── hooks/                        # React Hooks
 ├── contexts/                     # React Contexts
 ├── shared/                       # Shared Utilities
 └── di/                           # DI Container (새로운)
@@ -189,10 +189,13 @@ Presentation → Application → Domain ← Infrastructure
 ### **이동된 파일들**
 - **총 21개 Use Case 파일**이 `domain/usecases/`에서 `application/usecases/`로 이동
 - **기존 3개 Use Case 파일**과 통합
+- **1개 Hook 파일**이 `hooks/`에서 `presentation/hooks/`로 이동
 - **모든 import 경로** 업데이트 완료
 
 ### **업데이트된 파일들**
-- `hooks/useProductionFeatures.ts` - import 경로 수정
+- `presentation/hooks/useProductionFeatures.ts` - 위치 이동 및 import 경로 수정
+- `presentation/hooks/index.ts` - 새로운 Hook export 추가
+- `presentation/hooks/README.md` - Hook 구조 및 사용법 문서 생성
 - `app/di/container.ts` - UseCaseFactory 통합
 - `app/di/tokens.ts` - USE_CASE_FACTORY 토큰 추가
 - `di/container.ts` - UseCaseFactory 접근 메서드 추가
