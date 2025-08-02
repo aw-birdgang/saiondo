@@ -54,26 +54,31 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <HelmetProvider>
-        <QueryProvider>
-          <ControllerProvider>
-            <UseCaseProvider>
-              <AuthProvider>
-                <ThemeProvider>
-                  <UserProvider>
-                    <AppContent />
-                  </UserProvider>
-                </ThemeProvider>
-              </AuthProvider>
-            </UseCaseProvider>
-          </ControllerProvider>
-        </QueryProvider>
-      </HelmetProvider>
-    </BrowserRouter>
-  );
-};
+// Provider 컴포넌트들을 하나로 결합하여 중첩을 줄임
+const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <BrowserRouter>
+    <HelmetProvider>
+      <QueryProvider>
+        <ControllerProvider>
+          <UseCaseProvider>
+            <AuthProvider>
+              <ThemeProvider>
+                <UserProvider>
+                  {children}
+                </UserProvider>
+              </ThemeProvider>
+            </AuthProvider>
+          </UseCaseProvider>
+        </ControllerProvider>
+      </QueryProvider>
+    </HelmetProvider>
+  </BrowserRouter>
+);
+
+const App: React.FC = () => (
+  <AppProviders>
+    <AppContent />
+  </AppProviders>
+);
 
 export default App;
