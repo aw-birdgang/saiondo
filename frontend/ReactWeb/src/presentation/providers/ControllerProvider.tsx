@@ -43,6 +43,23 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
         
         const factory = ControllerFactory.getInstance();
         
+        // 이미 초기화된 컨트롤러가 있는지 확인
+        const existingControllers = factory.getAllControllers();
+        if (Object.keys(existingControllers).length > 0) {
+          logger.info('Controllers already exist, reusing existing instances');
+          const controllerInstances: Controllers = {
+            userController: factory.getController('user')!,
+            channelController: factory.getController('channel')!,
+            messageController: factory.getController('message')!,
+            notificationController: factory.getController('notification')!,
+            fileController: factory.getController('file')!,
+            analyticsController: factory.getController('analytics')!,
+          };
+          setControllers(controllerInstances);
+          setIsInitialized(true);
+          return;
+        }
+        
         // Controller 인스턴스들을 생성
         const controllerInstances: Controllers = {
           userController: factory.createController('user'),
@@ -67,10 +84,13 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
 
     initializeControllers();
 
-    // Cleanup on unmount
+    // Cleanup on unmount - 앱이 완전히 종료될 때만 실행
     return () => {
-      const factory = ControllerFactory.getInstance();
-      factory.cleanupAllControllers();
+      // 개발 환경에서는 cleanup을 건너뛰어 중복 초기화 방지
+      if (process.env.NODE_ENV === 'production') {
+        const factory = ControllerFactory.getInstance();
+        factory.cleanupAllControllers();
+      }
     };
   }, []);
 
