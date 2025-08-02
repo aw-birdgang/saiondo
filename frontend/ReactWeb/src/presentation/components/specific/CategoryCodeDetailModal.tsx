@@ -1,6 +1,9 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Modal } from '../common';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "../common";
+import { ROUTES } from "../../../shared/constants/app";
+import { toast } from "react-hot-toast";
 
 interface CategoryCode {
   id: string;
@@ -22,32 +25,73 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
   onClose
 }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   if (!code) return null;
 
   const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'relationship':
-        return '💕';
-      case 'topic':
-        return '💬';
-      case 'emotion':
-        return '❤️';
-      default:
-        return '📋';
-    }
+    const icons: Record<string, string> = {
+      'relationship': '💕',
+      'communication': '💬',
+      'emotion': '😊',
+      'conflict': '⚡',
+      'intimacy': '💝',
+      'family': '👨‍👩‍👧‍👦',
+      'future': '🔮',
+      'personal': '👤',
+      'social': '🌍',
+      'health': '💪',
+      'finance': '💰',
+      'career': '💼',
+      'hobby': '🎨',
+      'travel': '✈️',
+      'food': '🍽️',
+      'default': '📋'
+    };
+    return icons[category.toLowerCase()] || icons.default;
   };
 
   const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'relationship':
-        return 'bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-200 border border-pink-200 dark:border-pink-800';
-      case 'topic':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200 border border-blue-200 dark:border-blue-800';
-      case 'emotion':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-200 border border-red-200 dark:border-red-800';
-      default:
-        return 'bg-secondary text-txt-secondary border border-border';
+    const colors: Record<string, string> = {
+      'relationship': 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
+      'communication': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      'emotion': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      'conflict': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      'intimacy': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      'family': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      'future': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+      'personal': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+      'social': 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
+      'health': 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
+      'finance': 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+      'career': 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200',
+      'hobby': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      'travel': 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200',
+      'food': 'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200',
+      'default': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+    };
+    return colors[category.toLowerCase()] || colors.default;
+  };
+
+  const handleStartChat = () => {
+    try {
+      // 채팅 페이지로 이동하면서 카테고리 코드 정보를 전달
+      const chatParams = new URLSearchParams({
+        categoryCode: code.code,
+        category: code.category,
+        description: code.description
+      });
+      
+      navigate(`${ROUTES.CHAT}?${chatParams.toString()}`);
+      
+      // 성공 메시지 표시
+      toast.success(t('chat.started_with_category') || `${code.category} 카테고리로 대화를 시작합니다.`);
+      
+      // 모달 닫기
+      onClose();
+    } catch (error) {
+      console.error('Failed to navigate to chat:', error);
+      toast.error(t('chat.navigation_error') || '채팅 페이지로 이동하는 중 오류가 발생했습니다.');
     }
   };
 
@@ -138,10 +182,7 @@ const CategoryCodeDetailModal: React.FC<CategoryCodeDetailModalProps> = ({
             {t('close') || '닫기'}
           </button>
           <button
-            onClick={() => {
-              // TODO: 채팅으로 이동하는 로직
-              onClose();
-            }}
+            onClick={handleStartChat}
             className="btn btn-primary px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
           >
             {t('start_chat') || '대화 시작하기'}

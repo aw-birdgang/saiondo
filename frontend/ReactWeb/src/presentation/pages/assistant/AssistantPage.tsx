@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import {ROUTES} from "../../../shared/constants/app";
 import { useDataLoader } from '../../hooks/useDataLoader';
 import {EmptyState} from '../../components/common';
@@ -88,8 +89,23 @@ const AssistantListScreen: React.FC = () => {
   });
 
   const handleAssistantSelect = (assistant: Assistant) => {
-    // TODO: 실제 채팅 화면으로 이동
-    navigate(`${ROUTES.CHAT}?assistantId=${assistant.id}`);
+    try {
+      // 채팅 페이지로 이동하면서 AI 상담사 정보를 전달
+      const chatParams = new URLSearchParams({
+        assistantId: assistant.id,
+        assistantName: assistant.name,
+        assistantCategory: assistant.category,
+        assistantDescription: assistant.description
+      });
+      
+      navigate(`${ROUTES.CHAT}?${chatParams.toString()}`);
+      
+      // 성공 메시지 표시
+      toast.success(t('chat.started_with_assistant') || `${assistant.name}와 대화를 시작합니다.`);
+    } catch (error) {
+      console.error('Failed to navigate to chat:', error);
+      toast.error(t('chat.navigation_error') || '채팅 페이지로 이동하는 중 오류가 발생했습니다.');
+    }
   };
 
   const categories: AssistantCategory[] = [
