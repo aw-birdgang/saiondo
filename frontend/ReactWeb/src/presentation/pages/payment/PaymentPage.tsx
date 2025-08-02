@@ -5,9 +5,9 @@ import { toast } from 'react-hot-toast';
 import { ROUTES } from "../../../shared/constants/app";
 import { useAuthStore } from "../../../stores/authStore";
 import { useDataLoader } from '../../hooks/useDataLoader';
-import { LoadingState, PaymentMethodSelector, ProductCard, PurchaseConfirmation } from '../../components/specific';
+import { LoadingState, PaymentMethodSelector, ProductCard, PurchaseConfirmation, ProductGrid } from '../../components/specific';
 import { PageHeader, PageContainer } from '../../components/layout';
-import { PaymentPageContainer, ProductGrid, PaymentSection } from '../../components/common';
+import { PaymentPageContainer, PaymentSection } from '../../components/common';
 import type { SubscriptionProduct, PaymentMethod } from '../../../domain/types';
 
 const PaymentSubscriptionScreen: React.FC = () => {
@@ -200,16 +200,11 @@ const PaymentSubscriptionScreen: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             {t('select_plan') || '플랜 선택'}
           </h2>
-          <ProductGrid>
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                isSelected={selectedProduct?.id === product.id}
-                onSelect={handleProductSelect}
-              />
-            ))}
-          </ProductGrid>
+          <ProductGrid
+            products={products || []}
+            onPurchase={handleProductSelect}
+            purchasePending={false}
+          />
         </PaymentSection>
 
         {/* Payment Method Selection */}
@@ -221,7 +216,7 @@ const PaymentSubscriptionScreen: React.FC = () => {
             <PaymentMethodSelector
               methods={paymentMethods}
               selectedMethod={selectedPaymentMethod}
-              onSelect={handlePaymentMethodSelect}
+              onMethodSelect={handlePaymentMethodSelect}
             />
           </PaymentSection>
         )}
@@ -230,9 +225,10 @@ const PaymentSubscriptionScreen: React.FC = () => {
         {selectedProduct && selectedPaymentMethod && (
           <PurchaseConfirmation
             product={selectedProduct}
-            paymentMethod={paymentMethods.find(m => m.id === selectedPaymentMethod)!}
-            onPurchase={handlePurchase}
-            isAvailable={isAvailable}
+            isOpen={true}
+            onClose={() => setSelectedProduct(null)}
+            onConfirm={handlePurchase}
+            isProcessing={false}
           />
         )}
       </PageContainer>

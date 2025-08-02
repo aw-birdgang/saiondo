@@ -33,6 +33,8 @@ export { default as AnalysisContent } from './AnalysisContent';
 
 // Payment Page Components
 export { default as ProductGrid } from './ProductGrid';
+export { default as ProductCard } from './ProductCard';
+export { default as PurchaseConfirmation } from './PurchaseConfirmation';
 
 // Invite Page Components
 export { default as InviteForm } from './InviteForm';

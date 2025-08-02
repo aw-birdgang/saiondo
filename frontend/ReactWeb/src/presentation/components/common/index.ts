@@ -94,6 +94,7 @@ export { default as InvitationGrid } from './InvitationGrid';
 export { default as PaymentPageContainer } from './PaymentPageContainer';
 export { default as PaymentContentContainer } from './PaymentContentContainer';
 export { default as PaymentMethodSection } from './PaymentMethodSection';
+export { default as PaymentSection } from './PaymentSection';
 export { default as PaymentButtonContainer } from './PaymentButtonContainer';
 export { default as ErrorStateContainer } from './ErrorStateContainer';
 export { default as HeaderContainer } from './HeaderContainer'; 
