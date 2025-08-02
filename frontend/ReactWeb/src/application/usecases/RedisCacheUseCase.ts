@@ -1,172 +1,112 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface RedisConfig {
-  host: string;
-  port: number;
-  password?: string;
-  db?: number;
-  keyPrefix?: string;
-  defaultTTL?: number; // seconds
-}
-
-export interface CacheOperation {
-  operation: 'get' | 'set' | 'del' | 'exists' | 'expire' | 'ttl';
-  key: string;
-  value?: any;
-  ttl?: number;
-}
-
-export interface CacheStats {
-  hits: number;
-  misses: number;
-  keys: number;
-  memoryUsage: number;
-  connectedClients: number;
-}
-
-export interface CachePattern {
-  pattern: string;
-  keys: string[];
-  count: number;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { 
+  RedisCacheRequest,
+  RedisCacheResponse,
+  GetRedisCacheRequest,
+  GetRedisCacheResponse,
+  DeleteRedisCacheRequest,
+  DeleteRedisCacheResponse,
+  RedisCacheStats
+} from '../dto/RedisCacheDto';
 
 export class RedisCacheUseCase {
   private redisClient: any; // Redis client instance
-  private config: RedisConfig;
-  private isConnected = false;
-  private stats = { hits: 0, misses: 0, keys: 0, memoryUsage: 0, connectedClients: 0 };
+  private defaultTTL = 5 * 60; // 5 minutes in seconds
 
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly channelRepository: IChannelRepository,
     private readonly messageRepository: IMessageRepository,
-    config: RedisConfig
+    private readonly redisUrl: string = 'redis://localhost:6379'
   ) {
-    this.config = {
-      host: 'localhost',
-      port: 6379,
-      keyPrefix: 'saiondo:',
-      defaultTTL: 300, // 5 minutes
-      ...config,
-    };
     this.initializeRedis();
   }
 
   private async initializeRedis(): Promise<void> {
     try {
-      // In real implementation, this would initialize Redis client
-      // For now, we'll simulate Redis operations
-      console.log('Initializing Redis connection...');
-      this.isConnected = true;
-      console.log('Redis connected successfully');
+      // In a real implementation, you would use a Redis client library
+      // this.redisClient = new Redis(this.redisUrl);
+      console.log('Redis client initialized');
     } catch (error) {
-      console.error('Failed to connect to Redis:', error);
-      this.isConnected = false;
+      console.error('Failed to initialize Redis client:', error);
     }
   }
 
   async getUserWithCache(userId: string): Promise<any> {
     try {
-      const cacheKey = this.generateKey('user', userId);
+      const cacheKey = `user:${userId}`;
       
-      // Try to get from cache
-      const cached = await this.get(cacheKey);
+      // Try to get from Redis cache
+      const cached = await this.getFromCache(cacheKey);
       if (cached) {
-        this.stats.hits++;
         return cached;
       }
-
-      this.stats.misses++;
 
       // If not in cache, fetch from repository
       const user = await this.userRepository.findById(userId);
       if (user) {
-        const userData = user.toJSON();
-        await this.set(cacheKey, userData, this.config.defaultTTL);
+        await this.setCache(cacheKey, user.toJSON());
       }
       
       return user;
     } catch (error) {
       console.error('Failed to get user with cache:', error);
-      // Fallback to direct repository call
-      return await this.userRepository.findById(userId);
+      return null;
     }
   }
 
   async getChannelWithCache(channelId: string): Promise<any> {
     try {
-      const cacheKey = this.generateKey('channel', channelId);
+      const cacheKey = `channel:${channelId}`;
       
-      // Try to get from cache
-      const cached = await this.get(cacheKey);
+      // Try to get from Redis cache
+      const cached = await this.getFromCache(cacheKey);
       if (cached) {
-        this.stats.hits++;
         return cached;
       }
-
-      this.stats.misses++;
 
       // If not in cache, fetch from repository
       const channel = await this.channelRepository.findById(channelId);
       if (channel) {
-        const channelData = channel.toJSON();
-        await this.set(cacheKey, channelData, this.config.defaultTTL);
+        await this.setCache(cacheKey, channel.toJSON());
       }
       
       return channel;
     } catch (error) {
       console.error('Failed to get channel with cache:', error);
-      // Fallback to direct repository call
-      return await this.channelRepository.findById(channelId);
+      return null;
     }
   }
 
-  async getMessagesWithCache(channelId: string, limit = 50, offset = 0): Promise<any[]> {
+  async getMessagesWithCache(channelId: string, limit?: number, offset?: number): Promise<any[]> {
     try {
-      const cacheKey = this.generateKey('messages', `${channelId}:${limit}:${offset}`);
+      const cacheKey = `messages:${channelId}:${limit}:${offset}`;
       
-      // Try to get from cache
-      const cached = await this.get(cacheKey);
+      // Try to get from Redis cache
+      const cached = await this.getFromCache(cacheKey);
       if (cached) {
-        this.stats.hits++;
         return cached;
       }
-
-      this.stats.misses++;
 
       // If not in cache, fetch from repository
       const messages = await this.messageRepository.findByChannelId(channelId, limit, offset);
       const messageData = messages.map(message => message.toJSON());
       
-      // Cache for shorter time for messages
-      await this.set(cacheKey, messageData, 120); // 2 minutes
+      await this.setCache(cacheKey, messageData, 2 * 60); // 2 minutes TTL for messages
       
       return messageData;
     } catch (error) {
       console.error('Failed to get messages with cache:', error);
-      // Fallback to direct repository call
-      const messages = await this.messageRepository.findByChannelId(channelId, limit, offset);
-      return messages.map(message => message.toJSON());
+      return [];
     }
   }
 
   async invalidateUserCache(userId: string): Promise<void> {
     try {
-      const userKey = this.generateKey('user', userId);
-      await this.del(userKey);
-      
-      // Also invalidate related caches
-      const patterns = [
-        this.generateKey('messages', `*`),
-        this.generateKey('channel', `*`),
-      ];
-      
-      for (const pattern of patterns) {
-        await this.deletePattern(pattern);
-      }
+      const cacheKey = `user:${userId}`;
+      await this.deleteFromCache(cacheKey);
     } catch (error) {
       console.error('Failed to invalidate user cache:', error);
     }
@@ -174,225 +114,123 @@ export class RedisCacheUseCase {
 
   async invalidateChannelCache(channelId: string): Promise<void> {
     try {
-      const channelKey = this.generateKey('channel', channelId);
-      await this.del(channelKey);
+      const cacheKey = `channel:${channelId}`;
+      await this.deleteFromCache(cacheKey);
       
-      // Invalidate message caches for this channel
-      const messagePattern = this.generateKey('messages', `${channelId}:*`);
-      await this.deletePattern(messagePattern);
+      // Also invalidate related message caches
+      await this.invalidateMessageCaches(channelId);
     } catch (error) {
       console.error('Failed to invalidate channel cache:', error);
     }
   }
 
-  async batchGetUsers(userIds: string[]): Promise<Map<string, any>> {
+  async invalidateMessageCaches(channelId: string): Promise<void> {
     try {
-      const result = new Map<string, any>();
-      const uncachedIds: string[] = [];
-      
-      // Check cache for all users
-      for (const userId of userIds) {
-        const cacheKey = this.generateKey('user', userId);
-        const cached = await this.get(cacheKey);
-        if (cached) {
-          result.set(userId, cached);
-          this.stats.hits++;
-        } else {
-          uncachedIds.push(userId);
-          this.stats.misses++;
-        }
-      }
-      
-      // Fetch uncached users in parallel
-      if (uncachedIds.length > 0) {
-        const userPromises = uncachedIds.map(async (userId) => {
-          try {
-            const user = await this.userRepository.findById(userId);
-            if (user) {
-              const userData = user.toJSON();
-              const cacheKey = this.generateKey('user', userId);
-              await this.set(cacheKey, userData, this.config.defaultTTL);
-              return { userId, user: userData };
-            }
-            return { userId, user: null };
-          } catch (error) {
-            console.error(`Failed to fetch user ${userId}:`, error);
-            return { userId, user: null };
-          }
-        });
-        
-        const userResults = await Promise.all(userPromises);
-        
-        for (const { userId, user } of userResults) {
-          if (user) {
-            result.set(userId, user);
-          }
-        }
-      }
-      
-      return result;
+      // In a real implementation, you would use Redis SCAN to find and delete all message keys
+      const pattern = `messages:${channelId}:*`;
+      // await this.redisClient.del(pattern);
+      console.log(`Invalidated message caches for channel: ${channelId}`);
     } catch (error) {
-      console.error('Failed to batch get users:', error);
-      // Fallback to direct repository calls
-      const result = new Map<string, any>();
-      for (const userId of userIds) {
-        const user = await this.userRepository.findById(userId);
-        if (user) {
-          result.set(userId, user.toJSON());
-        }
-      }
-      return result;
+      console.error('Failed to invalidate message caches:', error);
     }
   }
 
-  async getCacheStats(): Promise<CacheStats> {
+  async getCacheStats(): Promise<RedisCacheStats> {
     try {
-      // In real implementation, this would get actual Redis stats
+      // In a real implementation, you would get actual Redis stats
       return {
-        ...this.stats,
-        keys: await this.getKeyCount(),
-        memoryUsage: await this.getMemoryUsage(),
-        connectedClients: await this.getConnectedClients(),
+        totalKeys: 0,
+        memoryUsage: 0,
+        hitRate: 0,
+        missRate: 0,
+        connected: true,
+        uptime: 0,
       };
     } catch (error) {
       console.error('Failed to get cache stats:', error);
       return {
-        hits: this.stats.hits,
-        misses: this.stats.misses,
-        keys: 0,
+        totalKeys: 0,
         memoryUsage: 0,
-        connectedClients: 0,
+        hitRate: 0,
+        missRate: 0,
+        connected: false,
+        uptime: 0,
       };
     }
   }
 
-  async flushCache(): Promise<void> {
+  async clearCache(): Promise<void> {
     try {
-      const pattern = this.generateKey('*');
-      await this.deletePattern(pattern);
-      console.log('Cache flushed successfully');
+      // await this.redisClient.flushall();
+      console.log('Redis cache cleared');
     } catch (error) {
-      console.error('Failed to flush cache:', error);
+      console.error('Failed to clear cache:', error);
     }
   }
 
-  async getKeysByPattern(pattern: string): Promise<string[]> {
+  async warmupCache(userIds: string[], channelIds: string[]): Promise<void> {
     try {
-      const fullPattern = this.generateKey(pattern);
-      // In real implementation, this would use Redis SCAN command
-      return [];
+      // Pre-load frequently accessed data into cache
+      const userPromises = userIds.map(userId => 
+        this.getUserWithCache(userId).catch(() => null)
+      );
+      
+      const channelPromises = channelIds.map(channelId => 
+        this.getChannelWithCache(channelId).catch(() => null)
+      );
+      
+      await Promise.all([...userPromises, ...channelPromises]);
+      console.log(`Cache warmup completed. Users: ${userIds.length}, Channels: ${channelIds.length}`);
     } catch (error) {
-      console.error('Failed to get keys by pattern:', error);
-      return [];
+      console.error('Cache warmup failed:', error);
     }
   }
 
-  async setHash(key: string, hash: Record<string, any>, ttl?: number): Promise<void> {
+  private async getFromCache<T>(key: string): Promise<T | null> {
     try {
-      const fullKey = this.generateKey(key);
-      // In real implementation, this would use Redis HSET
-      await this.set(fullKey, hash, ttl || this.config.defaultTTL);
+      // In a real implementation: const data = await this.redisClient.get(key);
+      // return data ? JSON.parse(data) : null;
+      return null; // Mock implementation
     } catch (error) {
-      console.error('Failed to set hash:', error);
-    }
-  }
-
-  async getHash(key: string): Promise<Record<string, any> | null> {
-    try {
-      const fullKey = this.generateKey(key);
-      // In real implementation, this would use Redis HGETALL
-      return await this.get(fullKey);
-    } catch (error) {
-      console.error('Failed to get hash:', error);
+      console.error('Failed to get from cache:', error);
       return null;
     }
   }
 
-  async incrementCounter(key: string, increment = 1): Promise<number> {
+  private async setCache<T>(key: string, data: T, ttl?: number): Promise<void> {
     try {
-      const fullKey = this.generateKey(key);
-      // In real implementation, this would use Redis INCR
-      const current = await this.get(fullKey) || 0;
-      const newValue = current + increment;
-      await this.set(fullKey, newValue, this.config.defaultTTL);
-      return newValue;
+      const ttlSeconds = ttl || this.defaultTTL;
+      // In a real implementation: await this.redisClient.setex(key, ttlSeconds, JSON.stringify(data));
+      console.log(`Cached data for key: ${key} with TTL: ${ttlSeconds}s`);
     } catch (error) {
-      console.error('Failed to increment counter:', error);
-      return 0;
+      console.error('Failed to set cache:', error);
     }
   }
 
-  async setWithExpiry(key: string, value: any, ttl: number): Promise<void> {
+  private async deleteFromCache(key: string): Promise<void> {
     try {
-      const fullKey = this.generateKey(key);
-      await this.set(fullKey, value, ttl);
+      // In a real implementation: await this.redisClient.del(key);
+      console.log(`Deleted cache key: ${key}`);
     } catch (error) {
-      console.error('Failed to set with expiry:', error);
+      console.error('Failed to delete from cache:', error);
     }
   }
 
-  async getTTL(key: string): Promise<number> {
+  async batchGetUsers(userIds: string[]): Promise<Map<string, any>> {
+    const result = new Map<string, any>();
+    
     try {
-      const fullKey = this.generateKey(key);
-      // In real implementation, this would use Redis TTL
-      return 0;
+      // In a real implementation, you would use Redis MGET for better performance
+      for (const userId of userIds) {
+        const user = await this.getUserWithCache(userId);
+        if (user) {
+          result.set(userId, user);
+        }
+      }
     } catch (error) {
-      console.error('Failed to get TTL:', error);
-      return -1;
+      console.error('Failed to batch get users:', error);
     }
-  }
-
-  async isConnected(): Promise<boolean> {
-    return this.isConnected;
-  }
-
-  async reconnect(): Promise<void> {
-    try {
-      console.log('Attempting to reconnect to Redis...');
-      await this.initializeRedis();
-    } catch (error) {
-      console.error('Failed to reconnect to Redis:', error);
-    }
-  }
-
-  // Private helper methods
-  private generateKey(...parts: string[]): string {
-    return `${this.config.keyPrefix}${parts.join(':')}`;
-  }
-
-  private async get(key: string): Promise<any> {
-    // In real implementation, this would use Redis GET
-    // For now, return null to simulate cache miss
-    return null;
-  }
-
-  private async set(key: string, value: any, ttl?: number): Promise<void> {
-    // In real implementation, this would use Redis SET with EX
-    console.log(`Setting cache key: ${key}, TTL: ${ttl}s`);
-  }
-
-  private async del(key: string): Promise<void> {
-    // In real implementation, this would use Redis DEL
-    console.log(`Deleting cache key: ${key}`);
-  }
-
-  private async deletePattern(pattern: string): Promise<void> {
-    // In real implementation, this would use Redis SCAN + DEL
-    console.log(`Deleting cache pattern: ${pattern}`);
-  }
-
-  private async getKeyCount(): Promise<number> {
-    // In real implementation, this would use Redis DBSIZE
-    return 0;
-  }
-
-  private async getMemoryUsage(): Promise<number> {
-    // In real implementation, this would use Redis INFO memory
-    return 0;
-  }
-
-  private async getConnectedClients(): Promise<number> {
-    // In real implementation, this would use Redis INFO clients
-    return 0;
+    
+    return result;
   }
 } 

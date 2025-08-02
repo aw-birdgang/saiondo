@@ -1,8 +1,7 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Channel } from '../../domain/dto/ChannelDto';
-import { ChannelEntity } from '../../domain/entities/Channel';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { CreateChannelRequest, CreateChannelResponse } from '../dto/CreateChannelDto';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import {ChannelEntity} from '../../domain/entities/Channel';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {CreateChannelRequest, CreateChannelResponse} from '../dto/CreateChannelDto';
 
 export class CreateChannelUseCase {
   constructor(private readonly channelRepository: IChannelRepository) {}

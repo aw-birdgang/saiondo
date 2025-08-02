@@ -1,14 +1,6 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface LogoutUserRequest {
-  userId: string;
-}
-
-export interface LogoutUserResponse {
-  success: boolean;
-  message: string;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { LogoutUserRequest, LogoutUserResponse } from '../dto/LogoutUserDto';
 
 export class LogoutUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -20,21 +12,15 @@ export class LogoutUserUseCase {
         throw DomainErrorFactory.createUserValidation('User ID is required');
       }
 
-      // Get user
-      const user = await this.userRepository.findById(request.userId);
-      if (!user) {
-        throw DomainErrorFactory.createUserNotFound(request.userId);
+      if (!request.accessToken || request.accessToken.trim().length === 0) {
+        throw DomainErrorFactory.createUserValidation('Access token is required');
       }
 
-      // Update online status to offline
+      // Update user's online status
       await this.userRepository.updateOnlineStatus(request.userId, false);
 
-      // In real implementation, you might also:
-      // - Invalidate JWT tokens
-      // - Clear session data
-      // - Log the logout event
-      // - Send notifications to other users
-
+      // In real implementation, this would invalidate the token
+      // For now, we'll just return success
       return {
         success: true,
         message: 'User logged out successfully',
@@ -43,7 +29,7 @@ export class LogoutUserUseCase {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Logout failed');
+      throw DomainErrorFactory.createUserValidation('Failed to logout user');
     }
   }
 } 

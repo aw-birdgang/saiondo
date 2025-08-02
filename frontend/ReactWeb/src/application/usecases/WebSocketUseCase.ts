@@ -1,37 +1,35 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
 import type {
-  WebSocketConfig,
-  WebSocketMessage,
-  WebSocketConnection,
-  WebSocketStats,
-  WebSocketEvent,
+  BroadcastToChannelRequest,
+  BroadcastToChannelResponse,
   ConnectWebSocketRequest,
   ConnectWebSocketResponse,
   DisconnectWebSocketRequest,
   DisconnectWebSocketResponse,
-  SendMessageRequest,
-  SendMessageResponse,
-  JoinChannelRequest,
-  JoinChannelResponse,
-  LeaveChannelRequest,
-  LeaveChannelResponse,
-  BroadcastToChannelRequest,
-  BroadcastToChannelResponse,
-  SendTypingIndicatorRequest,
-  SendTypingIndicatorResponse,
-  SendReadReceiptRequest,
-  SendReadReceiptResponse,
-  GetConnectionInfoRequest,
-  GetConnectionInfoResponse,
   GetActiveConnectionsRequest,
   GetActiveConnectionsResponse,
+  GetConnectionInfoRequest,
+  GetConnectionInfoResponse,
   GetWebSocketStatsRequest,
   GetWebSocketStatsResponse,
   IsConnectedRequest,
-  IsConnectedResponse
+  IsConnectedResponse,
+  JoinWebSocketChannelRequest,
+  JoinWebSocketChannelResponse,
+  LeaveWebSocketChannelRequest,
+  LeaveWebSocketChannelResponse,
+  SendWebSocketMessageRequest,
+  SendWebSocketMessageResponse,
+  SendReadReceiptRequest,
+  SendReadReceiptResponse,
+  SendTypingIndicatorRequest,
+  SendTypingIndicatorResponse,
+  WebSocketConfig,
+  WebSocketConnection,
+  WebSocketEvent,
+  WebSocketMessage
 } from '../dto/WebSocketDto';
 
 export class WebSocketUseCase {
@@ -100,7 +98,7 @@ export class WebSocketUseCase {
           this.startHeartbeat();
           
           // Send authentication message
-          this.sendMessage({
+          this.sendWebSocketMessage({
             message: {
               type: 'auth',
               data: { userId: request.userId },
@@ -134,7 +132,7 @@ export class WebSocketUseCase {
         this.stopReconnect();
         
         // Send disconnect message
-        this.sendMessage({
+        this.sendWebSocketMessage({
           message: {
             type: 'disconnect',
             data: {},
@@ -157,7 +155,7 @@ export class WebSocketUseCase {
     }
   }
 
-  async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
+  async sendWebSocketMessage(request: SendWebSocketMessageRequest): Promise<SendWebSocketMessageResponse> {
     try {
       if (!this._isConnected || !this.ws) {
         console.warn('WebSocket not connected, cannot send message');
@@ -176,9 +174,9 @@ export class WebSocketUseCase {
     }
   }
 
-  async joinChannel(request: JoinChannelRequest): Promise<JoinChannelResponse> {
+  async joinWebSocketChannel(request: JoinWebSocketChannelRequest): Promise<JoinWebSocketChannelResponse> {
     try {
-      const success = await this.sendMessage({
+      const success = await this.sendWebSocketMessage({
         message: {
           type: 'join_channel',
           data: { channelId: request.channelId },
@@ -214,9 +212,9 @@ export class WebSocketUseCase {
     }
   }
 
-  async leaveChannel(request: LeaveChannelRequest): Promise<LeaveChannelResponse> {
+  async leaveWebSocketChannel(request: LeaveWebSocketChannelRequest): Promise<LeaveWebSocketChannelResponse> {
     try {
-      const success = await this.sendMessage({
+      const success = await this.sendWebSocketMessage({
         message: {
           type: 'leave_channel',
           data: { channelId: request.channelId },
@@ -243,7 +241,7 @@ export class WebSocketUseCase {
 
   async broadcastToChannel(request: BroadcastToChannelRequest): Promise<BroadcastToChannelResponse> {
     try {
-      const success = await this.sendMessage({
+      const success = await this.sendWebSocketMessage({
         message: {
           ...request.message,
           channelId: request.channelId,
@@ -259,7 +257,7 @@ export class WebSocketUseCase {
 
   async sendTypingIndicator(request: SendTypingIndicatorRequest): Promise<SendTypingIndicatorResponse> {
     try {
-      const success = await this.sendMessage({
+      const success = await this.sendWebSocketMessage({
         message: {
           type: 'typing',
           data: { isTyping: request.isTyping },
@@ -277,7 +275,7 @@ export class WebSocketUseCase {
 
   async sendReadReceipt(request: SendReadReceiptRequest): Promise<SendReadReceiptResponse> {
     try {
-      const success = await this.sendMessage({
+      const success = await this.sendWebSocketMessage({
         message: {
           type: 'read_receipt',
           data: { messageId: request.messageId },
@@ -393,7 +391,7 @@ export class WebSocketUseCase {
 
     this.heartbeatTimer = setInterval(() => {
       if (this._isConnected && this.ws) {
-        this.sendMessage({
+        this.sendWebSocketMessage({
           message: {
             type: 'heartbeat',
             data: { timestamp: Date.now() },

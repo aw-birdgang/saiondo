@@ -9,6 +9,7 @@ export interface RedisConfig {
   password?: string;
   db?: number;
   keyPrefix?: string;
+  defaultTTL?: number; // seconds
 }
 
 export interface RedisCacheRequest {
@@ -53,4 +54,25 @@ export interface RedisCacheStats {
   missRate: number;
   connectedClients: number;
   uptime: number;
+}
+
+export interface CacheOperation {
+  operation: 'get' | 'set' | 'del' | 'exists' | 'expire' | 'ttl';
+  key: string;
+  value?: any;
+  ttl?: number;
+}
+
+export interface CacheStats {
+  hits: number;
+  misses: number;
+  keys: number;
+  memoryUsage: number;
+  connectedClients: number;
+}
+
+export interface CachePattern {
+  pattern: string;
+  keys: string[];
+  count: number;
 } 

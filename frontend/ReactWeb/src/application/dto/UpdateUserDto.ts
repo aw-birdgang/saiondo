@@ -5,9 +5,11 @@
 
 export interface UpdateUserRequest {
   id: string;
-  displayName?: string;
-  avatar?: string;
-  preferences?: any;
+  updates: {
+    displayName?: string;
+    avatar?: string;
+    preferences?: any;
+  };
 }
 
 export interface UpdateUserResponse {

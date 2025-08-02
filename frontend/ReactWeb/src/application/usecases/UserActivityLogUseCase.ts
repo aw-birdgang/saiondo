@@ -1,16 +1,13 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
 import type {
   ActivityLog,
   ActivityLogRequest,
   ActivityLogResponse,
   ActivityStats,
-  UserActivitySummary,
-  ActivitySearchRequest,
-  ActivityExportRequest,
-  ActivityExportResponse
+  UserActivitySummary
 } from '../dto/UserActivityDto';
 
 export class UserActivityLogUseCase {

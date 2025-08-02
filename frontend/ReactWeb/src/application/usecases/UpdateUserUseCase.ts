@@ -1,15 +1,7 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { User } from '../entities/User';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface UpdateUserRequest {
-  id: string;
-  updates: Partial<User>;
-}
-
-export interface UpdateUserResponse {
-  user: User;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { User } from '../../domain/dto/UserDto';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { UpdateUserRequest, UpdateUserResponse } from '../dto/UpdateUserDto';
 
 export class UpdateUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}

@@ -1,34 +1,18 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface CacheKey {
-  type: 'user' | 'channel' | 'message' | 'permission';
-  id: string;
-  subKey?: string;
-}
-
-export interface CacheEntry<T = any> {
-  data: T;
-  timestamp: number;
-  ttl: number; // Time to live in milliseconds
-}
-
-export interface CacheOptions {
-  ttl?: number; // Default TTL in milliseconds
-  maxSize?: number; // Maximum number of entries
-}
-
-export interface CacheStats {
-  hits: number;
-  misses: number;
-  size: number;
-  maxSize: number;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { 
+  CacheRequest, 
+  CacheResponse, 
+  GetCacheRequest, 
+  GetCacheResponse, 
+  DeleteCacheRequest, 
+  DeleteCacheResponse, 
+  CacheStats 
+} from '../dto/CacheDto';
 
 export class CacheUseCase {
-  private cache = new Map<string, CacheEntry>();
+  private cache = new Map<string, any>();
   private stats = { hits: 0, misses: 0, size: 0, maxSize: 1000 };
   private defaultTTL = 5 * 60 * 1000; // 5 minutes
 
@@ -36,7 +20,7 @@ export class CacheUseCase {
     private readonly userRepository: IUserRepository,
     private readonly channelRepository: IChannelRepository,
     private readonly messageRepository: IMessageRepository,
-    private readonly options: CacheOptions = {}
+    private readonly options: { ttl?: number; maxSize?: number } = {}
   ) {
     this.stats.maxSize = options.maxSize || 1000;
   }
@@ -85,7 +69,7 @@ export class CacheUseCase {
     });
     
     // Try to get from cache first
-    const cached = this.getFromCache(cacheKey);
+    const cached = this.getFromCache<any[]>(cacheKey);
     if (cached) {
       return cached;
     }
@@ -107,26 +91,22 @@ export class CacheUseCase {
   async invalidateChannelCache(channelId: string): Promise<void> {
     const cacheKey = this.generateCacheKey({ type: 'channel', id: channelId });
     this.deleteFromCache(cacheKey);
-    
-    // Also invalidate related message caches
-    this.invalidateMessageCaches(channelId);
   }
 
   async invalidateMessageCaches(channelId: string): Promise<void> {
     // Delete all message caches for this channel
-    const keysToDelete: string[] = [];
-    
-    for (const key of this.cache.keys()) {
-      if (key.includes(`message:${channelId}`)) {
-        keysToDelete.push(key);
-      }
-    }
-    
-    keysToDelete.forEach(key => this.deleteFromCache(key));
+    const cacheKey = this.generateCacheKey({ type: 'message', id: channelId });
+    this.deleteFromCache(cacheKey);
   }
 
   async getCacheStats(): Promise<CacheStats> {
-    return { ...this.stats, size: this.cache.size };
+    return { 
+      ...this.stats,
+      totalKeys: this.cache.size,
+      memoryUsage: 0,
+      hitRate: this.stats.hits / (this.stats.hits + this.stats.misses) || 0,
+      missRate: this.stats.misses / (this.stats.hits + this.stats.misses) || 0
+    };
   }
 
   async clearCache(): Promise<void> {
@@ -137,129 +117,99 @@ export class CacheUseCase {
   }
 
   async warmupCache(userIds: string[], channelIds: string[]): Promise<void> {
-    try {
-      // Warm up user cache
-      const userPromises = userIds.map(userId => 
-        this.getUserWithCache(userId).catch(() => null)
-      );
-      
-      // Warm up channel cache
-      const channelPromises = channelIds.map(channelId => 
-        this.getChannelWithCache(channelId).catch(() => null)
-      );
-      
-      // Wait for all warmup operations to complete
-      await Promise.all([...userPromises, ...channelPromises]);
-      
-      console.log(`Cache warmup completed. Users: ${userIds.length}, Channels: ${channelIds.length}`);
-    } catch (error) {
-      console.error('Cache warmup failed:', error);
+    // Pre-load frequently accessed data into cache
+    for (const userId of userIds) {
+      await this.getUserWithCache(userId);
+    }
+
+    for (const channelId of channelIds) {
+      await this.getChannelWithCache(channelId);
     }
   }
 
-  private generateCacheKey(key: CacheKey): string {
-    const { type, id, subKey } = key;
-    return subKey ? `${type}:${id}:${subKey}` : `${type}:${id}`;
+  private generateCacheKey(key: { type: string; id: string; subKey?: string }): string {
+    return `${key.type}:${key.id}${key.subKey ? `:${key.subKey}` : ''}`;
   }
 
   private getFromCache<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    
     if (!entry) {
       this.stats.misses++;
       return null;
     }
-    
+
     // Check if entry has expired
     if (Date.now() > entry.timestamp + entry.ttl) {
       this.deleteFromCache(key);
       this.stats.misses++;
       return null;
     }
-    
+
     this.stats.hits++;
-    return entry.data as T;
+    return entry.data;
   }
 
   private setCache<T>(key: string, data: T, ttl?: number): void {
-    const entry: CacheEntry<T> = {
+    const entry = {
       data,
       timestamp: Date.now(),
-      ttl: ttl || this.options.ttl || this.defaultTTL,
+      ttl: ttl || this.defaultTTL,
     };
-    
+
     // Check if cache is full
     if (this.cache.size >= this.stats.maxSize) {
       this.evictOldestEntry();
     }
-    
+
     this.cache.set(key, entry);
     this.stats.size = this.cache.size;
   }
 
   private deleteFromCache(key: string): void {
-    if (this.cache.delete(key)) {
-      this.stats.size = this.cache.size;
-    }
+    this.cache.delete(key);
+    this.stats.size = this.cache.size;
   }
 
   private evictOldestEntry(): void {
     let oldestKey: string | null = null;
     let oldestTime = Date.now();
-    
+
     for (const [key, entry] of this.cache.entries()) {
       if (entry.timestamp < oldestTime) {
         oldestTime = entry.timestamp;
         oldestKey = key;
       }
     }
-    
+
     if (oldestKey) {
       this.deleteFromCache(oldestKey);
     }
   }
 
-  // Batch operations for better performance
   async batchGetUsers(userIds: string[]): Promise<Map<string, any>> {
     const result = new Map<string, any>();
-    const uncachedIds: string[] = [];
-    
-    // Check cache first
+    const uncachedUserIds: string[] = [];
+
+    // First, try to get from cache
     for (const userId of userIds) {
-      const cached = this.getFromCache(this.generateCacheKey({ type: 'user', id: userId }));
+      const cached = await this.getUserWithCache(userId);
       if (cached) {
         result.set(userId, cached);
       } else {
-        uncachedIds.push(userId);
+        uncachedUserIds.push(userId);
       }
     }
-    
-    // Fetch uncached users in parallel
-    if (uncachedIds.length > 0) {
-      const userPromises = uncachedIds.map(async (userId) => {
-        try {
-          const user = await this.userRepository.findById(userId);
-          if (user) {
-            const userData = user.toJSON();
-            this.setCache(this.generateCacheKey({ type: 'user', id: userId }), userData);
-            return { userId, user: userData };
-          }
-          return { userId, user: null };
-        } catch (error) {
-          console.error(`Failed to fetch user ${userId}:`, error);
-          return { userId, user: null };
-        }
-      });
-      
-      const userResults = await Promise.all(userPromises);
-      
-      for (const { userId, user } of userResults) {
-        if (user) {
-          result.set(userId, user);
-        }
+
+    // Then, fetch uncached users from repository
+    for (const userId of uncachedUserIds) {
+      const user = await this.userRepository.findById(userId);
+      if (user) {
+        const userData = user.toJSON();
+        result.set(userId, userData);
+        this.setCache(this.generateCacheKey({ type: 'user', id: userId }), userData);
       }
     }
-    
+
     return result;
   }
 } 

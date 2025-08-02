@@ -1,9 +1,8 @@
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Message } from '../../domain/dto/MessageDto';
-import { MessageEntity } from '../../domain/entities/Message';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { FileUploadRequest, FileUploadResponse } from '../dto/UploadFileDto';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import {MessageEntity} from '../../domain/entities/Message';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {FileUploadRequest, FileUploadResponse} from '../dto/UploadFileDto';
 
 export class UploadFileUseCase {
   constructor(

@@ -1,19 +1,18 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User } from '../../domain/dto/UserDto';
-import { UserEntity } from '../../domain/entities/User';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import { Email } from '../../domain/value-objects/Email';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import {UserEntity} from '../../domain/entities/User';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import {Email} from '../../domain/value-objects/Email';
 import type {
   CreateUserRequest,
   CreateUserResponse,
-  UpdateUserRequest,
-  UpdateUserResponse,
+  GetCurrentUserRequest,
+  GetCurrentUserResponse,
   GetUserRequest,
   GetUserResponse,
   SearchUsersRequest,
   SearchUsersResponse,
-  GetCurrentUserRequest,
-  GetCurrentUserResponse
+  UpdateUserRequest,
+  UpdateUserResponse
 } from '../dto/UserDto';
 
 export class UserUseCases {

@@ -1,21 +1,8 @@
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { User } from '../entities/User';
-import { UserEntity } from '../entities/User';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface RegisterUserRequest {
-  email: string;
-  username: string;
-  password: string;
-  displayName?: string;
-  avatar?: string;
-}
-
-export interface RegisterUserResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-}
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { User } from '../../domain/dto/UserDto';
+import { UserEntity } from '../../domain/entities/User';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { RegisterUserRequest, RegisterUserResponse } from '../dto/RegisterUserDto';
 
 export class RegisterUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -27,26 +14,19 @@ export class RegisterUserUseCase {
         throw DomainErrorFactory.createUserValidation('Valid email is required');
       }
 
-      if (!request.username || request.username.length < 2) {
-        throw DomainErrorFactory.createUserValidation('Username must be at least 2 characters');
-      }
-
-      if (request.username.length > 20) {
-        throw DomainErrorFactory.createUserValidation('Username must be less than 20 characters');
+      if (!request.username || request.username.trim().length === 0) {
+        throw DomainErrorFactory.createUserValidation('Username is required');
       }
 
       if (!request.password || request.password.length < 6) {
         throw DomainErrorFactory.createUserValidation('Password must be at least 6 characters');
       }
 
-      // Check if email already exists
-      const existingUserByEmail = await this.userRepository.findByEmail(request.email);
-      if (existingUserByEmail) {
-        throw DomainErrorFactory.createUserValidation('Email already exists');
+      // Check if user already exists
+      const existingUser = await this.userRepository.findByEmail(request.email);
+      if (existingUser) {
+        throw DomainErrorFactory.createUserValidation('User with this email already exists');
       }
-
-      // Check if username already exists (you might need to add this method to repository)
-      // For now, we'll skip this check
 
       // Create user entity
       const userEntity = UserEntity.create({
@@ -54,13 +34,13 @@ export class RegisterUserUseCase {
         username: request.username,
         displayName: request.displayName,
         avatar: request.avatar,
-        isOnline: true,
+        isOnline: false,
       });
 
       // Save user
       const savedUser = await this.userRepository.save(userEntity);
 
-      // Generate tokens
+      // Generate tokens (in real implementation, this would use JWT)
       const accessToken = this.generateAccessToken(savedUser);
       const refreshToken = this.generateRefreshToken(savedUser);
 
@@ -73,7 +53,7 @@ export class RegisterUserUseCase {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Registration failed');
+      throw DomainErrorFactory.createUserValidation('Failed to register user');
     }
   }
 

@@ -1,20 +1,19 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Channel } from '../../domain/dto/ChannelDto';
-import { ChannelEntity } from '../../domain/entities/Channel';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import {ChannelEntity} from '../../domain/entities/Channel';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
 import type {
+  AddMemberRequest,
+  AddMemberResponse,
   CreateChannelRequest,
   CreateChannelResponse,
   GetChannelRequest,
   GetChannelResponse,
   GetChannelsRequest,
   GetChannelsResponse,
-  UpdateChannelRequest,
-  UpdateChannelResponse,
-  AddMemberRequest,
-  AddMemberResponse,
   RemoveMemberRequest,
-  RemoveMemberResponse
+  RemoveMemberResponse,
+  UpdateChannelRequest,
+  UpdateChannelResponse
 } from '../dto/ChannelDto';
 
 export class ChannelUseCases {

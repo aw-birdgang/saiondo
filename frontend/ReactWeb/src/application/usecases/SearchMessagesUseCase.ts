@@ -1,23 +1,7 @@
-import type { IMessageRepository } from '../repositories/IMessageRepository';
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { Message } from '../entities/Message';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface SearchMessagesRequest {
-  query: string;
-  channelId?: string;
-  userId?: string;
-  limit?: number;
-  offset?: number;
-  searchInContent?: boolean;
-  searchInMetadata?: boolean;
-}
-
-export interface SearchMessagesResponse {
-  messages: Message[];
-  total: number;
-  hasMore: boolean;
-}
+import type { IChannelRepository, IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { Message } from '../../domain/dto/MessageDto';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { SearchMessagesRequest, SearchMessagesResponse } from '../dto/SearchMessagesDto';
 
 export class SearchMessagesUseCase {
   constructor(
@@ -36,55 +20,30 @@ export class SearchMessagesUseCase {
         throw DomainErrorFactory.createMessageValidation('Search query must be at least 2 characters');
       }
 
-      if (request.query.length > 100) {
-        throw DomainErrorFactory.createMessageValidation('Search query must be less than 100 characters');
-      }
-
-      // Set defaults
-      const limit = request.limit || 20;
-      const offset = request.offset || 0;
-      const searchInContent = request.searchInContent !== false; // default to true
-      const searchInMetadata = request.searchInMetadata || false;
-
-      let messages: Message[] = [];
-
-      // Search in specific channel
+      // If channelId is provided, verify user has access to it
       if (request.channelId) {
-        // Verify channel exists
+        // In real implementation, you would check user permissions here
         const channel = await this.channelRepository.findById(request.channelId);
         if (!channel) {
           throw DomainErrorFactory.createChannelNotFound(request.channelId);
         }
-
-        // Get messages from channel and filter
-        const channelMessages = await this.messageRepository.findByChannelId(
-          request.channelId,
-          limit * 2, // Get more messages to filter
-          offset
-        );
-
-        messages = this.filterMessages(channelMessages, request.query, searchInContent, searchInMetadata);
-      }
-      // Search in user's messages
-      else if (request.userId) {
-        const userMessages = await this.messageRepository.findByUserId(request.userId);
-        messages = this.filterMessages(userMessages, request.query, searchInContent, searchInMetadata);
-      }
-      // Search in all messages (admin functionality)
-      else {
-        // This would need to be implemented in the repository
-        // For now, we'll return empty results
-        messages = [];
       }
 
-      // Apply pagination
-      const paginatedMessages = messages.slice(offset, offset + limit);
-      const hasMore = messages.length > offset + limit;
+      // Search messages
+      const messages = await this.messageRepository.search(
+        request.query,
+        request.channelId,
+        request.userId,
+        request.limit || 50,
+        request.offset || 0,
+        request.dateFrom,
+        request.dateTo
+      );
 
       return {
-        messages: paginatedMessages.map(message => (message as any).toJSON()),
+        messages: messages.map(msg => msg.toJSON()),
         total: messages.length,
-        hasMore,
+        hasMore: messages.length === (request.limit || 50),
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -92,31 +51,5 @@ export class SearchMessagesUseCase {
       }
       throw DomainErrorFactory.createMessageValidation('Failed to search messages');
     }
-  }
-
-  private filterMessages(
-    messages: any[],
-    query: string,
-    searchInContent: boolean,
-    searchInMetadata: boolean
-  ): any[] {
-    const lowerQuery = query.toLowerCase();
-
-    return messages.filter(message => {
-      // Search in content
-      if (searchInContent && message.content.toLowerCase().includes(lowerQuery)) {
-        return true;
-      }
-
-      // Search in metadata
-      if (searchInMetadata && message.metadata) {
-        const metadataString = JSON.stringify(message.metadata).toLowerCase();
-        if (metadataString.includes(lowerQuery)) {
-          return true;
-        }
-      }
-
-      return false;
-    });
   }
 } 

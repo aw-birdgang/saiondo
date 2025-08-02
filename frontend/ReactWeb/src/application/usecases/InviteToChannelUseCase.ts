@@ -1,18 +1,8 @@
-import type { IChannelRepository } from '../repositories/IChannelRepository';
-import type { IUserRepository } from '../repositories/IUserRepository';
-import type { Channel } from '../entities/Channel';
-import { DomainErrorFactory } from '../errors/DomainError';
-
-export interface InviteToChannelRequest {
-  channelId: string;
-  inviterId: string;
-  inviteeId: string;
-}
-
-export interface InviteToChannelResponse {
-  channel: Channel;
-  invitationCode: string;
-}
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { Channel } from '../../domain/dto/ChannelDto';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { InviteToChannelRequest, InviteToChannelResponse } from '../dto/InviteToChannelDto';
 
 export class InviteToChannelUseCase {
   constructor(
@@ -31,59 +21,62 @@ export class InviteToChannelUseCase {
         throw DomainErrorFactory.createChannelValidation('Inviter ID is required');
       }
 
-      if (!request.inviteeId || request.inviteeId.trim().length === 0) {
-        throw DomainErrorFactory.createChannelValidation('Invitee ID is required');
+      if (!request.inviteeIds || request.inviteeIds.length === 0) {
+        throw DomainErrorFactory.createChannelValidation('At least one invitee is required');
       }
 
-      if (request.inviterId === request.inviteeId) {
-        throw DomainErrorFactory.createChannelValidation('Cannot invite yourself');
-      }
-
-      // Get channel
+      // Check if channel exists
       const channel = await this.channelRepository.findById(request.channelId);
       if (!channel) {
         throw DomainErrorFactory.createChannelNotFound(request.channelId);
       }
 
-      // Check if inviter is owner or member
-      if (!channel.isOwner(request.inviterId) && !channel.isMember(request.inviterId)) {
-        throw DomainErrorFactory.createChannelValidation('Only channel members can invite others');
+      // Check if inviter is member of the channel
+      const isInviterMember = await this.channelRepository.isMember(request.channelId, request.inviterId);
+      if (!isInviterMember) {
+        throw DomainErrorFactory.createChannelValidation('Inviter is not a member of this channel');
       }
 
-      // Check if invitee is already a member
-      if (channel.isMember(request.inviteeId)) {
-        throw DomainErrorFactory.createChannelValidation('User is already a member of this channel');
+      const invitedUsers: string[] = [];
+      const failedUsers: string[] = [];
+
+      // Process each invitee
+      for (const inviteeId of request.inviteeIds) {
+        try {
+          // Check if user exists
+          const user = await this.userRepository.findById(inviteeId);
+          if (!user) {
+            failedUsers.push(inviteeId);
+            continue;
+          }
+
+          // Check if user is already a member
+          const isAlreadyMember = await this.channelRepository.isMember(request.channelId, inviteeId);
+          if (isAlreadyMember) {
+            failedUsers.push(inviteeId);
+            continue;
+          }
+
+          // Add user to channel
+          await this.channelRepository.addMember(request.channelId, inviteeId);
+          invitedUsers.push(inviteeId);
+        } catch (error) {
+          console.error(`Failed to invite user ${inviteeId}:`, error);
+          failedUsers.push(inviteeId);
+        }
       }
-
-      // Check if invitee exists
-      const invitee = await this.userRepository.findById(request.inviteeId);
-      if (!invitee) {
-        throw DomainErrorFactory.createUserNotFound(request.inviteeId);
-      }
-
-      // Add member to channel
-      const updatedChannel = await this.channelRepository.addMember(request.channelId, request.inviteeId);
-
-      // Generate invitation code (in real implementation, this would be stored in database)
-      const invitationCode = this.generateInvitationCode(request.channelId, request.inviterId);
 
       return {
-        channel: updatedChannel.toJSON(),
-        invitationCode,
+        success: invitedUsers.length > 0,
+        invitedUsers,
+        failedUsers,
+        message: `Successfully invited ${invitedUsers.length} users, failed to invite ${failedUsers.length} users`,
       };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to invite user to channel');
+      throw DomainErrorFactory.createChannelValidation('Failed to invite users to channel');
     }
-  }
-
-  private generateInvitationCode(channelId: string, inviterId: string): string {
-    // In real implementation, this would create a unique invitation code
-    // and store it in the database with expiration time
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    return `${channelId}_${inviterId}_${timestamp}_${random}`;
   }
 } 
