@@ -32,7 +32,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
         <div className="text-center">
           <LoadingSpinner size="lg" color="primary" />
           <p className="mt-6 text-txt-secondary text-lg font-medium">
-            {t('loading') || 'Loading...'}
+            {t('common.loading') || 'Loading...'}
           </p>
         </div>
       </div>

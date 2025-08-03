@@ -82,6 +82,7 @@ export { default as PaymentMethodSection } from './PaymentMethodSection';
 export { default as PaymentSection } from './PaymentSection';
 export { default as EmptyInvitationsState } from './EmptyInvitationsState';
 export { default as RefreshButton } from './RefreshButton';
+export { LanguageSwitcher } from './LanguageSwitcher';
 
 // 통합된 Container 컴포넌트
 export { default as Container } from './Container';

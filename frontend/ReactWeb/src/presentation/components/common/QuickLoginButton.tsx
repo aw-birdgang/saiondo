@@ -1,19 +1,27 @@
 import React from 'react';
 
 interface QuickLoginButtonProps {
-  onClick: () => void;
+  email: string;
+  label: string;
+  onClick: (email: string) => void;
   disabled?: boolean;
   className?: string;
 }
 
 export const QuickLoginButton: React.FC<QuickLoginButtonProps> = ({ 
+  email,
+  label,
   onClick, 
   disabled = false, 
   className = '' 
 }) => {
+  const handleClick = () => {
+    onClick(email);
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
       className={`
         w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-md
@@ -22,7 +30,7 @@ export const QuickLoginButton: React.FC<QuickLoginButtonProps> = ({
         ${className}
       `}
     >
-      Quick Login
+      {label}
     </button>
   );
 };

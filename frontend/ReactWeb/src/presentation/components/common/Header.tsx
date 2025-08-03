@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={handleBack}
                 className="text-gray-600 hover:text-gray-900 transition-colors"
               >
-                ← {t("nav.back")}
+                ← {t("common.back")}
               </button>
             )}
             {title && (
@@ -65,9 +65,9 @@ const Header: React.FC<HeaderProps> = ({
                 {title}
               </h1>
             )}
-            {showUserInfo && (currentUser?.name || user?.name) && (
+            {showUserInfo && user?.name && (
               <span className="text-sm text-gray-500">
-                {t("home.welcome")}, {currentUser?.name || user?.name}
+                {t("common.welcome")}, {user.name}
               </span>
             )}
           </div>
@@ -79,7 +79,7 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={handleLogout}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               >
-                {t("auth.logout")}
+                {t("auth.signOut")}
               </button>
             )}
           </div>

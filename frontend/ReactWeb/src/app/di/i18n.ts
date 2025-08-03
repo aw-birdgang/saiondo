@@ -1,23 +1,35 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
+// Import translation files
+import enTranslations from "./translations/en.json";
+import koTranslations from "./translations/ko.json";
+
 const resources = {
   en: {
-    translation: {
-      "Welcome to React": "Welcome to React and react-i18next"
-    }
+    translation: enTranslations
   },
-  // 필요시 다른 언어 추가
+  ko: {
+    translation: koTranslations
+  }
 };
 
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "en",
+    lng: "en", // default language
     fallbackLng: "en",
+    debug: process.env.NODE_ENV === "development",
     interpolation: {
-      escapeValue: false
+      escapeValue: false // React already escapes values
+    },
+    react: {
+      useSuspense: false // This is important for SSR compatibility
+    },
+    detection: {
+      order: ["localStorage", "navigator", "htmlTag"],
+      caches: ["localStorage"]
     }
   });
 

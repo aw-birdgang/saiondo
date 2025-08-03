@@ -1,16 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { container } from '../di/container';
-import type { User } from '../domain/entities/User';
+import type { User } from '../domain/dto/UserDto';
 
 export interface UserProfile extends User {
-  avatar?: string;
   bio?: string;
-  preferences?: {
-    notifications: boolean;
-    emailNotifications: boolean;
-    language: string;
-  };
 }
 
 export interface UserState {
