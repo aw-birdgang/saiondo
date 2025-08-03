@@ -2,12 +2,12 @@ import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 
-const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 hover:scale-105 focus:scale-105',
+const touchButtonVariants = cva(
+  'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 touch-manipulation select-none',
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary shadow-lg hover:shadow-xl transform-gpu',
+        primary: 'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary shadow-lg hover:shadow-xl active:shadow-inner',
         secondary: 'bg-secondary text-on-secondary hover:bg-secondary-container focus:ring-secondary border border-border hover:border-primary/50',
         outline: 'bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-on-primary focus:ring-primary hover:shadow-md',
         ghost: 'bg-transparent text-txt hover:bg-focus focus:ring-primary hover:text-primary',
@@ -17,10 +17,10 @@ const buttonVariants = cva(
         gradient: 'bg-gradient-to-r from-primary to-primary-container text-on-primary hover:from-primary-container hover:to-primary focus:ring-primary shadow-lg hover:shadow-xl',
       },
       size: {
-        sm: 'h-8 px-3 text-xs',
-        md: 'h-10 px-4 py-2 text-sm',
-        lg: 'h-12 px-6 py-3 text-base',
-        xl: 'h-14 px-8 py-4 text-lg',
+        sm: 'h-10 px-4 text-sm min-w-[44px]', // 터치 최소 크기
+        md: 'h-12 px-6 py-3 text-base min-w-[48px]',
+        lg: 'h-14 px-8 py-4 text-lg min-w-[52px]',
+        xl: 'h-16 px-10 py-5 text-xl min-w-[56px]',
       },
       fullWidth: {
         true: 'w-full',
@@ -41,9 +41,9 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps
+export interface TouchFriendlyButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+    VariantProps<typeof touchButtonVariants> {
   loading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -51,9 +51,10 @@ export interface ButtonProps
   loadingText?: string;
   tooltip?: string;
   pulse?: boolean;
+  haptic?: boolean;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const TouchFriendlyButton = React.forwardRef<HTMLButtonElement, TouchFriendlyButtonProps>(
   ({ 
     className, 
     variant, 
@@ -68,6 +69,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     loadingText,
     tooltip,
     pulse = false,
+    haptic = true,
     onClick,
     ...props 
   }, ref) => {
@@ -76,13 +78,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         e.preventDefault();
         return;
       }
+
+      // Haptic feedback for mobile devices
+      if (haptic && 'vibrate' in navigator) {
+        navigator.vibrate(10);
+      }
+
       onClick?.(e);
     };
 
     return (
       <button
         className={cn(
-          buttonVariants({ variant, size, fullWidth, rounded, className }),
+          touchButtonVariants({ variant, size, fullWidth, rounded, className }),
           pulse && 'animate-pulse',
           'relative overflow-hidden group'
         )}
@@ -144,4 +152,4 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button'; 
+TouchFriendlyButton.displayName = 'TouchFriendlyButton'; 

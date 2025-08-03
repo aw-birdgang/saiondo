@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { QueryProvider, ControllerProvider, UseCaseProvider, AuthProvider, ThemeProvider, UserProvider } from '../contexts';
 import { ToastProvider } from '../presentation/providers/ToastProvider';
+import { AccessibilityProvider } from '../presentation/components/common/AccessibilityProvider';
 import { initializeServices } from './di/index';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
@@ -19,9 +20,11 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             <AuthProvider>
               <ThemeProvider>
                 <UserProvider>
-                  <ToastProvider>
-                    {children}
-                  </ToastProvider>
+                  <AccessibilityProvider>
+                    <ToastProvider>
+                      {children}
+                    </ToastProvider>
+                  </AccessibilityProvider>
                 </UserProvider>
               </ThemeProvider>
             </AuthProvider>

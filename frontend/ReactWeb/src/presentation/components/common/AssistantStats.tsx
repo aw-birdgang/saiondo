@@ -8,7 +8,7 @@ interface AssistantStatsProps {
   className?: string;
 }
 
-const AssistantStats: React.FC<AssistantStatsProps> = ({
+export const AssistantStats: React.FC<AssistantStatsProps> = ({
   messageCount,
   lastUsed,
   className = '',
@@ -43,4 +43,4 @@ const AssistantStats: React.FC<AssistantStatsProps> = ({
   );
 };
 
-export default AssistantStats; 
+AssistantStats.displayName = 'AssistantStats'; 

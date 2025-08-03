@@ -6,7 +6,7 @@ interface ArrowIconProps {
   className?: string;
 }
 
-const ArrowIcon: React.FC<ArrowIconProps> = ({
+export const ArrowIcon: React.FC<ArrowIconProps> = ({
   direction = 'right',
   size = 'md',
   className = '',
@@ -42,4 +42,4 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({
   );
 };
 
-export default ArrowIcon; 
+ArrowIcon.displayName = 'ArrowIcon'; 

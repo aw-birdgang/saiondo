@@ -1,47 +1,74 @@
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../../utils/cn';
 
-type StatusType = 'success' | 'warning' | 'error' | 'info' | 'default';
+const statusBadgeVariants = cva(
+  'inline-flex items-center rounded-full font-medium transition-all duration-200',
+  {
+    variants: {
+      status: {
+        online: 'bg-green-500 text-white',
+        offline: 'bg-gray-500 text-white',
+        away: 'bg-yellow-500 text-white',
+        busy: 'bg-red-500 text-white',
+        success: 'bg-green-500 text-white',
+        warning: 'bg-yellow-500 text-white',
+        error: 'bg-red-500 text-white',
+        info: 'bg-blue-500 text-white',
+      },
+      size: {
+        sm: 'w-2 h-2',
+        md: 'w-3 h-3',
+        lg: 'w-4 h-4',
+      },
+      showText: {
+        true: 'px-2 py-1 text-xs',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      status: 'online',
+      size: 'md',
+      showText: false,
+    },
+  }
+);
 
-interface StatusBadgeProps {
-  text: string;
-  type?: StatusType;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+export interface StatusBadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof statusBadgeVariants> {
+  text?: string;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({
-  text,
-  type = 'default',
-  size = 'md',
-  className = '',
-}) => {
-  const getTypeClasses = (type: StatusType) => {
-    const typeClasses = {
-      success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800',
-      warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800',
-      error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-200 dark:border-red-800',
-      info: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border border-blue-200 dark:border-blue-800',
-      default: 'bg-secondary text-txt-secondary border border-border',
-    };
-    return typeClasses[type];
-  };
+export const StatusBadge = React.forwardRef<HTMLDivElement, StatusBadgeProps>(
+  ({ 
+    className, 
+    status, 
+    size, 
+    showText,
+    text,
+    ...props 
+  }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          statusBadgeVariants({ status, size, showText, className }),
+          'relative'
+        )}
+        {...props}
+      >
+        {showText && text && (
+          <span className="ml-1">{text}</span>
+        )}
+        
+        {/* Pulse animation for online status */}
+        {status === 'online' && (
+          <div className="absolute inset-0 rounded-full bg-current opacity-20 animate-ping" />
+        )}
+      </div>
+    );
+  }
+);
 
-  const getSizeClasses = (size: 'sm' | 'md' | 'lg') => {
-    const sizeClasses = {
-      sm: 'text-xs px-2 py-1',
-      md: 'text-sm px-3 py-1.5',
-      lg: 'text-base px-4 py-2',
-    };
-    return sizeClasses[size];
-  };
-
-  return (
-    <span
-      className={`inline-flex items-center rounded-full font-medium transition-all duration-200 ${getTypeClasses(type)} ${getSizeClasses(size)} ${className}`}
-    >
-      {text}
-    </span>
-  );
-};
-
-export default StatusBadge; 
+StatusBadge.displayName = 'StatusBadge'; 

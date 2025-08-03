@@ -9,7 +9,7 @@ interface InteractiveCardProps {
   className?: string;
 }
 
-const InteractiveCard: React.FC<InteractiveCardProps> = ({
+export const InteractiveCard: React.FC<InteractiveCardProps> = ({
   children,
   onClick,
   variant = 'default',
@@ -70,4 +70,4 @@ const InteractiveCard: React.FC<InteractiveCardProps> = ({
   );
 };
 
-export default InteractiveCard; 
+InteractiveCard.displayName = 'InteractiveCard'; 

@@ -6,7 +6,7 @@ interface ChatActionProps {
   className?: string;
 }
 
-const ChatAction: React.FC<ChatActionProps> = ({ className = '' }) => {
+export const ChatAction: React.FC<ChatActionProps> = ({ className = '' }) => {
   const { t } = useTranslation();
 
   return (
@@ -21,4 +21,4 @@ const ChatAction: React.FC<ChatActionProps> = ({ className = '' }) => {
   );
 };
 
-export default ChatAction; 
+ChatAction.displayName = 'ChatAction'; 

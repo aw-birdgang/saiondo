@@ -1,80 +1,83 @@
 import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../../utils/cn';
 
-interface StatusIndicatorProps {
-  status: 'online' | 'offline' | 'away' | 'busy' | 'active' | 'inactive';
-  size?: 'xs' | 'sm' | 'md' | 'lg';
-  showLabel?: boolean;
-  className?: string;
+const statusIndicatorVariants = cva(
+  'inline-flex items-center rounded-full transition-all duration-200',
+  {
+    variants: {
+      status: {
+        active: 'bg-green-500',
+        inactive: 'bg-gray-400',
+        busy: 'bg-yellow-500',
+        error: 'bg-red-500',
+        warning: 'bg-orange-500',
+        info: 'bg-blue-500',
+        online: 'bg-green-500',
+        offline: 'bg-gray-400',
+        away: 'bg-yellow-500',
+      },
+      size: {
+        xs: 'w-1.5 h-1.5',
+        sm: 'w-2 h-2',
+        md: 'w-3 h-3',
+        lg: 'w-4 h-4',
+        xl: 'w-5 h-5',
+      },
+      animate: {
+        true: 'animate-pulse',
+        false: '',
+      },
+      showText: {
+        true: 'px-2 py-1 text-xs text-white',
+        false: '',
+      },
+    },
+    defaultVariants: {
+      status: 'active',
+      size: 'md',
+      animate: false,
+      showText: false,
+    },
+  }
+);
+
+export interface StatusIndicatorProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof statusIndicatorVariants> {
+  text?: string;
 }
 
-const StatusIndicator: React.FC<StatusIndicatorProps> = ({
-  status,
-  size = 'md',
-  showLabel = false,
-  className = ''
-}) => {
-  const getStatusConfig = () => {
-    switch (status) {
-      case 'online':
-      case 'active':
-        return {
-          color: 'bg-green-500',
-          label: '온라인'
-        };
-      case 'offline':
-      case 'inactive':
-        return {
-          color: 'bg-text-secondary',
-          label: '오프라인'
-        };
-      case 'away':
-        return {
-          color: 'bg-yellow-500',
-          label: '자리비움'
-        };
-      case 'busy':
-        return {
-          color: 'bg-error',
-          label: '바쁨'
-        };
-      default:
-        return {
-          color: 'bg-text-secondary',
-          label: '알 수 없음'
-        };
-    }
-  };
-
-  const getSizeClasses = () => {
-    switch (size) {
-      case 'xs':
-        return 'w-2 h-2';
-      case 'sm':
-        return 'w-3 h-3';
-      case 'lg':
-        return 'w-4 h-4';
-      default:
-        return 'w-2.5 h-2.5';
-    }
-  };
-
-  const config = getStatusConfig();
-  const sizeClasses = getSizeClasses();
-
-  return (
-    <div className={`flex items-center space-x-2 ${className}`}>
+export const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
+  ({ 
+    className, 
+    status, 
+    size, 
+    animate,
+    showText,
+    text,
+    ...props 
+  }, ref) => {
+    return (
       <div
-        className={`
-          ${sizeClasses} ${config.color} rounded-full shadow-sm
-        `}
-      />
-      {showLabel && (
-        <span className="text-xs text-txt-secondary font-medium">
-          {config.label}
-        </span>
-      )}
-    </div>
-  );
-};
+        ref={ref}
+        className={cn(
+          statusIndicatorVariants({ status, size, animate, showText, className }),
+          'relative'
+        )}
+        {...props}
+      >
+        {showText && text && (
+          <span className="ml-1">{text}</span>
+        )}
+        
+        {/* Pulse animation for active status */}
+        {status === 'active' && (
+          <div className="absolute inset-0 rounded-full bg-current opacity-20 animate-ping" />
+        )}
+      </div>
+    );
+  }
+);
 
-export default StatusIndicator; 
+StatusIndicator.displayName = 'StatusIndicator'; 
