@@ -1,0 +1,414 @@
+import { toast } from 'react-hot-toast';
+
+export interface NotificationConfig {
+  vapidPublicKey: string;
+  apiKey: string;
+  baseUrl: string;
+  token: string;
+}
+
+export interface NotificationMessage {
+  title: string;
+  body: string;
+  icon?: string;
+  badge?: string;
+  image?: string;
+  tag?: string;
+  data?: Record<string, any>;
+  actions?: NotificationAction[];
+  requireInteraction?: boolean;
+  silent?: boolean;
+}
+
+export interface NotificationAction {
+  action: string;
+  title: string;
+  icon?: string;
+}
+
+export interface PushSubscription {
+  endpoint: string;
+  keys: {
+    p256dh: string;
+    auth: string;
+  };
+}
+
+export class PushNotificationService {
+  private config: NotificationConfig;
+  private registration: ServiceWorkerRegistration | null = null;
+  private isSupported: boolean;
+
+  constructor(config: NotificationConfig) {
+    this.config = config;
+    this.isSupported = 'serviceWorker' in navigator && 'PushManager' in window;
+  }
+
+  /**
+   * 서비스 워커 등록
+   */
+  async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+    if (!this.isSupported) {
+      console.warn('Push notifications are not supported in this browser');
+      return null;
+    }
+
+    try {
+      this.registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Service Worker registered successfully');
+      return this.registration;
+    } catch (error) {
+      console.error('Service Worker registration failed:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 푸시 알림 권한 요청
+   */
+  async requestPermission(): Promise<NotificationPermission> {
+    if (!this.isSupported) {
+      return 'denied';
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+      console.log('Notification permission:', permission);
+      return permission;
+    } catch (error) {
+      console.error('Failed to request notification permission:', error);
+      return 'denied';
+    }
+  }
+
+  /**
+   * 푸시 구독 생성
+   */
+  async subscribeToPush(): Promise<PushSubscription | null> {
+    if (!this.isSupported || !this.registration) {
+      console.warn('Push notifications not supported or service worker not registered');
+      return null;
+    }
+
+    try {
+      const permission = await this.requestPermission();
+      if (permission !== 'granted') {
+        console.warn('Notification permission denied');
+        return null;
+      }
+
+      const subscription = await this.registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: this.urlBase64ToUint8Array(this.config.vapidPublicKey)
+      });
+
+      console.log('Push subscription created:', subscription);
+      return subscription;
+    } catch (error) {
+      console.error('Failed to subscribe to push notifications:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 푸시 구독 해제
+   */
+  async unsubscribeFromPush(): Promise<boolean> {
+    if (!this.registration) {
+      return false;
+    }
+
+    try {
+      const subscription = await this.registration.pushManager.getSubscription();
+      if (subscription) {
+        await subscription.unsubscribe();
+        console.log('Push subscription unsubscribed');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to unsubscribe from push notifications:', error);
+      return false;
+    }
+  }
+
+  /**
+   * 서버에 구독 정보 전송
+   */
+  async sendSubscriptionToServer(subscription: PushSubscription): Promise<boolean> {
+    try {
+      // TODO: 실제 서버 API 호출로 대체
+      // const response = await fetch(`${this.config.baseUrl}/notifications/subscribe`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Authorization': `Bearer ${this.config.token}`,
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     subscription,
+      //     apiKey: this.config.apiKey
+      //   })
+      // });
+      // return response.ok;
+
+      // 임시 지연 시뮬레이션
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Subscription sent to server');
+      return true;
+    } catch (error) {
+      console.error('Failed to send subscription to server:', error);
+      return false;
+    }
+  }
+
+  /**
+   * 로컬 알림 표시
+   */
+  async showLocalNotification(message: NotificationMessage): Promise<Notification | null> {
+    if (!this.isSupported) {
+      // 브라우저 알림을 지원하지 않는 경우 토스트로 대체
+      toast(message.body, {
+        duration: 4000,
+        position: 'top-right',
+      });
+      return null;
+    }
+
+    try {
+      const permission = await this.requestPermission();
+      if (permission !== 'granted') {
+        // 권한이 없는 경우 토스트로 대체
+        toast(message.body, {
+          duration: 4000,
+          position: 'top-right',
+        });
+        return null;
+      }
+
+      const notification = new Notification(message.title, {
+        body: message.body,
+        icon: message.icon || '/favicon.ico',
+        badge: message.badge,
+        image: message.image,
+        tag: message.tag,
+        data: message.data,
+        actions: message.actions,
+        requireInteraction: message.requireInteraction,
+        silent: message.silent
+      });
+
+      // 알림 클릭 이벤트 처리
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+        
+        // 알림 데이터가 있으면 해당 페이지로 이동
+        if (message.data?.url) {
+          window.location.href = message.data.url;
+        }
+      };
+
+      return notification;
+    } catch (error) {
+      console.error('Failed to show local notification:', error);
+      // 실패 시 토스트로 대체
+      toast(message.body, {
+        duration: 4000,
+        position: 'top-right',
+      });
+      return null;
+    }
+  }
+
+  /**
+   * 테스트 알림 전송
+   */
+  async sendTestNotification(): Promise<boolean> {
+    const message: NotificationMessage = {
+      title: '테스트 알림',
+      body: '푸시 알림이 정상적으로 작동합니다!',
+      icon: '/favicon.ico',
+      tag: 'test-notification',
+      data: {
+        url: window.location.href,
+        timestamp: Date.now()
+      }
+    };
+
+    const notification = await this.showLocalNotification(message);
+    return notification !== null;
+  }
+
+  /**
+   * 알림 설정 가져오기
+   */
+  async getNotificationSettings(): Promise<{
+    permission: NotificationPermission;
+    subscribed: boolean;
+    supported: boolean;
+  }> {
+    const permission = this.isSupported ? Notification.permission : 'denied';
+    const subscribed = this.isSupported && this.registration 
+      ? !!(await this.registration.pushManager.getSubscription())
+      : false;
+
+    return {
+      permission,
+      subscribed,
+      supported: this.isSupported
+    };
+  }
+
+  /**
+   * VAPID 공개키를 Uint8Array로 변환
+   */
+  private urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  /**
+   * 알림 소리 재생
+   */
+  playNotificationSound(): void {
+    try {
+      const audio = new Audio('/sounds/notification.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(error => {
+        console.warn('Failed to play notification sound:', error);
+      });
+    } catch (error) {
+      console.warn('Notification sound not available:', error);
+    }
+  }
+
+  /**
+   * 알림 권한 상태 확인
+   */
+  isPermissionGranted(): boolean {
+    return this.isSupported && Notification.permission === 'granted';
+  }
+
+  /**
+   * 알림 지원 여부 확인
+   */
+  isNotificationSupported(): boolean {
+    return this.isSupported;
+  }
+}
+
+// 기본 설정
+const defaultConfig: NotificationConfig = {
+  vapidPublicKey: process.env.REACT_APP_VAPID_PUBLIC_KEY || '',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || '',
+  baseUrl: process.env.REACT_APP_NOTIFICATION_BASE_URL || 'https://api.notification.com',
+  token: ''
+};
+
+// 전역 인스턴스
+let pushNotificationService: PushNotificationService | null = null;
+
+/**
+ * 푸시 알림 서비스 초기화
+ */
+export const initializePushNotificationService = (token: string): PushNotificationService => {
+  const config = { ...defaultConfig, token };
+  pushNotificationService = new PushNotificationService(config);
+  return pushNotificationService;
+};
+
+/**
+ * 푸시 알림 서비스 가져오기
+ */
+export const getPushNotificationService = (): PushNotificationService | null => {
+  return pushNotificationService;
+};
+
+/**
+ * 푸시 알림 훅
+ */
+export const usePushNotification = () => {
+  const requestPermission = async (): Promise<NotificationPermission> => {
+    const service = getPushNotificationService();
+    if (!service) {
+      return 'denied';
+    }
+    return service.requestPermission();
+  };
+
+  const subscribeToPush = async (): Promise<PushSubscription | null> => {
+    const service = getPushNotificationService();
+    if (!service) {
+      return null;
+    }
+
+    // 서비스 워커 등록
+    await service.registerServiceWorker();
+    
+    // 푸시 구독
+    const subscription = await service.subscribeToPush();
+    
+    if (subscription) {
+      // 서버에 구독 정보 전송
+      await service.sendSubscriptionToServer(subscription);
+    }
+    
+    return subscription;
+  };
+
+  const unsubscribeFromPush = async (): Promise<boolean> => {
+    const service = getPushNotificationService();
+    if (!service) {
+      return false;
+    }
+    return service.unsubscribeFromPush();
+  };
+
+  const showNotification = async (message: NotificationMessage): Promise<Notification | null> => {
+    const service = getPushNotificationService();
+    if (!service) {
+      return null;
+    }
+    return service.showLocalNotification(message);
+  };
+
+  const sendTestNotification = async (): Promise<boolean> => {
+    const service = getPushNotificationService();
+    if (!service) {
+      return false;
+    }
+    return service.sendTestNotification();
+  };
+
+  const getSettings = async () => {
+    const service = getPushNotificationService();
+    if (!service) {
+      return {
+        permission: 'denied' as NotificationPermission,
+        subscribed: false,
+        supported: false
+      };
+    }
+    return service.getNotificationSettings();
+  };
+
+  return {
+    requestPermission,
+    subscribeToPush,
+    unsubscribeFromPush,
+    showNotification,
+    sendTestNotification,
+    getSettings
+  };
+}; 
