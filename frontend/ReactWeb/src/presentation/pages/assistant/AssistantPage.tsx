@@ -5,8 +5,8 @@ import { toast } from 'react-hot-toast';
 import {ROUTES} from "../../../shared/constants/app";
 import { useDataLoader } from '../../hooks/useDataLoader';
 import {EmptyState} from '../../components/common';
-import {AssistantFilters, AssistantGrid, ErrorState, LoadingState} from '../../components/specific';
-import {AssistantPageContainer, AssistantFiltersContainer, AssistantContentContainer} from '../../components/common';
+import {AssistantFilters, AssistantGrid, ErrorState, LoadingState, PageHeader} from '../../components/specific';
+import {Container} from '../../components/common';
 import type {Assistant, AssistantCategory} from '../../../domain/types';
 
 const AssistantListScreen: React.FC = () => {
@@ -81,7 +81,7 @@ const AssistantListScreen: React.FC = () => {
     }
   );
 
-  const filteredAssistants = assistants.filter(assistant => {
+  const filteredAssistants = (assistants || []).filter(assistant => {
     const matchesSearch = assistant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          assistant.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || assistant.category === selectedCategory;
@@ -136,27 +136,27 @@ const AssistantListScreen: React.FC = () => {
   }
 
   return (
-    <AssistantPageContainer>
+    <Container variant="page">
       {/* Header */}
-      <PageHeader
-        title={t('ai_assistants') || 'AI 상담사'}
-        subtitle={`${assistants.length}명의 상담사`}
-        showBackButton
-      />
+      <Container variant="header">
+        <PageHeader
+          title={t('ai_assistants') || 'AI 상담사'}
+          subtitle={`${assistants?.length || 0}명의 상담사`}
+          showBackButton
+        />
+      </Container>
 
       {/* Search and Filter */}
-      <AssistantFiltersContainer>
+      <Container variant="header">
         <AssistantFilters
-          searchTerm={searchTerm}
           selectedCategory={selectedCategory}
-          categories={categories}
-          onSearchChange={setSearchTerm}
+          categories={categories.map(cat => cat.id)}
           onCategoryChange={setSelectedCategory}
         />
-      </AssistantFiltersContainer>
+      </Container>
 
       {/* Content */}
-      <AssistantContentContainer>
+      <Container variant="content">
         {filteredAssistants.length === 0 ? (
           <EmptyState
             icon="🤖"
@@ -169,8 +169,8 @@ const AssistantListScreen: React.FC = () => {
             onAssistantSelect={handleAssistantSelect}
           />
         )}
-      </AssistantContentContainer>
-    </AssistantPageContainer>
+      </Container>
+    </Container>
   );
 };
 

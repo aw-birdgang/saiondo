@@ -7,7 +7,7 @@ import { useAuthStore } from "../../../stores/authStore";
 import { useDataLoader } from '../../hooks/useDataLoader';
 import { LoadingState, InvitationResponseCard } from '../../components/specific';
 import { PageHeader, PageContainer } from '../../components/layout';
-import { RefreshButton, EmptyInvitationsState, InvitationPageContainer, InvitationGrid } from '../../components/common';
+import { RefreshButton, EmptyInvitationsState, InvitationGrid, Container } from '../../components/common';
 import type {ChannelInvitationItem} from '../../../domain/types';
 
 const ChannelInvitationScreen: React.FC = () => {
@@ -102,25 +102,27 @@ const ChannelInvitationScreen: React.FC = () => {
   }
 
   return (
-    <InvitationPageContainer>
+    <Container variant="page">
       {/* Header */}
-      <PageHeader
-        title={t('channel_invitations') || '채널 초대장'}
-        showBackButton
-        rightContent={
-          invitations.length > 0 && (
-            <RefreshButton onClick={fetchInvitations} />
-          )
-        }
-      />
+      <Container variant="header">
+        <PageHeader
+          title={t('channel_invitations') || '채널 초대장'}
+          showBackButton
+          rightContent={
+            (invitations?.length || 0) > 0 && (
+              <RefreshButton onClick={fetchInvitations} />
+            )
+          }
+        />
+      </Container>
 
       {/* Content */}
-      <PageContainer>
-        {invitations.length === 0 ? (
+      <Container variant="content">
+        {(invitations?.length || 0) === 0 ? (
           <EmptyInvitationsState />
         ) : (
           <InvitationGrid>
-            {invitations.map((invitation) => (
+            {(invitations || []).map((invitation) => (
               <InvitationResponseCard
                 key={invitation.id}
                 invitation={invitation}
@@ -130,8 +132,8 @@ const ChannelInvitationScreen: React.FC = () => {
             ))}
           </InvitationGrid>
         )}
-      </PageContainer>
-    </InvitationPageContainer>
+      </Container>
+    </Container>
   );
 };
 

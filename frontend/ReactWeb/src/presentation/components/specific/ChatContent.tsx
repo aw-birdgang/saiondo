@@ -1,6 +1,6 @@
 import React from "react";
 import { ChatMessages, ChatInput } from "./";
-import { ChatMessagesContainer, ChatInputContainer } from "../common";
+import { Container } from "../common";
 
 interface Message {
   id: string;
@@ -28,21 +28,21 @@ const ChatContent: React.FC<ChatContentProps> = ({
 }) => {
   return (
     <div className={`flex-1 max-w-6xl mx-auto w-full px-6 py-8 ${className}`}>
-      <ChatMessagesContainer>
+      <Container variant="messages">
         <ChatMessages
           messages={messages as any}
           loading={loading}
           currentUserId={currentUserId}
         />
-      </ChatMessagesContainer>
+      </Container>
 
       {/* Input Area */}
-      <ChatInputContainer>
+      <Container variant="input">
         <ChatInput
           onSendMessage={onSendMessage}
           loading={loading}
         />
-      </ChatInputContainer>
+      </Container>
     </div>
   );
 };

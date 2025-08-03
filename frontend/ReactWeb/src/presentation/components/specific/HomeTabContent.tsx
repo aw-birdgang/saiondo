@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { 
   AiAdviceCard, 
   QuickActionsGrid, 
-  WelcomeMessage, 
-  CenteredContainer 
+  WelcomeMessage
 } from "./";
+import { CenteredContainer } from "../common";
 
 interface QuickAction {
   icon: string;

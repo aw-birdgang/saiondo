@@ -7,7 +7,7 @@ import { useAuthStore } from "../../../stores/authStore";
 import { useDataLoader } from '../../hooks/useDataLoader';
 import { LoadingState, PaymentMethodSelector, ProductCard, PurchaseConfirmation, ProductGrid } from '../../components/specific';
 import { PageHeader, PageContainer } from '../../components/layout';
-import { PaymentPageContainer, PaymentSection } from '../../components/common';
+import { PaymentSection, Container } from '../../components/common';
 import type { SubscriptionProduct, PaymentMethod } from '../../../domain/types';
 
 const PaymentSubscriptionScreen: React.FC = () => {
@@ -185,16 +185,18 @@ const PaymentSubscriptionScreen: React.FC = () => {
   }
 
   return (
-    <PaymentPageContainer>
+    <Container variant="page">
       {/* Header */}
-      <PageHeader
-        title={t('subscription') || '구독'}
-        subtitle={t('choose_your_plan') || '원하는 플랜을 선택하세요'}
-        showBackButton
-      />
+      <Container variant="header">
+        <PageHeader
+          title={t('subscription') || '구독'}
+          subtitle={t('choose_your_plan') || '원하는 플랜을 선택하세요'}
+          showBackButton
+        />
+      </Container>
 
       {/* Content */}
-      <PageContainer>
+      <Container variant="content">
         {/* Product Selection */}
         <PaymentSection>
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -231,8 +233,8 @@ const PaymentSubscriptionScreen: React.FC = () => {
             isProcessing={false}
           />
         )}
-      </PageContainer>
-    </PaymentPageContainer>
+      </Container>
+    </Container>
   );
 };
 

@@ -2,12 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../shared/constants/app';
-import { InfoCard, Grid, Stack, Heading, Caption } from '../common';
+import { InfoCard, Grid, Stack, Heading, Caption, CenteredContainer } from '../common';
 import { 
   AiAdviceCard, 
   QuickActionsGrid, 
-  WelcomeMessage, 
-  CenteredContainer
+  WelcomeMessage
 } from './';
 
 interface HomeStats {

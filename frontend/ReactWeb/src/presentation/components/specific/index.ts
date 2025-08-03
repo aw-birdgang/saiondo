@@ -16,7 +16,6 @@ export { default as HomeDashboard } from './HomeDashboard';
 export { default as ChatHeader } from './ChatHeader';
 export { default as ChatMessages } from './ChatMessages';
 export { default as ChatInput } from './ChatInput';
-export { default as ChatContainer } from './ChatContainer';
 export { default as ChatContent } from './ChatContent';
 export { default as MessageBubble } from './MessageBubble';
 
@@ -98,9 +97,7 @@ export { default as ErrorState } from './ErrorState';
 
 // ===== LAYOUT COMPONENTS =====
 export { default as PageHeader } from './PageHeader';
-export { default as PageContainer } from './PageContainer';
 export { default as PageLayout } from './PageLayout';
-export { default as CenteredContainer } from './CenteredContainer';
 export { default as PageBackground } from './PageBackground';
 export { default as GradientBackground } from './GradientBackground';
 

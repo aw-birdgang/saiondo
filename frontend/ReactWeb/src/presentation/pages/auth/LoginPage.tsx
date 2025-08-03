@@ -4,7 +4,7 @@ import { ROUTES } from '../../../shared/constants/app';
 import { useAuth } from '../../../presentation/hooks/useAuth';
 import { useErrorHandler } from '../../hooks/useErrorHandler';
 import { LoginForm, AuthLayout, QuickLoginButtons, AuthGuard } from '../../components/specific';
-import { LoginPageContainer } from '../../components/common';
+import { Container } from '../../components/common';
 
 const LoginPage: React.FC = () => {
 
@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
   return (
     <AuthGuard requireAuth={false}>
       <AuthLayout>
-        <LoginPageContainer>
+        <Container variant="page" maxWidth="md" className="max-w-md w-full space-y-8">
           <LoginForm
             onSubmit={handleSubmit}
             loading={loading}
@@ -57,7 +57,7 @@ const LoginPage: React.FC = () => {
             onQuickLogin={handleQuickLogin}
             loading={loading}
           />
-        </LoginPageContainer>
+        </Container>
       </AuthLayout>
     </AuthGuard>
   );
