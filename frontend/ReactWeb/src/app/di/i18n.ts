@@ -18,7 +18,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: "en", // default language
+    lng: "ko", // default language (Korean)
     fallbackLng: "en",
     debug: process.env.NODE_ENV === "development",
     interpolation: {
@@ -30,7 +30,22 @@ i18n
     detection: {
       order: ["localStorage", "navigator", "htmlTag"],
       caches: ["localStorage"]
-    }
+    },
+    // Better error handling
+    saveMissing: process.env.NODE_ENV === "development",
+    missingKeyHandler: (lng: string, ns: string, key: string, fallbackValue: string) => {
+      if (process.env.NODE_ENV === "development") {
+        console.warn(`Missing translation key: ${key} for language: ${lng}`);
+      }
+    },
+    // Key separator for nested translations
+    keySeparator: ".",
+    // Namespace separator
+    nsSeparator: ":",
+    // Plural separator
+    pluralSeparator: "_",
+    // Context separator
+    contextSeparator: "_"
   });
 
 export { i18n };

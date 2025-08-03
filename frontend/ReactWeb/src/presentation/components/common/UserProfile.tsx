@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../shared/constants/app';
 import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
-import Card from './Card';
-import Button from './Button';
+import { Card, Button } from './';
 
 interface UserProfileProps {
   showEditButton?: boolean;

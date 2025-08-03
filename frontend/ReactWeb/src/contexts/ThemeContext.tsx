@@ -5,6 +5,8 @@ interface ThemeContextType {
   isDarkMode: boolean;
   toggleTheme: () => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  theme: 'light' | 'dark' | 'system';
+  isSystemTheme: () => boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -15,7 +17,7 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Use custom hook for theme management
-  const { isDarkMode, toggleTheme, setTheme } = useThemeManager({
+  const { isDarkMode, toggleTheme, setTheme, theme, isSystemTheme } = useThemeManager({
     autoApply: true,
     onThemeChange: (isDark) => {
       console.log('Theme changed to:', isDark ? 'dark' : 'light');
@@ -26,6 +28,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     isDarkMode,
     toggleTheme,
     setTheme,
+    theme,
+    isSystemTheme,
   };
 
   return (

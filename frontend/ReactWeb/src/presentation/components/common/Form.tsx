@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import FormField from './FormField';
-import Button from './Button';
+import { Button } from './';
+import { useToastContext } from '../../providers/ToastProvider';
 
 interface FormField {
   name: string;
@@ -22,6 +23,8 @@ interface FormProps {
   submitText?: string;
   loading?: boolean;
   className?: string;
+  successMessage?: string;
+  errorMessage?: string;
 }
 
 const Form: React.FC<FormProps> = ({
@@ -33,8 +36,29 @@ const Form: React.FC<FormProps> = ({
   submitText,
   loading = false,
   className = '',
+  successMessage = '성공적으로 처리되었습니다.',
+  errorMessage = '오류가 발생했습니다. 다시 시도해주세요.',
 }) => {
   const { t } = useTranslation();
+  const toast = useToastContext();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // 폼 유효성 검사
+    const hasErrors = Object.keys(errors).length > 0;
+    if (hasErrors) {
+      toast.error('입력 정보를 확인해주세요.');
+      return;
+    }
+
+    try {
+      await onSubmit(e);
+      toast.success(successMessage);
+    } catch (error) {
+      toast.error(errorMessage);
+    }
+  };
 
   const renderField = (field: FormField) => (
     <FormField
@@ -53,7 +77,7 @@ const Form: React.FC<FormProps> = ({
   );
 
   return (
-    <form onSubmit={onSubmit} className={`space-y-6 ${className}`}>
+    <form onSubmit={handleSubmit} className={`space-y-6 ${className}`}>
       <div className="space-y-4">
         {fields.map(renderField)}
       </div>

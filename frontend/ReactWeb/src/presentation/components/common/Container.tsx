@@ -61,24 +61,58 @@ const Container: React.FC<ContainerProps> = ({
     }
   };
 
+  const getVariantStyle = () => {
+    switch (variant) {
+      case 'page':
+        return {
+          backgroundColor: 'var(--color-bg)',
+          minHeight: '100vh'
+        };
+      case 'header':
+        return {
+          backgroundColor: 'var(--color-surface)',
+          borderBottom: '1px solid var(--color-border)',
+          boxShadow: '0 1px 3px 0 var(--color-shadow)'
+        };
+      case 'chat':
+        return {
+          backgroundColor: 'var(--color-bg)',
+          minHeight: '100vh'
+        };
+      case 'error':
+        return {
+          backgroundColor: 'var(--color-bg)',
+          minHeight: '100vh'
+        };
+      case 'messages':
+        return {
+          backgroundColor: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          boxShadow: '0 1px 3px 0 var(--color-shadow)'
+        };
+      default:
+        return {};
+    }
+  };
+
   const getVariantClasses = () => {
     switch (variant) {
       case 'page':
-        return 'min-h-screen bg-bg';
+        return 'min-h-screen';
       case 'content':
         return `${getMaxWidthClass()} mx-auto ${getPaddingClass()}`;
       case 'header':
-        return 'bg-surface border-b border-border shadow-sm';
+        return 'border-b shadow-sm';
       case 'chat':
-        return 'min-h-screen bg-bg flex flex-col';
+        return 'min-h-screen flex flex-col';
       case 'centered':
         return `${getMaxWidthClass()} mx-auto px-6 sm:px-8 lg:px-10 py-10`;
       case 'error':
-        return 'min-h-screen bg-bg flex items-center justify-center';
+        return 'min-h-screen flex items-center justify-center';
       case 'button':
         return 'mt-6 text-center';
       case 'messages':
-        return 'bg-surface rounded-xl shadow-sm border border-border h-96 overflow-y-auto p-6';
+        return 'rounded-xl shadow-sm h-96 overflow-y-auto p-6';
       case 'input':
         return 'mt-6';
       default:
@@ -91,7 +125,10 @@ const Container: React.FC<ContainerProps> = ({
   const centerClass = centered ? 'flex items-center justify-center' : '';
 
   return (
-    <div className={`${baseClasses} ${heightClass} ${centerClass} ${className}`}>
+    <div 
+      className={`${baseClasses} ${heightClass} ${centerClass} transition-colors duration-300 ${className}`}
+      style={getVariantStyle()}
+    >
       {children}
     </div>
   );

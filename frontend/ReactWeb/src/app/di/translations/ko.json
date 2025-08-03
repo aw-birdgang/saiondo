@@ -53,7 +53,21 @@
     "unauthorized": "권한이 없습니다",
     "forbidden": "접근이 거부되었습니다",
     "notFound": "찾을 수 없습니다",
-    "serverError": "서버 오류"
+    "serverError": "서버 오류",
+    "select_option": "옵션을 선택하세요",
+    "start_chat": "채팅 시작",
+    "members": "멤버",
+    "most_popular": "인기",
+    "user": "사용자",
+    "member_since": "가입일",
+    "go_back": "뒤로 가기",
+    "chat": "채팅",
+    "analysis": "관계 분석",
+    "calendar": "캘린더",
+    "payment": "결제",
+    "mypage": "마이페이지",
+    "actions": "액션",
+    "language": "언어"
   },
   "auth": {
     "signIn": "로그인",
@@ -83,7 +97,9 @@
     "enter_password": "비밀번호를 입력해주세요",
     "password_min_length": "비밀번호는 최소 6자 이상이어야 합니다",
     "quick_login_kim": "김 사용자로 로그인",
-    "quick_login_lee": "이 사용자로 로그인"
+    "quick_login_lee": "이 사용자로 로그인",
+    "login_required": "로그인이 필요합니다",
+    "login": "로그인"
   },
   "navigation": {
     "home": "홈",
@@ -93,7 +109,13 @@
     "channels": "채널",
     "invitations": "초대",
     "profile": "프로필",
-    "settings": "설정"
+    "settings": "설정",
+    "chat": "채팅",
+    "nav": {
+      "chat": "채팅",
+      "channels": "채널",
+      "profile": "프로필"
+    }
   },
   "home": {
     "title": "Saiondo에 오신 것을 환영합니다",
@@ -101,7 +123,8 @@
     "getStarted": "시작하기",
     "learnMore": "더 알아보기",
     "features": "기능",
-    "pricing": "가격"
+    "pricing": "가격",
+    "quick_actions": "빠른 작업"
   },
   "dashboard": {
     "overview": "개요",
@@ -122,7 +145,20 @@
     "sendMessage": "메시지 보내기",
     "typeMessage": "메시지를 입력하세요...",
     "thinking": "생각 중...",
-    "newChat": "새 채팅"
+    "newChat": "새 채팅",
+    "started_with_assistant": "와 대화를 시작합니다",
+    "navigation_error": "채팅 페이지로 이동하는 중 오류가 발생했습니다",
+    "all_categories": "전체",
+    "relationship": "관계",
+    "emotion": "감정",
+    "communication": "소통",
+    "conflict": "갈등",
+    "planning": "계획",
+    "loading_assistants": "AI 상담사를 불러오는 중...",
+    "error_loading_assistants": "AI 상담사 로딩 오류",
+    "ai_assistants": "AI 상담사",
+    "no_assistants_found": "AI 상담사를 찾을 수 없습니다",
+    "no_assistants_found_description": "다른 검색어나 카테고리를 시도해보세요"
   },
   "channels": {
     "title": "채널",
@@ -132,7 +168,12 @@
     "channelDescription": "채널 설명",
     "members": "멤버",
     "messages": "메시지",
-    "settings": "채널 설정"
+    "settings": "채널 설정",
+    "no_channels": "채널이 없습니다",
+    "no_channels_description": "첫 번째 채널을 만들어보세요!",
+    "create_first_channel": "첫 번째 채널 만들기",
+    "channel_info": "채널 정보",
+    "channel_stats": "채널 통계"
   },
   "invitations": {
     "title": "초대",
@@ -150,7 +191,11 @@
     "accountSettings": "계정 설정",
     "preferences": "환경설정",
     "security": "보안",
-    "notifications": "알림"
+    "notifications": "알림",
+    "profile_description": "프로필 정보를 관리하세요",
+    "settings_description": "앱 설정을 관리하세요",
+    "chat_description": "채팅 기능을 사용하세요",
+    "channels_description": "채널을 관리하세요"
   },
   "errors": {
     "general": "오류가 발생했습니다",
@@ -169,17 +214,6 @@
     "passwordMatch": "비밀번호가 일치해야 합니다",
     "invalidFormat": "올바르지 않은 형식입니다"
   },
-  "profile": {
-    "profile": "프로필",
-    "profile_description": "프로필 정보를 관리하세요",
-    "settings": "설정",
-    "settings_description": "앱 설정을 관리하세요",
-    "chat": "채팅",
-    "chat_description": "채팅 기능을 사용하세요",
-    "channels": "채널",
-    "channels_description": "채널을 관리하세요",
-    "logout": "로그아웃"
-  },
   "invite": {
     "no_login": "로그인 정보가 없습니다",
     "invite_sent": "초대가 발송되었습니다!",
@@ -193,7 +227,9 @@
     "loading_invitations": "초대장을 불러오는 중...",
     "channel_invitations": "채널 초대장",
     "no_invitations": "초대장이 없습니다",
-    "no_invitations_description": "새로운 채널 초대장이 도착하면 여기에 표시됩니다"
+    "no_invitations_description": "새로운 채널 초대장이 도착하면 여기에 표시됩니다",
+    "partner_email_placeholder": "파트너의 이메일 주소",
+    "send_invite": "초대 보내기"
   },
   "payment": {
     "loading_products": "구독 상품을 불러오는 중...",
@@ -208,47 +244,40 @@
     "privacy_policy": "개인정보처리방침",
     "refund_policy": "환불정책"
   },
-  "assistant": {
-    "started_with_assistant": "와 대화를 시작합니다",
-    "navigation_error": "채팅 페이지로 이동하는 중 오류가 발생했습니다",
-    "all_categories": "전체",
-    "relationship": "관계",
-    "emotion": "감정",
-    "communication": "소통",
-    "conflict": "갈등",
-    "planning": "계획",
-    "loading_assistants": "AI 상담사를 불러오는 중...",
-    "error_loading_assistants": "AI 상담사 로딩 오류",
-    "ai_assistants": "AI 상담사",
-    "no_assistants_found": "AI 상담사를 찾을 수 없습니다",
-    "no_assistants_found_description": "다른 검색어나 카테고리를 시도해보세요"
-  },
   "register": {
     "register_success": "회원가입이 완료되었습니다"
   },
-  "common": {
-    "submit": "제출",
-    "select_option": "옵션을 선택하세요",
-    "start_chat": "채팅 시작",
-    "members": "멤버",
-    "most_popular": "인기",
-    "user": "사용자",
-    "member_since": "가입일",
-    "edit": "편집",
-    "refresh": "새로고침",
-    "go_back": "뒤로 가기",
-    "home": "홈",
+  "system_status": "시스템 상태",
+  "channel_info": "채널 정보",
+  "nav": {
     "chat": "채팅",
-    "analysis": "관계 분석",
-    "calendar": "캘린더",
-    "payment": "결제",
-    "mypage": "마이페이지"
+    "channels": "채널",
+    "profile": "프로필"
   },
-  "channels": {
-    "no_channels": "채널이 없습니다",
-    "no_channels_description": "첫 번째 채널을 만들어보세요!",
-    "create_first_channel": "첫 번째 채널 만들기"
+  "chat": {
+    "no_messages": "메시지가 없습니다",
+    "start_conversation": "대화를 시작해보세요",
+    "file_too_large": "파일 크기는 10MB 이하여야 합니다",
+    "file_type_not_supported": "지원하지 않는 파일 형식입니다",
+    "file_attached": "파일이 첨부되었습니다",
+    "file_upload_not_supported": "파일 업로드가 지원되지 않습니다",
+    "input_placeholder": "메시지를 입력하세요...",
+    "emoji": "이모지",
+    "attach_file": "파일 첨부",
+    "send": "전송"
   },
+  "search_codes": "코드, 설명, 카테고리로 검색...",
+  "category_code_guide": "카테고리 코드 안내",
+  "error_loading_codes": "코드 로딩 오류",
+  "main_keywords": "주요 키워드",
+  "keywords_description": "관계에서 자주 나타나는 주요 키워드들입니다",
+  "analysis_description": "관계 분석하기",
+  "channel_description": "채널 관리하기",
+  "assistant_description": "AI 상담사와 대화하기",
+  "calendar_description": "일정 관리하기",
+  "total_chats": "총 대화",
+  "total_chats_description": "전체 대화 수",
+  "member_since": "가입일",
   "app": {
     "name": "Saiondo"
   }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useThemeStore } from '../../stores/themeStore';
 
 interface UseThemeManagerOptions {
@@ -14,33 +14,63 @@ export const useThemeManager = (options: UseThemeManagerOptions = {}) => {
 
   const themeStore = useThemeStore();
 
+  // Initialize theme on mount (only if not already initialized)
+  useEffect(() => {
+    if (autoApply && !themeStore.isInitialized) {
+      themeStore.initializeTheme();
+    }
+  }, [autoApply, themeStore.isInitialized]);
+
+  // Apply theme changes
   useEffect(() => {
     if (!autoApply) return;
-
-    // Apply theme to document on mount and theme change
-    const root = document.documentElement;
-    if (themeStore.isDarkMode) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
 
     onThemeChange?.(themeStore.isDarkMode);
   }, [themeStore.isDarkMode, autoApply, onThemeChange]);
 
-  const applyTheme = (isDarkMode: boolean) => {
+  // Enhanced theme application
+  const applyTheme = useCallback((isDarkMode: boolean) => {
     const root = document.documentElement;
+    
+    // Add transition class for smooth animation
+    root.classList.add('theme-transition');
+    
     if (isDarkMode) {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  };
+    
+    // Remove transition class after animation
+    setTimeout(() => {
+      root.classList.remove('theme-transition');
+    }, 300);
+  }, []);
+
+  // Get current theme mode
+  const getCurrentThemeMode = useCallback(() => {
+    return themeStore.theme;
+  }, [themeStore.theme]);
+
+  // Check if system theme is being used
+  const isSystemTheme = useCallback(() => {
+    return themeStore.theme === 'system';
+  }, [themeStore.theme]);
+
+  // Get system theme preference
+  const getSystemThemePreference = useCallback(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }, []);
 
   return {
     isDarkMode: themeStore.isDarkMode,
     toggleTheme: themeStore.toggleTheme,
     setTheme: themeStore.setTheme,
     applyTheme,
+    getCurrentThemeMode,
+    isSystemTheme,
+    getSystemThemePreference,
+    theme: themeStore.theme,
   };
 }; 

@@ -11,25 +11,46 @@ const PageWrapper: React.FC<PageWrapperProps> = ({
   background = 'default',
   className = ''
 }) => {
-  const getBackgroundClass = () => {
+  const getBackgroundStyle = () => {
     switch (background) {
       case 'gradient':
-        return 'bg-gradient-to-br from-blue-500 to-purple-600';
+        return {
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%)',
+          color: 'var(--color-on-primary)'
+        };
       case 'dark':
-        return 'bg-gray-900 dark:bg-gray-900';
+        return {
+          backgroundColor: 'var(--color-bg)',
+          color: 'var(--color-txt)'
+        };
       case 'light':
-        return 'bg-white dark:bg-white';
+        return {
+          backgroundColor: 'var(--color-surface)',
+          color: 'var(--color-txt)'
+        };
       case 'blue':
-        return 'bg-blue-50 dark:bg-blue-900/10';
+        return {
+          backgroundColor: 'var(--color-secondary)',
+          color: 'var(--color-on-secondary)'
+        };
       case 'purple':
-        return 'bg-purple-50 dark:bg-purple-900/10';
+        return {
+          background: 'linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%)',
+          color: 'var(--color-on-secondary)'
+        };
       default:
-        return 'bg-gray-50 dark:bg-dark-surface';
+        return {
+          backgroundColor: 'var(--color-bg)',
+          color: 'var(--color-txt)'
+        };
     }
   };
 
   return (
-    <div className={`min-h-screen ${getBackgroundClass()} ${className}`}>
+    <div 
+      className={`min-h-screen transition-colors duration-300 ${className}`}
+      style={getBackgroundStyle()}
+    >
       {children}
     </div>
   );

@@ -19,11 +19,16 @@
     "reinstall": "pnpm clean && pnpm install",
     "update-deps": "pnpm update --latest",
     "audit": "pnpm audit",
-    "outdated": "pnpm outdated"
+    "outdated": "pnpm outdated",
+    "validate-translations": "node scripts/validate-translations.js",
+    "check-translations": "pnpm validate-translations"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.7",
     "@tanstack/react-query": "^5.83.0",
     "axios": "^1.11.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "firebase": "^11.0.0",
     "i18next": "^24.0.0",
@@ -38,6 +43,7 @@
     "react-intersection-observer": "^9.10.0",
     "react-router-dom": "^7.7.1",
     "socket.io-client": "^4.8.1",
+    "tailwind-merge": "^3.3.1",
     "uuid": "^10.0.0",
     "zustand": "^5.0.7"
   },

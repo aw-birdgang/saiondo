@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { QueryProvider, ControllerProvider, UseCaseProvider, AuthProvider, ThemeProvider, UserProvider } from '../contexts';
+import { ToastProvider } from '../presentation/providers/ToastProvider';
 import { initializeServices } from './di/index';
 import { useAuthStore } from '../stores/authStore';
+import { useThemeStore } from '../stores/themeStore';
 import { AppRoutes } from '../presentation/routes/AppRoutes';
 import { ErrorBoundary } from '../presentation/components/LazyLoader';
 import { PageLoader } from '../presentation/components/LazyLoader';
@@ -17,7 +19,9 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             <AuthProvider>
               <ThemeProvider>
                 <UserProvider>
-                  {children}
+                  <ToastProvider>
+                    {children}
+                  </ToastProvider>
                 </UserProvider>
               </ThemeProvider>
             </AuthProvider>
@@ -30,6 +34,7 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 const AppContent: React.FC = () => {
   const { token } = useAuthStore();
+  const { initializeTheme, isInitialized } = useThemeStore();
 
   // 서비스 초기화
   useEffect(() => {
@@ -47,6 +52,18 @@ const AppContent: React.FC = () => {
       console.error('Failed to initialize services:', error);
     }
   }, [token]);
+
+  // 테마 초기화 (한 번만)
+  useEffect(() => {
+    if (!isInitialized) {
+      try {
+        console.log('Initializing theme');
+        initializeTheme();
+      } catch (error) {
+        console.error('Failed to initialize theme:', error);
+      }
+    }
+  }, [initializeTheme, isInitialized]);
 
   return (
     <ErrorBoundary fallback={<PageLoader />}>

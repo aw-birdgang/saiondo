@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Input from './Input';
+import { Input } from './';
+import { cn } from '../../../utils/cn';
 
 interface FormFieldOption {
   value: string;
@@ -19,6 +20,7 @@ interface FormFieldProps {
   error?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   className?: string;
+  helperText?: string;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -33,6 +35,7 @@ const FormField: React.FC<FormFieldProps> = ({
   error,
   onChange,
   className = '',
+  helperText,
 }) => {
   const { t } = useTranslation();
 
@@ -48,7 +51,10 @@ const FormField: React.FC<FormFieldProps> = ({
         value={value}
         onChange={onChange}
         required={required}
-        className={`input ${error ? 'error' : ''}`}
+        className={cn(
+          'flex w-full rounded-lg border bg-surface text-txt placeholder:text-txt-secondary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-3 text-sm',
+          error ? 'border-error focus-visible:ring-error' : 'border-border'
+        )}
       >
         <option value="">{placeholder || t('select_option') || '옵션을 선택하세요'}</option>
         {options?.map((option) => (
@@ -57,11 +63,13 @@ const FormField: React.FC<FormFieldProps> = ({
           </option>
         ))}
       </select>
-      {error && (
-        <div className="flex items-center space-x-2">
-          <div className="w-1 h-1 bg-error rounded-full"></div>
-          <p className="text-sm text-error">{error}</p>
-        </div>
+      {(error || helperText) && (
+        <p className={cn(
+          'text-sm',
+          error ? 'text-error' : 'text-txt-secondary'
+        )}>
+          {error || helperText}
+        </p>
       )}
     </div>
   );
@@ -75,6 +83,7 @@ const FormField: React.FC<FormFieldProps> = ({
       placeholder={placeholder}
       label={label}
       error={error}
+      helperText={helperText}
       required={required}
       autoComplete={autoComplete}
       className={className}

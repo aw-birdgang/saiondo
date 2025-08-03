@@ -1,7 +1,7 @@
 import React from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import Button from '../../common/Button';
+import { Button } from '../../common';
 
 interface Event {
   id: string;

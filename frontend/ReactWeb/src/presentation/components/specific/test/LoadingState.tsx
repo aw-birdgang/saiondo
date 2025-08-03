@@ -1,5 +1,5 @@
 import React from 'react';
-import LoadingSpinner from '../../common/LoadingSpinner';
+import { LoadingSpinner } from '../../common';
 
 interface LoadingStateProps {
   message?: string;

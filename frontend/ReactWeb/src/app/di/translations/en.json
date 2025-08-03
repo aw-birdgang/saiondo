@@ -53,7 +53,21 @@
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",
     "notFound": "Not found",
-    "serverError": "Server error"
+    "serverError": "Server error",
+    "select_option": "Select an option",
+    "start_chat": "Start Chat",
+    "members": "Members",
+    "most_popular": "Most Popular",
+    "user": "User",
+    "member_since": "Member since",
+    "go_back": "Go Back",
+    "chat": "Chat",
+    "analysis": "Analysis",
+    "calendar": "Calendar",
+    "payment": "Payment",
+    "mypage": "My Page",
+    "actions": "Actions",
+    "language": "Language"
   },
   "auth": {
     "signIn": "Sign In",
@@ -83,7 +97,9 @@
     "enter_password": "Please enter your password",
     "password_min_length": "Password must be at least 6 characters",
     "quick_login_kim": "Login as Kim",
-    "quick_login_lee": "Login as Lee"
+    "quick_login_lee": "Login as Lee",
+    "login_required": "Login required",
+    "login": "Login"
   },
   "navigation": {
     "home": "Home",
@@ -93,7 +109,13 @@
     "channels": "Channels",
     "invitations": "Invitations",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "chat": "Chat",
+    "nav": {
+      "chat": "Chat",
+      "channels": "Channels",
+      "profile": "Profile"
+    }
   },
   "home": {
     "title": "Welcome to Saiondo",
@@ -101,7 +123,8 @@
     "getStarted": "Get Started",
     "learnMore": "Learn More",
     "features": "Features",
-    "pricing": "Pricing"
+    "pricing": "Pricing",
+    "quick_actions": "Quick Actions"
   },
   "dashboard": {
     "overview": "Overview",
@@ -122,7 +145,20 @@
     "sendMessage": "Send Message",
     "typeMessage": "Type your message...",
     "thinking": "Thinking...",
-    "newChat": "New Chat"
+    "newChat": "New Chat",
+    "started_with_assistant": "started conversation with",
+    "navigation_error": "Error navigating to chat page",
+    "all_categories": "All Categories",
+    "relationship": "Relationship",
+    "emotion": "Emotion",
+    "communication": "Communication",
+    "conflict": "Conflict",
+    "planning": "Planning",
+    "loading_assistants": "Loading AI assistants...",
+    "error_loading_assistants": "Error loading AI assistants",
+    "ai_assistants": "AI Assistants",
+    "no_assistants_found": "No AI assistants found",
+    "no_assistants_found_description": "Try different search terms or categories"
   },
   "channels": {
     "title": "Channels",
@@ -132,7 +168,12 @@
     "channelDescription": "Channel Description",
     "members": "Members",
     "messages": "Messages",
-    "settings": "Channel Settings"
+    "settings": "Channel Settings",
+    "no_channels": "No channels",
+    "no_channels_description": "Create your first channel!",
+    "create_first_channel": "Create First Channel",
+    "channel_info": "Channel Information",
+    "channel_stats": "Channel Statistics"
   },
   "invitations": {
     "title": "Invitations",
@@ -150,7 +191,11 @@
     "accountSettings": "Account Settings",
     "preferences": "Preferences",
     "security": "Security",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "profile_description": "Manage your profile information",
+    "settings_description": "Manage app settings",
+    "chat_description": "Use chat features",
+    "channels_description": "Manage channels"
   },
   "errors": {
     "general": "An error occurred",
@@ -169,17 +214,6 @@
     "passwordMatch": "Passwords must match",
     "invalidFormat": "Invalid format"
   },
-  "profile": {
-    "profile": "Profile",
-    "profile_description": "Manage your profile information",
-    "settings": "Settings",
-    "settings_description": "Manage app settings",
-    "chat": "Chat",
-    "chat_description": "Use chat features",
-    "channels": "Channels",
-    "channels_description": "Manage channels",
-    "logout": "Logout"
-  },
   "invite": {
     "no_login": "No login information available",
     "invite_sent": "Invitation sent successfully!",
@@ -193,7 +227,9 @@
     "loading_invitations": "Loading invitations...",
     "channel_invitations": "Channel Invitations",
     "no_invitations": "No invitations",
-    "no_invitations_description": "New channel invitations will appear here"
+    "no_invitations_description": "New channel invitations will appear here",
+    "partner_email_placeholder": "Partner's email address",
+    "send_invite": "Send Invitation"
   },
   "payment": {
     "loading_products": "Loading subscription products...",
@@ -208,47 +244,40 @@
     "privacy_policy": "Privacy Policy",
     "refund_policy": "Refund Policy"
   },
-  "assistant": {
-    "started_with_assistant": "started conversation with",
-    "navigation_error": "Error navigating to chat page",
-    "all_categories": "All Categories",
-    "relationship": "Relationship",
-    "emotion": "Emotion",
-    "communication": "Communication",
-    "conflict": "Conflict",
-    "planning": "Planning",
-    "loading_assistants": "Loading AI assistants...",
-    "error_loading_assistants": "Error loading AI assistants",
-    "ai_assistants": "AI Assistants",
-    "no_assistants_found": "No AI assistants found",
-    "no_assistants_found_description": "Try different search terms or categories"
-  },
   "register": {
     "register_success": "Registration completed successfully"
   },
-  "common": {
-    "submit": "Submit",
-    "select_option": "Select an option",
-    "start_chat": "Start Chat",
-    "members": "Members",
-    "most_popular": "Most Popular",
-    "user": "User",
-    "member_since": "Member since",
-    "edit": "Edit",
-    "refresh": "Refresh",
-    "go_back": "Go Back",
-    "home": "Home",
+  "system_status": "System Status",
+  "channel_info": "Channel Information",
+  "nav": {
     "chat": "Chat",
-    "analysis": "Analysis",
-    "calendar": "Calendar",
-    "payment": "Payment",
-    "mypage": "My Page"
+    "channels": "Channels",
+    "profile": "Profile"
   },
-  "channels": {
-    "no_channels": "No channels",
-    "no_channels_description": "Create your first channel!",
-    "create_first_channel": "Create First Channel"
+  "chat": {
+    "no_messages": "No messages",
+    "start_conversation": "Start a conversation",
+    "file_too_large": "File size must be less than 10MB",
+    "file_type_not_supported": "File type not supported",
+    "file_attached": "File attached successfully",
+    "file_upload_not_supported": "File upload not supported",
+    "input_placeholder": "Type your message...",
+    "emoji": "Emoji",
+    "attach_file": "Attach File",
+    "send": "Send"
   },
+  "search_codes": "Search by code, description, category...",
+  "category_code_guide": "Category Code Guide",
+  "error_loading_codes": "Error loading codes",
+  "main_keywords": "Main Keywords",
+  "keywords_description": "Key keywords that frequently appear in relationships",
+  "analysis_description": "Analyze relationships",
+  "channel_description": "Manage channels",
+  "assistant_description": "Chat with AI assistant",
+  "calendar_description": "Manage schedules",
+  "total_chats": "Total Chats",
+  "total_chats_description": "Total number of conversations",
+  "member_since": "Member since",
   "app": {
     "name": "Saiondo"
   }
