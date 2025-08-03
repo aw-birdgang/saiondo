@@ -1,5 +1,5 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore, useIsAuthenticated } from '../stores/authStore';
 import { useAuthInitializer } from '../presentation/hooks/useAuthInitializer';
 
 interface AuthContextType {
@@ -18,6 +18,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const authStore = useAuthStore();
+  const isAuthenticated = useIsAuthenticated();
 
   // Use custom hook for auth initialization
   useAuthInitializer({
@@ -31,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const value: AuthContextType = {
-    isAuthenticated: authStore.isAuthenticated,
+    isAuthenticated,
     user: authStore.user,
     login: authStore.login,
     logout: authStore.logout,

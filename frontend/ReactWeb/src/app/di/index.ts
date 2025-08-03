@@ -4,25 +4,37 @@ import { initializePaymentService } from '../../infrastructure/payment/PaymentSe
 import { initializePushNotificationService } from '../../infrastructure/notification/PushNotificationService';
 
 // 서비스 초기화 함수
-export const initializeServices = (token: string) => {
-  // 파일 업로드 서비스 초기화
-  initializeFileUploadService(token);
-  
-  // WebSocket 서비스 초기화
-  initializeWebSocket({
-    url: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3001',
-    token,
-    reconnectInterval: 3000,
-    maxReconnectAttempts: 5
-  });
-  
-  // 결제 서비스 초기화
-  initializePaymentService(token);
-  
-  // 푸시 알림 서비스 초기화
-  initializePushNotificationService(token);
-  
-  console.log('All services initialized successfully');
+export const initializeServices = (token?: string) => {
+  try {
+    // 파일 업로드 서비스 초기화 (토큰이 있으면 인증된 상태로)
+    if (token) {
+      initializeFileUploadService(token);
+    }
+    
+    // WebSocket 서비스 초기화 (토큰이 있으면 인증된 상태로)
+    if (token) {
+      initializeWebSocket({
+        url: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3001',
+        token,
+        reconnectInterval: 3000,
+        maxReconnectAttempts: 5
+      });
+    }
+    
+    // 결제 서비스 초기화 (토큰이 있으면 인증된 상태로)
+    if (token) {
+      initializePaymentService(token);
+    }
+    
+    // 푸시 알림 서비스 초기화 (토큰이 있으면 인증된 상태로)
+    if (token) {
+      initializePushNotificationService(token);
+    }
+    
+    console.log('Services initialized successfully', { hasToken: !!token });
+  } catch (error) {
+    console.error('Failed to initialize services:', error);
+  }
 };
 
 // Container and core DI functionality

@@ -33,12 +33,18 @@ const AppContent: React.FC = () => {
 
   // 서비스 초기화
   useEffect(() => {
-    if (token) {
-      try {
+    try {
+      // 토큰이 있으면 인증된 서비스로 초기화, 없으면 기본 서비스로 초기화
+      if (token) {
+        console.log('Initializing services with token');
         initializeServices(token);
-      } catch (error) {
-        console.error('Failed to initialize services:', error);
+      } else {
+        console.log('Initializing services without token');
+        // 기본 서비스 초기화 (토큰 없이)
+        initializeServices('');
       }
+    } catch (error) {
+      console.error('Failed to initialize services:', error);
     }
   }, [token]);
 

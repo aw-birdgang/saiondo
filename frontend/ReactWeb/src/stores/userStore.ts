@@ -38,7 +38,7 @@ export const useUserStore = create<UserState>()(
       currentUser: null,
       selectedUser: null,
       partnerUser: null,
-      loading: false,
+      loading: false, // 초기 로딩 상태를 false로 설정
       error: null,
 
       // Actions
@@ -62,6 +62,7 @@ export const useUserStore = create<UserState>()(
         selectedUser: null,
         partnerUser: null,
         error: null,
+        loading: false, // 데이터 클리어 시에도 로딩 상태를 false로 설정
       }),
       
       // API Actions using Repository Pattern
@@ -79,6 +80,7 @@ export const useUserStore = create<UserState>()(
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch current user';
           set({ error: errorMessage, loading: false });
+          console.error('Failed to fetch current user:', error);
         }
       },
       
@@ -96,6 +98,7 @@ export const useUserStore = create<UserState>()(
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to fetch user';
           set({ error: errorMessage, loading: false });
+          console.error('Failed to fetch user by id:', error);
         }
       },
       
@@ -111,6 +114,7 @@ export const useUserStore = create<UserState>()(
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to update user';
           set({ error: errorMessage, loading: false });
+          console.error('Failed to update user:', error);
         }
       },
 
@@ -131,6 +135,7 @@ export const useUserStore = create<UserState>()(
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Failed to update online status';
           set({ error: errorMessage, loading: false });
+          console.error('Failed to update online status:', error);
         }
       },
     }),
@@ -141,6 +146,12 @@ export const useUserStore = create<UserState>()(
         selectedUser: state.selectedUser,
         partnerUser: state.partnerUser,
       }),
+      // 초기화 시 로딩 상태를 false로 설정
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.loading = false;
+        }
+      },
     }
   )
 ); 

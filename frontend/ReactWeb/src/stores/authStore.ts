@@ -14,7 +14,6 @@ export interface AuthState {
   // State
   user: User | null;
   token: string | null;
-  isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
 
@@ -28,6 +27,14 @@ export interface AuthState {
   logout: () => void;
   clearError: () => void;
 }
+
+// Selector for computed isAuthenticated
+export const useIsAuthenticated = () => {
+  const token = useAuthStore((state) => state.token);
+  const isAuthenticated = !!token;
+  console.log('useIsAuthenticated - token:', token, 'isAuthenticated:', isAuthenticated);
+  return isAuthenticated;
+};
 
 // 유닛 함수들로 분리
 const validateLoginInputs = (email: string, password: string): void => {
@@ -69,7 +76,6 @@ const handleLoginSuccess = (set: any, response: any): void => {
   set({
     user: response.user,
     token: response.token,
-    isAuthenticated: true,
     loading: false,
     error: null,
   });
@@ -131,60 +137,52 @@ const validateRegisterInputs = (email: string, password: string, username: strin
   console.log('✅ Register inputs validation passed');
 };
 
-// 임시 API 함수들 (실제 구현 시 교체)
-const mockApi = {
+// 실제 API 함수들로 변경
+const api = {
   login: async (email: string, password: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch('/api/auth/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email, password })
-    // });
-    // return response.json();
+    console.log('📡 Making API call to login...');
     
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // 입력값 검증
-    validateLoginInputs(email, password);
-    
-    return {
-      user: {
-        id: crypto.randomUUID(),
-        email,
-        name: email.split('@')[0],
-        createdAt: new Date(),
-        updatedAt: new Date(),
+    const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/login`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
-      token: `mock-jwt-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    };
+      body: JSON.stringify({ email, password })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Login failed: ${response.status}`);
+    }
+    
+    return response.json();
   },
   
   register: async (email: string, password: string, username: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch('/api/auth/register', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email, password, username })
-    // });
-    // return response.json();
+    console.log('📡 Making API call to register...');
     
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // 입력값 검증
-    validateRegisterInputs(email, password, username);
-    
-    return {
-      user: {
-        id: crypto.randomUUID(),
-        email,
-        name: username,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+    const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/register`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       },
-      token: `mock-jwt-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    };
+      body: JSON.stringify({ 
+        email, 
+        password, 
+        name: username,
+        gender: 'UNKNOWN',
+        birthDate: new Date().toISOString()
+      })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Registration failed: ${response.status}`);
+    }
+    
+    return response.json();
   }
 };
 
@@ -194,8 +192,7 @@ export const useAuthStore = create<AuthState>()(
       // Initial state
       user: null,
       token: null,
-      isAuthenticated: false,
-      loading: false,
+      loading: false, // 초기 로딩 상태를 false로 설정
       error: null,
 
       // Actions
@@ -207,7 +204,6 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         console.log('🚀 AuthStore login called with email:', email, 'type:', typeof email);
         console.log('📊 Current store state before login:', {
-          isAuthenticated: get().isAuthenticated,
           loading: get().loading,
           hasUser: !!get().user
         });
@@ -216,18 +212,24 @@ export const useAuthStore = create<AuthState>()(
         
         try {
           console.log('📡 Making API call to login...');
-          const response = await mockApi.login(email, password);
-          console.log('📥 API response received:', { userId: response.user.id, hasToken: !!response.token });
+          const response = await api.login(email, password);
+          console.log('📥 API response received:', { userId: response.user.id, hasToken: !!response.accessToken });
           
-          saveAuthData(response);
-          handleLoginSuccess(set, response);
+          // 백엔드 응답 구조에 맞게 수정
+          const authData = {
+            user: response.user,
+            token: response.accessToken
+          };
+          
+          saveAuthData(authData);
+          handleLoginSuccess(set, authData);
         } catch (error) {
           handleLoginError(set, error);
         }
       },
       
       register: async (email: string, password: string, username: string) => {
-        console.log('�� AuthStore register called with:', { 
+        console.log('🚀 AuthStore register called with:', { 
           email: email?.substring(0, 3) + '***', 
           username: username?.substring(0, 2) + '***',
           passwordLength: password?.length 
@@ -236,11 +238,17 @@ export const useAuthStore = create<AuthState>()(
         set({ loading: true, error: null });
         try {
           console.log('📡 Making API call to register...');
-          const response = await mockApi.register(email, password, username);
-          console.log('📥 API response received:', { userId: response.user?.id, hasToken: !!response.token });
+          const response = await api.register(email, password, username);
+          console.log('📥 API response received:', { userId: response.user?.id, hasToken: !!response.accessToken });
           
-          saveAuthData(response);
-          handleLoginSuccess(set, response);
+          // 백엔드 응답 구조에 맞게 수정
+          const authData = {
+            user: response.user,
+            token: response.accessToken
+          };
+          
+          saveAuthData(authData);
+          handleLoginSuccess(set, authData);
         } catch (error) {
           handleLoginError(set, error);
         }
@@ -253,7 +261,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           token: null,
-          isAuthenticated: false,
+          loading: false, // 로그아웃 시에도 로딩 상태를 false로 설정
           error: null,
         });
         
@@ -267,8 +275,23 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         user: state.user,
         token: state.token,
-        isAuthenticated: state.isAuthenticated,
       }),
+      // 초기화 시 로딩 상태를 false로 설정하고, 토큰이 없으면 user도 null로 설정
+      onRehydrateStorage: () => (state) => {
+        console.log('AuthStore rehydrate - initial state:', state);
+        if (state) {
+          state.loading = false;
+          // 토큰이 없거나 빈 문자열이면 user도 null로 설정
+          if (!state.token || state.token.trim() === '') {
+            console.log('Token is empty or null, clearing user data');
+            state.token = null;
+            state.user = null;
+          } else {
+            console.log('Token found:', state.token.substring(0, 20) + '...');
+          }
+        }
+        console.log('AuthStore rehydrate - final state:', state);
+      },
     }
   )
 ); 

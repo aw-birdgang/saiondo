@@ -86,7 +86,7 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
     try {
       const token = localStorage.getItem('accessToken');
       
-      if (token) {
+      if (token && token.trim() !== '') {
         // Zustand store의 setToken 메서드를 직접 호출하여 의존성 문제 해결
         useAuthStore.getState().setToken(token);
         callbacksRef.current.onTokenFound?.(token);
@@ -112,24 +112,40 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
             };
             
             useAuthStore.getState().setUser(user);
+            useAuthStore.getState().setLoading(false); // 로딩 상태를 false로 설정
             callbacksRef.current.onTokenValidated?.(user);
             toast.success('로그인이 유지되었습니다.');
           } catch (error) {
             console.error('Failed to extract user from token:', error);
+            // 토큰 파싱 실패 시 토큰 제거
+            localStorage.removeItem('accessToken');
+            useAuthStore.getState().setToken(null);
+            useAuthStore.getState().setUser(null);
+            useAuthStore.getState().setLoading(false); // 에러 시에도 로딩 상태를 false로 설정
             callbacksRef.current.onTokenInvalid?.();
           }
         } else {
           // 토큰이 유효하지 않으면 제거
           localStorage.removeItem('accessToken');
-          useAuthStore.getState().logout();
+          useAuthStore.getState().setToken(null);
+          useAuthStore.getState().setUser(null);
+          useAuthStore.getState().setLoading(false); // 로그아웃 시에도 로딩 상태를 false로 설정
           callbacksRef.current.onTokenInvalid?.();
           toast.error('로그인이 만료되었습니다. 다시 로그인해주세요.');
         }
       } else {
+        // 토큰이 없는 경우 store 상태를 정리
+        useAuthStore.getState().setToken(null);
+        useAuthStore.getState().setUser(null);
+        useAuthStore.getState().setLoading(false);
         callbacksRef.current.onTokenNotFound?.();
       }
     } catch (error) {
       console.error('Auth initialization failed:', error);
+      // 에러 발생 시에도 store 상태를 정리
+      useAuthStore.getState().setToken(null);
+      useAuthStore.getState().setUser(null);
+      useAuthStore.getState().setLoading(false);
       toast.error('인증 초기화에 실패했습니다.');
     } finally {
       setIsInitialized(true);

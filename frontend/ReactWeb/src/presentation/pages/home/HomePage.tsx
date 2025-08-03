@@ -14,19 +14,23 @@ const HomePage: React.FC = () => {
   const { loading, fetchCurrentUser } = useUserStore();
   const { channels, fetchChannelsByUserId } = useChannelStore();
 
-  // Use custom hook for data loading
+  // 임시로 데이터 로딩을 비활성화하여 무한 로딩 문제 해결
+  // TODO: 백엔드 API 연결 후 다시 활성화
   const { loadData: loadHomeData } = useDataLoader(
     async () => {
-      if (user?.id) {
-        await Promise.all([
-          fetchCurrentUser(),
-          fetchChannelsByUserId(user.id)
-        ]);
-      }
+      console.log('HomePage data loading disabled temporarily');
+      // if (user?.id) {
+      //   await Promise.all([
+      //     fetchCurrentUser(),
+      //     fetchChannelsByUserId(user.id)
+      //   ]);
+      // }
     },
     [user?.id, fetchCurrentUser, fetchChannelsByUserId],
-    { autoLoad: !!user?.id }
+    { autoLoad: false } // 임시로 비활성화
   );
+
+  console.log('HomePage rendered - user:', user, 'loading:', loading);
 
   return (
     <PageWrapper background="gradient">
