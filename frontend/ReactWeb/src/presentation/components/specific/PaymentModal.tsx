@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { usePayment, PaymentItem, PaymentRequest } from '../../../infrastructure/payment/PaymentService';
+import { usePayment } from '../../../infrastructure/payment/PaymentService';
+import type { PaymentItem, PaymentRequest } from '../../../infrastructure/payment/PaymentService';
 import { useAuthStore } from '../../../stores/authStore';
 import { toast } from 'react-hot-toast';
 
@@ -98,7 +99,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           toast.error('결제에 실패했습니다.');
           onCancel?.();
         } else if (status.status === 'cancelled') {
-          toast.info('결제가 취소되었습니다.');
+          toast('결제가 취소되었습니다.');
           onCancel?.();
         } else {
           // 계속 폴링

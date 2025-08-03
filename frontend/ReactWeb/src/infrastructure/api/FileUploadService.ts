@@ -252,7 +252,7 @@ const defaultConfig: FileUploadConfig = {
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ],
-  uploadUrl: process.env.REACT_APP_FILE_UPLOAD_URL || '/api/upload',
+  uploadUrl: import.meta.env.VITE_FILE_UPLOAD_URL || '/api/upload',
   token: ''
 };
 

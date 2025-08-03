@@ -56,6 +56,7 @@ export { default as ProductGrid } from './ProductGrid';
 export { default as ProductCard } from './ProductCard';
 export { default as PurchaseConfirmation } from './PurchaseConfirmation';
 export { default as PaymentMethodSelector } from './PaymentMethodSelector';
+export { PaymentModal } from './PaymentModal';
 
 // ===== INVITE PAGE COMPONENTS =====
 export { default as InviteForm } from './InviteForm';
@@ -91,13 +92,17 @@ export { default as CategoryCodeDetailModal } from './CategoryCodeDetailModal';
 export { default as SplashContainer } from './SplashContainer';
 export { default as SplashAnimation } from './SplashAnimation';
 
-// ===== COMMON/UTILITY COMPONENTS =====
+// ===== UTILITY COMPONENTS =====
 export { default as LoadingState } from './LoadingState';
 export { default as ErrorState } from './ErrorState';
+
+// ===== LAYOUT COMPONENTS =====
 export { default as PageHeader } from './PageHeader';
 export { default as PageContainer } from './PageContainer';
 export { default as PageLayout } from './PageLayout';
 export { default as CenteredContainer } from './CenteredContainer';
 export { default as PageBackground } from './PageBackground';
 export { default as GradientBackground } from './GradientBackground';
+
+// ===== MISC COMPONENTS =====
 export { default as UsageGuide } from './UsageGuide'; 

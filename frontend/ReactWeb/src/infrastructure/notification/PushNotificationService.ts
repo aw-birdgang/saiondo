@@ -310,9 +310,9 @@ export class PushNotificationService {
 
 // 기본 설정
 const defaultConfig: NotificationConfig = {
-  vapidPublicKey: process.env.REACT_APP_VAPID_PUBLIC_KEY || '',
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || '',
-  baseUrl: process.env.REACT_APP_NOTIFICATION_BASE_URL || 'https://api.notification.com',
+  vapidPublicKey: import.meta.env.VITE_VAPID_PUBLIC_KEY || '',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
+  baseUrl: import.meta.env.VITE_NOTIFICATION_BASE_URL || 'https://api.notification.com',
   token: ''
 };
 

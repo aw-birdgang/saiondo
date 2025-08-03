@@ -1,8 +1,8 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from './EventEmitter';
 import { toast } from 'react-hot-toast';
 
 export interface WebSocketMessage {
-  type: 'message' | 'typing' | 'user_joined' | 'user_left' | 'channel_update' | 'reaction';
+  type: 'message' | 'typing' | 'user_joined' | 'user_left' | 'channel_update' | 'reaction' | 'subscribe' | 'unsubscribe' | 'ping' | 'pong';
   data: any;
   timestamp: number;
   senderId?: string;
@@ -177,7 +177,7 @@ export class WebSocketService extends EventEmitter {
           
         case 'user_left':
           this.emit('user_left', message.data);
-          toast.info(`${message.data.userName}님이 나갔습니다.`);
+          toast(`${message.data.userName}님이 나갔습니다.`);
           break;
           
         case 'channel_update':

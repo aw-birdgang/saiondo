@@ -41,7 +41,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
 
     try {
       const wsService = initializeWebSocket({
-        url: process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:3001',
+        url: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3001',
         token,
         reconnectInterval: 3000,
         maxReconnectAttempts: 5

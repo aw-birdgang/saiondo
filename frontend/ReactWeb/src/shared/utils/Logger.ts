@@ -116,8 +116,8 @@ class LogRocketService implements LoggingService {
 
 export class Logger {
   private readonly context: string;
-  private readonly isDevelopment = process.env.NODE_ENV === 'development';
-  private readonly isProduction = process.env.NODE_ENV === 'production';
+  private readonly isDevelopment = import.meta.env.MODE === 'development';
+  private readonly isProduction = import.meta.env.MODE === 'production';
   
   // 로깅 서비스들
   private readonly sentry = new SentryService();

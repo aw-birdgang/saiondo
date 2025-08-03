@@ -279,9 +279,9 @@ export class PaymentService {
 
 // 기본 설정
 const defaultConfig: PaymentConfig = {
-  apiKey: process.env.REACT_APP_PAYMENT_API_KEY || '',
-  merchantId: process.env.REACT_APP_PAYMENT_MERCHANT_ID || '',
-  baseUrl: process.env.REACT_APP_PAYMENT_BASE_URL || 'https://api.payment.com',
+  apiKey: import.meta.env.VITE_PAYMENT_API_KEY || '',
+  merchantId: import.meta.env.VITE_PAYMENT_MERCHANT_ID || '',
+  baseUrl: import.meta.env.VITE_PAYMENT_BASE_URL || 'https://api.payment.com',
   token: ''
 };
 
