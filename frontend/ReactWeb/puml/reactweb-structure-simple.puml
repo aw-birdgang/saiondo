@@ -1,0 +1,181 @@
+@startuml ReactWeb Structure Simple
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam packageBackgroundColor #E9ECEF
+skinparam packageBorderColor #2E86AB
+skinparam componentBackgroundColor #F8F9FA
+skinparam componentBorderColor #6C757D
+
+title ReactWeb 프로젝트 - 단순화된 파일 구조
+
+package "frontend/ReactWeb/" as Root {
+  package "src/" as Src {
+    package "app/" as App {
+      file "App.tsx" as AppTSX
+      file "main.tsx" as MainTSX
+    }
+    
+    package "domain/" as Domain {
+      package "entities/" as Entities {
+        file "User.ts" as UserEntity
+        file "Channel.ts" as ChannelEntity
+        file "Message.ts" as MessageEntity
+      }
+      
+      package "repositories/" as RepoInterfaces {
+        file "IUserRepository.ts" as IUserRepo
+        file "IChannelRepository.ts" as IChannelRepo
+        file "IMessageRepository.ts" as IMessageRepo
+      }
+    }
+    
+    package "application/" as Application {
+      package "usecases/" as UseCases {
+        file "UserUseCases.ts" as UserUseCases
+        file "ChannelUseCases.ts" as ChannelUseCases
+        file "MessageUseCases.ts" as MessageUseCases
+      }
+      
+      package "controllers/" as Controllers {
+        file "UserController.ts" as UserController
+        file "ChannelController.ts" as ChannelController
+        file "MessageController.ts" as MessageController
+      }
+    }
+    
+    package "infrastructure/" as Infrastructure {
+      package "api/" as API {
+        file "ApiClient.ts" as ApiClient
+        file "endpoints.ts" as Endpoints
+      }
+      
+      package "repositories/" as RepoImpls {
+        file "UserRepositoryImpl.ts" as UserRepoImpl
+        file "ChannelRepositoryImpl.ts" as ChannelRepoImpl
+        file "MessageRepositoryImpl.ts" as MessageRepoImpl
+      }
+      
+      package "websocket/" as WebSocket {
+        file "WebSocketClient.ts" as WebSocketClient
+      }
+    }
+    
+    package "presentation/" as Presentation {
+      package "components/" as Components {
+        package "common/" as CommonComponents {
+          file "Button.tsx" as Button
+          file "Input.tsx" as Input
+        }
+        
+        package "specific/" as SpecificComponents {
+          file "ChatComponent.tsx" as ChatComponent
+          file "ChannelComponent.tsx" as ChannelComponent
+        }
+      }
+      
+      package "pages/" as Pages {
+        file "AuthPage.tsx" as AuthPage
+        file "ChatPage.tsx" as ChatPage
+        file "ChannelPage.tsx" as ChannelPage
+      }
+      
+      package "hooks/" as Hooks {
+        file "useAuth.ts" as useAuth
+        file "useUser.ts" as useUser
+        file "useChannel.ts" as useChannel
+      }
+    }
+    
+    package "contexts/" as Contexts {
+      file "AuthContext.tsx" as AuthContext
+      file "UserContext.tsx" as UserContext
+      file "ThemeContext.tsx" as ThemeContext
+    }
+    
+    package "stores/" as Stores {
+      file "authStore.ts" as AuthStore
+      file "userStore.ts" as UserStore
+      file "channelStore.ts" as ChannelStore
+    }
+    
+    package "di/" as DI {
+      file "container.ts" as Container
+      file "UseCaseRegistry.ts" as UseCaseRegistry
+    }
+    
+    package "shared/" as Shared {
+      package "utils/" as Utils {
+        file "dateUtils.ts" as DateUtils
+        file "validationUtils.ts" as ValidationUtils
+      }
+      
+      package "constants/" as Constants {
+        file "API_ENDPOINTS.ts" as APIEndpoints
+      }
+    }
+  }
+  
+  ' Configuration files
+  file "package.json" as PackageJson
+  file "tsconfig.json" as TSConfig
+  file "vite.config.ts" as ViteConfig
+  file "tailwind.config.js" as TailwindConfig
+  
+  ' Documentation
+  file "README.md" as RootReadme
+  file "ARCHITECTURE.md" as ArchitectureMD
+}
+
+' 핵심 관계만 표시
+MainTSX --> AppTSX
+AppTSX --> Contexts
+AppTSX --> Stores
+AppTSX --> Presentation
+
+Domain --> Application
+Application --> Infrastructure
+Presentation --> Application
+
+Contexts --> Stores
+Stores --> Application
+
+DI --> Application
+DI --> Infrastructure
+
+' 아키텍처 계층 설명
+note right of Domain
+  **Domain Layer**
+  - 비즈니스 엔티티
+  - 리포지토리 인터페이스
+end note
+
+note right of Application
+  **Application Layer**
+  - 유스케이스
+  - 컨트롤러
+end note
+
+note right of Infrastructure
+  **Infrastructure Layer**
+  - API 클라이언트
+  - 리포지토리 구현체
+  - WebSocket
+end note
+
+note right of Presentation
+  **Presentation Layer**
+  - React 컴포넌트
+  - 페이지
+  - 커스텀 훅
+end note
+
+note bottom of Root
+  **핵심 기술:**
+  - React + TypeScript
+  - Zustand (상태 관리)
+  - 클린 아키텍처
+  - 의존성 주입
+  - Vite + Tailwind CSS
+end note
+
+@enduml 

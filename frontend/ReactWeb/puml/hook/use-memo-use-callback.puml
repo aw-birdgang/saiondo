@@ -1,0 +1,19 @@
+@startuml
+title useMemo / useCallback 내부 작동 구조
+
+actor Developer
+entity FunctionComponent
+database MemoizationCache
+entity DependencyArray
+
+Developer --> FunctionComponent : useMemo(fn, deps)
+FunctionComponent --> DependencyArray : deps 비교
+DependencyArray --> MemoizationCache : 캐시 조회
+
+alt deps 변경 없음
+MemoizationCache --> FunctionComponent : 이전 값 반환
+else deps 변경됨
+FunctionComponent --> MemoizationCache : 새로운 계산 저장
+end
+
+@enduml

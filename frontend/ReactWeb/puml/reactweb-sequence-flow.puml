@@ -1,0 +1,196 @@
+@startuml ReactWeb Sequence Flow
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam participantBackgroundColor #F8F9FA
+skinparam participantBorderColor #2E86AB
+skinparam sequenceArrowColor #2E86AB
+skinparam noteBackgroundColor #FFF3CD
+skinparam noteBorderColor #FFC107
+
+title ReactWeb 프로젝트 - 주요 시퀀스 플로우
+
+' 사용자 인증 플로우
+participant "User" as U
+participant "AuthPage" as AP
+participant "AuthContext" as AC
+participant "authStore" as AS
+participant "AuthController" as AController
+participant "AuthenticateUserUseCase" as AuthUC
+participant "AuthService" as AuthS
+participant "ApiClient" as API
+participant "Backend API" as BE
+
+== 사용자 인증 플로우 ==
+
+U -> AP: 로그인 시도
+AP -> AC: login(email, password)
+AC -> AS: setLoading(true)
+AC -> AController: authenticate(email, password)
+AController -> AuthUC: execute(email, password)
+AuthUC -> AuthS: validateCredentials(email, password)
+AuthS -> API: POST /auth/login
+API -> BE: 인증 요청
+BE -> API: JWT 토큰 반환
+API -> AuthS: 토큰 수신
+AuthS -> AuthUC: 인증 성공
+AuthUC -> AController: User 객체 반환
+AController -> AC: 인증 완료
+AC -> AS: setUser(user), setToken(token)
+AC -> AP: 인증 성공 응답
+AP -> U: 홈페이지로 리다이렉트
+
+' 채팅 메시지 전송 플로우
+participant "ChatComponent" as CC
+participant "messageStore" as MS
+participant "MessageController" as MController
+participant "SendMessageUseCase" as SendUC
+participant "MessageService" as MessageS
+participant "WebSocketClient" as WS
+participant "Channel" as CH
+
+== 실시간 채팅 메시지 전송 ==
+
+U -> CC: 메시지 입력 및 전송
+CC -> MS: addMessage(message)
+MS -> MController: sendMessage(channelId, content)
+MController -> SendUC: execute(channelId, content)
+SendUC -> MessageS: createMessage(channelId, content)
+MessageS -> WS: emit('send_message', data)
+WS -> CH: 메시지 브로드캐스트
+CH -> WS: 메시지 수신 확인
+WS -> MessageS: 메시지 전송 완료
+MessageS -> SendUC: 성공 응답
+SendUC -> MController: Message 객체 반환
+MController -> MS: updateMessage(message)
+MS -> CC: UI 업데이트
+CC -> U: 메시지 표시
+
+' 채널 생성 플로우
+participant "ChannelComponent" as ChC
+participant "channelStore" as ChS
+participant "ChannelController" as ChController
+participant "CreateChannelUseCase" as CreateChUC
+participant "ChannelService" as ChannelS
+
+== 채널 생성 ==
+
+U -> ChC: 새 채널 생성 요청
+ChC -> ChS: setLoading(true)
+ChC -> ChController: createChannel(channelData)
+ChController -> CreateChUC: execute(channelData)
+CreateChUC -> ChannelS: createChannel(channelData)
+ChannelS -> API: POST /channels
+API -> BE: 채널 생성 요청
+BE -> API: 생성된 채널 정보
+API -> ChannelS: Channel 객체 반환
+ChannelS -> CreateChUC: 성공 응답
+CreateChUC -> ChController: Channel 객체 반환
+ChController -> ChS: addChannel(channel)
+ChS -> ChC: 채널 목록 업데이트
+ChC -> U: 새 채널 표시
+
+' 파일 업로드 플로우
+participant "FileUploadComponent" as FUC
+participant "FileUploadService" as FUS
+participant "UploadFileUseCase" as UploadUC
+participant "Storage" as ST
+
+== 파일 업로드 ==
+
+U -> FUC: 파일 선택
+FUC -> FUS: uploadFile(file)
+FUS -> UploadUC: execute(file)
+UploadUC -> FUS: validateFile(file)
+FUS -> ST: uploadToStorage(file)
+ST -> FUS: 파일 URL 반환
+FUS -> UploadUC: 성공 응답
+UploadUC -> FUC: 업로드 완료
+FUC -> U: 파일 업로드 성공 표시
+
+' 검색 기능 플로우
+participant "SearchComponent" as SC
+participant "SearchUseCase" as SearchUC
+participant "SearchService" as SearchS
+
+== 통합 검색 ==
+
+U -> SC: 검색어 입력
+SC -> SearchUC: execute(query, filters)
+SearchUC -> SearchS: search(query, filters)
+SearchS -> API: GET /search?q=query
+API -> BE: 검색 요청
+BE -> API: 검색 결과
+API -> SearchS: 검색 결과 반환
+SearchS -> SearchUC: 결과 반환
+SearchUC -> SC: 검색 결과 표시
+SC -> U: 검색 결과 렌더링
+
+' 실시간 알림 플로우
+participant "NotificationService" as NS
+participant "WebSocketClient" as WS2
+participant "ToastProvider" as TP
+participant "User" as U2
+
+== 실시간 알림 ==
+
+BE -> WS2: 알림 이벤트 발생
+WS2 -> NS: handleNotification(event)
+NS -> NS: processNotification(event)
+NS -> TP: showNotification(notification)
+TP -> U2: 토스트 알림 표시
+
+' 테마 변경 플로우
+participant "ThemeComponent" as TC
+participant "themeStore" as TS
+participant "ThemeContext" as ThC
+
+== 테마 변경 ==
+
+U -> TC: 테마 변경 요청
+TC -> TS: setTheme(theme)
+TS -> ThC: updateTheme(theme)
+ThC -> TC: 테마 적용
+TC -> U: UI 테마 변경 표시
+
+' 에러 처리 플로우
+participant "ErrorBoundary" as EB
+participant "ErrorHandler" as EH
+participant "ToastProvider" as TP2
+
+== 에러 처리 ==
+
+CC -> CC: 컴포넌트 에러 발생
+CC -> EB: 에러 캐치
+EB -> EH: handleError(error)
+EH -> TP2: showError(error)
+TP2 -> U: 에러 메시지 표시
+EB -> U: 폴백 UI 표시
+
+' 앱 초기화 플로우
+participant "main.tsx" as Main
+participant "App.tsx" as App
+participant "UseCaseFactory" as UCF
+participant "ControllerFactory" as CF
+participant "DI Container" as DI
+
+== 애플리케이션 초기화 ==
+
+Main -> App: 앱 시작
+App -> UCF: initialize()
+UCF -> DI: registerUseCases()
+DI -> UCF: 등록 완료
+App -> CF: initialize()
+CF -> DI: registerControllers()
+DI -> CF: 등록 완료
+App -> App: 앱 렌더링 준비 완료
+
+note over U, BE
+  **주요 특징:**
+  - 클린 아키텍처 원칙 적용
+  - 의존성 주입을 통한 느슨한 결합
+  - Zustand를 통한 상태 관리
+  - WebSocket을 통한 실시간 통신
+  - 에러 바운더리를 통한 안정성
+end note
+
+@enduml 

@@ -1,0 +1,30 @@
+@startuml
+title React Hook System Overview (Fiber 기반)
+
+package "React Core" {
+  [ReactFiber]
+  [Scheduler]
+  [Commit Phase]
+}
+
+package "Hook Layer" {
+  [HookDispatcher]
+  [HookList]
+  [EffectQueue]
+  [StateStore]
+  [RefStore]
+  [ReducerDispatcher]
+}
+
+[FunctionComponent] --> [HookDispatcher]
+[HookDispatcher] --> [HookList]
+[HookList] --> [StateStore] : useState
+[HookList] --> [RefStore] : useRef
+[HookList] --> [EffectQueue] : useEffect
+[HookList] --> [ReducerDispatcher] : useReducer
+
+[HookDispatcher] --> [ReactFiber] : 렌더 요청
+[ReactFiber] --> [Scheduler] : 작업 스케줄링
+[Scheduler] --> [Commit Phase] : DOM 변경 및 Effect 실행
+
+@enduml

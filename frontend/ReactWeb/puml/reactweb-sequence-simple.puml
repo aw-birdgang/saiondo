@@ -1,0 +1,67 @@
+@startuml ReactWeb Sequence Simple
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam participantBackgroundColor #F8F9FA
+skinparam participantBorderColor #2E86AB
+skinparam sequenceArrowColor #2E86AB
+
+title ReactWeb 프로젝트 - 단순화된 시퀀스 플로우
+
+participant "User" as U
+participant "Component" as C
+participant "Store" as S
+participant "UseCase" as UC
+participant "API" as API
+participant "Backend" as BE
+
+== 사용자 인증 플로우 ==
+
+U -> C: 로그인 시도
+C -> S: setLoading(true)
+C -> UC: authenticate(email, password)
+UC -> API: POST /auth/login
+API -> BE: 인증 요청
+BE -> API: JWT 토큰 반환
+API -> UC: 성공 응답
+UC -> S: setUser(user), setToken(token)
+S -> C: 인증 완료
+C -> U: 홈페이지로 리다이렉트
+
+== 실시간 채팅 ==
+
+U -> C: 메시지 전송
+C -> S: addMessage(message)
+C -> UC: sendMessage(channelId, content)
+UC -> API: WebSocket emit
+API -> BE: 메시지 브로드캐스트
+BE -> API: 메시지 수신 확인
+API -> UC: 전송 완료
+UC -> S: updateMessage(message)
+S -> C: UI 업데이트
+C -> U: 메시지 표시
+
+== 채널 생성 ==
+
+U -> C: 채널 생성 요청
+C -> S: setLoading(true)
+C -> UC: createChannel(channelData)
+UC -> API: POST /channels
+API -> BE: 채널 생성 요청
+BE -> API: 생성된 채널 정보
+API -> UC: 성공 응답
+UC -> S: addChannel(channel)
+S -> C: 채널 목록 업데이트
+C -> U: 새 채널 표시
+
+note over U, BE
+  **핵심 플로우:**
+  1. 사용자 액션
+  2. 컴포넌트 처리
+  3. 상태 업데이트
+  4. 비즈니스 로직
+  5. API 통신
+  6. 응답 처리
+  7. UI 업데이트
+end note
+
+@enduml 

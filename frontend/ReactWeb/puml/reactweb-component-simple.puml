@@ -1,0 +1,148 @@
+@startuml ReactWeb Component Simple
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #2E86AB
+skinparam arrowColor #2E86AB
+
+title ReactWeb 프로젝트 - 단순화된 컴포넌트 구조
+
+' 메인 앱 구조
+class App {
+  + render(): JSX.Element
+  + initializeServices(): void
+}
+
+' Context 구조
+class AuthContext {
+  + user: User | null
+  + login(): Promise<void>
+  + logout(): void
+}
+
+class UserContext {
+  + user: User | null
+  + updateUser(): void
+}
+
+class ThemeContext {
+  + theme: Theme
+  + toggleTheme(): void
+}
+
+' Zustand Stores
+class AuthStore {
+  + user: User | null
+  + token: string | null
+  + setUser(): void
+  + logout(): void
+}
+
+class UserStore {
+  + user: User | null
+  + setUser(): void
+  + clearUser(): void
+}
+
+class ChannelStore {
+  + channels: Channel[]
+  + currentChannel: Channel | null
+  + addChannel(): void
+  + setCurrentChannel(): void
+}
+
+' 컴포넌트 구조
+class AppRoutes {
+  + render(): JSX.Element
+}
+
+class AuthPage {
+  + handleSubmit(): void
+  + render(): JSX.Element
+}
+
+class ChatPage {
+  + sendMessage(): void
+  + render(): JSX.Element
+}
+
+class ChannelPage {
+  + createChannel(): void
+  + render(): JSX.Element
+}
+
+' 기능 컴포넌트
+class ChatComponent {
+  + sendMessage(): void
+  + render(): JSX.Element
+}
+
+class ChannelComponent {
+  + handleChannelSelect(): void
+  + render(): JSX.Element
+}
+
+' 커스텀 훅
+class useAuth {
+  + user: User | null
+  + login(): Promise<void>
+  + logout(): void
+}
+
+class useUser {
+  + user: User | null
+  + updateUser(): void
+}
+
+class useChannel {
+  + channels: Channel[]
+  + createChannel(): Promise<void>
+}
+
+' 핵심 관계만 표시
+App --> AppRoutes
+App --> AuthContext
+App --> UserContext
+App --> ThemeContext
+
+AuthContext --> AuthStore
+UserContext --> UserStore
+ThemeContext --> ChannelStore
+
+AppRoutes --> AuthPage
+AppRoutes --> ChatPage
+AppRoutes --> ChannelPage
+
+ChatPage --> ChatComponent
+ChannelPage --> ChannelComponent
+
+ChatComponent --> useAuth
+ChannelComponent --> useChannel
+AuthPage --> useAuth
+
+' 간단한 설명
+note right of AuthStore
+  **상태 관리:**
+  - Zustand Store
+  - 전역 상태 관리
+  - 컴포넌트 간 데이터 공유
+end note
+
+note right of useAuth
+  **커스텀 훅:**
+  - 비즈니스 로직 캡슐화
+  - 재사용 가능한 로직
+  - 컴포넌트와 Store 연결
+end note
+
+note bottom of App
+  **데이터 플로우:**
+  1. 사용자 액션
+  2. 컴포넌트
+  3. 커스텀 훅
+  4. Store
+  5. Context
+  6. UI 업데이트
+end note
+
+@enduml 

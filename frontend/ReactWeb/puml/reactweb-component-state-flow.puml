@@ -1,0 +1,337 @@
+@startuml ReactWeb Component State Flow
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #F8F9FA
+skinparam classBorderColor #2E86AB
+skinparam arrowColor #2E86AB
+skinparam noteBackgroundColor #FFF3CD
+skinparam noteBorderColor #FFC107
+
+title ReactWeb 프로젝트 - 컴포넌트 구조 및 상태 관리 흐름
+
+' 메인 앱 구조
+class App {
+  + render(): JSX.Element
+  + initializeServices(token: string): void
+  + initializeTheme(): void
+}
+
+class AppProviders {
+  + children: React.ReactNode
+  + render(): JSX.Element
+}
+
+class AppContent {
+  + token: string
+  + isInitialized: boolean
+  + useEffect(): void
+  + render(): JSX.Element
+}
+
+' Context 구조
+class AuthContext {
+  + user: User | null
+  + token: string | null
+  + isLoading: boolean
+  + login(email: string, password: string): Promise<void>
+  + logout(): void
+  + register(userData: RegisterData): Promise<void>
+  + refreshToken(): Promise<void>
+}
+
+class UserContext {
+  + user: User | null
+  + updateUser(user: User): void
+  + clearUser(): void
+  + getUserProfile(): Promise<User>
+}
+
+class ThemeContext {
+  + theme: Theme
+  + toggleTheme(): void
+  + setTheme(theme: Theme): void
+}
+
+class UseCaseContext {
+  + useCases: UseCaseRegistry
+  + getUseCase<T>(token: symbol): T
+  + registerUseCase(token: symbol, useCase: any): void
+}
+
+class ControllerProvider {
+  + controllers: Map<symbol, any>
+  + getController<T>(token: symbol): T
+  + registerController(token: symbol, controller: any): void
+}
+
+class QueryProvider {
+  + queryClient: QueryClient
+  + render(): JSX.Element
+}
+
+' Zustand Stores
+class AuthStore {
+  + user: User | null
+  + token: string | null
+  + isLoading: boolean
+  + isAuthenticated: boolean
+  + setUser(user: User): void
+  + setToken(token: string): void
+  + setLoading(loading: boolean): void
+  + logout(): void
+  + clearAuth(): void
+}
+
+class UserStore {
+  + user: User | null
+  + userProfile: UserProfile | null
+  + setUser(user: User): void
+  + setUserProfile(profile: UserProfile): void
+  + updateUser(updates: Partial<User>): void
+  + clearUser(): void
+}
+
+class ChannelStore {
+  + channels: Channel[]
+  + currentChannel: Channel | null
+  + isLoading: boolean
+  + setChannels(channels: Channel[]): void
+  + addChannel(channel: Channel): void
+  + setCurrentChannel(channel: Channel): void
+  + updateChannel(channelId: string, updates: Partial<Channel>): void
+  + removeChannel(channelId: string): void
+}
+
+class MessageStore {
+  + messages: Map<string, Message[]>
+  + isLoading: boolean
+  + addMessage(channelId: string, message: Message): void
+  + setMessages(channelId: string, messages: Message[]): void
+  + updateMessage(channelId: string, messageId: string, updates: Partial<Message>): void
+  + removeMessage(channelId: string, messageId: string): void
+  + clearMessages(channelId: string): void
+}
+
+class ThemeStore {
+  + theme: Theme
+  + isInitialized: boolean
+  + setTheme(theme: Theme): void
+  + toggleTheme(): void
+  + initializeTheme(): void
+}
+
+class UIStore {
+  + sidebarOpen: boolean
+  + modalOpen: boolean
+  + loadingStates: Map<string, boolean>
+  + setSidebarOpen(open: boolean): void
+  + setModalOpen(open: boolean): void
+  + setLoading(key: string, loading: boolean): void
+}
+
+' 컴포넌트 구조
+class AppRoutes {
+  + render(): JSX.Element
+  + getRoutes(): Route[]
+}
+
+class ErrorBoundary {
+  + hasError: boolean
+  + error: Error | null
+  + fallback: React.ComponentType
+  + componentDidCatch(error: Error, errorInfo: ErrorInfo): void
+  + render(): JSX.Element
+}
+
+class PageLoader {
+  + render(): JSX.Element
+}
+
+class AccessibilityProvider {
+  + isHighContrast: boolean
+  + fontSize: number
+  + setHighContrast(enabled: boolean): void
+  + setFontSize(size: number): void
+  + render(): JSX.Element
+}
+
+class ToastProvider {
+  + toasts: Toast[]
+  + addToast(toast: Toast): void
+  + removeToast(id: string): void
+  + render(): JSX.Element
+}
+
+' 페이지 컴포넌트
+class AuthPage {
+  + formData: LoginForm
+  + isLoading: boolean
+  + handleSubmit(): void
+  + handleInputChange(): void
+  + render(): JSX.Element
+}
+
+class ChatPage {
+  + channelId: string
+  + messages: Message[]
+  + isLoading: boolean
+  + sendMessage(): void
+  + loadMessages(): void
+  + render(): JSX.Element
+}
+
+class ChannelPage {
+  + channels: Channel[]
+  + selectedChannel: Channel | null
+  + isLoading: boolean
+  + createChannel(): void
+  + joinChannel(): void
+  + render(): JSX.Element
+}
+
+' 기능 컴포넌트
+class ChatComponent {
+  + channelId: string
+  + messages: Message[]
+  + inputValue: string
+  + sendMessage(): void
+  + handleInputChange(): void
+  + render(): JSX.Element
+}
+
+class ChannelComponent {
+  + channels: Channel[]
+  + selectedChannel: Channel | null
+  + handleChannelSelect(): void
+  + handleChannelCreate(): void
+  + render(): JSX.Element
+}
+
+class SearchComponent {
+  + query: string
+  + results: SearchResult[]
+  + isLoading: boolean
+  + handleSearch(): void
+  + handleInputChange(): void
+  + render(): JSX.Element
+}
+
+' 커스텀 훅
+class useAuth {
+  + user: User | null
+  + token: string | null
+  + isLoading: boolean
+  + login(): Promise<void>
+  + logout(): void
+  + register(): Promise<void>
+}
+
+class useUser {
+  + user: User | null
+  + userProfile: UserProfile | null
+  + updateUser(): void
+  + getUserProfile(): Promise<void>
+}
+
+class useChannel {
+  + channels: Channel[]
+  + currentChannel: Channel | null
+  + createChannel(): Promise<void>
+  + joinChannel(): Promise<void>
+  + leaveChannel(): Promise<void>
+}
+
+class useMessage {
+  + messages: Message[]
+  + sendMessage(): Promise<void>
+  + loadMessages(): Promise<void>
+  + updateMessage(): Promise<void>
+}
+
+' 관계 정의
+App --> AppProviders
+App --> AppContent
+AppProviders --> AuthContext
+AppProviders --> UserContext
+AppProviders --> ThemeContext
+AppProviders --> UseCaseContext
+AppProviders --> ControllerProvider
+AppProviders --> QueryProvider
+AppProviders --> AccessibilityProvider
+AppProviders --> ToastProvider
+
+AppContent --> AppRoutes
+AppContent --> ErrorBoundary
+AppContent --> PageLoader
+
+' Context와 Store 관계
+AuthContext --> AuthStore
+UserContext --> UserStore
+ThemeContext --> ThemeStore
+UseCaseContext --> UseCaseRegistry
+ControllerProvider --> ControllerFactory
+
+' 페이지와 컴포넌트 관계
+AppRoutes --> AuthPage
+AppRoutes --> ChatPage
+AppRoutes --> ChannelPage
+
+ChatPage --> ChatComponent
+ChannelPage --> ChannelComponent
+AuthPage --> SearchComponent
+
+' 컴포넌트와 훅 관계
+ChatComponent --> useMessage
+ChannelComponent --> useChannel
+SearchComponent --> useAuth
+AuthPage --> useAuth
+
+' Store 간 관계
+AuthStore --> UserStore
+ChannelStore --> MessageStore
+UIStore --> ThemeStore
+
+' 상태 관리 흐름
+note right of AuthStore
+  **인증 상태 관리:**
+  1. AuthStore에서 인증 상태 관리
+  2. AuthContext를 통해 컴포넌트에 제공
+  3. 로그인/로그아웃 시 상태 업데이트
+  4. 토큰 기반 인증 처리
+end note
+
+note right of ChannelStore
+  **채널 상태 관리:**
+  1. ChannelStore에서 채널 목록 관리
+  2. 현재 선택된 채널 상태 관리
+  3. 채널 생성/삭제/업데이트 처리
+  4. MessageStore와 연동하여 메시지 관리
+end note
+
+note right of MessageStore
+  **메시지 상태 관리:**
+  1. 채널별 메시지 목록 관리
+  2. 실시간 메시지 추가/업데이트
+  3. WebSocket을 통한 실시간 동기화
+  4. 메시지 캐싱 및 최적화
+end note
+
+note bottom of ThemeStore
+  **테마 상태 관리:**
+  1. 다크/라이트 테마 전환
+  2. 사용자 설정 저장
+  3. 시스템 테마 감지
+  4. CSS 변수를 통한 테마 적용
+end note
+
+' 데이터 플로우
+note left of App
+  **데이터 플로우:**
+  1. 사용자 액션 → 컴포넌트
+  2. 컴포넌트 → 커스텀 훅
+  3. 커스텀 훅 → Store
+  4. Store → Context → 컴포넌트
+  5. UI 업데이트
+end note
+
+@enduml 

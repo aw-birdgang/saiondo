@@ -1,0 +1,17 @@
+@startuml
+title useRef 내부 작동 구조
+
+actor Developer
+entity FunctionComponent
+database HookRefStore
+
+Developer --> FunctionComponent : useRef()
+FunctionComponent --> HookRefStore : ref 객체 초기화 or 재사용
+HookRefStore --> FunctionComponent : { current }
+
+note right of HookRefStore
+ref 값은 렌더링과 무관하며
+변경되어도 컴포넌트는 다시 렌더링되지 않음
+end note
+
+@enduml

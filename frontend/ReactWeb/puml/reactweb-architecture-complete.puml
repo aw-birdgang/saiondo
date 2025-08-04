@@ -1,0 +1,364 @@
+@startuml ReactWeb Architecture Complete
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam arrowColor #2E86AB
+skinparam componentBackgroundColor #F8F9FA
+skinparam packageBackgroundColor #E9ECEF
+skinparam noteBackgroundColor #FFF3CD
+skinparam noteBorderColor #FFC107
+
+title ReactWeb 프로젝트 - 클린 아키텍처 구조
+
+package "Presentation Layer" as Presentation {
+  package "Components" as Components {
+    component "App.tsx" as App
+    component "AppRoutes.tsx" as AppRoutes
+    component "ErrorBoundary" as ErrorBoundary
+    component "PageLoader" as PageLoader
+    
+    package "Common Components" as CommonComponents {
+      component "AccessibilityProvider" as AccessibilityProvider
+      component "ToastProvider" as ToastProvider
+    }
+    
+    package "Layout Components" as LayoutComponents {
+      component "Header" as Header
+      component "Sidebar" as Sidebar
+      component "Footer" as Footer
+    }
+    
+    package "Feature Components" as FeatureComponents {
+      component "ChatComponent" as ChatComponent
+      component "ChannelComponent" as ChannelComponent
+      component "UserComponent" as UserComponent
+      component "SearchComponent" as SearchComponent
+      component "PaymentComponent" as PaymentComponent
+    }
+  }
+  
+  package "Pages" as Pages {
+    component "AuthPage" as AuthPage
+    component "ChatPage" as ChatPage
+    component "ChannelPage" as ChannelPage
+    component "UserPage" as UserPage
+  }
+  
+  package "Hooks" as Hooks {
+    component "useAuth" as useAuth
+    component "useUser" as useUser
+    component "useChannel" as useChannel
+    component "useMessage" as useMessage
+  }
+  
+  package "Routes" as Routes {
+    component "AppRoutes" as AppRoutesComponent
+    component "RouteGuards" as RouteGuards
+  }
+}
+
+package "Contexts" as Contexts {
+  component "AuthContext" as AuthContext
+  component "UserContext" as UserContext
+  component "ThemeContext" as ThemeContext
+  component "UseCaseContext" as UseCaseContext
+  component "ControllerProvider" as ControllerProvider
+  component "QueryProvider" as QueryProvider
+}
+
+package "Stores (Zustand)" as Stores {
+  component "authStore" as AuthStore
+  component "userStore" as UserStore
+  component "channelStore" as ChannelStore
+  component "messageStore" as MessageStore
+  component "themeStore" as ThemeStore
+  component "uiStore" as UIStore
+}
+
+package "Application Layer" as Application {
+  package "Use Cases" as UseCases {
+    component "UserUseCases" as UserUseCases
+    component "ChannelUseCases" as ChannelUseCases
+    component "MessageUseCases" as MessageUseCases
+    component "SearchUseCase" as SearchUseCase
+    component "PaymentUseCase" as PaymentUseCase
+    component "NotificationUseCase" as NotificationUseCase
+    component "AnalyticsUseCase" as AnalyticsUseCase
+    component "SystemManagementUseCase" as SystemManagementUseCase
+  }
+  
+  package "Controllers" as Controllers {
+    component "UserController" as UserController
+    component "ChannelController" as ChannelController
+    component "MessageController" as MessageController
+    component "AuthController" as AuthController
+  }
+  
+  package "Services" as AppServices {
+    component "AuthService" as AuthService
+    component "NotificationService" as NotificationService
+    component "FileUploadService" as FileUploadService
+  }
+  
+  package "DTOs" as AppDTOs {
+    component "UserDTO" as UserDTO
+    component "ChannelDTO" as ChannelDTO
+    component "MessageDTO" as MessageDTO
+  }
+}
+
+package "Domain Layer" as Domain {
+  package "Entities" as Entities {
+    component "User" as UserEntity
+    component "Channel" as ChannelEntity
+    component "Message" as MessageEntity
+  }
+  
+  package "Value Objects" as ValueObjects {
+    component "Email" as EmailVO
+    component "UserId" as UserIdVO
+    component "ChannelId" as ChannelIdVO
+    component "MessageId" as MessageIdVO
+  }
+  
+  package "Repository Interfaces" as RepoInterfaces {
+    component "IUserRepository" as IUserRepository
+    component "IChannelRepository" as IChannelRepository
+    component "IMessageRepository" as IMessageRepository
+  }
+  
+  package "Domain Services" as DomainServices {
+    component "UserDomainService" as UserDomainService
+    component "ChannelDomainService" as ChannelDomainService
+  }
+  
+  package "Domain Errors" as DomainErrors {
+    component "DomainError" as DomainError
+    component "UserNotFoundError" as UserNotFoundError
+    component "ChannelNotFoundError" as ChannelNotFoundError
+  }
+  
+  package "Domain Types" as DomainTypes {
+    component "UserStatus" as UserStatus
+    component "MessageType" as MessageType
+    component "ChannelType" as ChannelType
+  }
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  package "API" as API {
+    component "ApiClient" as ApiClient
+    component "endpoints.ts" as Endpoints
+    component "FileUploadService" as FileUploadInfra
+  }
+  
+  package "Repository Implementations" as RepoImpls {
+    component "UserRepositoryImpl" as UserRepositoryImpl
+    component "ChannelRepositoryImpl" as ChannelRepositoryImpl
+    component "MessageRepositoryImpl" as MessageRepositoryImpl
+  }
+  
+  package "External Services" as ExternalServices {
+    component "WebSocketClient" as WebSocketClient
+    component "FirebaseService" as FirebaseService
+    component "PaymentGateway" as PaymentGateway
+    component "NotificationService" as NotificationInfra
+  }
+  
+  package "Cache" as Cache {
+    component "RedisCache" as RedisCache
+    component "LocalStorage" as LocalStorage
+  }
+  
+  package "Storage" as Storage {
+    component "FileStorage" as FileStorage
+    component "ImageStorage" as ImageStorage
+  }
+}
+
+package "Dependency Injection" as DI {
+  component "container.ts" as Container
+  component "UseCaseRegistry.ts" as UseCaseRegistry
+  component "UseCaseFactory" as UseCaseFactory
+  component "ControllerFactory" as ControllerFactory
+  component "DI_TOKENS" as DITokens
+}
+
+package "Shared" as Shared {
+  package "Constants" as Constants {
+    component "API_ENDPOINTS" as APIEndpoints
+    component "APP_CONFIG" as AppConfig
+  }
+  
+  package "Types" as SharedTypes {
+    component "ApiResponse" as ApiResponse
+    component "AppState" as AppState
+  }
+  
+  package "Utils" as Utils {
+    component "dateUtils" as DateUtils
+    component "validationUtils" as ValidationUtils
+    component "formatUtils" as FormatUtils
+  }
+}
+
+package "Configuration" as Config {
+  component "main.tsx" as MainEntry
+  component "vite.config.ts" as ViteConfig
+  component "tsconfig.json" as TSConfig
+  component "tailwind.config.js" as TailwindConfig
+  component "package.json" as PackageJson
+}
+
+' 의존성 관계 정의
+' Presentation Layer 의존성
+App --> AppRoutes
+App --> ErrorBoundary
+App --> PageLoader
+App --> CommonComponents
+App --> Contexts
+App --> Stores
+
+AppRoutes --> Pages
+AppRoutes --> RouteGuards
+Pages --> FeatureComponents
+FeatureComponents --> Hooks
+
+' Contexts 의존성
+AuthContext --> AuthStore
+UserContext --> UserStore
+ThemeContext --> ThemeStore
+UseCaseContext --> UseCaseFactory
+ControllerProvider --> ControllerFactory
+QueryProvider --> Application
+
+' Stores 의존성
+AuthStore --> AuthService
+UserStore --> UserUseCases
+ChannelStore --> ChannelUseCases
+MessageStore --> MessageUseCases
+
+' Application Layer 의존성
+UserUseCases --> UserController
+ChannelUseCases --> ChannelController
+MessageUseCases --> MessageController
+SearchUseCase --> SearchComponent
+PaymentUseCase --> PaymentComponent
+
+UserController --> UserEntity
+ChannelController --> ChannelEntity
+MessageController --> MessageEntity
+
+AuthService --> AuthEntity
+NotificationService --> NotificationInfra
+FileUploadService --> FileUploadInfra
+
+' Domain Layer 의존성
+UserEntity --> EmailVO
+UserEntity --> UserIdVO
+ChannelEntity --> ChannelIdVO
+MessageEntity --> MessageIdVO
+
+UserEntity --> UserStatus
+MessageEntity --> MessageType
+ChannelEntity --> ChannelType
+
+IUserRepository --> UserEntity
+IChannelRepository --> ChannelEntity
+IMessageRepository --> MessageEntity
+
+' Infrastructure Layer 의존성
+UserRepositoryImpl --> IUserRepository
+ChannelRepositoryImpl --> IChannelRepository
+MessageRepositoryImpl --> IMessageRepository
+
+UserRepositoryImpl --> ApiClient
+ChannelRepositoryImpl --> ApiClient
+MessageRepositoryImpl --> ApiClient
+
+ApiClient --> Endpoints
+WebSocketClient --> MessageEntity
+FirebaseService --> AuthEntity
+PaymentGateway --> PaymentUseCase
+
+' DI 의존성
+Container --> DITokens
+UseCaseRegistry --> Container
+UseCaseFactory --> UseCaseRegistry
+ControllerFactory --> Container
+
+' Shared 의존성
+APIEndpoints --> Endpoints
+AppConfig --> Container
+ApiResponse --> ApiClient
+AppState --> Stores
+
+' Configuration 의존성
+MainEntry --> App
+MainEntry --> DI
+ViteConfig --> MainEntry
+TSConfig --> MainEntry
+PackageJson --> MainEntry
+
+' 외부 라이브러리 의존성
+note right of Presentation
+  External Libraries:
+  - React 19.1.0
+  - React Router DOM 7.7.1
+  - Zustand 5.0.7
+  - TanStack Query 5.83.0
+  - Axios 1.11.0
+  - Firebase 11.0.0
+  - Socket.io-client 4.8.1
+  - React Hook Form 7.51.0
+  - Tailwind CSS 3.4.0
+end note
+
+' 아키텍처 원칙 설명
+note bottom of Domain
+  **Domain Layer (가장 안쪽)**
+  - 비즈니스 로직과 규칙 포함
+  - 외부 계층에 의존하지 않음
+  - 순수한 도메인 모델
+end note
+
+note bottom of Application
+  **Application Layer**
+  - 도메인 계층을 조합하여 기능 구현
+  - 도메인 계층에만 의존
+  - 유스케이스와 애플리케이션 서비스
+end note
+
+note bottom of Infrastructure
+  **Infrastructure Layer**
+  - 외부 시스템과의 통신
+  - 도메인 인터페이스 구현
+  - 데이터 영속성 담당
+end note
+
+note bottom of Presentation
+  **Presentation Layer**
+  - 사용자 인터페이스
+  - 애플리케이션 계층에 의존
+  - React 컴포넌트와 훅
+end note
+
+' 데이터 흐름
+note right of Stores
+  **상태 관리 흐름:**
+  1. Zustand Store에서 상태 관리
+  2. Context를 통한 전역 상태 공유
+  3. 컴포넌트에서 Store 직접 접근
+  4. 비동기 작업은 UseCase를 통해 처리
+end note
+
+note left of DI
+  **의존성 주입:**
+  1. Container에서 서비스 등록
+  2. Factory 패턴으로 인스턴스 생성
+  3. Registry를 통한 UseCase 관리
+  4. Context를 통한 컴포넌트 주입
+end note
+
+@enduml 

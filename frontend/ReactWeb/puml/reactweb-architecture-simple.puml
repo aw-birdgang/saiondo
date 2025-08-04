@@ -1,0 +1,105 @@
+@startuml ReactWeb Architecture Simple
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam arrowColor #2E86AB
+skinparam componentBackgroundColor #F8F9FA
+skinparam packageBackgroundColor #E9ECEF
+
+title ReactWeb 프로젝트 - 단순화된 아키텍처 구조
+
+package "Presentation Layer" as Presentation {
+  component "App.tsx" as App
+  component "Components" as Components
+  component "Pages" as Pages
+  component "Hooks" as Hooks
+}
+
+package "Contexts & Stores" as ContextsStores {
+  component "AuthContext" as AuthContext
+  component "UserContext" as UserContext
+  component "ThemeContext" as ThemeContext
+  component "authStore" as AuthStore
+  component "userStore" as UserStore
+  component "channelStore" as ChannelStore
+}
+
+package "Application Layer" as Application {
+  component "UseCases" as UseCases
+  component "Controllers" as Controllers
+  component "Services" as Services
+}
+
+package "Domain Layer" as Domain {
+  component "Entities" as Entities
+  component "Value Objects" as ValueObjects
+  component "Repository Interfaces" as RepoInterfaces
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  component "API Client" as ApiClient
+  component "Repository Impls" as RepoImpls
+  component "WebSocket" as WebSocket
+  component "External Services" as ExternalServices
+}
+
+package "DI & Shared" as DIShared {
+  component "DI Container" as Container
+  component "UseCase Registry" as Registry
+  component "Shared Utils" as Utils
+}
+
+' 핵심 의존성 관계만 표시
+App --> Components
+App --> Pages
+Components --> Hooks
+Pages --> Components
+
+App --> ContextsStores
+ContextsStores --> Application
+
+Application --> Domain
+Infrastructure --> Domain
+
+Application --> Infrastructure
+DIShared --> Application
+DIShared --> Infrastructure
+
+' 간단한 설명
+note right of Presentation
+  **Presentation Layer**
+  - React 컴포넌트
+  - 페이지와 훅
+  - 사용자 인터페이스
+end note
+
+note right of ContextsStores
+  **Contexts & Stores**
+  - React Context
+  - Zustand Store
+  - 상태 관리
+end note
+
+note right of Application
+  **Application Layer**
+  - 유스케이스
+  - 컨트롤러
+  - 비즈니스 로직
+end note
+
+note right of Domain
+  **Domain Layer**
+  - 엔티티
+  - 값 객체
+  - 도메인 규칙
+end note
+
+note right of Infrastructure
+  **Infrastructure Layer**
+  - API 통신
+  - 외부 서비스
+  - 데이터 접근
+end note
+
+@enduml 

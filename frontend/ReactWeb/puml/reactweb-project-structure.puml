@@ -1,0 +1,441 @@
+@startuml ReactWeb Project Structure
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam packageBackgroundColor #E9ECEF
+skinparam packageBorderColor #2E86AB
+skinparam componentBackgroundColor #F8F9FA
+skinparam componentBorderColor #6C757D
+skinparam fileBackgroundColor #FFFFFF
+skinparam fileBorderColor #ADB5BD
+skinparam noteBackgroundColor #FFF3CD
+skinparam noteBorderColor #FFC107
+
+title ReactWeb 프로젝트 - 전체 파일 구조
+
+package "frontend/ReactWeb/" as Root {
+  package "src/" as Src {
+    package "app/" as App {
+      file "App.tsx" as AppTSX
+      file "di/" as AppDI {
+        file "index.ts" as AppDIIndex
+        file "i18n.ts" as AppDII18n
+        file "languageUtils.ts" as AppDILangUtils
+      }
+    }
+    
+    package "main.tsx" as MainTSX
+    package "index.css" as IndexCSS
+    package "vite-env.d.ts" as ViteEnv
+    
+    package "domain/" as Domain {
+      package "entities/" as Entities {
+        file "User.ts" as UserEntity
+        file "Channel.ts" as ChannelEntity
+        file "Message.ts" as MessageEntity
+        file "index.ts" as EntitiesIndex
+        file "README.md" as EntitiesReadme
+      }
+      
+      package "value-objects/" as ValueObjects {
+        file "Email.ts" as EmailVO
+        file "UserId.ts" as UserIdVO
+        file "ChannelId.ts" as ChannelIdVO
+        file "MessageId.ts" as MessageIdVO
+        file "index.ts" as ValueObjectsIndex
+      }
+      
+      package "repositories/" as RepoInterfaces {
+        file "IUserRepository.ts" as IUserRepo
+        file "IChannelRepository.ts" as IChannelRepo
+        file "IMessageRepository.ts" as IMessageRepo
+        file "index.ts" as RepoInterfacesIndex
+      }
+      
+      package "services/" as DomainServices {
+        file "UserDomainService.ts" as UserDomainService
+        file "ChannelDomainService.ts" as ChannelDomainService
+      }
+      
+      package "errors/" as DomainErrors {
+        file "DomainError.ts" as DomainError
+        file "UserNotFoundError.ts" as UserNotFoundError
+        file "ChannelNotFoundError.ts" as ChannelNotFoundError
+      }
+      
+      package "types/" as DomainTypes {
+        file "UserStatus.ts" as UserStatus
+        file "MessageType.ts" as MessageType
+        file "ChannelType.ts" as ChannelType
+      }
+      
+      package "events/" as DomainEvents {
+        file "UserEvents.ts" as UserEvents
+        file "ChannelEvents.ts" as ChannelEvents
+        file "MessageEvents.ts" as MessageEvents
+      }
+      
+      package "dto/" as DomainDTOs {
+        file "UserDTO.ts" as UserDTO
+        file "ChannelDTO.ts" as ChannelDTO
+        file "MessageDTO.ts" as MessageDTO
+      }
+      
+      file "ENTITIES_DTO_SEPARATION.md" as DomainReadme
+    }
+    
+    package "application/" as Application {
+      package "usecases/" as UseCases {
+        file "UserUseCases.ts" as UserUseCases
+        file "ChannelUseCases.ts" as ChannelUseCases
+        file "MessageUseCases.ts" as MessageUseCases
+        file "SearchUseCase.ts" as SearchUseCase
+        file "PaymentUseCase.ts" as PaymentUseCase
+        file "NotificationUseCase.ts" as NotificationUseCase
+        file "AnalyticsUseCase.ts" as AnalyticsUseCase
+        file "SystemManagementUseCase.ts" as SystemManagementUseCase
+        file "AuthenticateUserUseCase.ts" as AuthUseCase
+        file "RegisterUserUseCase.ts" as RegisterUseCase
+        file "CreateChannelUseCase.ts" as CreateChannelUseCase
+        file "SendMessageUseCase.ts" as SendMessageUseCase
+        file "UploadFileUseCase.ts" as UploadFileUseCase
+        file "UseCaseFactory.ts" as UseCaseFactory
+        file "index.ts" as UseCasesIndex
+        file "README.md" as UseCasesReadme
+        file "README_DI_REFACTORING.md" as UseCasesDIReadme
+        
+        package "interfaces/" as UseCaseInterfaces {
+          file "IUseCase.ts" as IUseCase
+          file "IUseCaseFactory.ts" as IUseCaseFactory
+        }
+      }
+      
+      package "controllers/" as Controllers {
+        file "UserController.ts" as UserController
+        file "ChannelController.ts" as ChannelController
+        file "MessageController.ts" as MessageController
+        file "AuthController.ts" as AuthController
+        file "ControllerFactory.ts" as ControllerFactory
+      }
+      
+      package "services/" as AppServices {
+        file "AuthService.ts" as AuthService
+        file "NotificationService.ts" as NotificationService
+        file "FileUploadService.ts" as FileUploadService
+      }
+      
+      package "dto/" as AppDTOs {
+        file "UserDTO.ts" as AppUserDTO
+        file "ChannelDTO.ts" as AppChannelDTO
+        file "MessageDTO.ts" as AppMessageDTO
+      }
+      
+      file "USECASE_DTO_SEPARATION.md" as AppReadme
+    }
+    
+    package "infrastructure/" as Infrastructure {
+      package "api/" as API {
+        file "ApiClient.ts" as ApiClient
+        file "endpoints.ts" as Endpoints
+        file "index.ts" as APIIndex
+        file "FileUploadService.ts" as FileUploadInfra
+        
+        package "services/" as APIServices {
+          file "UserApiService.ts" as UserApiService
+          file "ChannelApiService.ts" as ChannelApiService
+          file "MessageApiService.ts" as MessageApiService
+        }
+      }
+      
+      package "repositories/" as RepoImpls {
+        file "UserRepositoryImpl.ts" as UserRepoImpl
+        file "ChannelRepositoryImpl.ts" as ChannelRepoImpl
+        file "MessageRepositoryImpl.ts" as MessageRepoImpl
+        file "index.ts" as RepoImplsIndex
+      }
+      
+      package "websocket/" as WebSocket {
+        file "WebSocketClient.ts" as WebSocketClient
+        file "WebSocketService.ts" as WebSocketService
+      }
+      
+      package "cache/" as Cache {
+        file "RedisCache.ts" as RedisCache
+        file "LocalStorage.ts" as LocalStorage
+        file "CacheService.ts" as CacheService
+      }
+      
+      package "storage/" as Storage {
+        file "FileStorage.ts" as FileStorage
+        file "ImageStorage.ts" as ImageStorage
+        file "StorageService.ts" as StorageService
+      }
+      
+      package "payment/" as Payment {
+        file "PaymentGateway.ts" as PaymentGateway
+        file "PaymentService.ts" as PaymentService
+      }
+      
+      package "notification/" as Notification {
+        file "FirebaseService.ts" as FirebaseService
+        file "PushNotificationService.ts" as PushNotificationService
+      }
+    }
+    
+    package "presentation/" as Presentation {
+      package "components/" as Components {
+        file "LazyLoader.tsx" as LazyLoader
+        file "index.ts" as ComponentsIndex
+        file "README.md" as ComponentsReadme
+        
+        package "common/" as CommonComponents {
+          file "AccessibilityProvider.tsx" as AccessibilityProvider
+          file "ToastProvider.tsx" as ToastProvider
+          file "Button.tsx" as Button
+          file "Input.tsx" as Input
+          file "Modal.tsx" as Modal
+        }
+        
+        package "layout/" as LayoutComponents {
+          file "Header.tsx" as Header
+          file "Sidebar.tsx" as Sidebar
+          file "Footer.tsx" as Footer
+          file "Layout.tsx" as Layout
+        }
+        
+        package "specific/" as SpecificComponents {
+          file "ChatComponent.tsx" as ChatComponent
+          file "ChannelComponent.tsx" as ChannelComponent
+          file "UserComponent.tsx" as UserComponent
+          file "SearchComponent.tsx" as SearchComponent
+          file "PaymentComponent.tsx" as PaymentComponent
+        }
+        
+        package "providers/" as ComponentProviders {
+          file "ToastProvider.tsx" as ComponentToastProvider
+          file "ThemeProvider.tsx" as ComponentThemeProvider
+        }
+        
+        package "optimized/" as OptimizedComponents {
+          file "OptimizedChat.tsx" as OptimizedChat
+          file "OptimizedChannel.tsx" as OptimizedChannel
+        }
+        
+        package "debug/" as DebugComponents {
+          file "DebugPanel.tsx" as DebugPanel
+          file "StateViewer.tsx" as StateViewer
+        }
+      }
+      
+      package "pages/" as Pages {
+        file "AuthPage.tsx" as AuthPage
+        file "ChatPage.tsx" as ChatPage
+        file "ChannelPage.tsx" as ChannelPage
+        file "UserPage.tsx" as UserPage
+        file "index.ts" as PagesIndex
+      }
+      
+      package "hooks/" as Hooks {
+        file "useAuth.ts" as useAuth
+        file "useUser.ts" as useUser
+        file "useChannel.ts" as useChannel
+        file "useMessage.ts" as useMessage
+        file "useWebSocket.ts" as useWebSocket
+        file "useLocalStorage.ts" as useLocalStorage
+      }
+      
+      package "routes/" as Routes {
+        file "AppRoutes.tsx" as AppRoutes
+        file "RouteGuards.tsx" as RouteGuards
+        file "ProtectedRoute.tsx" as ProtectedRoute
+      }
+      
+      package "boundaries/" as Boundaries {
+        file "ErrorBoundary.tsx" as ErrorBoundary
+        file "LoadingBoundary.tsx" as LoadingBoundary
+      }
+      
+      package "guards/" as Guards {
+        file "AuthGuard.tsx" as AuthGuard
+        file "RoleGuard.tsx" as RoleGuard
+      }
+      
+      file "index.ts" as PresentationIndex
+    }
+    
+    package "contexts/" as Contexts {
+      file "AuthContext.tsx" as AuthContext
+      file "UserContext.tsx" as UserContext
+      file "ThemeContext.tsx" as ThemeContext
+      file "UseCaseContext.tsx" as UseCaseContext
+      file "ControllerProvider.tsx" as ControllerProvider
+      file "QueryProvider.tsx" as QueryProvider
+      file "index.ts" as ContextsIndex
+    }
+    
+    package "stores/" as Stores {
+      file "authStore.ts" as AuthStore
+      file "userStore.ts" as UserStore
+      file "channelStore.ts" as ChannelStore
+      file "messageStore.ts" as MessageStore
+      file "themeStore.ts" as ThemeStore
+      file "uiStore.ts" as UIStore
+      file "index.ts" as StoresIndex
+      
+      package "__tests__/" as StoreTests {
+        file "authStore.test.ts" as AuthStoreTest
+        file "userStore.test.ts" as UserStoreTest
+      }
+    }
+    
+    package "di/" as DI {
+      file "container.ts" as Container
+      file "UseCaseRegistry.ts" as UseCaseRegistry
+      file "README.md" as DIReadme
+    }
+    
+    package "shared/" as Shared {
+      package "constants/" as Constants {
+        file "API_ENDPOINTS.ts" as APIEndpoints
+        file "APP_CONFIG.ts" as AppConfig
+        file "THEME_CONFIG.ts" as ThemeConfig
+      }
+      
+      package "types/" as SharedTypes {
+        file "ApiResponse.ts" as ApiResponse
+        file "AppState.ts" as AppState
+        file "CommonTypes.ts" as CommonTypes
+      }
+      
+      package "utils/" as Utils {
+        file "dateUtils.ts" as DateUtils
+        file "validationUtils.ts" as ValidationUtils
+        file "formatUtils.ts" as FormatUtils
+        file "storageUtils.ts" as StorageUtils
+      }
+      
+      file "index.ts" as SharedIndex
+    }
+    
+    file "CLEAN_ARCHITECTURE_STRUCTURE.md" as CleanArchReadme
+  }
+  
+  package "public/" as Public {
+    file "index.html" as IndexHTML
+    file "favicon.ico" as Favicon
+    file "manifest.json" as Manifest
+    file "firebase-messaging-sw.js" as FirebaseSW
+  }
+  
+  package "scripts/" as Scripts {
+    file "setup-pnpm.sh" as SetupScript
+    file "validate-translations.js" as ValidateTranslations
+  }
+  
+  package "puml/" as Puml {
+    file "architecture-diagram.puml" as ArchDiagram
+    file "data-flow-sequence.puml" as DataFlowSeq
+    file "project-structure.puml" as ProjectStructure
+  }
+  
+  package "docs/" as Docs {
+    file "ARCHITECTURE_SUMMARY.md" as ArchSummary
+    file "FINAL_ARCHITECTURE.md" as FinalArch
+    file "PRACTICAL_EXAMPLES.md" as PracticalExamples
+  }
+  
+  ' Configuration files
+  file "package.json" as PackageJson
+  file "tsconfig.json" as TSConfig
+  file "tsconfig.app.json" as TSConfigApp
+  file "tsconfig.node.json" as TSConfigNode
+  file "vite.config.ts" as ViteConfig
+  file "tailwind.config.js" as TailwindConfig
+  file "postcss.config.js" as PostCSSConfig
+  file "eslint.config.js" as ESLintConfig
+  file "index.html" as RootIndexHTML
+  file "env.example" as EnvExample
+  file "nginx.conf" as NginxConfig
+  file "Dockerfile" as Dockerfile
+  file "docker-compose.yml" as DockerCompose
+  file ".npmrc" as Npmrc
+  file ".gitignore" as Gitignore
+  file ".dockerignore" as Dockerignore
+  
+  ' Documentation files
+  file "README.md" as RootReadme
+  file "ARCHITECTURE.md" as ArchitectureMD
+  file "ARCHITECTURE_DIAGRAM.md" as ArchitectureDiagramMD
+  file "CLEAN_ARCHITECTURE_IMPROVEMENTS_SUMMARY.md" as CleanArchSummary
+  file "REACT_CLEAN_ARCHITECTURE_IMPROVEMENTS.md" as ReactCleanArch
+  file "PROJECT_STRUCTURE_ANALYSIS.md" as ProjectStructureAnalysis
+  file "I18N_IMPROVEMENT_GUIDE.md" as I18nGuide
+  file "COMPONENT_OPTIMIZATION_GUIDE.md" as ComponentOptimization
+  file "TODO_COMPLETION_SUMMARY.md" as TodoSummary
+  file "OPTIMIZATION_SUMMARY.md" as OptimizationSummary
+}
+
+' 주요 관계 표시
+MainTSX --> AppTSX
+AppTSX --> Contexts
+AppTSX --> Stores
+AppTSX --> Presentation
+
+Domain --> Application
+Application --> Infrastructure
+Presentation --> Application
+
+Contexts --> Stores
+Stores --> Application
+
+DI --> Application
+DI --> Infrastructure
+
+' 아키텍처 계층 설명
+note right of Domain
+  **Domain Layer**
+  - 비즈니스 엔티티
+  - 값 객체
+  - 리포지토리 인터페이스
+  - 도메인 서비스
+  - 도메인 에러
+end note
+
+note right of Application
+  **Application Layer**
+  - 유스케이스
+  - 컨트롤러
+  - 애플리케이션 서비스
+  - DTO
+end note
+
+note right of Infrastructure
+  **Infrastructure Layer**
+  - API 클라이언트
+  - 리포지토리 구현체
+  - 외부 서비스
+  - 캐시/스토리지
+end note
+
+note right of Presentation
+  **Presentation Layer**
+  - React 컴포넌트
+  - 페이지
+  - 커스텀 훅
+  - 라우팅
+end note
+
+note bottom of Root
+  **프로젝트 특징:**
+  - 클린 아키텍처 적용
+  - TypeScript 기반
+  - Vite 빌드 도구
+  - Tailwind CSS 스타일링
+  - Zustand 상태 관리
+  - 의존성 주입 패턴
+  - 실시간 WebSocket 통신
+  - Firebase 통합
+  - 다국어 지원 (i18n)
+  - 접근성 고려
+end note
+
+@enduml 
