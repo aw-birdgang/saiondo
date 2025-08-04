@@ -5,17 +5,21 @@ import "./index.css";
 import "./app/di/i18n"; // Import i18n configuration to initialize it
 import { initializeLanguage } from "./app/di/languageUtils"; // Initialize language
 import { UseCaseFactory } from "./application/usecases/UseCaseFactory"; // Import UseCase factory
+import { ControllerFactory } from "./application/controllers/ControllerFactory"; // Import Controller factory
 
 // Initialize language settings
 initializeLanguage();
 
-// Initialize UseCase registry
+// Initialize UseCase registry and Controller factory
 async function initializeApp() {
   try {
     await UseCaseFactory.initialize();
     console.log('UseCase registry initialized successfully');
+    
+    await ControllerFactory.getInstance().initialize();
+    console.log('Controller factory initialized successfully');
   } catch (error) {
-    console.error('Failed to initialize UseCase registry:', error);
+    console.error('Failed to initialize application:', error);
   }
 }
 

@@ -1,12 +1,6 @@
 import { BaseController } from './BaseController';
 import { UseCaseFactory } from '../usecases/UseCaseFactory';
-import { GetCurrentUserUseCase } from '../usecases/GetCurrentUserUseCase';
-import { AuthenticateUserUseCase } from '../usecases/AuthenticateUserUseCase';
-import { RegisterUserUseCase } from '../usecases/RegisterUserUseCase';
-import { UpdateUserUseCase } from '../usecases/UpdateUserUseCase';
-import { LogoutUserUseCase } from '../usecases/LogoutUserUseCase';
-import { UserActivityLogUseCase } from '../usecases/UserActivityLogUseCase';
-import { UserPermissionUseCase } from '../usecases/UserPermissionUseCase';
+import type { IUseCase } from '../usecases/interfaces/IUseCase';
 import type { User } from '../../domain/dto/UserDto';
 import type { UserActivityDto } from '../dto/UserActivityDto';
 import type { UserPermissionDto } from '../dto/UserPermissionDto';
@@ -15,25 +9,51 @@ import type { UserPermissionDto } from '../dto/UserPermissionDto';
  * UserController - 사용자 관련 비즈니스 로직 조정
  */
 export class UserController extends BaseController {
-  private readonly getCurrentUserUseCase: GetCurrentUserUseCase;
-  private readonly authenticateUserUseCase: AuthenticateUserUseCase;
-  private readonly registerUserUseCase: RegisterUserUseCase;
-  private readonly updateUserUseCase: UpdateUserUseCase;
-  private readonly logoutUserUseCase: LogoutUserUseCase;
-  private readonly userActivityLogUseCase: UserActivityLogUseCase;
-  private readonly userPermissionUseCase: UserPermissionUseCase;
+  private getCurrentUserUseCase: IUseCase | null = null;
+  private authenticateUserUseCase: IUseCase | null = null;
+  private registerUserUseCase: IUseCase | null = null;
+  private updateUserUseCase: IUseCase | null = null;
+  private logoutUserUseCase: IUseCase | null = null;
+  private userActivityLogUseCase: IUseCase | null = null;
+  private userPermissionUseCase: IUseCase | null = null;
+  private useCasesInitialized = false;
 
   constructor() {
     super('UserController');
-    
-    // Use Case 인스턴스 생성
-    this.getCurrentUserUseCase = UseCaseFactory.createGetCurrentUserUseCase();
-    this.authenticateUserUseCase = UseCaseFactory.createAuthenticateUserUseCase();
-    this.registerUserUseCase = UseCaseFactory.createRegisterUserUseCase();
-    this.updateUserUseCase = UseCaseFactory.createUpdateUserUseCase();
-    this.logoutUserUseCase = UseCaseFactory.createLogoutUserUseCase();
-    this.userActivityLogUseCase = UseCaseFactory.createUserActivityLogUseCase();
-    this.userPermissionUseCase = UseCaseFactory.createUserPermissionUseCase();
+  }
+
+  /**
+   * UseCase 인스턴스 초기화
+   */
+  private async initializeUseCases(): Promise<void> {
+    if (this.useCasesInitialized) {
+      return;
+    }
+
+    try {
+      // Use Case 인스턴스 생성
+      this.getCurrentUserUseCase = UseCaseFactory.createGetCurrentUserUseCase();
+      this.authenticateUserUseCase = UseCaseFactory.createAuthenticateUserUseCase();
+      this.registerUserUseCase = UseCaseFactory.createRegisterUserUseCase();
+      this.updateUserUseCase = UseCaseFactory.createUpdateUserUseCase();
+      this.logoutUserUseCase = UseCaseFactory.createLogoutUserUseCase();
+      this.userActivityLogUseCase = UseCaseFactory.createUserActivityLogUseCase();
+      this.userPermissionUseCase = UseCaseFactory.createUserPermissionUseCase();
+      
+      this.useCasesInitialized = true;
+    } catch (error) {
+      console.error('Failed to initialize UseCases:', error);
+      throw new Error('UseCase 초기화에 실패했습니다.');
+    }
+  }
+
+  /**
+   * UseCase가 초기화되었는지 확인하고 초기화
+   */
+  private async ensureInitialized(): Promise<void> {
+    if (!this.useCasesInitialized) {
+      await this.initializeUseCases();
+    }
   }
 
   /**

@@ -9,7 +9,9 @@ import {
   ProfileSocialLinks,
   ProfilePreferences,
   ProfileSectionProfile,
-  ProfileContainer
+  ProfileContainer,
+  ProfileAvatarSection,
+  ProfileCompletionCard
 } from '../../components/specific/profile';
 import { useProfileData } from './hooks/useProfileData';
 
@@ -77,41 +79,14 @@ const ProfilePage: React.FC = () => {
           {/* 왼쪽 컬럼 - 아바타 및 통계 */}
           <div className="lg:col-span-1 space-y-6">
             {/* 아바타 */}
-            <div className="text-center">
-              <ProfileAvatar
-                profileUrl={profile.profileUrl}
-                name={profile.name}
-                size="xl"
-                isEditing={isEditing}
-                onAvatarChange={updateAvatar}
-                className="mx-auto mb-4"
-              />
-              <h2 className="text-xl font-bold text-txt">{profile.name}</h2>
-              {profile.isVerified && (
-                <div className="flex items-center justify-center space-x-1 mt-1">
-                  <span className="text-blue-500">✓</span>
-                  <span className="text-sm text-txt-secondary">인증된 사용자</span>
-                </div>
-              )}
-              {profile.isOnline && (
-                <div className="flex items-center justify-center space-x-1 mt-1">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                  <span className="text-sm text-txt-secondary">온라인</span>
-                </div>
-              )}
-            </div>
+            <ProfileAvatarSection
+              profile={profile}
+              isEditing={isEditing}
+              onAvatarChange={updateAvatar}
+            />
 
             {/* 프로필 완성도 */}
-            <div className="bg-surface border border-border rounded-lg p-4">
-              <h3 className="font-medium text-txt mb-2">프로필 완성도</h3>
-              <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-                <div 
-                  className="bg-primary h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${profileCompletion}%` }}
-                ></div>
-              </div>
-              <p className="text-sm text-txt-secondary">{profileCompletion}% 완성</p>
-            </div>
+            <ProfileCompletionCard completionPercentage={profileCompletion} />
 
             {/* 통계 */}
             <ProfileSectionProfile title="활동 통계">

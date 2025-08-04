@@ -8,4 +8,6 @@ export { default as ProfileSectionProfile } from './ProfileSection';
 export { default as ProfileFormField } from './ProfileFormField';
 export { default as ProfileFormTextarea } from './ProfileFormTextarea';
 export { default as ProfileFormSelect } from './ProfileFormSelect';
-export { default as ProfileContainer } from './ProfileContainer'; 
+export { default as ProfileContainer } from './ProfileContainer';
+export { default as ProfileAvatarSection } from './ProfileAvatarSection';
+export { default as ProfileCompletionCard } from './ProfileCompletionCard'; 

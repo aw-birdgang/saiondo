@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useMemo } from "react";
 import { Routes, Route } from "react-router-dom";
-import { LoadingSpinner, ErrorBoundary } from "../components/LazyLoader";
+import { ErrorBoundary } from "../components/LazyLoader";
+import { PageLoader, ErrorFallback } from "../components/common";
 
 // Extended LazyComponent type with preload capability
 interface LazyComponentWithPreload extends React.LazyExoticComponent<any> {
@@ -45,44 +46,7 @@ const ChannelInvitationPage = createLazyPage(() => import("../pages/invite"));
 const PaymentPage = createLazyPage(() => import("../pages/payment"));
 const ExamplesPage = createLazyPage(() => import("../pages/examples"));
 
-// Optimized page loader with skeleton
-const PageLoader: React.FC = () => (
-  <div className="flex items-center justify-center min-h-screen bg-gray-50">
-    <div className="text-center">
-      <LoadingSpinner size="lg" />
-      <p className="mt-4 text-gray-600">페이지를 로딩 중입니다...</p>
-    </div>
-  </div>
-);
 
-// Error fallback component
-const ErrorFallback: React.FC<{ error?: Error }> = ({ error }) => (
-  <div className="flex items-center justify-center min-h-screen bg-red-50">
-    <div className="text-center">
-      <div className="text-red-500 text-6xl mb-4">⚠️</div>
-      <h2 className="text-xl font-semibold text-gray-800 mb-2">
-        페이지 로딩에 실패했습니다
-      </h2>
-      <p className="text-gray-600 mb-4">
-        잠시 후 다시 시도해주세요.
-      </p>
-      {error && (
-        <details className="text-sm text-gray-500">
-          <summary>오류 상세정보</summary>
-          <pre className="mt-2 text-left bg-gray-100 p-2 rounded">
-            {error.message}
-          </pre>
-        </details>
-      )}
-      <button
-        onClick={() => window.location.reload()}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-      >
-        새로고침
-      </button>
-    </div>
-  </div>
-);
 
 // Route configuration for better maintainability
 const routeConfig = [

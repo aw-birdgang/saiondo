@@ -10,7 +10,7 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 export { SwipeableCard, SwipeableListItem } from './SwipeableCard';
 
 // Loading Components
-export { LoadingSpinner, PageLoader, ButtonLoader, CardLoader, InlineLoader } from './LoadingSpinner';
+export { LoadingSpinner, ButtonLoader, CardLoader, InlineLoader } from './LoadingSpinner';
 export { Skeleton, TextSkeleton, AvatarSkeleton, CardSkeleton, TableSkeleton } from './Skeleton';
 
 // Animation Components
@@ -106,4 +106,6 @@ export { AssistantStats } from './AssistantStats';
 export { default as ActionButton } from './ActionButton';
 export { default as ActionButtons } from './ActionButtons';
 export { default as TipList } from './TipList';
-export { default as SystemStatItem } from './SystemStatItem'; 
+export { default as SystemStatItem } from './SystemStatItem';
+export { default as PageLoader } from './PageLoader';
+export { default as ErrorFallback } from './ErrorFallback'; 

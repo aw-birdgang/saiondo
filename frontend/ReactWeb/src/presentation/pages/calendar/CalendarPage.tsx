@@ -1,6 +1,6 @@
 import React from 'react';
-import {LoadingSpinner, Modal} from '../../components/common';
-import {CalendarContainer, CalendarHeader, CalendarSidebar, MonthView} from '../../components/specific/calendar';
+import {LoadingSpinner} from '../../components/common';
+import {CalendarContainer, CalendarHeader, CalendarSidebar, MonthView, EventFormModal} from '../../components/specific/calendar';
 import {useCalendarData} from './hooks/useCalendarData';
 
 const CalendarPage: React.FC = () => {
@@ -90,69 +90,13 @@ const CalendarPage: React.FC = () => {
       </div>
 
       {/* 이벤트 폼 모달 */}
-      <Modal
+      <EventFormModal
         isOpen={isEventFormOpen}
         onClose={handleEventFormClose}
-        title={editingEvent ? '이벤트 수정' : '새 이벤트 추가'}
-      >
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-txt mb-1">제목</label>
-            <input
-              type="text"
-              defaultValue={editingEvent?.title || ''}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="이벤트 제목을 입력하세요"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-txt mb-1">타입</label>
-            <select className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-              <option value="meeting">회의</option>
-              <option value="date">데이트</option>
-              <option value="anniversary">기념일</option>
-              <option value="work">업무</option>
-              <option value="personal">개인</option>
-              <option value="other">기타</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-txt mb-1">시간</label>
-            <input
-              type="time"
-              defaultValue={editingEvent?.time || ''}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-txt mb-1">설명</label>
-            <textarea
-              defaultValue={editingEvent?.description || ''}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              rows={3}
-              placeholder="이벤트 설명을 입력하세요"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end space-x-2 mt-6">
-          <button
-            onClick={handleEventFormClose}
-            className="px-4 py-2 border border-border rounded-lg hover:bg-focus"
-          >
-            취소
-          </button>
-          <button
-            onClick={() => handleEventSubmit(editingEvent || { title: '', date: selectedDate || new Date(), type: 'other' })}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
-          >
-            {editingEvent ? '수정' : '추가'}
-          </button>
-        </div>
-      </Modal>
+        onSubmit={handleEventSubmit}
+        editingEvent={editingEvent}
+        selectedDate={selectedDate}
+      />
     </div>
   );
 };

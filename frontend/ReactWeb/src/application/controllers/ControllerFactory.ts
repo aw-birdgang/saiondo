@@ -6,6 +6,7 @@ import {NotificationController} from './NotificationController';
 import {FileController} from './FileController';
 import {AnalyticsController} from './AnalyticsController';
 import {Logger} from '../../shared/utils/Logger';
+import {UseCaseFactory} from '../usecases/UseCaseFactory';
 
 /**
  * Controller Factory - Controller 인스턴스 생성 및 관리
@@ -14,6 +15,7 @@ export class ControllerFactory {
   private static instance: ControllerFactory;
   private controllers: Map<string, IController> = new Map();
   private readonly logger = new Logger('ControllerFactory');
+  private isInitialized = false;
 
   private constructor() {}
 
@@ -28,9 +30,32 @@ export class ControllerFactory {
   }
 
   /**
+   * Factory 초기화
+   */
+  async initialize(): Promise<void> {
+    if (this.isInitialized) {
+      return;
+    }
+
+    try {
+      // UseCase 레지스트리 초기화
+      await UseCaseFactory.initialize();
+      this.isInitialized = true;
+      this.logger.info('ControllerFactory initialized successfully');
+    } catch (error) {
+      this.logger.error('Failed to initialize ControllerFactory:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Controller 생성
    */
-  createController(type: string): IController {
+  async createController(type: string): Promise<IController> {
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
+
     if (this.controllers.has(type)) {
       return this.controllers.get(type)!;
     }
