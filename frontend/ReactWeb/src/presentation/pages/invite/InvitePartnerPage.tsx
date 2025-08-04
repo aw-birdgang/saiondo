@@ -1,59 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { ROUTES } from "../../../shared/constants/app";
+import { getContainer } from '../../../app/di/container';
+import { DI_TOKENS } from '../../../app/di/tokens';
+import { useInvite } from '../../hooks/useInvite';
 import { useAuthStore } from '../../../stores/authStore';
+import { useToastContext } from '../../providers/ToastProvider';
 import { Header, ContentCard } from '../../components/common';
 import { PageWrapper, PageContainer } from '../../components/layout';
-import { InviteForm } from '../../components/specific';
+import { InviteForm } from '../../components/invite';
+import type { IInviteUseCase } from '../../../application/usecases/InviteUseCase';
 
-const InvitePartnerScreen: React.FC = () => {
+const InvitePartnerPage: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { user } = useAuthStore();
+  const toast = useToastContext();
+  const container = getContainer();
 
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // Invite Use Case 가져오기
+  const [inviteUseCase] = useState<IInviteUseCase>(() => 
+    container.get<IInviteUseCase>(DI_TOKENS.INVITE_USE_CASE)
+  );
 
-  const handleInvite = async () => {
-    if (!user?.id) {
-      setError(t('no_login') || '로그인 정보가 없습니다.');
-      return;
+  // Invite 상태 관리 훅
+  const {
+    state,
+    inviteStats,
+    updatePartnerEmail,
+    sendInvitation,
+    clearError,
+    reset
+  } = useInvite(inviteUseCase, user?.id);
+
+  // 에러 처리
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error);
+      clearError();
     }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // TODO: 실제 API 호출로 대체
-      // 1. 이메일로 초대받을 유저의 id를 조회
-      // const inviteeId = await getUserIdByEmail(email);
-
-      // 2. 현재 참여 중인 채널이 없으면 채널을 생성
-      // let channelId = currentChannel?.id;
-      // if (!channelId) {
-      //   const channel = await createChannel(userId);
-      //   channelId = channel?.id;
-      // }
-
-      // 3. 초대장 생성
-      // await createInvitation(channelId, userId, inviteeId);
-
-      // 시뮬레이션을 위한 지연
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      toast.success(t('invite_sent') || '초대가 발송되었습니다!');
-      navigate(ROUTES.HOME);
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : '초대 발송에 실패했습니다.';
-      setError(errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [state.error, toast, clearError]);
 
   return (
     <PageWrapper>
@@ -68,9 +52,11 @@ const InvitePartnerScreen: React.FC = () => {
       <PageContainer maxWidth="2xl" padding="lg">
         <ContentCard variant="elevated" padding="xl" className="rounded-3xl">
           <InviteForm
-            onInvite={handleInvite}
-            isLoading={isLoading}
-            error={error}
+            partnerEmail={state.partnerEmail}
+            onEmailChange={updatePartnerEmail}
+            onInvite={sendInvitation}
+            isLoading={state.isInviting}
+            error={state.error}
           />
         </ContentCard>
       </PageContainer>
@@ -78,4 +64,4 @@ const InvitePartnerScreen: React.FC = () => {
   );
 };
 
-export default InvitePartnerScreen;
+export default InvitePartnerPage;

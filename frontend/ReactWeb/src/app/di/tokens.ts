@@ -6,6 +6,10 @@ export const WEBSOCKET_CLIENT = Symbol('WebSocketClient');
 export const USER_REPOSITORY = Symbol('UserRepository');
 export const CHANNEL_REPOSITORY = Symbol('ChannelRepository');
 export const MESSAGE_REPOSITORY = Symbol('MessageRepository');
+export const PAYMENT_REPOSITORY = Symbol('PaymentRepository');
+export const SEARCH_REPOSITORY = Symbol('SearchRepository');
+export const INVITE_REPOSITORY = Symbol('InviteRepository');
+export const CATEGORY_REPOSITORY = Symbol('CategoryRepository');
 
 // Service Tokens
 export const AUTH_SERVICE = Symbol('AuthService');
@@ -19,6 +23,10 @@ export const NOTIFICATION_SERVICE = Symbol('NotificationService');
 export const USER_USE_CASES = Symbol('UserUseCases');
 export const CHANNEL_USE_CASES = Symbol('ChannelUseCases');
 export const MESSAGE_USE_CASES = Symbol('MessageUseCases');
+export const PAYMENT_USE_CASE = Symbol('PaymentUseCase');
+export const SEARCH_USE_CASE = Symbol('SearchUseCase');
+export const INVITE_USE_CASE = Symbol('InviteUseCase');
+export const CATEGORY_USE_CASE = Symbol('CategoryUseCase');
 export const USE_CASE_FACTORY = Symbol('UseCaseFactory');
 
 // Configuration Tokens
@@ -43,6 +51,10 @@ export const DI_TOKENS = {
   USER_REPOSITORY,
   CHANNEL_REPOSITORY,
   MESSAGE_REPOSITORY,
+  PAYMENT_REPOSITORY,
+  SEARCH_REPOSITORY,
+  INVITE_REPOSITORY,
+  CATEGORY_REPOSITORY,
   
   // Services
   AUTH_SERVICE,
@@ -56,6 +68,10 @@ export const DI_TOKENS = {
   USER_USE_CASES,
   CHANNEL_USE_CASES,
   MESSAGE_USE_CASES,
+  PAYMENT_USE_CASE,
+  SEARCH_USE_CASE,
+  INVITE_USE_CASE,
+  CATEGORY_USE_CASE,
   USE_CASE_FACTORY,
   
   // Configuration

@@ -3,9 +3,17 @@ import { WebSocketClient } from '../../infrastructure/websocket/WebSocketClient'
 import { UserRepositoryImpl } from '../../infrastructure/repositories/UserRepositoryImpl';
 import { ChannelRepositoryImpl } from '../../infrastructure/repositories/ChannelRepositoryImpl';
 import { MessageRepositoryImpl } from '../../infrastructure/repositories/MessageRepositoryImpl';
+import { PaymentRepository } from '../../infrastructure/repositories/PaymentRepository';
+import { SearchRepository } from '../../infrastructure/repositories/SearchRepository';
+import { InviteRepository } from '../../infrastructure/repositories/InviteRepository';
+import { CategoryRepository } from '../../infrastructure/repositories/CategoryRepository';
 import { UserUseCases } from '../../application/usecases/UserUseCases';
 import { ChannelUseCases } from '../../application/usecases/ChannelUseCases';
 import { MessageUseCases } from '../../application/usecases/MessageUseCases';
+import { PaymentUseCase } from '../../application/usecases/PaymentUseCase';
+import { SearchUseCase } from '../../application/usecases/SearchUseCase';
+import { InviteUseCase } from '../../application/usecases/InviteUseCase';
+import { CategoryUseCase } from '../../application/usecases/CategoryUseCase';
 import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
 import { AuthService } from '../../application/services/AuthService';
 import { UserService } from '../../application/services/UserService';
@@ -85,6 +93,22 @@ class DIContainer {
       return new MessageRepositoryImpl(apiClient);
     }, true);
 
+    this.register(DI_TOKENS.PAYMENT_REPOSITORY, () => {
+      return new PaymentRepository();
+    }, true);
+
+    this.register(DI_TOKENS.SEARCH_REPOSITORY, () => {
+      return new SearchRepository();
+    }, true);
+
+    this.register(DI_TOKENS.INVITE_REPOSITORY, () => {
+      return new InviteRepository();
+    }, true);
+
+    this.register(DI_TOKENS.CATEGORY_REPOSITORY, () => {
+      return new CategoryRepository();
+    }, true);
+
     // Services
     this.register(DI_TOKENS.AUTH_SERVICE, () => {
       const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
@@ -136,6 +160,26 @@ class DIContainer {
     this.register(DI_TOKENS.MESSAGE_USE_CASES, () => {
       const messageService = this.get<MessageService>(DI_TOKENS.MESSAGE_SERVICE);
       return new MessageUseCases(messageService);
+    }, true);
+
+    this.register(DI_TOKENS.PAYMENT_USE_CASE, () => {
+      const paymentRepository = this.get<PaymentRepository>(DI_TOKENS.PAYMENT_REPOSITORY);
+      return new PaymentUseCase(paymentRepository);
+    }, true);
+
+    this.register(DI_TOKENS.SEARCH_USE_CASE, () => {
+      const searchRepository = this.get<SearchRepository>(DI_TOKENS.SEARCH_REPOSITORY);
+      return new SearchUseCase(searchRepository);
+    }, true);
+
+    this.register(DI_TOKENS.INVITE_USE_CASE, () => {
+      const inviteRepository = this.get<InviteRepository>(DI_TOKENS.INVITE_REPOSITORY);
+      return new InviteUseCase(inviteRepository);
+    }, true);
+
+    this.register(DI_TOKENS.CATEGORY_USE_CASE, () => {
+      const categoryRepository = this.get<CategoryRepository>(DI_TOKENS.CATEGORY_REPOSITORY);
+      return new CategoryUseCase(categoryRepository);
     }, true);
 
     // Use Case Factory

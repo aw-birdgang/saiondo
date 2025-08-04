@@ -22,7 +22,16 @@ import { WebSocketUseCase } from './WebSocketUseCase';
 import { APMMonitoringUseCase } from './APMMonitoringUseCase';
 import { AnalyticsUseCase } from './AnalyticsUseCase';
 import { SystemManagementUseCase } from './SystemManagementUseCase';
+import { PaymentUseCase } from './PaymentUseCase';
+import { SearchUseCase } from './SearchUseCase';
+import { InviteUseCase } from './InviteUseCase';
+import { CategoryUseCase } from './CategoryUseCase';
+import type { IPaymentRepository } from './PaymentUseCase';
+import type { ISearchRepository } from './SearchUseCase';
+import type { IInviteRepository } from './InviteUseCase';
+import type { ICategoryRepository } from './CategoryUseCase';
 import { UserActivityService } from '../services/UserActivityService';
+import { DI_TOKENS } from '../../app/di/tokens';
 import { UserPermissionService } from '../services/UserPermissionService';
 import { RealTimeChatService } from '../services/RealTimeChatService';
 import { NotificationService } from '../services/NotificationService';
@@ -208,6 +217,30 @@ export class UseCaseFactory {
       container.getMessageRepository()
     );
     return new AnalyticsUseCase(analyticsService);
+  }
+
+  // Payment use cases
+  static createPaymentUseCase(): PaymentUseCase {
+    const paymentRepository = container.get<IPaymentRepository>(DI_TOKENS.PAYMENT_REPOSITORY);
+    return new PaymentUseCase(paymentRepository);
+  }
+
+  // Search use cases
+  static createSearchUseCase(): SearchUseCase {
+    const searchRepository = container.get<ISearchRepository>(DI_TOKENS.SEARCH_REPOSITORY);
+    return new SearchUseCase(searchRepository);
+  }
+
+  // Invite use cases
+  static createInviteUseCase(): InviteUseCase {
+    const inviteRepository = container.get<IInviteRepository>(DI_TOKENS.INVITE_REPOSITORY);
+    return new InviteUseCase(inviteRepository);
+  }
+
+  // Category use cases
+  static createCategoryUseCase(): CategoryUseCase {
+    const categoryRepository = container.get<ICategoryRepository>(DI_TOKENS.CATEGORY_REPOSITORY);
+    return new CategoryUseCase(categoryRepository);
   }
 
   // System Management use cases

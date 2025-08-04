@@ -1,34 +1,34 @@
-import React from 'react';
-import { LoadingSpinner } from '../../components/common';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getContainer } from '../../../app/di/container';
+import { DI_TOKENS } from '../../../app/di/tokens';
+import { useSearch } from '../../hooks/useSearch';
+import { useToastContext } from '../../providers/ToastProvider';
 import { ErrorState } from '../../components/specific';
-import {
+import { 
   SearchHeader,
   SearchFilters,
   SearchResults,
   SearchSuggestions,
   SearchContainer
-} from '../../components/specific/search';
-import { useSearchData } from './hooks/useSearchData';
+} from '../../components/search';
+import type { ISearchUseCase } from '../../../application/usecases/SearchUseCase';
 
 const SearchPage: React.FC = () => {
-  const {
-    // 상태
-    query,
-    results,
-    filteredResults,
-    isLoading,
-    isSearching,
-    error,
-    filters,
-    selectedFilters,
-    searchHistory,
-    recentSearches,
-    suggestions,
-    totalResults,
-    hasMore,
-    searchStats,
+  const { t } = useTranslation();
+  const toast = useToastContext();
+  const container = getContainer();
 
-    // 액션
+  // Search Use Case 가져오기
+  const [searchUseCase] = useState<ISearchUseCase>(() => 
+    container.get<ISearchUseCase>(DI_TOKENS.SEARCH_USE_CASE)
+  );
+
+  // Search 상태 관리 훅
+  const {
+    state,
+    searchStats,
+    filteredResults,
     handleQueryChange,
     handleSearch,
     handleClear,
@@ -39,39 +39,40 @@ const SearchPage: React.FC = () => {
     handleClearHistory,
     handleLoadMore,
     handleResultClick,
-    handleKeyPress
-  } = useSearchData();
+    handleKeyPress,
+    clearError,
+    reset
+  } = useSearch(searchUseCase);
 
-  if (error) {
-    return (
-      <ErrorState
-        title="검색 오류"
-        message={error}
-        onRetry={handleSearch}
-      />
-    );
-  }
+  // 에러 처리
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error);
+      clearError();
+    }
+  }, [state.error, toast, clearError]);
 
-  const hasSearchResults = results.length > 0;
-  const showSuggestions = !hasSearchResults && !isSearching;
+  const hasSearchResults = state.results.length > 0;
+  const showSuggestions = !hasSearchResults && !state.isSearching;
 
   return (
     <SearchContainer>
       {/* 헤더 */}
       <SearchHeader
-        query={query}
+        query={state.query}
         onQueryChange={handleQueryChange}
         onSearch={handleSearch}
         onClear={handleClear}
-        isSearching={isSearching}
-        totalResults={totalResults}
+        onKeyPress={handleKeyPress}
+        isSearching={state.isSearching}
+        totalResults={state.totalResults}
       />
       
       {/* 필터 */}
       {hasSearchResults && (
         <SearchFilters
-          filters={filters}
-          selectedFilters={selectedFilters}
+          filters={state.filters}
+          selectedFilters={state.selectedFilters}
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
         />
@@ -81,8 +82,8 @@ const SearchPage: React.FC = () => {
       <div className="flex-1">
         {showSuggestions ? (
           <SearchSuggestions
-            suggestions={suggestions}
-            recentSearches={recentSearches}
+            suggestions={state.suggestions}
+            recentSearches={state.recentSearches}
             onSuggestionClick={handleSuggestionClick}
             onRecentSearchClick={handleRecentSearchClick}
             onClearHistory={handleClearHistory}
@@ -90,8 +91,8 @@ const SearchPage: React.FC = () => {
         ) : (
           <SearchResults
             results={filteredResults}
-            isLoading={isSearching}
-            hasMore={hasMore}
+            isLoading={state.isSearching}
+            hasMore={state.hasMore}
             onLoadMore={handleLoadMore}
             onResultClick={handleResultClick}
           />

@@ -1,105 +1,44 @@
-import React from 'react';
-import {useTranslation} from 'react-i18next';
-import {useNavigate} from 'react-router-dom';
-import {toast} from 'react-hot-toast';
-import {ROUTES} from "../../../shared/constants/app";
-import {useAuthStore} from "../../../stores/authStore";
-import {useDataLoader} from '../../hooks/useDataLoader';
-import {InvitationResponseCard, LoadingState} from '../../components/specific';
-import {PageHeader} from '../../components/layout';
-import {Container, EmptyInvitationsState, InvitationGrid, RefreshButton} from '../../components/common';
-import type {ChannelInvitationItem} from '../../../domain/types';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getContainer } from '../../../app/di/container';
+import { DI_TOKENS } from '../../../app/di/tokens';
+import { useInvite } from '../../hooks/useInvite';
+import { useAuthStore } from '../../../stores/authStore';
+import { useToastContext } from '../../providers/ToastProvider';
+import { PageHeader } from '../../components/layout';
+import { Container, RefreshButton } from '../../components/common';
+import { InvitationList, InviteStats } from '../../components/invite';
+import type { IInviteUseCase } from '../../../application/usecases/InviteUseCase';
 
-const ChannelInvitationScreen: React.FC = () => {
+const ChannelInvitationPage: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { user } = useAuthStore();
+  const toast = useToastContext();
+  const container = getContainer();
 
-  // Use custom hook for data loading
-  const { data: invitations = [], loading: isLoading, refresh: fetchInvitations } = useDataLoader(
-    async () => {
-      // TODO: 실제 API 호출로 대체
-      // const response = await getChannelInvitations(userId);
-
-      // 시뮬레이션을 위한 지연
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Mock 데이터
-      const mockInvitations: ChannelInvitationItem[] = [
-        {
-          id: '1',
-          inviterId: 'user1',
-          inviteeId: user?.id || 'current-user',
-          channelId: 'channel1',
-          status: 'pending',
-          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2시간 전
-          inviterName: '김철수',
-          channelName: '우리만의 채널',
-        },
-        {
-          id: '2',
-          inviterId: 'user2',
-          inviteeId: user?.id || 'current-user',
-          channelId: 'channel2',
-          status: 'accepted',
-          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1일 전
-          inviterName: '이영희',
-          channelName: '커플 채널',
-        },
-        {
-          id: '3',
-          inviterId: 'user3',
-          inviteeId: user?.id || 'current-user',
-          channelId: 'channel3',
-          status: 'rejected',
-          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2일 전
-          inviterName: '박민수',
-          channelName: '친구 채널',
-        },
-      ];
-
-      return mockInvitations;
-    },
-    [user?.id],
-    {
-      autoLoad: true,
-      errorMessage: t('failed_to_load_invitations') || '초대장을 불러오는데 실패했습니다.'
-    }
+  // Invite Use Case 가져오기
+  const [inviteUseCase] = useState<IInviteUseCase>(() => 
+    container.get<IInviteUseCase>(DI_TOKENS.INVITE_USE_CASE)
   );
 
-  const handleRespondToInvitation = async (invitationId: string, accepted: boolean) => {
-    try {
-      // TODO: 실제 API 호출로 대체
-      // await respondToInvitation(invitationId, accepted, userId);
+  // Invite 상태 관리 훅
+  const {
+    state,
+    inviteStats,
+    loadInvitations,
+    respondToInvitation,
+    cancelInvitation,
+    clearError,
+    reset
+  } = useInvite(inviteUseCase, user?.id);
 
-      // 시뮬레이션을 위한 지연
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Note: In a real implementation, you would update the local state
-      // after successful API call. For now, we'll just show a toast.
-
-      toast.success(
-        accepted
-          ? t('invitation_accepted') || '초대를 수락했습니다!'
-          : t('invitation_rejected') || '초대를 거절했습니다.'
-      );
-
-      if (accepted) {
-        // 채널로 이동
-        navigate(ROUTES.CHANNELS);
-      }
-
-    } catch (error) {
-      console.error('Failed to respond to invitation:', error);
-      toast.error(t('failed_to_respond') || '초대 응답에 실패했습니다.');
+  // 에러 처리
+  useEffect(() => {
+    if (state.error) {
+      toast.error(state.error);
+      clearError();
     }
-  };
-
-  if (isLoading) {
-    return (
-      <LoadingState message={t('loading_invitations') || '초대장을 불러오는 중...'} />
-    );
-  }
+  }, [state.error, toast, clearError]);
 
   return (
     <Container variant="page">
@@ -109,8 +48,8 @@ const ChannelInvitationScreen: React.FC = () => {
           title={t('channel_invitations') || '채널 초대장'}
           showBackButton
           rightContent={
-            (invitations?.length || 0) > 0 && (
-              <RefreshButton onClick={fetchInvitations} />
+            (state.invitations?.length || 0) > 0 && (
+              <RefreshButton onClick={loadInvitations} />
             )
           }
         />
@@ -118,23 +57,25 @@ const ChannelInvitationScreen: React.FC = () => {
 
       {/* Content */}
       <Container variant="content">
-        {(invitations?.length || 0) === 0 ? (
-          <EmptyInvitationsState />
-        ) : (
-          <InvitationGrid>
-            {(invitations || []).map((invitation) => (
-              <InvitationResponseCard
-                key={invitation.id}
-                invitation={invitation}
-                onAccept={(invitationId) => handleRespondToInvitation(invitationId, true)}
-                onReject={(invitationId) => handleRespondToInvitation(invitationId, false)}
-              />
-            ))}
-          </InvitationGrid>
+        {/* 통계 */}
+        {state.invitations.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-lg font-medium text-txt mb-4">초대장 통계</h3>
+            <InviteStats stats={inviteStats} />
+          </div>
         )}
+
+        {/* 초대장 목록 */}
+        <InvitationList
+          invitations={state.invitations}
+          isLoading={state.isLoading}
+          onAccept={(invitationId) => respondToInvitation(invitationId, true)}
+          onReject={(invitationId) => respondToInvitation(invitationId, false)}
+          onCancel={cancelInvitation}
+        />
       </Container>
     </Container>
   );
 };
 
-export default ChannelInvitationScreen;
+export default ChannelInvitationPage;
