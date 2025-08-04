@@ -1,23 +1,7 @@
 import React from "react";
-import { ChannelCard } from "../common";
-import { EmptyChannelState } from "./";
-
-interface Channel {
-  id: string;
-  name: string;
-  description: string;
-  memberCount: number;
-  lastMessage?: string;
-  lastMessageTime?: string;
-  unreadCount: number;
-}
-
-interface ChannelListProps {
-  channels: Channel[];
-  onChannelClick: (channelId: string) => void;
-  onCreateChannel: () => void;
-  className?: string;
-}
+import { cn } from "../../../utils/cn";
+import type { ChannelListProps } from "../../pages/channel/types/channelTypes";
+import { ChannelCard, EmptyChannelState } from "./channel";
 
 const ChannelList: React.FC<ChannelListProps> = ({ 
   channels, 

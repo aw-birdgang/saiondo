@@ -1,11 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../common";
-
-interface ChannelHeaderProps {
-  onCreateChannel: () => void;
-  className?: string;
-}
+import { cn } from "../../../utils/cn";
+import type { ChannelHeaderProps } from "../../pages/channel/types/channelTypes";
 
 const ChannelHeader: React.FC<ChannelHeaderProps> = ({ 
   onCreateChannel, 
@@ -26,7 +23,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({
         variant="primary"
         fullWidth
         onClick={onCreateChannel}
-        icon="➕"
+        leftIcon="➕"
       >
         {t('create_new_channel') || '새 채널 만들기'}
       </Button>
