@@ -1,6 +1,5 @@
-import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
-import {ChannelEntity} from '../../domain/entities/Channel';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type { ChannelService } from '../services/ChannelService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   AddMemberRequest,
   AddMemberResponse,
@@ -17,11 +16,11 @@ import type {
 } from '../dto/ChannelDto';
 
 export class ChannelUseCases {
-  constructor(private readonly channelRepository: IChannelRepository) {}
+  constructor(private readonly channelService: ChannelService) {}
 
   async createChannel(request: CreateChannelRequest): Promise<CreateChannelResponse> {
     try {
-      const channelEntity = ChannelEntity.create({
+      const channelProfile = await this.channelService.createChannel({
         name: request.name,
         description: request.description,
         type: request.type,
@@ -29,8 +28,7 @@ export class ChannelUseCases {
         members: request.members,
       });
 
-      const channel = await this.channelRepository.save(channelEntity.toJSON());
-      return { channel };
+      return { channel: channelProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -41,12 +39,8 @@ export class ChannelUseCases {
 
   async getChannel(request: GetChannelRequest): Promise<GetChannelResponse> {
     try {
-      const channel = await this.channelRepository.findById(request.id);
-      if (!channel) {
-        throw DomainErrorFactory.createChannelNotFound(request.id);
-      }
-
-      return { channel };
+      const channelProfile = await this.channelService.getChannel(request.id);
+      return { channel: channelProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -57,7 +51,7 @@ export class ChannelUseCases {
 
   async getChannels(request: GetChannelsRequest): Promise<GetChannelsResponse> {
     try {
-      const channels = await this.channelRepository.findByUserId(request.userId || '');
+      const channels = await this.channelService.getUserChannels(request.userId || '');
       return { 
         channels, 
         total: channels.length, 
@@ -73,19 +67,12 @@ export class ChannelUseCases {
 
   async updateChannel(request: UpdateChannelRequest): Promise<UpdateChannelResponse> {
     try {
-      const existingChannel = await this.channelRepository.findById(request.id);
-      if (!existingChannel) {
-        throw DomainErrorFactory.createChannelNotFound(request.id);
-      }
-
-      const channelEntity = ChannelEntity.fromData(existingChannel);
-      const updatedChannel = await this.channelRepository.save({
-        ...existingChannel,
-        name: request.name ?? existingChannel.name,
-        description: request.description ?? existingChannel.description,
+      const channelProfile = await this.channelService.updateChannel(request.id, {
+        name: request.name,
+        description: request.description,
       });
 
-      return { channel: updatedChannel };
+      return { channel: channelProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -96,16 +83,8 @@ export class ChannelUseCases {
 
   async addMember(request: AddMemberRequest): Promise<AddMemberResponse> {
     try {
-      const channel = await this.channelRepository.findById(request.channelId);
-      if (!channel) {
-        throw DomainErrorFactory.createChannelNotFound(request.channelId);
-      }
-
-      const channelEntity = ChannelEntity.fromData(channel);
-      const updatedChannelEntity = channelEntity.addMember(request.userId);
-      const updatedChannel = await this.channelRepository.save(updatedChannelEntity.toJSON());
-
-      return { channel: updatedChannel };
+      const channelProfile = await this.channelService.addMember(request.channelId, request.userId);
+      return { channel: channelProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -116,16 +95,8 @@ export class ChannelUseCases {
 
   async removeMember(request: RemoveMemberRequest): Promise<RemoveMemberResponse> {
     try {
-      const channel = await this.channelRepository.findById(request.channelId);
-      if (!channel) {
-        throw DomainErrorFactory.createChannelNotFound(request.channelId);
-      }
-
-      const channelEntity = ChannelEntity.fromData(channel);
-      const updatedChannelEntity = channelEntity.removeMember(request.userId);
-      const updatedChannel = await this.channelRepository.save(updatedChannelEntity.toJSON());
-
-      return { channel: updatedChannel };
+      const channelProfile = await this.channelService.removeMember(request.channelId, request.userId);
+      return { channel: channelProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -136,7 +107,7 @@ export class ChannelUseCases {
 
   async isMember(channelId: string, userId: string): Promise<boolean> {
     try {
-      return await this.channelRepository.isMember(channelId, userId);
+      return await this.channelService.isMember(channelId, userId);
     } catch (error) {
       return false;
     }

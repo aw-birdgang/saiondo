@@ -1,9 +1,9 @@
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
-import type {AuthenticateUserRequest, AuthenticateUserResponse} from '../dto/AuthDto';
+import type { UserService } from '../services/UserService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { AuthenticateUserRequest, AuthenticateUserResponse } from '../dto/AuthDto';
 
 export class AuthenticateUserUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
   async execute(request: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
     try {
@@ -16,27 +16,18 @@ export class AuthenticateUserUseCase {
         throw DomainErrorFactory.createUserValidation('Password must be at least 6 characters');
       }
 
-      // Find user by email
-      const userEntity = await this.userRepository.findByEmail(request.email);
-      if (!userEntity) {
-        throw DomainErrorFactory.createUserNotFound('User not found');
-      }
-
-      // Validate password (in real implementation, this would hash and compare)
-      // For now, we'll assume the password is valid if user exists
-      if (!this.validatePassword(request.password, userEntity)) {
-        throw DomainErrorFactory.createUserValidation('Invalid credentials');
-      }
-
-      // Update online status
-      const updatedUser = await this.userRepository.updateOnlineStatus(userEntity.id, true);
+      // Use UserService to authenticate user
+      const userProfile = await this.userService.getCurrentUser();
+      
+      // Update user status to online
+      const updatedUserProfile = await this.userService.updateUserStatus(userProfile.id, 'online');
 
       // Generate tokens (in real implementation, this would use JWT)
-      const accessToken = this.generateAccessToken(updatedUser);
-      const refreshToken = this.generateRefreshToken(updatedUser);
+      const accessToken = this.generateAccessToken(updatedUserProfile);
+      const refreshToken = this.generateRefreshToken(updatedUserProfile);
 
       return {
-        user: updatedUser.toJSON(),
+        user: updatedUserProfile,
         accessToken,
         refreshToken,
       };
@@ -51,12 +42,6 @@ export class AuthenticateUserUseCase {
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  }
-
-  private validatePassword(password: string, user: any): boolean {
-    // In real implementation, this would hash the password and compare with stored hash
-    // For now, we'll return true if user exists (mock validation)
-    return true;
   }
 
   private generateAccessToken(user: any): string {

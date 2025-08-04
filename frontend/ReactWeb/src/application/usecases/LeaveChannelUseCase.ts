@@ -1,13 +1,9 @@
-import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
-import type {LeaveChannelRequest, LeaveChannelResponse} from '../dto/LeaveChannelDto';
+import type { ChannelService } from '../services/ChannelService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { LeaveChannelRequest, LeaveChannelResponse } from '../dto/LeaveChannelDto';
 
 export class LeaveChannelUseCase {
-  constructor(
-    private readonly channelRepository: IChannelRepository,
-    private readonly userRepository: IUserRepository
-  ) {}
+  constructor(private readonly channelService: ChannelService) {}
 
   async execute(request: LeaveChannelRequest): Promise<LeaveChannelResponse> {
     try {
@@ -21,24 +17,21 @@ export class LeaveChannelUseCase {
       }
 
       // Check if channel exists
-      const channel = await this.channelRepository.findById(request.channelId);
-      if (!channel) {
-        throw DomainErrorFactory.createChannelNotFound(request.channelId);
-      }
+      const channel = await this.channelService.getChannel(request.channelId);
 
       // Check if user is member of the channel
-      const isMember = await this.channelRepository.isMember(request.channelId, request.userId);
+      const isMember = await this.channelService.isMember(request.channelId, request.userId);
       if (!isMember) {
         throw DomainErrorFactory.createChannelValidation('User is not a member of this channel');
       }
 
       // Check if user is the owner (owners cannot leave, they must transfer ownership first)
-      if (channel.isOwner(request.userId)) {
+      if (channel.ownerId === request.userId) {
         throw DomainErrorFactory.createChannelValidation('Channel owner cannot leave. Transfer ownership first.');
       }
 
       // Remove user from channel
-      await this.channelRepository.removeMember(request.channelId, request.userId);
+      await this.channelService.removeMember(request.channelId, request.userId);
 
       return {
         success: true,

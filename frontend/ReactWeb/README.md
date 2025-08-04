@@ -1,494 +1,490 @@
-# ReactWeb - Clean Architecture with Advanced DI Pattern
+# ReactWeb - Clean Architecture 기반 고성능 웹 애플리케이션
 
-A modern React application built with TypeScript, Vite, and Clean Architecture principles, featuring an advanced Dependency Injection (DI) pattern with Zustand state management.
+## 📋 프로젝트 개요
 
-## 🚀 Package Manager
+이 프로젝트는 **Clean Architecture** 원칙을 기반으로 구축된 고성능 웹 애플리케이션입니다. 
+실시간 채팅, 파일 공유, 사용자 관리 등의 기능을 제공하며, 프로덕션 환경에서 사용할 수 있도록 
+고급 모니터링, 보안, 캐싱 기능이 통합되어 있습니다.
 
-This project uses **pnpm** as the package manager for better performance and disk space efficiency.
-
-### Why pnpm?
-- ⚡ **Faster installation** - Symlinks and hard links for efficient storage
-- 💾 **Disk space efficient** - Shared dependencies across projects
-- 🔒 **Strict dependency management** - Prevents phantom dependencies
-- 🛡️ **Better security** - Isolated node_modules structure
-- 📦 **Monorepo support** - Built-in workspace management
-
-### Quick Setup
-```bash
-# Install pnpm globally (if not already installed)
-npm install -g pnpm
-
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-```
-
-## 🏗️ Architecture Overview
-
-This project follows Clean Architecture principles with an advanced DI pattern that provides:
-
-- **Type-safe dependency injection** with Symbol-based tokens
-- **Singleton and transient service management**
-- **Configuration-driven service registration**
-- **React hooks integration** for seamless DI usage
-- **Testing utilities** for mock service injection
+## 🏗️ 아키텍처 구조
 
 ```
-src/
-├── app/                    # Application entry point
-│   ├── di/                # Advanced DI container system
-│   │   ├── container.ts   # Main DI container with lifecycle management
-│   │   ├── tokens.ts      # Type-safe DI tokens
-│   │   ├── config.ts      # Configuration interfaces and defaults
-│   │   ├── useDI.ts       # React hooks for DI
-│   │   ├── testUtils.ts   # Testing utilities
-│   │   └── index.ts       # DI module exports
-│   ├── App.tsx            # Main app component
-│   └── main.tsx           # App entry point
-├── contexts/              # React Context providers
-│   ├── AuthContext.tsx    # Authentication context
-│   ├── ThemeContext.tsx   # Theme management context
-│   ├── UserContext.tsx    # User data context
-│   └── UseCaseContext.tsx # Use case dependency injection
-├── stores/                # Zustand state stores
-│   ├── authStore.ts       # Authentication state
-│   ├── themeStore.ts      # Theme state
-│   ├── userStore.ts       # User profile state
-│   ├── channelStore.ts    # Channel management state
-│   ├── messageStore.ts    # Message state
-│   ├── uiStore.ts         # UI state (modals, notifications)
-│   └── index.ts           # Store exports
-├── application/           # Application layer
-│   ├── usecases/          # Business logic use cases
-│   └── services/          # Application services
-├── domain/                # Domain layer
-│   ├── entities/          # Core business entities
-│   └── repositories/      # Repository interfaces
-├── infrastructure/        # Infrastructure layer
-│   ├── api/              # API client implementations
-│   ├── repositories/     # Repository implementations
-│   └── websocket/        # WebSocket client
-├── presentation/          # Presentation layer
-│   ├── pages/            # Route-based page components
-│   ├── components/       # Reusable UI components
-│   └── hooks/            # Custom hooks (Zustand + Context)
-└── shared/               # Shared utilities
-    ├── constants/        # Application constants
-    └── utils/            # Utility functions
+📁 frontend/ReactWeb/
+├── 📁 src/
+│   ├── 📁 application/           # Application Layer
+│   │   ├── 📁 services/          # 비즈니스 로직 캡슐화
+│   │   │   ├── AuthService.ts
+│   │   │   ├── NotificationService.ts
+│   │   │   ├── UserActivityService.ts
+│   │   │   ├── UserPermissionService.ts
+│   │   │   ├── RealTimeChatService.ts
+│   │   │   ├── FileService.ts
+│   │   │   ├── CacheService.ts
+│   │   │   ├── MonitoringService.ts
+│   │   │   ├── WebSocketService.ts
+│   │   │   ├── PerformanceMonitoringService.ts
+│   │   │   ├── ErrorHandlingService.ts
+│   │   │   ├── AnalyticsService.ts
+│   │   │   ├── MultiLevelCacheService.ts
+│   │   │   ├── SecurityService.ts
+│   │   │   └── SystemHealthService.ts
+│   │   ├── 📁 usecases/          # 워크플로우 오케스트레이션
+│   │   │   ├── GetCurrentUserUseCase.ts
+│   │   │   ├── CreateChannelUseCase.ts
+│   │   │   ├── UserActivityLogUseCase.ts
+│   │   │   ├── UserPermissionUseCase.ts
+│   │   │   ├── RealTimeChatUseCase.ts
+│   │   │   ├── NotificationUseCase.ts
+│   │   │   ├── UploadFileUseCase.ts
+│   │   │   ├── CacheUseCase.ts
+│   │   │   ├── MonitoringUseCase.ts
+│   │   │   ├── WebSocketUseCase.ts
+│   │   │   ├── AnalyticsUseCase.ts
+│   │   │   └── SystemManagementUseCase.ts
+│   │   ├── 📁 dto/               # 데이터 전송 객체
+│   │   └── UseCaseFactory.ts     # Use Case 팩토리
+│   ├── 📁 domain/                # Domain Layer
+│   │   ├── 📁 entities/          # 도메인 엔티티
+│   │   ├── 📁 repositories/      # 리포지토리 인터페이스
+│   │   └── 📁 dto/               # 도메인 DTO
+│   └── 📁 infrastructure/        # Infrastructure Layer
+│       ├── 📁 repositories/      # 리포지토리 구현
+│       └── 📁 clients/           # 외부 서비스 클라이언트
 ```
 
-## 🚀 Key Features
+## 🚀 주요 기능
 
-### 🔧 Advanced DI Pattern
-- **Type-safe tokens**: Symbol-based DI tokens for compile-time safety
-- **Service lifecycle management**: Singleton and transient service support
-- **Configuration-driven**: Environment-based service configuration
-- **React integration**: Custom hooks for seamless DI usage in components
-- **Testing support**: Comprehensive testing utilities with mock injection
+### 1. **실시간 채팅**
+- WebSocket 기반 실시간 메시징
+- 타이핑 인디케이터
+- 읽음 확인
+- 채널 관리
 
-### 📦 DI Container Features
+### 2. **파일 관리**
+- 파일 업로드/다운로드
+- 파일 타입 검증
+- 용량 제한 관리
 
-#### Token-based Registration
+### 3. **사용자 관리**
+- 인증/인가
+- 권한 관리
+- 사용자 활동 추적
+
+### 4. **고급 모니터링**
+- 성능 모니터링
+- 에러 추적
+- 보안 위반 감지
+- 실시간 알림
+
+### 5. **캐싱 시스템**
+- 다단계 캐싱 (L1, L2, L3)
+- 압축 지원
+- 자동 만료 관리
+
+### 6. **보안 기능**
+- Rate Limiting
+- XSS/CSRF 방지
+- 입력 검증
+- IP 차단
+
+## 🛠️ 사용법
+
+### 1. **기본 Use Case 사용**
+
 ```typescript
-import { DI_TOKENS, container } from '../app/di';
+import { UseCaseFactory } from './application/usecases/UseCaseFactory';
 
-// Register a service
-container.register(DI_TOKENS.API_CLIENT, () => new ApiClient(config), true);
+// 사용자 정보 조회
+const getUserUseCase = UseCaseFactory.createGetCurrentUserUseCase();
+const user = await getUserUseCase.execute(userId);
 
-// Resolve a service
-const apiClient = container.get<ApiClient>(DI_TOKENS.API_CLIENT);
-```
-
-#### Configuration Management
-```typescript
-import { createAppConfig, container } from '../app/di';
-
-const config = createAppConfig({
-  api: { baseURL: 'https://api.example.com' },
-  environment: 'production'
-});
-
-container.updateConfig(config);
-```
-
-#### React Hooks Integration
-```typescript
-import { useDI, useUseCases, useServices } from '../app/di';
-
-// Single service
-const apiClient = useDI<ApiClient>(DI_TOKENS.API_CLIENT);
-
-// Multiple services
-const { userUseCases, channelUseCases } = useUseCases();
-
-// Service categories
-const { authService, notificationService } = useServices();
-```
-
-### 🔄 Hybrid State Management
-- **Zustand Stores**: For complex state management with persistence
-- **React Context**: For dependency injection and cross-cutting concerns
-- **Custom Hooks**: Unified interface combining both approaches
-
-### 📦 Zustand Stores
-
-#### AuthStore
-```typescript
-const { user, isAuthenticated, login, logout } = useAuthStore();
-```
-- User authentication state
-- Token management
-- Persistent authentication
-
-#### ThemeStore
-```typescript
-const { theme, isDarkMode, setTheme, toggleTheme } = useThemeStore();
-```
-- Light/Dark/System theme support
-- Automatic theme persistence
-- DOM class management
-
-#### UserStore
-```typescript
-const { currentUser, selectedUser, updateUserProfile } = useUserStore();
-```
-- User profile management
-- Partner user selection
-- Profile preferences
-
-#### ChannelStore
-```typescript
-const { channels, currentChannel, addChannel, joinChannel } = useChannelStore();
-```
-- Channel management
-- Member management
-- Real-time updates
-
-#### MessageStore
-```typescript
-const { messages, sendMessage, addReaction } = useMessageStore();
-```
-- Message management
-- Reactions support
-- Channel-based organization
-
-#### UIStore
-```typescript
-const { notifications, modals, setLoading } = useUIStore();
-```
-- Global UI state
-- Notification management
-- Modal management
-
-### 🎣 Custom Hooks
-
-#### useAuth
-```typescript
-const { user, isAuthenticated, login, logout, loading, error } = useAuth();
-```
-Combines Zustand store state with Context actions.
-
-#### useUser
-```typescript
-const { currentUser, refreshUser, updateUser, loading } = useUser();
-```
-Unified user management with both store and context.
-
-#### useTheme
-```typescript
-const { theme, isDarkMode, setTheme, toggleTheme } = useTheme();
-```
-Theme management with automatic DOM updates.
-
-#### useChannels
-```typescript
-const { channels, createChannel, joinChannel, loading } = useChannels();
-```
-Channel management with Zustand store integration.
-
-#### useMessages
-```typescript
-const { messages, sendMessage, addReaction, loading } = useMessages(channelId);
-```
-Message management with channel-specific state.
-
-## 🛠️ Technology Stack
-
-- **React 19** - Latest React with concurrent features
-- **TypeScript** - Type-safe development
-- **Vite** - Fast build tool and dev server
-- **Zustand** - Lightweight state management
-- **React Router DOM** - Client-side routing
-- **React Query** - Server state management
-- **React Hot Toast** - Notifications
-- **Tailwind CSS** - Utility-first CSS framework
-
-## 📦 Installation
-
-```bash
-# pnpm 설치 (전역)
-npm install -g pnpm
-
-# 의존성 설치
-pnpm install
-```
-
-## 🚀 Development
-
-```bash
-pnpm dev
-```
-
-## 🏗️ Build
-
-```bash
-pnpm build
-```
-
-## 🧪 Testing
-
-```bash
-pnpm test
-```
-
-## 🔧 Additional Commands
-
-```bash
-# 의존성 업데이트
-pnpm update-deps
-
-# 보안 감사
-pnpm audit
-
-# 오래된 패키지 확인
-pnpm outdated
-
-# 완전 재설치
-pnpm reinstall
-```
-
-## 📁 DI System Details
-
-### Container (`src/app/di/container.ts`)
-Advanced DI container with:
-- **Service registration**: Factory-based service creation
-- **Lifecycle management**: Singleton and transient services
-- **Dependency resolution**: Automatic dependency injection
-- **Configuration integration**: Environment-based configuration
-- **Debug capabilities**: Service inspection and debugging
-
-### Tokens (`src/app/di/tokens.ts`)
-Type-safe DI tokens:
-- **Symbol-based**: Unique, non-colliding identifiers
-- **Type-safe**: Compile-time type checking
-- **Categorized**: Organized by layer and responsibility
-- **Extensible**: Easy to add new services
-
-### Configuration (`src/app/di/config.ts`)
-Configuration management:
-- **Environment-specific**: Development, production, test configs
-- **Type-safe**: Full TypeScript support
-- **Extensible**: Easy to add new configuration options
-- **Validation**: Runtime configuration validation
-
-### React Hooks (`src/app/di/useDI.ts`)
-React integration:
-- **useDI**: Single service resolution
-- **useDIMultiple**: Multiple service resolution
-- **useUseCases**: Use case access
-- **useRepositories**: Repository access
-- **useServices**: Service access
-- **useInfrastructure**: Infrastructure access
-- **useStores**: Zustand store access
-- **useConfig**: Configuration access
-
-### Testing Utilities (`src/app/di/testUtils.ts`)
-Testing support:
-- **Mock services**: Pre-configured mock implementations
-- **Test containers**: Isolated DI containers for testing
-- **Mock registration**: Easy mock service injection
-- **Reset utilities**: Clean test state management
-
-## 🔄 DI Usage Patterns
-
-### Service Registration
-```typescript
-// Register a singleton service
-container.register(DI_TOKENS.API_CLIENT, () => new ApiClient(config), true);
-
-// Register a transient service
-container.register(DI_TOKENS.LOGGER, () => new Logger(), false);
-```
-
-### Service Resolution
-```typescript
-// Direct resolution
-const apiClient = container.get<ApiClient>(DI_TOKENS.API_CLIENT);
-
-// React hook resolution
-const apiClient = useDI<ApiClient>(DI_TOKENS.API_CLIENT);
-```
-
-### Configuration Management
-```typescript
-// Update configuration
-container.updateConfig({
-  api: { baseURL: 'https://new-api.example.com' }
-});
-
-// Get current configuration
-const config = container.getConfig();
-```
-
-### Testing
-```typescript
-import { createTestEnvironment } from '../app/di/testUtils';
-
-const { container, mocks, reset } = createTestEnvironment();
-
-// Use mocks in tests
-mocks.apiClient.get.mockResolvedValue({ data: 'test' });
-
-// Clean up after tests
-afterEach(reset);
-```
-
-## 🎯 Benefits
-
-- **Type Safety**: Full TypeScript support with compile-time checking
-- **Testability**: Easy mock injection and isolated testing
-- **Maintainability**: Clear separation of concerns and dependencies
-- **Scalability**: Modular architecture that grows with your application
-- **Performance**: Efficient service lifecycle management
-- **Developer Experience**: Intuitive API and comprehensive tooling
-
-## 🔧 Configuration
-
-### Environment Variables
-```env
-VITE_API_BASE_URL=http://localhost:3000
-VITE_SOCKET_URL=ws://localhost:3000
-VITE_ENVIRONMENT=development
-```
-
-### DI Configuration
-```typescript
-const config = createAppConfig({
-  api: {
-    baseURL: 'https://api.example.com',
-    timeout: 10000,
-  },
-  websocket: {
-    url: 'wss://ws.example.com',
-    options: { autoConnect: true }
-  },
-  environment: 'production',
-  debug: false
+// 채널 생성
+const createChannelUseCase = UseCaseFactory.createCreateChannelUseCase();
+const channel = await createChannelUseCase.execute({
+  name: 'General',
+  description: 'General discussion'
 });
 ```
 
-## 📝 Usage Examples
+### 2. **고급 기능 사용**
 
-### Authentication with DI
 ```typescript
-const { authService } = useServices();
-const { user, isAuthenticated } = useAuthStore();
+// 시스템 관리
+const systemManagement = UseCaseFactory.createSystemManagementUseCase();
 
-const handleLogin = async () => {
-  await authService.login({ email, password });
-};
+// 시스템 개요 조회
+const overview = await systemManagement.getSystemOverview();
+
+// 실시간 모니터링
+const monitoring = await systemManagement.getRealTimeMonitoring();
+
+// 시스템 진단
+const diagnosis = await systemManagement.diagnoseSystem();
 ```
 
-### Theme Management with DI
-```typescript
-const { theme, isDarkMode, toggleTheme } = useThemeStore();
+### 3. **성능 모니터링**
 
-return (
-  <button onClick={toggleTheme}>
-    {isDarkMode ? '🌞' : '🌙'}
-  </button>
+```typescript
+// 성능 측정
+const performanceService = new PerformanceMonitoringService(
+  userRepository,
+  channelRepository,
+  messageRepository
+);
+
+const result = await performanceService.measurePerformance(
+  'user_operation',
+  async () => {
+    // 측정할 작업
+    return await someOperation();
+  }
 );
 ```
 
-### Channel Management with DI
+### 4. **보안 기능**
+
 ```typescript
-const { channelUseCases } = useUseCases();
-const { channels, createChannel } = useChannels();
+// 입력 검증
+const securityService = new SecurityService();
+const validation = securityService.validateInput(data, {
+  username: { required: true, type: 'string', minLength: 3 },
+  email: { required: true, type: 'string', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }
+});
 
-const handleCreateChannel = async () => {
-  await createChannel({ name: 'New Channel', type: 'public' });
-};
-```
-
-This advanced DI pattern provides a robust, scalable, and maintainable foundation for modern React applications with powerful dependency management capabilities.
-
-## 🎯 Benefits
-
-- **Type Safety**: Full TypeScript support with compile-time checking
-- **Testability**: Easy mock injection and isolated testing
-- **Maintainability**: Clear separation of concerns and dependencies
-- **Scalability**: Modular architecture that grows with your application
-- **Performance**: Efficient service lifecycle management
-- **Developer Experience**: Intuitive API and comprehensive tooling
-
-## 🔧 Configuration
-
-### Environment Variables
-```env
-VITE_API_BASE_URL=http://localhost:3000
-VITE_SOCKET_URL=ws://localhost:3000
-VITE_ENVIRONMENT=development
-```
-
-### DI Configuration
-```typescript
-const config = createAppConfig({
-  api: {
-    baseURL: 'https://api.example.com',
-    timeout: 10000,
-  },
-  websocket: {
-    url: 'wss://ws.example.com',
-    options: { autoConnect: true }
-  },
-  environment: 'production',
-  debug: false
+// Rate Limiting
+const rateLimit = securityService.checkRateLimit(userId, {
+  windowMs: 60000,
+  maxRequests: 100
 });
 ```
 
-## 📝 Usage Examples
+## 📊 모니터링 및 분석
 
-### Authentication with DI
+### 1. **시스템 건강 상태**
+
 ```typescript
-const { authService } = useServices();
-const { user, isAuthenticated } = useAuthStore();
-
-const handleLogin = async () => {
-  await authService.login({ email, password });
-};
-```
-
-### Theme Management with DI
-```typescript
-const { theme, isDarkMode, toggleTheme } = useThemeStore();
-
-return (
-  <button onClick={toggleTheme}>
-    {isDarkMode ? '🌞' : '🌙'}
-  </button>
+const healthService = new SystemHealthService(
+  userRepository,
+  channelRepository,
+  messageRepository
 );
+
+const health = await healthService.getSystemHealth();
+console.log('System Status:', health.overall);
+console.log('Components:', health.components);
+console.log('Alerts:', health.alerts);
 ```
 
-### Channel Management with DI
-```typescript
-const { channelUseCases } = useUseCases();
-const { channels, createChannel } = useChannels();
+### 2. **성능 메트릭**
 
-const handleCreateChannel = async () => {
-  await createChannel({ name: 'New Channel', type: 'public' });
+```typescript
+const metrics = await healthService.getSystemMetrics();
+console.log('Response Time:', metrics.performance.averageResponseTime);
+console.log('Error Rate:', metrics.performance.errorRate);
+console.log('Cache Hit Rate:', metrics.cache.hitRate);
+```
+
+### 3. **사용자 분석**
+
+```typescript
+const analyticsService = new AnalyticsService(
+  userRepository,
+  channelRepository,
+  messageRepository
+);
+
+// 사용자 행동 분석
+const behavior = analyticsService.analyzeUserBehavior(userId, {
+  start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30일
+  end: new Date()
+});
+
+// 이탈 예측
+const churnPrediction = analyticsService.predictUserChurn(userId);
+```
+
+## 🔧 설정 및 구성
+
+### 1. **캐시 설정**
+
+```typescript
+const cacheConfig = {
+  levels: [
+    { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 },    // 1분
+    { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 },   // 5분
+    { name: 'L3', ttl: 1800000, maxSize: 10000, priority: 3 }, // 30분
+  ],
+  enableCompression: true,
+  enableMetrics: true,
 };
 ```
 
-This advanced DI pattern provides a robust, scalable, and maintainable foundation for modern React applications with powerful dependency management capabilities.
+### 2. **보안 설정**
+
+```typescript
+const securityConfig = {
+  enableRateLimiting: true,
+  enableInputValidation: true,
+  enableXSSProtection: true,
+  enableCSRFProtection: true,
+  maxRequestSize: 10 * 1024 * 1024, // 10MB
+  sessionTimeout: 30 * 60 * 1000,   // 30분
+};
+```
+
+### 3. **모니터링 설정**
+
+```typescript
+const monitoringConfig = {
+  checkInterval: 30000, // 30초
+  enableMetrics: true,
+  enableAlerts: true,
+  alertThresholds: {
+    responseTime: 1000,    // 1초
+    errorRate: 0.05,       // 5%
+    memoryUsage: 0.85,     // 85%
+  }
+};
+```
+
+## 🚀 성능 최적화
+
+### 1. **캐싱 전략**
+
+- **L1 캐시**: 자주 접근하는 데이터 (1분 TTL)
+- **L2 캐시**: 중간 빈도 데이터 (5분 TTL)
+- **L3 캐시**: 덜 자주 접근하는 데이터 (30분 TTL)
+
+### 2. **배치 처리**
+
+```typescript
+// 배치 캐시 조회
+const cacheService = new MultiLevelCacheService(
+  userRepository,
+  channelRepository,
+  messageRepository,
+  cacheConfig
+);
+
+const users = await cacheService.batchGet(userIds, async (keys) => {
+  return await userRepository.findByIds(keys);
+});
+```
+
+### 3. **성능 모니터링**
+
+- 실시간 응답 시간 측정
+- 에러율 추적
+- 리소스 사용량 모니터링
+- 자동 성능 알림
+
+## 🔒 보안 기능
+
+### 1. **입력 검증**
+
+```typescript
+const schema = {
+  username: { required: true, type: 'string', minLength: 3, maxLength: 20 },
+  email: { required: true, type: 'string', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+  password: { required: true, type: 'string', minLength: 8 }
+};
+
+const validation = securityService.validateInput(userData, schema);
+if (!validation.isValid) {
+  throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
+}
+```
+
+### 2. **Rate Limiting**
+
+```typescript
+const rateLimit = securityService.checkRateLimit(userId, {
+  windowMs: 60000,    // 1분
+  maxRequests: 100    // 최대 100개 요청
+});
+
+if (!rateLimit.allowed) {
+  throw new Error('Rate limit exceeded');
+}
+```
+
+### 3. **XSS 방지**
+
+```typescript
+const sanitizedInput = securityService.sanitizeInput(userInput);
+```
+
+## 📈 분석 및 인사이트
+
+### 1. **사용자 행동 분석**
+
+- 페이지 뷰 추적
+- 사용자 세션 분석
+- 활동 패턴 분석
+- 이탈 예측
+
+### 2. **성능 분석**
+
+- 응답 시간 분포
+- 에러 패턴 분석
+- 리소스 사용량 트렌드
+- 병목 지점 식별
+
+### 3. **보안 분석**
+
+- 공격 패턴 분석
+- 위반 유형별 통계
+- IP 기반 위험도 평가
+- 자동 대응 권장사항
+
+## 🛠️ 개발 가이드
+
+### 1. **새로운 기능 추가**
+
+```typescript
+// 1. Service 생성 (복잡한 비즈니스 로직)
+export class NewFeatureService {
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly performanceService: PerformanceMonitoringService
+  ) {}
+
+  async complexBusinessLogic(data: any) {
+    return await this.performanceService.measurePerformance(
+      'new_feature_operation',
+      async () => {
+        // 비즈니스 로직 구현
+        return await this.processData(data);
+      }
+    );
+  }
+}
+
+// 2. Use Case 생성 (워크플로우 오케스트레이션)
+export class NewFeatureUseCase {
+  constructor(private readonly newFeatureService: NewFeatureService) {}
+  
+  async execute(request: any) {
+    return await this.newFeatureService.complexBusinessLogic(request);
+  }
+}
+
+// 3. Factory에 추가
+static createNewFeatureUseCase(): NewFeatureUseCase {
+  const newFeatureService = new NewFeatureService(
+    container.getUserRepository(),
+    container.getPerformanceMonitoringService()
+  );
+  return new NewFeatureUseCase(newFeatureService);
+}
+```
+
+### 2. **테스트 작성**
+
+```typescript
+describe('NewFeatureUseCase', () => {
+  let useCase: NewFeatureUseCase;
+  let mockService: jest.Mocked<NewFeatureService>;
+
+  beforeEach(() => {
+    mockService = createMockNewFeatureService();
+    useCase = new NewFeatureUseCase(mockService);
+  });
+
+  it('should process data correctly', async () => {
+    const request = { data: 'test' };
+    const expectedResult = { processed: true };
+
+    mockService.complexBusinessLogic.mockResolvedValue(expectedResult);
+
+    const result = await useCase.execute(request);
+
+    expect(result).toEqual(expectedResult);
+    expect(mockService.complexBusinessLogic).toHaveBeenCalledWith(request);
+  });
+});
+```
+
+## 📚 API 문서
+
+### Use Case API
+
+각 Use Case는 다음과 같은 패턴을 따릅니다:
+
+```typescript
+interface UseCaseRequest {
+  // 요청 데이터
+}
+
+interface UseCaseResponse {
+  // 응답 데이터
+}
+
+class UseCase {
+  async execute(request: UseCaseRequest): Promise<UseCaseResponse> {
+    // 구현
+  }
+}
+```
+
+### Service API
+
+각 Service는 다음과 같은 패턴을 따릅니다:
+
+```typescript
+interface ServiceConfig {
+  // 설정 옵션
+}
+
+class Service {
+  constructor(config?: ServiceConfig) {}
+  
+  async methodName(params: any): Promise<any> {
+    // 구현
+  }
+}
+```
+
+## 🚀 배포 및 운영
+
+### 1. **프로덕션 준비**
+
+- 모든 모니터링 기능 활성화
+- 보안 설정 강화
+- 캐시 최적화
+- 에러 로깅 설정
+
+### 2. **성능 모니터링**
+
+- 실시간 시스템 건강 상태 확인
+- 성능 메트릭 추적
+- 자동 알림 설정
+- 정기적인 최적화 권장사항 검토
+
+### 3. **보안 모니터링**
+
+- 보안 위반 실시간 감지
+- IP 차단 자동화
+- 정기적인 보안 리포트 생성
+- 보안 설정 자동 업데이트
+
+## 🤝 기여 가이드
+
+1. **Fork** the repository
+2. **Create** a feature branch
+3. **Implement** your changes following Clean Architecture principles
+4. **Add** tests for new functionality
+5. **Update** documentation
+6. **Submit** a pull request
+
+## 📄 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+
+## 📞 지원
+
+문제가 있거나 질문이 있으시면 이슈를 생성해주세요.
+
+---
+
+**이 프로젝트는 Clean Architecture 원칙을 기반으로 구축되어 확장성, 유지보수성, 테스트 용이성을 보장합니다.**

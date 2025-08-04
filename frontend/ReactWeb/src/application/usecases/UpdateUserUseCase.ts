@@ -1,23 +1,22 @@
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
-import type {UpdateUserRequest, UpdateUserResponse} from '../dto/UpdateUserDto';
+import { UserService } from '../services/UserService';
+import type { UpdateUserRequest, UpdateUserResponse } from '../dto/UpdateUserDto';
 
 export class UpdateUserUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
   async execute(request: UpdateUserRequest): Promise<UpdateUserResponse> {
     try {
       if (!request.id || request.id.trim().length === 0) {
-        throw DomainErrorFactory.createUserValidation('User ID is required');
+        throw new Error('User ID is required');
       }
 
-      const updatedUser = await this.userRepository.update(request.id, request.updates);
-      return { user: updatedUser.toJSON() };
+      const updatedUser = await this.userService.updateUserProfile(request.id, request.updates);
+      return { user: updatedUser };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Failed to update user');
+      throw new Error('Failed to update user');
     }
   }
 }

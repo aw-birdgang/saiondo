@@ -8,6 +8,10 @@ import { ChannelUseCases } from '../../application/usecases/ChannelUseCases';
 import { MessageUseCases } from '../../application/usecases/MessageUseCases';
 import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
 import { AuthService } from '../../application/services/AuthService';
+import { UserService } from '../../application/services/UserService';
+import { ChannelService } from '../../application/services/ChannelService';
+import { MessageService } from '../../application/services/MessageService';
+import { FileService } from '../../application/services/FileService';
 import { NotificationService } from '../../application/services/NotificationService';
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
@@ -87,24 +91,51 @@ class DIContainer {
       return new AuthService(apiClient);
     }, true);
 
+    this.register(DI_TOKENS.USER_SERVICE, () => {
+      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
+      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
+      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
+      return new UserService(userRepository, channelRepository, messageRepository);
+    }, true);
+
+    this.register(DI_TOKENS.CHANNEL_SERVICE, () => {
+      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
+      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
+      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
+      return new ChannelService(channelRepository, userRepository, messageRepository);
+    }, true);
+
+    this.register(DI_TOKENS.MESSAGE_SERVICE, () => {
+      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
+      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
+      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
+      return new MessageService(messageRepository, channelRepository, userRepository);
+    }, true);
+
+    this.register(DI_TOKENS.FILE_SERVICE, () => {
+      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
+      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
+      return new FileService(messageRepository, channelRepository);
+    }, true);
+
     this.register(DI_TOKENS.NOTIFICATION_SERVICE, () => {
       return NotificationService;
     }, true);
 
     // Use Cases
     this.register(DI_TOKENS.USER_USE_CASES, () => {
-      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
-      return new UserUseCases(userRepository);
+      const userService = this.get<UserService>(DI_TOKENS.USER_SERVICE);
+      return new UserUseCases(userService);
     }, true);
 
     this.register(DI_TOKENS.CHANNEL_USE_CASES, () => {
-      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
-      return new ChannelUseCases(channelRepository);
+      const channelService = this.get<ChannelService>(DI_TOKENS.CHANNEL_SERVICE);
+      return new ChannelUseCases(channelService);
     }, true);
 
     this.register(DI_TOKENS.MESSAGE_USE_CASES, () => {
-      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
-      return new MessageUseCases(messageRepository);
+      const messageService = this.get<MessageService>(DI_TOKENS.MESSAGE_SERVICE);
+      return new MessageUseCases(messageService);
     }, true);
 
     // Use Case Factory
@@ -184,6 +215,40 @@ class DIContainer {
 
   getServiceInstances(): Map<DIToken, ServiceInstance> {
     return new Map(this.services);
+  }
+
+  // Service getters for convenience
+  getUserService(): UserService {
+    return this.get<UserService>(DI_TOKENS.USER_SERVICE);
+  }
+
+  getChannelService(): ChannelService {
+    return this.get<ChannelService>(DI_TOKENS.CHANNEL_SERVICE);
+  }
+
+  getMessageService(): MessageService {
+    return this.get<MessageService>(DI_TOKENS.MESSAGE_SERVICE);
+  }
+
+  getFileService(): FileService {
+    return this.get<FileService>(DI_TOKENS.FILE_SERVICE);
+  }
+
+  getAuthService(): AuthService {
+    return this.get<AuthService>(DI_TOKENS.AUTH_SERVICE);
+  }
+
+  // Repository getters for backward compatibility
+  getUserRepository(): IUserRepository {
+    return this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
+  }
+
+  getChannelRepository(): IChannelRepository {
+    return this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
+  }
+
+  getMessageRepository(): IMessageRepository {
+    return this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
   }
 }
 

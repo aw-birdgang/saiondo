@@ -1,12 +1,9 @@
-import type {IChannelRepository, IMessageRepository} from '../../domain/repositories/IMessageRepository';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
-import type {SearchMessagesRequest, SearchMessagesResponse} from '../dto/SearchMessagesDto';
+import type { MessageService } from '../services/MessageService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { SearchMessagesRequest, SearchMessagesResponse } from '../dto/SearchMessagesDto';
 
 export class SearchMessagesUseCase {
-  constructor(
-    private readonly messageRepository: IMessageRepository,
-    private readonly channelRepository: IChannelRepository
-  ) {}
+  constructor(private readonly messageService: MessageService) {}
 
   async execute(request: SearchMessagesRequest): Promise<SearchMessagesResponse> {
     try {
@@ -19,30 +16,18 @@ export class SearchMessagesUseCase {
         throw DomainErrorFactory.createMessageValidation('Search query must be at least 2 characters');
       }
 
-      // If channelId is provided, verify user has access to it
-      if (request.channelId) {
-        // In real implementation, you would check user permissions here
-        const channel = await this.channelRepository.findById(request.channelId);
-        if (!channel) {
-          throw DomainErrorFactory.createChannelNotFound(request.channelId);
-        }
-      }
-
-      // Search messages
-      const messages = await this.messageRepository.search(
+      // Search messages using MessageService
+      const messages = await this.messageService.searchMessages(
         request.query,
         request.channelId,
         request.userId,
-        request.limit || 50,
-        request.offset || 0,
-        request.dateFrom,
-        request.dateTo
+        request.limit || 20
       );
 
       return {
-        messages: messages.map(msg => msg.toJSON()),
+        messages: messages,
         total: messages.length,
-        hasMore: messages.length === (request.limit || 50),
+        hasMore: messages.length === (request.limit || 20),
       };
     } catch (error) {
       if (error instanceof Error) {

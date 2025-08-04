@@ -1,6 +1,4 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { PerformanceMonitoringService } from '../services/PerformanceMonitoringService';
 import type { 
   Trace,
   Span,
@@ -26,11 +24,7 @@ export class APMMonitoringUseCase {
   private spans = new Map<string, Span>();
   private alerts = new Map<string, Alert>();
 
-  constructor(
-    private readonly userRepository: IUserRepository,
-    private readonly channelRepository: IChannelRepository,
-    private readonly messageRepository: IMessageRepository
-  ) {}
+  constructor(private readonly performanceService: PerformanceMonitoringService) {}
 
   async createTrace(request: CreateTraceRequest): Promise<CreateTraceResponse> {
     const traceId = `trace_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
@@ -143,35 +137,47 @@ export class APMMonitoringUseCase {
   }
 
   async getTraces(request: GetTracesRequest): Promise<GetTracesResponse> {
-    const traces = Array.from(this.traces.values())
-      .filter(trace => {
-        if (request.status && trace.status !== request.status) return false;
-        return true;
-      })
-      .sort((a, b) => b.startTime.getTime() - a.startTime.getTime())
-      .slice(request.offset || 0, (request.offset || 0) + (request.limit || 50));
+    const traces = Array.from(this.traces.values());
+    
+    // Apply filters
+    let filteredTraces = traces;
+    if (request.status) {
+      filteredTraces = filteredTraces.filter(trace => trace.status === request.status);
+    }
+
+    // Apply pagination
+    const limit = request.limit || 50;
+    const offset = request.offset || 0;
+    const paginatedTraces = filteredTraces.slice(offset, offset + limit);
 
     return {
-      traces,
-      total: this.traces.size,
-      hasMore: (request.offset || 0) + (request.limit || 50) < this.traces.size,
+      traces: paginatedTraces,
+      total: filteredTraces.length,
+      hasMore: offset + limit < filteredTraces.length,
     };
   }
 
   async getAlerts(request: GetAlertsRequest): Promise<GetAlertsResponse> {
-    const alerts = Array.from(this.alerts.values())
-      .filter(alert => {
-        if (request.severity && alert.severity !== request.severity) return false;
-        if (request.resolved !== undefined && alert.resolved !== request.resolved) return false;
-        return true;
-      })
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-      .slice(request.offset || 0, (request.offset || 0) + (request.limit || 50));
+    const alerts = Array.from(this.alerts.values());
+    
+    // Apply filters
+    let filteredAlerts = alerts;
+    if (request.severity) {
+      filteredAlerts = filteredAlerts.filter(alert => alert.severity === request.severity);
+    }
+    if (request.resolved !== undefined) {
+      filteredAlerts = filteredAlerts.filter(alert => alert.resolved === request.resolved);
+    }
+
+    // Apply pagination
+    const limit = request.limit || 50;
+    const offset = request.offset || 0;
+    const paginatedAlerts = filteredAlerts.slice(offset, offset + limit);
 
     return {
-      alerts,
-      total: this.alerts.size,
-      hasMore: (request.offset || 0) + (request.limit || 50) < this.alerts.size,
+      alerts: paginatedAlerts,
+      total: filteredAlerts.length,
+      hasMore: offset + limit < filteredAlerts.length,
     };
   }
 } 

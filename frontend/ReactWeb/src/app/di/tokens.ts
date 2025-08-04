@@ -9,6 +9,10 @@ export const MESSAGE_REPOSITORY = Symbol('MessageRepository');
 
 // Service Tokens
 export const AUTH_SERVICE = Symbol('AuthService');
+export const USER_SERVICE = Symbol('UserService');
+export const CHANNEL_SERVICE = Symbol('ChannelService');
+export const MESSAGE_SERVICE = Symbol('MessageService');
+export const FILE_SERVICE = Symbol('FileService');
 export const NOTIFICATION_SERVICE = Symbol('NotificationService');
 
 // Use Case Tokens
@@ -42,6 +46,10 @@ export const DI_TOKENS = {
   
   // Services
   AUTH_SERVICE,
+  USER_SERVICE,
+  CHANNEL_SERVICE,
+  MESSAGE_SERVICE,
+  FILE_SERVICE,
   NOTIFICATION_SERVICE,
   
   // Use Cases

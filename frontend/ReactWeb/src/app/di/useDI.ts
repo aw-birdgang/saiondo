@@ -28,6 +28,10 @@ export function useRepositories() {
 export function useServices() {
   return {
     authService: useDI(DI_TOKENS.AUTH_SERVICE),
+    userService: useDI(DI_TOKENS.USER_SERVICE),
+    channelService: useDI(DI_TOKENS.CHANNEL_SERVICE),
+    messageService: useDI(DI_TOKENS.MESSAGE_SERVICE),
+    fileService: useDI(DI_TOKENS.FILE_SERVICE),
     notificationService: useDI(DI_TOKENS.NOTIFICATION_SERVICE),
   };
 }
@@ -41,6 +45,22 @@ export function useInfrastructure() {
 
 export function useAuthService() {
   return useDI(DI_TOKENS.AUTH_SERVICE);
+}
+
+export function useUserService() {
+  return useDI(DI_TOKENS.USER_SERVICE);
+}
+
+export function useChannelService() {
+  return useDI(DI_TOKENS.CHANNEL_SERVICE);
+}
+
+export function useMessageService() {
+  return useDI(DI_TOKENS.MESSAGE_SERVICE);
+}
+
+export function useFileService() {
+  return useDI(DI_TOKENS.FILE_SERVICE);
 }
 
 export function useNotificationService() {

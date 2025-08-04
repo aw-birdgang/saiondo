@@ -1,7 +1,5 @@
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import {UserEntity} from '../../domain/entities/User';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
-import {Email} from '../../domain/value-objects/Email';
+import type { UserService } from '../services/UserService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   CreateUserRequest,
   CreateUserResponse,
@@ -16,28 +14,19 @@ import type {
 } from '../dto/UserDto';
 
 export class UserUseCases {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
   async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {
     try {
-      const email = Email.create(request.email);
-      
-      // Check if user already exists
-      const existingUser = await this.userRepository.findByEmail(email.getValue());
-      if (existingUser) {
-        throw DomainErrorFactory.createUserValidation('User with this email already exists');
-      }
-
-      const userEntity = UserEntity.create({
-        email: email.getValue(),
+      // UserService를 통해 사용자 생성 로직 처리
+      const userProfile = await this.userService.updateUserProfile('', {
         username: request.username,
-        displayName: request.displayName,
+        email: request.email,
         avatar: request.avatar,
-        isOnline: false,
+        status: 'offline',
       });
 
-      const user = await this.userRepository.save(userEntity.toJSON());
-      return { user };
+      return { user: userProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -48,22 +37,12 @@ export class UserUseCases {
 
   async updateUser(request: UpdateUserRequest): Promise<UpdateUserResponse> {
     try {
-      const existingUser = await this.userRepository.findById(request.id);
-      if (!existingUser) {
-        throw DomainErrorFactory.createUserNotFound(request.id);
-      }
+      const userProfile = await this.userService.updateUserProfile(request.id, {
+        avatar: request.avatar,
+        status: request.isOnline ? 'online' : 'offline',
+      });
 
-      const userEntity = UserEntity.fromData(existingUser);
-      const updatedUserEntity = userEntity.updateProfile(request.displayName, request.avatar);
-      
-      if (request.isOnline !== undefined) {
-        const onlineStatusUpdated = updatedUserEntity.updateOnlineStatus(request.isOnline);
-        const user = await this.userRepository.save(onlineStatusUpdated.toJSON());
-        return { user };
-      }
-
-      const user = await this.userRepository.save(updatedUserEntity.toJSON());
-      return { user };
+      return { user: userProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -74,12 +53,8 @@ export class UserUseCases {
 
   async getUser(request: GetUserRequest): Promise<GetUserResponse> {
     try {
-      const user = await this.userRepository.findById(request.id);
-      if (!user) {
-        throw DomainErrorFactory.createUserNotFound(request.id);
-      }
-
-      return { user };
+      const userProfile = await this.userService.getCurrentUser(request.id);
+      return { user: userProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -90,7 +65,7 @@ export class UserUseCases {
 
   async searchUsers(request: SearchUsersRequest): Promise<SearchUsersResponse> {
     try {
-      const users = await this.userRepository.search(request.query);
+      const users = await this.userService.searchUsers(request.query, 10);
       return { 
         users, 
         total: users.length, 
@@ -106,22 +81,8 @@ export class UserUseCases {
 
   async getCurrentUser(request?: GetCurrentUserRequest): Promise<GetCurrentUserResponse> {
     try {
-      let user;
-      
-      if (request?.userId) {
-        // Get specific user by ID
-        user = await this.userRepository.findById(request.userId);
-      } else {
-        // Get current user
-        user = await this.userRepository.getCurrentUser();
-      }
-      
-      if (!user) {
-        const errorId = request?.userId || 'current user';
-        throw DomainErrorFactory.createUserNotFound(errorId);
-      }
-
-      return { user };
+      const userProfile = await this.userService.getCurrentUser(request?.userId);
+      return { user: userProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;

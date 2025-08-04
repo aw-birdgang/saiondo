@@ -1,4 +1,4 @@
-import { container } from '../../di/container';
+import { container } from '../../app/di/container';
 import { GetCurrentUserUseCase } from './GetCurrentUserUseCase';
 import { UpdateUserUseCase } from './UpdateUserUseCase';
 import { CreateChannelUseCase } from './CreateChannelUseCase';
@@ -20,6 +20,23 @@ import { MonitoringUseCase } from './MonitoringUseCase';
 import { RedisCacheUseCase } from './RedisCacheUseCase';
 import { WebSocketUseCase } from './WebSocketUseCase';
 import { APMMonitoringUseCase } from './APMMonitoringUseCase';
+import { AnalyticsUseCase } from './AnalyticsUseCase';
+import { SystemManagementUseCase } from './SystemManagementUseCase';
+import { UserActivityService } from '../services/UserActivityService';
+import { UserPermissionService } from '../services/UserPermissionService';
+import { RealTimeChatService } from '../services/RealTimeChatService';
+import { NotificationService } from '../services/NotificationService';
+import { FileService } from '../services/FileService';
+import { CacheService } from '../services/CacheService';
+import { MonitoringService } from '../services/MonitoringService';
+import { WebSocketService } from '../services/WebSocketService';
+import { AnalyticsService } from '../services/AnalyticsService';
+import { SystemHealthService } from '../services/SystemHealthService';
+import { PerformanceMonitoringService } from '../services/PerformanceMonitoringService';
+import { ErrorHandlingService } from '../services/ErrorHandlingService';
+import { SecurityService } from '../services/SecurityService';
+import { MultiLevelCacheService } from '../services/MultiLevelCacheService';
+import { ChannelService } from '../services/ChannelService';
 
 /**
  * Use Case Factory
@@ -28,154 +45,225 @@ import { APMMonitoringUseCase } from './APMMonitoringUseCase';
 export class UseCaseFactory {
   // User related use cases
   static createGetCurrentUserUseCase(): GetCurrentUserUseCase {
-    return new GetCurrentUserUseCase(container.getUserRepository());
+    const userService = container.getUserService();
+    return new GetCurrentUserUseCase(userService);
   }
 
   static createUpdateUserUseCase(): UpdateUserUseCase {
-    return new UpdateUserUseCase(container.getUserRepository());
+    const userService = container.getUserService();
+    return new UpdateUserUseCase(userService);
   }
 
   static createAuthenticateUserUseCase(): AuthenticateUserUseCase {
-    return new AuthenticateUserUseCase(container.getUserRepository());
+    const userService = container.getUserService();
+    return new AuthenticateUserUseCase(userService);
   }
 
   static createRegisterUserUseCase(): RegisterUserUseCase {
-    return new RegisterUserUseCase(container.getUserRepository());
+    const userService = container.getUserService();
+    return new RegisterUserUseCase(userService);
   }
 
   static createLogoutUserUseCase(): LogoutUserUseCase {
-    return new LogoutUserUseCase(container.getUserRepository());
+    const userService = container.getUserService();
+    return new LogoutUserUseCase(userService);
   }
 
   // Channel related use cases
   static createCreateChannelUseCase(): CreateChannelUseCase {
-    return new CreateChannelUseCase(container.getChannelRepository());
+    const channelService = container.getChannelService();
+    return new CreateChannelUseCase(channelService);
   }
 
   static createInviteToChannelUseCase(): InviteToChannelUseCase {
-    return new InviteToChannelUseCase(
-      container.getChannelRepository(),
-      container.getUserRepository()
-    );
+    const channelService = container.getChannelService();
+    return new InviteToChannelUseCase(channelService);
   }
 
   static createLeaveChannelUseCase(): LeaveChannelUseCase {
-    return new LeaveChannelUseCase(
-      container.getChannelRepository(),
-      container.getUserRepository()
-    );
+    const channelService = container.getChannelService();
+    return new LeaveChannelUseCase(channelService);
   }
 
   // Message related use cases
   static createSendMessageUseCase(): SendMessageUseCase {
-    return new SendMessageUseCase(
-      container.getMessageRepository(),
-      container.getChannelRepository()
-    );
+    const messageService = container.getMessageService();
+    return new SendMessageUseCase(messageService);
   }
 
   static createSearchMessagesUseCase(): SearchMessagesUseCase {
-    return new SearchMessagesUseCase(
-      container.getMessageRepository(),
-      container.getChannelRepository()
-    );
+    const messageService = container.getMessageService();
+    return new SearchMessagesUseCase(messageService);
   }
 
   static createUploadFileUseCase(): UploadFileUseCase {
-    return new UploadFileUseCase(
+    const fileService = new FileService(
       container.getMessageRepository(),
       container.getChannelRepository()
     );
+    return new UploadFileUseCase(fileService);
   }
 
   // Real-time related use cases
   static createRealTimeChatUseCase(): RealTimeChatUseCase {
-    return new RealTimeChatUseCase(
+    const realTimeChatService = new RealTimeChatService(
       container.getMessageRepository(),
       container.getChannelRepository(),
       container.getUserRepository()
     );
+    return new RealTimeChatUseCase(realTimeChatService);
   }
 
   // File management use cases
   static createFileDownloadUseCase(): FileDownloadUseCase {
-    return new FileDownloadUseCase(
-      container.getMessageRepository(),
-      container.getUserRepository()
-    );
+    const fileService = container.getFileService();
+    return new FileDownloadUseCase(fileService);
   }
 
   // Notification related use cases
   static createNotificationUseCase(): NotificationUseCase {
-    return new NotificationUseCase(
+    const notificationService = new NotificationService(
       container.getUserRepository(),
       container.getChannelRepository()
     );
+    return new NotificationUseCase(notificationService);
   }
 
   // Permission related use cases
   static createUserPermissionUseCase(): UserPermissionUseCase {
-    return new UserPermissionUseCase(
+    const userPermissionService = new UserPermissionService(
       container.getUserRepository(),
       container.getChannelRepository()
     );
+    return new UserPermissionUseCase(userPermissionService);
   }
 
   // Cache related use cases
   static createCacheUseCase(options?: any): CacheUseCase {
-    return new CacheUseCase(
+    const cacheService = new CacheService(
       container.getUserRepository(),
       container.getChannelRepository(),
       container.getMessageRepository(),
       options
     );
+    return new CacheUseCase(cacheService);
   }
 
   // Redis cache use cases
   static createRedisCacheUseCase(config?: any): RedisCacheUseCase {
-    return new RedisCacheUseCase(
+    const cacheService = new CacheService(
       container.getUserRepository(),
       container.getChannelRepository(),
-      container.getMessageRepository(),
-      config
+      container.getMessageRepository()
     );
+    return new RedisCacheUseCase(cacheService);
   }
 
   // WebSocket use cases
   static createWebSocketUseCase(config?: any): WebSocketUseCase {
-    return new WebSocketUseCase(
+    const webSocketService = new WebSocketService(
       container.getUserRepository(),
       container.getChannelRepository(),
       container.getMessageRepository(),
-      config
+      config || {}
     );
+    return new WebSocketUseCase(webSocketService);
   }
 
   // Activity logging use cases
   static createUserActivityLogUseCase(): UserActivityLogUseCase {
-    return new UserActivityLogUseCase(
+    const userActivityService = new UserActivityService(
       container.getUserRepository(),
       container.getChannelRepository(),
       container.getMessageRepository()
     );
+    return new UserActivityLogUseCase(userActivityService);
   }
 
   // Monitoring use cases
   static createMonitoringUseCase(): MonitoringUseCase {
-    return new MonitoringUseCase(
+    const monitoringService = new MonitoringService(
       container.getUserRepository(),
       container.getChannelRepository(),
       container.getMessageRepository()
     );
+    return new MonitoringUseCase(monitoringService);
   }
 
   // APM monitoring use cases
-  static createAPMMonitoringUseCase(config?: any): APMMonitoringUseCase {
-    return new APMMonitoringUseCase(
+  static createAPMMonitoringUseCase(): APMMonitoringUseCase {
+    const performanceService = new PerformanceMonitoringService(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository()
+    );
+    return new APMMonitoringUseCase(performanceService);
+  }
+
+  // Analytics use cases
+  static createAnalyticsUseCase(): AnalyticsUseCase {
+    const analyticsService = new AnalyticsService(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository()
+    );
+    return new AnalyticsUseCase(analyticsService);
+  }
+
+  // System Management use cases
+  static createSystemManagementUseCase(): SystemManagementUseCase {
+    const systemHealthService = new SystemHealthService(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository()
+    );
+
+    const performanceService = new PerformanceMonitoringService(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository()
+    );
+
+    const errorService = new ErrorHandlingService({
+      enableConsoleLogging: true,
+      enableRemoteLogging: false,
+    });
+
+    const securityService = new SecurityService({
+      enableRateLimiting: true,
+      enableInputValidation: true,
+      enableXSSProtection: true,
+      enableCSRFProtection: true,
+    });
+
+    const cacheService = new MultiLevelCacheService(
       container.getUserRepository(),
       container.getChannelRepository(),
       container.getMessageRepository(),
-      config
+      {
+        levels: [
+          { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 },
+          { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 },
+          { name: 'L3', ttl: 1800000, maxSize: 10000, priority: 3 },
+        ],
+        enableCompression: true,
+        enableMetrics: true,
+      }
+    );
+
+    const analyticsService = new AnalyticsService(
+      container.getUserRepository(),
+      container.getChannelRepository(),
+      container.getMessageRepository()
+    );
+
+    return new SystemManagementUseCase(
+      systemHealthService,
+      performanceService,
+      errorService,
+      securityService,
+      cacheService,
+      analyticsService
     );
   }
 
@@ -260,6 +348,8 @@ export class UseCaseFactory {
     return {
       monitoring: this.createMonitoringUseCase(),
       apm: this.createAPMMonitoringUseCase(),
+      analytics: this.createAnalyticsUseCase(),
+      systemManagement: this.createSystemManagementUseCase(),
     };
   }
 

@@ -1,10 +1,9 @@
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import {UserEntity} from '../../domain/entities/User';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
-import type {RegisterUserRequest, RegisterUserResponse} from '../dto/RegisterUserDto';
+import type { UserService } from '../services/UserService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { RegisterUserRequest, RegisterUserResponse } from '../dto/RegisterUserDto';
 
 export class RegisterUserUseCase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly userService: UserService) {}
 
   async execute(request: RegisterUserRequest): Promise<RegisterUserResponse> {
     try {
@@ -21,30 +20,20 @@ export class RegisterUserUseCase {
         throw DomainErrorFactory.createUserValidation('Password must be at least 6 characters');
       }
 
-      // Check if user already exists
-      const existingUser = await this.userRepository.findByEmail(request.email);
-      if (existingUser) {
-        throw DomainErrorFactory.createUserValidation('User with this email already exists');
-      }
-
-      // Create user entity
-      const userEntity = UserEntity.create({
-        email: request.email,
+      // Use UserService to create user
+      const userProfile = await this.userService.updateUserProfile('', {
         username: request.username,
-        displayName: request.displayName,
+        email: request.email,
         avatar: request.avatar,
-        isOnline: false,
+        status: 'offline',
       });
 
-      // Save user
-      const savedUser = await this.userRepository.save(userEntity);
-
       // Generate tokens (in real implementation, this would use JWT)
-      const accessToken = this.generateAccessToken(savedUser);
-      const refreshToken = this.generateRefreshToken(savedUser);
+      const accessToken = this.generateAccessToken(userProfile);
+      const refreshToken = this.generateRefreshToken(userProfile);
 
       return {
-        user: savedUser.toJSON(),
+        user: userProfile,
         accessToken,
         refreshToken,
       };

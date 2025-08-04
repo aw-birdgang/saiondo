@@ -1,6 +1,5 @@
-import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
-import {MessageEntity} from '../../domain/entities/Message';
-import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type { MessageService } from '../services/MessageService';
+import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   CreateMessageRequest,
   CreateMessageResponse,
@@ -15,11 +14,11 @@ import type {
 } from '../dto/MessageDto';
 
 export class MessageUseCases {
-  constructor(private readonly messageRepository: IMessageRepository) {}
+  constructor(private readonly messageService: MessageService) {}
 
   async createMessage(request: CreateMessageRequest): Promise<CreateMessageResponse> {
     try {
-      const messageEntity = MessageEntity.create({
+      const messageProfile = await this.messageService.sendMessage({
         content: request.content,
         channelId: request.channelId,
         senderId: request.senderId,
@@ -28,8 +27,7 @@ export class MessageUseCases {
         replyTo: request.replyTo,
       });
 
-      const message = await this.messageRepository.save(messageEntity.toJSON());
-      return { message };
+      return { message: messageProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -40,12 +38,8 @@ export class MessageUseCases {
 
   async getMessage(request: GetMessageRequest): Promise<GetMessageResponse> {
     try {
-      const message = await this.messageRepository.findById(request.id);
-      if (!message) {
-        throw DomainErrorFactory.createMessageNotFound(request.id);
-      }
-
-      return { message };
+      const messageProfile = await this.messageService.getMessage(request.id);
+      return { message: messageProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -56,15 +50,15 @@ export class MessageUseCases {
 
   async getMessages(request: GetMessagesRequest): Promise<GetMessagesResponse> {
     try {
-      const messages = await this.messageRepository.findByChannelId(
+      const result = await this.messageService.getChannelMessages(
         request.channelId,
         request.limit,
         request.offset
       );
       return {
-        messages,
-        total: messages.length,
-        hasMore: false
+        messages: result.messages,
+        total: result.total,
+        hasMore: result.hasMore
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -76,16 +70,13 @@ export class MessageUseCases {
 
   async updateMessage(request: UpdateMessageRequest): Promise<UpdateMessageResponse> {
     try {
-      const existingMessage = await this.messageRepository.findById(request.id);
-      if (!existingMessage) {
-        throw DomainErrorFactory.createMessageNotFound(request.id);
-      }
+      const messageProfile = await this.messageService.updateMessage(
+        request.id,
+        { content: request.content },
+        request.userId
+      );
 
-      const messageEntity = MessageEntity.fromData(existingMessage);
-      const updatedMessageEntity = messageEntity.editContent(request.content);
-      const updatedMessage = await this.messageRepository.save(updatedMessageEntity.toJSON());
-
-      return { message: updatedMessage };
+      return { message: messageProfile };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -96,13 +87,8 @@ export class MessageUseCases {
 
   async deleteMessage(request: DeleteMessageRequest): Promise<DeleteMessageResponse> {
     try {
-      const message = await this.messageRepository.findById(request.id);
-      if (!message) {
-        throw DomainErrorFactory.createMessageNotFound(request.id);
-      }
-
-      await this.messageRepository.delete(request.id);
-      return { success: true };
+      const success = await this.messageService.deleteMessage(request.id, request.userId);
+      return { success };
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -113,11 +99,11 @@ export class MessageUseCases {
 
   async getRecentMessages(channelId: string, limit: number): Promise<GetMessagesResponse> {
     try {
-      const messages = await this.messageRepository.findByChannelId(channelId, limit, 0);
+      const result = await this.messageService.getChannelMessages(channelId, limit, 0);
       return {
-        messages,
-        total: messages.length,
-        hasMore: false
+        messages: result.messages,
+        total: result.total,
+        hasMore: result.hasMore
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -129,7 +115,8 @@ export class MessageUseCases {
 
   async getMessageCount(channelId: string): Promise<number> {
     try {
-      return await this.messageRepository.countByChannelId(channelId);
+      const stats = await this.messageService.getMessageStats(channelId);
+      return stats.totalMessages;
     } catch (error) {
       return 0;
     }
