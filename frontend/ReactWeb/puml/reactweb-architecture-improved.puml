@@ -1,0 +1,243 @@
+@startuml ReactWeb Architecture Improved
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam arrowColor #2E86AB
+skinparam componentBackgroundColor #F8F9FA
+skinparam packageBackgroundColor #E9ECEF
+
+title ReactWeb 프로젝트 - 개선된 클린 아키텍처 구조
+
+package "Presentation Layer" as Presentation {
+  package "Components" as Components {
+    component "UI Components" as UIComponents
+    component "Page Components" as PageComponents
+    component "Layout Components" as LayoutComponents
+  }
+  
+  package "State Management" as StateManagement {
+    component "Zustand Stores" as ZustandStores
+    component "React Contexts" as ReactContexts
+    component "Custom Hooks" as CustomHooks
+  }
+  
+  package "Error Handling" as PresentationError {
+    component "Error Boundaries" as ErrorBoundaries
+    component "UI Error Handlers" as UIErrorHandlers
+  }
+}
+
+package "Application Layer" as Application {
+  package "Use Cases" as UseCases {
+    component "User Use Cases" as UserUseCases
+    component "Channel Use Cases" as ChannelUseCases
+    component "Message Use Cases" as MessageUseCases
+    component "File Use Cases" as FileUseCases
+  }
+  
+  package "Application Services" as AppServices {
+    component "Authentication Service" as AuthService
+    component "Notification Service" as NotificationService
+    component "Cache Service" as CacheService
+  }
+  
+  package "Controllers" as Controllers {
+    component "API Controllers" as APIControllers
+    component "WebSocket Controllers" as WSControllers
+  }
+  
+  package "DTOs" as DTOs {
+    component "Request DTOs" as RequestDTOs
+    component "Response DTOs" as ResponseDTOs
+  }
+  
+  package "Error Handling" as AppError {
+    component "Application Errors" as ApplicationErrors
+    component "Validation Errors" as ValidationErrors
+  }
+}
+
+package "Domain Layer" as Domain {
+  package "Entities" as Entities {
+    component "User Entity" as UserEntity
+    component "Channel Entity" as ChannelEntity
+    component "Message Entity" as MessageEntity
+    component "File Entity" as FileEntity
+  }
+  
+  package "Value Objects" as ValueObjects {
+    component "Email" as Email
+    component "Password" as Password
+    component "ChannelId" as ChannelId
+    component "MessageId" as MessageId
+  }
+  
+  package "Repository Interfaces" as RepoInterfaces {
+    component "UserRepository" as UserRepo
+    component "ChannelRepository" as ChannelRepo
+    component "MessageRepository" as MessageRepo
+    component "FileRepository" as FileRepo
+  }
+  
+  package "Domain Services" as DomainServices {
+    component "UserDomainService" as UserDomainService
+    component "ChannelDomainService" as ChannelDomainService
+    component "MessageDomainService" as MessageDomainService
+  }
+  
+  package "Domain Events" as DomainEvents {
+    component "UserEvents" as UserEvents
+    component "ChannelEvents" as ChannelEvents
+    component "MessageEvents" as MessageEvents
+  }
+  
+  package "Domain Errors" as DomainErrors {
+    component "UserErrors" as UserErrors
+    component "ChannelErrors" as ChannelErrors
+    component "MessageErrors" as MessageErrors
+  }
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  package "API" as API {
+    component "HTTP Client" as HTTPClient
+    component "API Endpoints" as APIEndpoints
+    component "Request/Response Interceptors" as Interceptors
+  }
+  
+  package "Repositories" as Repositories {
+    component "UserRepositoryImpl" as UserRepoImpl
+    component "ChannelRepositoryImpl" as ChannelRepoImpl
+    component "MessageRepositoryImpl" as MessageRepoImpl
+    component "FileRepositoryImpl" as FileRepoImpl
+  }
+  
+  package "WebSocket" as WebSocket {
+    component "WebSocket Client" as WSClient
+    component "Real-time Handlers" as RealTimeHandlers
+  }
+  
+  package "Cache" as Cache {
+    component "Local Storage" as LocalStorage
+    component "Session Storage" as SessionStorage
+    component "Memory Cache" as MemoryCache
+  }
+  
+  package "External Services" as ExternalServices {
+    component "File Upload Service" as FileUploadService
+    component "Notification Service" as ExternalNotificationService
+    component "Analytics Service" as AnalyticsService
+  }
+  
+  package "Configuration" as Config {
+    component "Environment Config" as EnvConfig
+    component "API Config" as APIConfig
+    component "WebSocket Config" as WSConfig
+  }
+  
+  package "Error Handling" as InfraError {
+    component "Network Errors" as NetworkErrors
+    component "External Service Errors" as ExternalErrors
+  }
+}
+
+package "DI & Shared" as DIShared {
+  package "Dependency Injection" as DI {
+    component "DI Container" as Container
+    component "Use Case Factory" as UseCaseFactory
+    component "Repository Factory" as RepoFactory
+  }
+  
+  package "Shared" as Shared {
+    component "Shared Utils" as Utils
+    component "Constants" as Constants
+    component "Types" as Types
+  }
+  
+  package "Logging" as Logging {
+    component "Logger" as Logger
+    component "Error Logger" as ErrorLogger
+    component "Performance Logger" as PerfLogger
+  }
+}
+
+' 의존성 관계
+Presentation --> Application
+Application --> Domain
+Infrastructure --> Domain
+Application --> Infrastructure
+
+' Presentation Layer 내부 관계
+Components --> StateManagement
+StateManagement --> CustomHooks
+PresentationError --> Components
+
+' Application Layer 내부 관계
+UseCases --> AppServices
+Controllers --> UseCases
+DTOs --> UseCases
+AppError --> UseCases
+
+' Domain Layer 내부 관계
+Entities --> ValueObjects
+DomainServices --> Entities
+DomainEvents --> Entities
+DomainErrors --> Entities
+
+' Infrastructure Layer 내부 관계
+API --> Repositories
+WebSocket --> API
+Cache --> API
+ExternalServices --> API
+Config --> API
+InfraError --> API
+
+' DI & Shared 관계
+DI --> Application
+DI --> Infrastructure
+Shared --> Application
+Shared --> Infrastructure
+Logging --> Application
+Logging --> Infrastructure
+
+' 설명 노트
+note right of Presentation
+  **Presentation Layer**
+  - React 컴포넌트와 상태 관리
+  - UI 로직과 사용자 인터페이스
+  - 에러 바운더리와 UI 에러 처리
+end note
+
+note right of Application
+  **Application Layer**
+  - 비즈니스 유스케이스
+  - 애플리케이션 서비스
+  - 컨트롤러와 DTO
+  - 애플리케이션 에러 처리
+end note
+
+note right of Domain
+  **Domain Layer**
+  - 도메인 엔티티와 값 객체
+  - 리포지토리 인터페이스
+  - 도메인 서비스와 이벤트
+  - 도메인 에러 정의
+end note
+
+note right of Infrastructure
+  **Infrastructure Layer**
+  - API 클라이언트와 리포지토리 구현
+  - WebSocket과 캐싱
+  - 외부 서비스 연동
+  - 인프라 에러 처리
+end note
+
+note right of DIShared
+  **DI & Shared**
+  - 의존성 주입 시스템
+  - 공유 유틸리티와 타입
+  - 로깅 시스템
+end note
+
+@enduml 

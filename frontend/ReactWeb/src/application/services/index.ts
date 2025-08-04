@@ -1,4 +1,6 @@
-export * from './AuthService';
+export { default as AuthenticationService } from './AuthenticationService';
+export { default as NotificationService } from './NotificationService';
+export * from './AuthenticationService';
 export * from './NotificationService';
 export * from './UserActivityService';
 export * from './UserPermissionService';
