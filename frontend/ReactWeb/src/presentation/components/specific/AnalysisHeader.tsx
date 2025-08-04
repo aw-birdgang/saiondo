@@ -1,13 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../common";
+import { cn } from "../../../utils/cn";
 import { ROUTES } from "../../../shared/constants/app";
-
-interface AnalysisHeaderProps {
-  onCreateAnalysis: () => void;
-  isCreating: boolean;
-  className?: string;
-}
+import type { AnalysisHeaderProps } from "../../pages/analysis/types/analysisTypes";
 
 const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
   onCreateAnalysis,
@@ -18,16 +15,18 @@ const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className={`bg-surface shadow-sm border-b border-border ${className}`}>
+    <div className={cn("bg-surface shadow-sm border-b border-border", className)}>
       <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => navigate(ROUTES.HOME)}
               className="p-3 hover:bg-secondary rounded-full transition-all duration-200 hover:scale-105"
             >
               <span className="text-xl text-txt-secondary">←</span>
-            </button>
+            </Button>
             <div>
               <h1 className="text-2xl font-bold text-txt leading-tight">
                 {t("analysis.title") || "관계 분석"}
@@ -37,24 +36,15 @@ const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
               </p>
             </div>
           </div>
-          <button
+          <Button
+            variant="primary"
             onClick={onCreateAnalysis}
             disabled={isCreating}
-            className={`btn px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
-              isCreating
-                ? "bg-secondary text-txt-secondary cursor-not-allowed opacity-50"
-                : "btn-primary"
-            }`}
+            loading={isCreating}
+            loadingText="분석 중..."
           >
-            {isCreating ? (
-              <div className="flex items-center space-x-3">
-                <div className="spinner" />
-                <span>분석 중...</span>
-              </div>
-            ) : (
-              "새 분석 생성"
-            )}
-          </button>
+            새 분석 생성
+          </Button>
         </div>
       </div>
     </div>

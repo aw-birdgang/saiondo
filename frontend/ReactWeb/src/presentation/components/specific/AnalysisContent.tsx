@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "../../../utils/cn";
 import {
   CoupleProfile,
   MbtiMatch,
@@ -8,52 +9,14 @@ import {
   PersonasSection,
   AnalysisChart
 } from "./";
-
-interface AnalysisData {
-  user1: {
-    name: string;
-    profileUrl?: string;
-    mbti?: string;
-  };
-  user2: {
-    name: string;
-    profileUrl?: string;
-    mbti?: string;
-  };
-  matchPercent?: string;
-  keywords: string[];
-  summary?: string;
-  advice?: string;
-  persona1?: string;
-  persona2?: string;
-}
-
-interface AnalysisContentProps {
-  data: AnalysisData;
-  className?: string;
-}
+import { COMPATIBILITY_CHART_DATA, MBTI_COMPATIBILITY_DATA } from "../../pages/analysis/constants/analysisData";
+import type { AnalysisContentProps } from "../../pages/analysis/types/analysisTypes";
 
 const AnalysisContent: React.FC<AnalysisContentProps> = ({ 
   data, 
   className = "" 
 }) => {
   const { t } = useTranslation();
-
-  // 차트 데이터 준비
-  const compatibilityData = [
-    { label: '소통', value: 85, color: '#3B82F6' },
-    { label: '신뢰', value: 90, color: '#10B981' },
-    { label: '성장', value: 75, color: '#F59E0B' },
-    { label: '지지', value: 88, color: '#8B5CF6' },
-    { label: '이해', value: 82, color: '#EF4444' }
-  ];
-
-  const mbtiCompatibilityData = [
-    { label: 'E-I', value: 70, color: '#3B82F6' },
-    { label: 'N-S', value: 85, color: '#10B981' },
-    { label: 'T-F', value: 65, color: '#F59E0B' },
-    { label: 'J-P', value: 80, color: '#8B5CF6' }
-  ];
 
   return (
     <div className={`max-w-6xl mx-auto px-6 py-8 ${className}`}>
@@ -95,7 +58,7 @@ const AnalysisContent: React.FC<AnalysisContentProps> = ({
             <div className="card-body">
               <AnalysisChart
                 title="관계 호환성 분석"
-                data={compatibilityData}
+                data={COMPATIBILITY_CHART_DATA}
                 type="bar"
                 maxValue={100}
               />
@@ -105,7 +68,7 @@ const AnalysisContent: React.FC<AnalysisContentProps> = ({
             <div className="card-body">
               <AnalysisChart
                 title="MBTI 호환성"
-                data={mbtiCompatibilityData}
+                data={MBTI_COMPATIBILITY_DATA}
                 type="radar"
                 maxValue={100}
               />
@@ -125,8 +88,11 @@ const AnalysisContent: React.FC<AnalysisContentProps> = ({
           <div className="card-body">
             <AnalysisSection 
               title={t("analysis_summary") || "분석 요약"}
-              content={data.summary || ""}
-            />
+            >
+              <p className="text-txt leading-relaxed">
+                {data.summary || ""}
+              </p>
+            </AnalysisSection>
           </div>
         </div>
 
@@ -136,8 +102,11 @@ const AnalysisContent: React.FC<AnalysisContentProps> = ({
             <div className="card-body">
               <AnalysisSection 
                 title={t("advice") || "조언"}
-                content={data.advice}
-              />
+              >
+                <p className="text-txt leading-relaxed">
+                  {data.advice}
+                </p>
+              </AnalysisSection>
             </div>
           </div>
         )}

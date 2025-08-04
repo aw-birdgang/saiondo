@@ -1,9 +1,6 @@
 import React from "react";
-
-interface AnalysisLayoutProps {
-  children: React.ReactNode;
-  className?: string;
-}
+import { cn } from "../../../utils/cn";
+import type { AnalysisLayoutProps } from "../../pages/analysis/types/analysisTypes";
 
 const AnalysisLayout: React.FC<AnalysisLayoutProps> = ({ 
   children, 
