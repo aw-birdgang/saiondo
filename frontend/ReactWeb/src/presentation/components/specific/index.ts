@@ -1,5 +1,6 @@
 // ===== HOME PAGE COMPONENTS =====
 export * from './home';
+export * from './chat';
 export { default as QuickActionsCard } from './QuickActionsCard';
 export { default as SystemStatusCard } from './SystemStatusCard';
 export { default as ChannelInfoCard } from './ChannelInfoCard';

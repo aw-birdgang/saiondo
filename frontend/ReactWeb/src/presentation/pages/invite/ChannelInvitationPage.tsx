@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { ROUTES } from "../../../shared/constants/app";
-import { useAuthStore } from "../../../stores/authStore";
-import { useDataLoader } from '../../hooks/useDataLoader';
-import { LoadingState, InvitationResponseCard } from '../../components/specific';
-import { PageHeader, PageContainer } from '../../components/layout';
-import { RefreshButton, EmptyInvitationsState, InvitationGrid, Container } from '../../components/common';
+import React from 'react';
+import {useTranslation} from 'react-i18next';
+import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-hot-toast';
+import {ROUTES} from "../../../shared/constants/app";
+import {useAuthStore} from "../../../stores/authStore";
+import {useDataLoader} from '../../hooks/useDataLoader';
+import {InvitationResponseCard, LoadingState} from '../../components/specific';
+import {PageHeader} from '../../components/layout';
+import {Container, EmptyInvitationsState, InvitationGrid, RefreshButton} from '../../components/common';
 import type {ChannelInvitationItem} from '../../../domain/types';
 
 const ChannelInvitationScreen: React.FC = () => {
@@ -20,10 +20,10 @@ const ChannelInvitationScreen: React.FC = () => {
     async () => {
       // TODO: 실제 API 호출로 대체
       // const response = await getChannelInvitations(userId);
-      
+
       // 시뮬레이션을 위한 지연
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Mock 데이터
       const mockInvitations: ChannelInvitationItem[] = [
         {
@@ -57,7 +57,7 @@ const ChannelInvitationScreen: React.FC = () => {
           channelName: '친구 채널',
         },
       ];
-      
+
       return mockInvitations;
     },
     [user?.id],
@@ -71,24 +71,24 @@ const ChannelInvitationScreen: React.FC = () => {
     try {
       // TODO: 실제 API 호출로 대체
       // await respondToInvitation(invitationId, accepted, userId);
-      
+
       // 시뮬레이션을 위한 지연
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Note: In a real implementation, you would update the local state
       // after successful API call. For now, we'll just show a toast.
-      
+
       toast.success(
-        accepted 
+        accepted
           ? t('invitation_accepted') || '초대를 수락했습니다!'
           : t('invitation_rejected') || '초대를 거절했습니다.'
       );
-      
+
       if (accepted) {
         // 채널로 이동
         navigate(ROUTES.CHANNELS);
       }
-      
+
     } catch (error) {
       console.error('Failed to respond to invitation:', error);
       toast.error(t('failed_to_respond') || '초대 응답에 실패했습니다.');
