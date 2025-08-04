@@ -1,18 +1,7 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { CacheStats } from '../dto/CacheDto';
-
-export interface CacheOptions {
-  ttl?: number;
-  maxSize?: number;
-}
-
-export interface CacheEntry<T> {
-  data: T;
-  timestamp: number;
-  ttl: number;
-}
+import type { CacheStats, CacheOptions, CacheEntry } from '../dto/CacheDto';
 
 export class CacheService {
   private cache = new Map<string, CacheEntry<any>>();

@@ -2,31 +2,14 @@ import type { IMessageRepository } from '../../domain/repositories/IMessageRepos
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import { MessageEntity } from '../../domain/entities/Message';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-
-export interface FileUploadRequest {
-  file: File;
-  channelId: string;
-  senderId: string;
-  description?: string;
-}
-
-export interface FileUploadResponse {
-  message: any;
-  fileUrl: string;
-  fileSize: number;
-  fileName: string;
-}
-
-export interface FileDownloadRequest {
-  fileUrl: string;
-  fileName: string;
-}
-
-export interface FileDownloadResponse {
-  success: boolean;
-  downloadUrl: string;
-  expiresAt: Date;
-}
+import type {
+  FileUploadRequest,
+  FileUploadResponse
+} from '../dto/UploadFileDto';
+import type {
+  FileDownloadRequest,
+  FileDownloadResponse
+} from '../dto/FileDownloadDto';
 
 export class FileService {
   private readonly maxFileSize = 10 * 1024 * 1024; // 10MB
@@ -114,21 +97,25 @@ export class FileService {
 
   async downloadFile(request: FileDownloadRequest): Promise<FileDownloadResponse> {
     // Validate request
-    if (!request.fileUrl || request.fileUrl.trim().length === 0) {
-      throw DomainErrorFactory.createMessageValidation('File URL is required');
+    if (!request.fileId || request.fileId.trim().length === 0) {
+      throw DomainErrorFactory.createMessageValidation('File ID is required');
+    }
+    if (!request.userId || request.userId.trim().length === 0) {
+      throw DomainErrorFactory.createUserValidation('User ID is required');
     }
 
-    if (!request.fileName || request.fileName.trim().length === 0) {
-      throw DomainErrorFactory.createMessageValidation('File name is required');
-    }
-
-    // Generate signed download URL (in real implementation, this would use cloud storage SDK)
-    const downloadUrl = await this.generateSignedDownloadUrl(request.fileUrl);
+    // Simulate file info (in real implementation, fetch from DB/storage)
+    const fileUrl = await this.generateSignedDownloadUrl(request.fileId);
+    const fileName = 'download.file';
+    const fileSize = 0;
+    const contentType = 'application/octet-stream';
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
     return {
-      success: true,
-      downloadUrl,
+      fileUrl,
+      fileName,
+      fileSize,
+      contentType,
       expiresAt,
     };
   }

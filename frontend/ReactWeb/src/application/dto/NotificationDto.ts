@@ -3,6 +3,13 @@
  * 알림 관련 Request/Response 인터페이스
  */
 
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+
+export interface NotificationOptions {
+  duration?: number;
+  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
+}
+
 export interface NotificationRequest {
   userId: string;
   type: 'message' | 'invitation' | 'mention' | 'system';
@@ -10,6 +17,7 @@ export interface NotificationRequest {
   body: string;
   data?: Record<string, unknown>;
   priority?: 'low' | 'normal' | 'high';
+  channelId?: string;
 }
 
 export interface NotificationResponse {

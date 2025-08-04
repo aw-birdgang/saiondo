@@ -6,44 +6,12 @@ import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import { PerformanceMonitoringService } from './PerformanceMonitoringService';
 import { ErrorHandlingService } from './ErrorHandlingService';
 import { SecurityService } from './SecurityService';
-
-export interface ChannelProfile {
-  id: string;
-  name: string;
-  description?: string;
-  type: 'public' | 'private' | 'direct';
-  ownerId: string;
-  members: string[];
-  memberCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-  lastMessageAt?: Date;
-}
-
-export interface ChannelStats {
-  totalMessages: number;
-  activeMembers: number;
-  lastActivity: Date;
-  messageCount: number;
-}
-
-export interface ChannelValidationSchema {
-  name: { required: boolean; type: string; minLength: number; maxLength: number; pattern?: RegExp };
-  description?: { required: boolean; type: string; maxLength: number };
-  type: { required: boolean; type: string; enum: string[] };
-  ownerId: { required: boolean; type: string };
-  members: { required: boolean; type: string; minLength: number };
-}
-
-export interface ChannelServiceConfig {
-  enableValidation?: boolean;
-  enablePerformanceMonitoring?: boolean;
-  enableSecurityChecks?: boolean;
-  maxChannelNameLength?: number;
-  minChannelNameLength?: number;
-  maxDescriptionLength?: number;
-  maxMembersPerChannel?: number;
-}
+import type {
+  ChannelProfile,
+  ChannelStats,
+  ChannelValidationSchema,
+  ChannelServiceConfig
+} from '../dto/ChannelDto';
 
 export class ChannelService {
   private readonly performanceService: PerformanceMonitoringService;

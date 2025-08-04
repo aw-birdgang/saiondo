@@ -1,45 +1,15 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-
-export interface CacheLevel {
-  name: string;
-  ttl: number;
-  maxSize: number;
-  priority: number;
-}
-
-export interface MultiLevelCacheEntry<T = any> {
-  key: string;
-  value: T;
-  timestamp: number;
-  ttl: number;
-  accessCount: number;
-  lastAccessed: number;
-  metadata?: Record<string, any>;
-}
-
-export interface CacheStats {
-  totalHits: number;
-  totalMisses: number;
-  hitRate: number;
-  totalSize: number;
-  evictions: number;
-  levels: Record<string, {
-    hits: number;
-    misses: number;
-    hitRate: number;
-    size: number;
-    evictions: number;
-  }>;
-}
-
-export interface CacheConfig {
-  levels: CacheLevel[];
-  enableCompression?: boolean;
-  enableMetrics?: boolean;
-  defaultTTL?: number;
-}
+import type {
+  CacheLevel,
+  MultiLevelCacheEntry,
+  CacheStats,
+  CacheConfig,
+  CacheLifecycle,
+  CacheWarmupRequest,
+  CacheBatchRequest
+} from '../dto/MultiLevelCacheDto';
 
 export class MultiLevelCacheService {
   private caches: Map<string, Map<string, MultiLevelCacheEntry>> = new Map();
@@ -153,7 +123,7 @@ export class MultiLevelCacheService {
     const level = this.config.levels.find(l => l.name === levelName);
     if (!level) return;
 
-    const entry: CacheEntry<T> = {
+    const entry: MultiLevelCacheEntry<T> = {
       key,
       value,
       timestamp: Date.now(),
@@ -313,11 +283,7 @@ export class MultiLevelCacheService {
   /**
    * 캐시 수명 주기 관리
    */
-  async getCacheLifecycle(): Promise<{
-    oldestEntries: Array<{ key: string; age: number; level: string }>;
-    mostAccessed: Array<{ key: string; accessCount: number; level: string }>;
-    expiringSoon: Array<{ key: string; expiresIn: number; level: string }>;
-  }> {
+  async getCacheLifecycle(): Promise<CacheLifecycle> {
     const oldestEntries: Array<{ key: string; age: number; level: string }> = [];
     const mostAccessed: Array<{ key: string; accessCount: number; level: string }> = [];
     const expiringSoon: Array<{ key: string; expiresIn: number; level: string }> = [];
@@ -354,11 +320,11 @@ export class MultiLevelCacheService {
     return [...this.config.levels].sort((a, b) => a.priority - b.priority);
   }
 
-  private isExpired(entry: CacheEntry): boolean {
+  private isExpired(entry: MultiLevelCacheEntry): boolean {
     return Date.now() > entry.timestamp + entry.ttl;
   }
 
-  private updateAccessStats(entry: CacheEntry, levelName: string, isHit: boolean): void {
+  private updateAccessStats(entry: MultiLevelCacheEntry, levelName: string, isHit: boolean): void {
     entry.accessCount++;
     entry.lastAccessed = Date.now();
 
@@ -379,7 +345,7 @@ export class MultiLevelCacheService {
     }
   }
 
-  private promoteToHigherLevels(key: string, entry: CacheEntry, currentPriority: number): void {
+  private promoteToHigherLevels(key: string, entry: MultiLevelCacheEntry, currentPriority: number): void {
     // 더 높은 우선순위 레벨로 승격
     const higherLevels = this.config.levels.filter(level => level.priority < currentPriority);
     

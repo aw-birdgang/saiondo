@@ -4,32 +4,12 @@ import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   Permission,
   Role,
-  UserRole
+  UserRole,
+  CheckPermissionRequest,
+  CheckPermissionResponse,
+  AssignRoleRequest,
+  AssignRoleResponse
 } from '../dto/UserPermissionDto';
-
-export interface CheckPermissionRequest {
-  userId: string;
-  resource: string;
-  action: string;
-  context?: Record<string, unknown>;
-}
-
-export interface CheckPermissionResponse {
-  hasPermission: boolean;
-  role?: string;
-  reason?: string;
-}
-
-export interface AssignRoleRequest {
-  userId: string;
-  roleId: string;
-  assignedBy: string;
-}
-
-export interface AssignRoleResponse {
-  success: boolean;
-  userRole: UserRole;
-}
 
 export class UserPermissionService {
   constructor(
@@ -326,7 +306,7 @@ export class UserPermissionService {
 
   private async saveUserRole(userRole: UserRole): Promise<void> {
     // In real implementation, this would save to database
-    console.log('Saving user role:', userRole);
+    // console.log('Saving user role:', userRole);
   }
 
   private generateUserRoleId(): string {

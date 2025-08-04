@@ -8,15 +8,9 @@ import type {
   HealthCheckResponse,
   PerformanceMetrics,
   GetPerformanceMetricsRequest,
-  GetPerformanceMetricsResponse
+  GetPerformanceMetricsResponse,
+  MonitoringConfig
 } from '../dto/MonitoringDto';
-
-export interface MonitoringConfig {
-  enableMetrics?: boolean;
-  enableHealthChecks?: boolean;
-  metricsInterval?: number;
-  healthCheckInterval?: number;
-}
 
 export class MonitoringService {
   private metricsHistory: PerformanceMetrics[] = [];

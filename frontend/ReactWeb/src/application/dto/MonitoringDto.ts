@@ -53,4 +53,11 @@ export interface GetPerformanceMetricsResponse {
   metrics: PerformanceMetrics[];
   timeRange: string;
   granularity: string;
+}
+
+export interface MonitoringConfig {
+  enableMetrics?: boolean;
+  enableHealthChecks?: boolean;
+  metricsInterval?: number;
+  healthCheckInterval?: number;
 } 

@@ -1,41 +1,13 @@
-export interface SecurityConfig {
-  enableRateLimiting?: boolean;
-  enableInputValidation?: boolean;
-  enableXSSProtection?: boolean;
-  enableCSRFProtection?: boolean;
-  maxRequestSize?: number;
-  allowedOrigins?: string[];
-  sessionTimeout?: number;
-}
-
-export interface RateLimitConfig {
-  windowMs: number;
-  maxRequests: number;
-  keyGenerator?: (req: any) => string;
-}
-
-export interface SecurityViolation {
-  id: string;
-  type: 'rate_limit' | 'xss_attempt' | 'csrf_attempt' | 'invalid_input' | 'unauthorized_access';
-  timestamp: Date;
-  userId?: string;
-  ipAddress?: string;
-  userAgent?: string;
-  details: Record<string, any>;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-}
-
-export interface SecurityReport {
-  totalViolations: number;
-  violationsByType: Record<string, number>;
-  violationsBySeverity: Record<string, number>;
-  recentViolations: SecurityViolation[];
-  blockedIPs: string[];
-  timeRange: {
-    start: Date;
-    end: Date;
-  };
-}
+import type {
+  SecurityConfig,
+  RateLimitConfig,
+  SecurityViolation,
+  SecurityReport,
+  InputValidationResult,
+  RateLimitResult,
+  SecurityPatternAnalysis,
+  SecurityViolationFilters
+} from '../dto/SecurityDto';
 
 export class SecurityService {
   private violations: SecurityViolation[] = [];
@@ -60,11 +32,7 @@ export class SecurityService {
   /**
    * 입력 데이터 검증
    */
-  validateInput(data: any, schema: Record<string, any>): {
-    isValid: boolean;
-    errors: string[];
-    sanitizedData?: any;
-  } {
+  validateInput(data: any, schema: Record<string, any>): InputValidationResult {
     if (!this.config.enableInputValidation) {
       return { isValid: true, errors: [] };
     }
@@ -159,11 +127,7 @@ export class SecurityService {
   /**
    * Rate Limiting
    */
-  checkRateLimit(key: string, config: RateLimitConfig): {
-    allowed: boolean;
-    remaining: number;
-    resetTime: number;
-  } {
+  checkRateLimit(key: string, config: RateLimitConfig): RateLimitResult {
     if (!this.config.enableRateLimiting) {
       return { allowed: true, remaining: Infinity, resetTime: Date.now() };
     }
@@ -320,11 +284,7 @@ export class SecurityService {
   /**
    * 보안 위반 패턴 분석
    */
-  analyzeSecurityPatterns(): {
-    mostCommonViolations: Array<{ type: string; count: number }>;
-    topAttackSources: Array<{ ipAddress: string; count: number }>;
-    attackTrends: Array<{ date: string; count: number }>;
-  } {
+  analyzeSecurityPatterns(): SecurityPatternAnalysis {
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const recentViolations = this.violations.filter(v => v.timestamp >= oneWeekAgo);
@@ -405,14 +365,7 @@ export class SecurityService {
    * 보안 위반 로그 조회
    */
   getViolations(
-    filters?: {
-      type?: SecurityViolation['type'];
-      severity?: SecurityViolation['severity'];
-      userId?: string;
-      ipAddress?: string;
-      startDate?: Date;
-      endDate?: Date;
-    },
+    filters?: SecurityViolationFilters,
     limit: number = 100
   ): SecurityViolation[] {
     let filteredViolations = [...this.violations];

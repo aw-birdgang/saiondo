@@ -6,69 +6,14 @@ import { ErrorHandlingService } from './ErrorHandlingService';
 import { SecurityService } from './SecurityService';
 import { MultiLevelCacheService } from './MultiLevelCacheService';
 import { AnalyticsService } from './AnalyticsService';
-
-export interface SystemHealthStatus {
-  overall: 'healthy' | 'degraded' | 'unhealthy';
-  components: {
-    performance: 'healthy' | 'degraded' | 'unhealthy';
-    security: 'healthy' | 'degraded' | 'unhealthy';
-    cache: 'healthy' | 'degraded' | 'unhealthy';
-    analytics: 'healthy' | 'degraded' | 'unhealthy';
-    database: 'healthy' | 'degraded' | 'unhealthy';
-  };
-  metrics: {
-    responseTime: number;
-    errorRate: number;
-    cacheHitRate: number;
-    activeUsers: number;
-    securityViolations: number;
-  };
-  alerts: Array<{
-    level: 'info' | 'warning' | 'error' | 'critical';
-    message: string;
-    timestamp: Date;
-    component: string;
-  }>;
-  recommendations: string[];
-  lastUpdated: Date;
-}
-
-export interface HealthCheckResult {
-  component: string;
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  responseTime: number;
-  details?: Record<string, any>;
-  error?: string;
-}
-
-export interface SystemMetrics {
-  performance: {
-    averageResponseTime: number;
-    p95ResponseTime: number;
-    errorRate: number;
-    throughput: number;
-  };
-  security: {
-    totalViolations: number;
-    blockedIPs: number;
-    rateLimitExceeded: number;
-  };
-  cache: {
-    hitRate: number;
-    totalSize: number;
-    evictions: number;
-  };
-  analytics: {
-    activeUsers: number;
-    totalEvents: number;
-    sessionCount: number;
-  };
-  database: {
-    connectionCount: number;
-    queryTime: number;
-    errorCount: number;
-  };
-}
+import type {
+  SystemHealthStatus,
+  HealthCheckResult,
+  SystemMetrics,
+  OptimizationRecommendation,
+  SystemBackup,
+  RestartPreparation
+} from '../dto/SystemHealthDto';
 
 export class SystemHealthService {
   private performanceService: PerformanceMonitoringService;
@@ -171,7 +116,7 @@ export class SystemHealthService {
 
       return this.healthStatus;
     } catch (error) {
-      this.errorService.logError(error, { context: 'SystemHealthService.getSystemHealth' });
+      this.errorService.logError(error as Error, { context: 'SystemHealthService.getSystemHealth' });
       
       // 에러 발생 시 degraded 상태로 설정
       this.healthStatus.overall = 'degraded';
@@ -191,7 +136,7 @@ export class SystemHealthService {
    */
   async getSystemMetrics(): Promise<SystemMetrics> {
     const [performanceStats, securityReport, cacheStats, realTimeActivity] = await Promise.all([
-      this.performanceService.getStats(),
+      this.performanceService.generateReport({ start: new Date(Date.now() - 24 * 60 * 60 * 1000), end: new Date() }),
       this.securityService.generateSecurityReport({
         start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
         end: new Date(),
@@ -205,7 +150,7 @@ export class SystemHealthService {
         averageResponseTime: performanceStats.averageResponseTime || 0,
         p95ResponseTime: performanceStats.p95ResponseTime || 0,
         errorRate: performanceStats.errorRate || 0,
-        throughput: performanceStats.throughput || 0,
+        throughput: 0, // PerformanceReport doesn't have throughput property
       },
       security: {
         totalViolations: securityReport.totalViolations,
@@ -233,20 +178,8 @@ export class SystemHealthService {
   /**
    * 시스템 최적화 권장사항
    */
-  async getOptimizationRecommendations(): Promise<Array<{
-    category: 'performance' | 'security' | 'cache' | 'database';
-    priority: 'low' | 'medium' | 'high' | 'critical';
-    recommendation: string;
-    impact: string;
-    effort: 'low' | 'medium' | 'high';
-  }>> {
-    const recommendations: Array<{
-      category: 'performance' | 'security' | 'cache' | 'database';
-      priority: 'low' | 'medium' | 'high' | 'critical';
-      recommendation: string;
-      impact: string;
-      effort: 'low' | 'medium' | 'high';
-    }> = [];
+  async getOptimizationRecommendations(): Promise<Array<OptimizationRecommendation>> {
+    const recommendations: Array<OptimizationRecommendation> = [];
 
     const metrics = await this.getSystemMetrics();
 
@@ -299,15 +232,7 @@ export class SystemHealthService {
   /**
    * 시스템 백업 및 복구
    */
-  async backupSystemState(): Promise<{
-    timestamp: Date;
-    data: {
-      healthStatus: SystemHealthStatus;
-      metrics: SystemMetrics;
-      cacheSnapshot: any;
-      securitySnapshot: any;
-    };
-  }> {
+  async backupSystemState(): Promise<SystemBackup> {
     const [healthStatus, metrics] = await Promise.all([
       this.getSystemHealth(),
       this.getSystemMetrics(),
@@ -330,11 +255,7 @@ export class SystemHealthService {
   /**
    * 시스템 재시작 준비
    */
-  async prepareForRestart(): Promise<{
-    canRestart: boolean;
-    warnings: string[];
-    cleanupTasks: string[];
-  }> {
+  async prepareForRestart(): Promise<RestartPreparation> {
     const warnings: string[] = [];
     const cleanupTasks: string[] = [];
 
@@ -345,9 +266,9 @@ export class SystemHealthService {
     }
 
     // 진행 중인 작업 확인
-    const performanceStats = this.performanceService.getStats();
-    if (performanceStats.activeOperations > 0) {
-      warnings.push(`${performanceStats.activeOperations}개의 진행 중인 작업이 있습니다.`);
+    const performanceStats = this.performanceService.generateReport({ start: new Date(Date.now() - 24 * 60 * 60 * 1000), end: new Date() });
+    if (performanceStats.totalOperations > 0) {
+      warnings.push(`${performanceStats.totalOperations}개의 작업이 있습니다.`);
     }
 
     // 정리 작업
@@ -366,7 +287,7 @@ export class SystemHealthService {
     const startTime = Date.now();
     
     try {
-      const stats = this.performanceService.getStats();
+      const stats = this.performanceService.generateReport({ start: new Date(Date.now() - 24 * 60 * 60 * 1000), end: new Date() });
       const responseTime = Date.now() - startTime;
 
       let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
@@ -596,7 +517,7 @@ export class SystemHealthService {
       try {
         await this.getSystemHealth();
       } catch (error) {
-        this.errorService.logError(error, { context: 'SystemHealthService.monitoring' });
+        this.errorService.logError(error as Error, { context: 'SystemHealthService.monitoring' });
       }
     }, this.checkInterval);
   }

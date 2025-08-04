@@ -5,24 +5,10 @@ import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   ActivityLog,
   ActivityStats,
-  UserActivitySummary
+  UserActivitySummary,
+  ActivityLogRequest,
+  ActivityLogResponse
 } from '../dto/UserActivityDto';
-
-export interface ActivityLogRequest {
-  userId: string;
-  action: string;
-  resource: string;
-  resourceId?: string;
-  details?: Record<string, unknown>;
-  ipAddress?: string;
-  userAgent?: string;
-  sessionId?: string;
-}
-
-export interface ActivityLogResponse {
-  success: boolean;
-  logId: string;
-}
 
 export class UserActivityService {
   private activityLogs: ActivityLog[] = [];

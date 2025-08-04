@@ -1,58 +1,15 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-
-export interface UserEvent {
-  id: string;
-  userId: string;
-  eventType: 'page_view' | 'message_sent' | 'channel_joined' | 'file_uploaded' | 'search_performed' | 'login' | 'logout';
-  timestamp: Date;
-  properties?: Record<string, any>;
-  sessionId?: string;
-}
-
-export interface UserSession {
-  id: string;
-  userId: string;
-  startTime: Date;
-  endTime?: Date;
-  duration?: number;
-  events: UserEvent[];
-  userAgent?: string;
-  ipAddress?: string;
-}
-
-export interface AnalyticsReport {
-  totalUsers: number;
-  activeUsers: number;
-  totalSessions: number;
-  averageSessionDuration: number;
-  eventsByType: Record<string, number>;
-  topChannels: Array<{ channelId: string; messageCount: number; userCount: number }>;
-  userEngagement: {
-    messagesPerUser: number;
-    channelsPerUser: number;
-    filesPerUser: number;
-  };
-  timeRange: {
-    start: Date;
-    end: Date;
-  };
-}
-
-export interface UserBehavior {
-  userId: string;
-  totalSessions: number;
-  averageSessionDuration: number;
-  favoriteChannels: string[];
-  activityPattern: {
-    morning: number;
-    afternoon: number;
-    evening: number;
-    night: number;
-  };
-  engagementScore: number;
-}
+import type {
+  UserEvent,
+  UserSession,
+  AnalyticsReport,
+  UserBehavior,
+  RealTimeActivity,
+  UserJourney,
+  ChurnPrediction
+} from '../dto/AnalyticsDto';
 
 export class AnalyticsService {
   private userEvents: UserEvent[] = [];
@@ -214,11 +171,7 @@ export class AnalyticsService {
   /**
    * 실시간 사용자 활동 모니터링
    */
-  getRealTimeActivity(): {
-    activeUsers: number;
-    recentEvents: UserEvent[];
-    topEvents: Array<{ eventType: string; count: number }>;
-  } {
+  getRealTimeActivity(): RealTimeActivity {
     const now = new Date();
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
 
@@ -250,13 +203,7 @@ export class AnalyticsService {
   /**
    * 사용자 여정 분석
    */
-  analyzeUserJourney(userId: string): {
-    firstEvent: UserEvent | null;
-    lastEvent: UserEvent | null;
-    totalEvents: number;
-    eventSequence: UserEvent['eventType'][];
-    conversionPath: string[];
-  } {
+  analyzeUserJourney(userId: string): UserJourney {
     const userEvents = this.userEvents
       .filter(event => event.userId === userId)
       .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
@@ -286,11 +233,7 @@ export class AnalyticsService {
   /**
    * 예측 분석
    */
-  predictUserChurn(userId: string): {
-    churnProbability: number;
-    riskFactors: string[];
-    recommendations: string[];
-  } {
+  predictUserChurn(userId: string): ChurnPrediction {
     const userBehavior = this.analyzeUserBehavior(userId, {
       start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30일
       end: new Date(),

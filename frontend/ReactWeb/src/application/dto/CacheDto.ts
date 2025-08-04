@@ -40,4 +40,15 @@ export interface CacheStats {
   memoryUsage: number;
   hitRate: number;
   missRate: number;
+}
+
+export interface CacheOptions {
+  ttl?: number;
+  maxSize?: number;
+}
+
+export interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+  ttl: number;
 } 

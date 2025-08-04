@@ -2,30 +2,13 @@ import { toast } from 'react-hot-toast';
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { NotificationSettings } from '../dto/NotificationDto';
-
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
-
-export interface NotificationOptions {
-  duration?: number;
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
-}
-
-export interface NotificationRequest {
-  userId: string;
-  type: 'message' | 'invitation' | 'mention' | 'system';
-  title: string;
-  body: string;
-  data?: Record<string, unknown>;
-  priority?: 'low' | 'normal' | 'high';
-  channelId?: string;
-}
-
-export interface NotificationResponse {
-  success: boolean;
-  notificationId: string;
-  sentAt: Date;
-}
+import type { 
+  NotificationSettings,
+  NotificationType,
+  NotificationOptions,
+  NotificationRequest,
+  NotificationResponse
+} from '../dto/NotificationDto';
 
 export class NotificationService {
   constructor(
@@ -244,17 +227,17 @@ export class NotificationService {
 
   private async sendEmailNotification(request: NotificationRequest, notificationId: string): Promise<void> {
     // In real implementation, this would send email
-    console.log(`Sending email notification ${notificationId} to user ${request.userId}: ${request.title}`);
+    // console.log(`Sending email notification ${notificationId} to user ${request.userId}: ${request.title}`);
   }
 
   private async sendPushNotification(request: NotificationRequest, notificationId: string): Promise<void> {
     // In real implementation, this would send push notification
-    console.log(`Sending push notification ${notificationId} to user ${request.userId}: ${request.title}`);
+    // console.log(`Sending push notification ${notificationId} to user ${request.userId}: ${request.title}`);
   }
 
   private async sendInAppNotification(request: NotificationRequest, notificationId: string): Promise<void> {
     // In real implementation, this would send in-app notification
-    console.log(`Sending in-app notification ${notificationId} to user ${request.userId}: ${request.title}`);
+    // console.log(`Sending in-app notification ${notificationId} to user ${request.userId}: ${request.title}`);
   }
 
   private generateNotificationId(): string {

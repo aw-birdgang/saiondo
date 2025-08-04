@@ -3,18 +3,16 @@
  * 실시간 채팅 관련 Request/Response 인터페이스
  */
 
-export interface RealTimeMessage {
-  id: string;
-  content: string;
-  channelId: string;
-  senderId: string;
-  type: 'text' | 'image' | 'file' | 'system';
-  timestamp: Date;
-  metadata?: Record<string, unknown>;
-}
-
 export interface SendRealTimeMessageRequest {
-  message: RealTimeMessage;
+  message: {
+    id: string;
+    content: string;
+    channelId: string;
+    senderId: string;
+    type: 'text' | 'image' | 'file' | 'system';
+    timestamp: Date;
+    metadata?: Record<string, unknown>;
+  };
 }
 
 export interface SendRealTimeMessageResponse {
@@ -37,6 +35,7 @@ export interface ReadReceiptRequest {
   userId: string;
   messageId: string;
   channelId: string;
+  readAt?: Date;
 }
 
 export interface ReadReceiptResponse {
@@ -61,4 +60,5 @@ export interface LeaveChatRoomRequest {
 
 export interface LeaveChatRoomResponse {
   success: boolean;
+  leftAt: Date;
 } 

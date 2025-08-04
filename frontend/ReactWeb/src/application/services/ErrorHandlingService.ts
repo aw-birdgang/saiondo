@@ -1,36 +1,10 @@
-export interface ErrorLog {
-  id: string;
-  timestamp: Date;
-  level: 'info' | 'warn' | 'error' | 'critical';
-  message: string;
-  stack?: string;
-  context?: Record<string, any>;
-  userId?: string;
-  sessionId?: string;
-  operation?: string;
-  userAgent?: string;
-  url?: string;
-}
-
-export interface ErrorReport {
-  totalErrors: number;
-  errorsByLevel: Record<string, number>;
-  errorsByOperation: Record<string, number>;
-  recentErrors: ErrorLog[];
-  criticalErrors: ErrorLog[];
-  timeRange: {
-    start: Date;
-    end: Date;
-  };
-}
-
-export interface ErrorHandlingConfig {
-  enableConsoleLogging?: boolean;
-  enableRemoteLogging?: boolean;
-  maxLogs?: number;
-  logLevel?: ErrorLog['level'];
-  remoteEndpoint?: string;
-}
+import type {
+  ErrorLog,
+  ErrorReport,
+  ErrorHandlingConfig,
+  ErrorPatternAnalysis,
+  ErrorRecoveryResult
+} from '../dto/ErrorHandlingDto';
 
 export class ErrorHandlingService {
   private errorLogs: ErrorLog[] = [];
@@ -164,11 +138,7 @@ export class ErrorHandlingService {
   /**
    * 에러 패턴 분석
    */
-  analyzeErrorPatterns(): {
-    mostCommonErrors: Array<{ message: string; count: number }>;
-    errorTrends: Array<{ date: string; count: number }>;
-    topOperations: Array<{ operation: string; errorCount: number }>;
-  } {
+  analyzeErrorPatterns(): ErrorPatternAnalysis {
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const recentLogs = this.errorLogs.filter(log => log.timestamp >= oneWeekAgo);
@@ -295,26 +265,26 @@ export class ErrorHandlingService {
   /**
    * 에러 복구 시도
    */
-  async attemptErrorRecovery(error: Error, context?: Record<string, any>): Promise<boolean> {
+  async attemptErrorRecovery(error: Error, context?: Record<string, any>): Promise<ErrorRecoveryResult> {
     try {
       // 에러 타입에 따른 복구 로직
       if (error.name === 'NetworkError') {
         // 네트워크 에러 복구 시도
         await this.retryNetworkOperation();
-        return true;
+        return { success: true, message: 'Network error recovered' };
       }
 
       if (error.name === 'QuotaExceededError') {
         // 저장소 공간 부족 복구 시도
         this.clearOldLogs();
-        return true;
+        return { success: true, message: 'Storage quota exceeded, logs cleared' };
       }
 
       // 기타 에러는 복구 불가능으로 간주
-      return false;
+      return { success: false, message: 'Error recovery not possible' };
     } catch (recoveryError) {
       this.logError(recoveryError, { originalError: error.message, context });
-      return false;
+      return { success: false, message: 'Error recovery failed' };
     }
   }
 

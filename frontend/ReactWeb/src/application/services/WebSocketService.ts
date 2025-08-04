@@ -1,77 +1,25 @@
 import type {IUserRepository} from '../../domain/repositories/IUserRepository';
 import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
 import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
-import type {WebSocketConfig, WebSocketConnection, WebSocketEvent, WebSocketMessage} from '../dto/WebSocketDto';
-
-export interface ConnectWebSocketRequest {
-  userId: string;
-  token?: string;
-}
-
-export interface ConnectWebSocketResponse {
-  success: boolean;
-  error?: string;
-}
-
-export interface DisconnectWebSocketRequest {
-  userId: string;
-}
-
-export interface DisconnectWebSocketResponse {
-  success: boolean;
-}
-
-export interface SendWebSocketMessageRequest {
-  userId: string;
-  channelId: string;
-  message: string;
-  type?: string;
-}
-
-export interface SendWebSocketMessageResponse {
-  success: boolean;
-  messageId?: string;
-  error?: string;
-}
-
-export interface JoinWebSocketChannelRequest {
-  userId: string;
-  channelId: string;
-}
-
-export interface JoinWebSocketChannelResponse {
-  success: boolean;
-  error?: string;
-}
-
-export interface LeaveWebSocketChannelRequest {
-  userId: string;
-  channelId: string;
-}
-
-export interface LeaveWebSocketChannelResponse {
-  success: boolean;
-}
-
-export interface BroadcastToChannelRequest {
-  channelId: string;
-  message: string;
-  excludeUserId?: string;
-}
-
-export interface BroadcastToChannelResponse {
-  success: boolean;
-  recipientsCount: number;
-}
-
-export interface WebSocketStats {
-  totalConnections: number;
-  activeConnections: number;
-  messagesSent: number;
-  messagesReceived: number;
-  reconnections: number;
-  errors: number;
-}
+import type {
+  BroadcastToChannelRequest,
+  BroadcastToChannelResponse,
+  ConnectWebSocketRequest,
+  ConnectWebSocketResponse,
+  DisconnectWebSocketRequest,
+  DisconnectWebSocketResponse,
+  JoinWebSocketChannelRequest,
+  JoinWebSocketChannelResponse,
+  LeaveWebSocketChannelRequest,
+  LeaveWebSocketChannelResponse,
+  SendWebSocketMessageRequest,
+  SendWebSocketMessageResponse,
+  WebSocketConfig,
+  WebSocketConnection,
+  WebSocketEvent,
+  WebSocketMessage,
+  WebSocketStats
+} from '../dto/WebSocketDto';
 
 export class WebSocketService {
   private ws: WebSocket | null = null;

@@ -53,7 +53,11 @@ export type {
   DeleteUserRequest,
   DeleteUserResponse,
   UserProfileUpdateRequest,
-  UserProfileUpdateResponse
+  UserProfileUpdateResponse,
+  UserProfile,
+  UserStats,
+  UserValidationSchema,
+  UserServiceConfig
 } from './UserDto';
 
 // Channel DTOs
@@ -75,7 +79,11 @@ export type {
   LeaveChannelRequest,
   LeaveChannelResponse,
   DeleteChannelRequest,
-  DeleteChannelResponse
+  DeleteChannelResponse,
+  ChannelProfile,
+  ChannelStats,
+  ChannelValidationSchema,
+  ChannelServiceConfig
 } from './ChannelDto';
 
 // Message DTOs
@@ -97,7 +105,11 @@ export type {
   GetRecentMessagesRequest,
   GetRecentMessagesResponse,
   GetMessageCountRequest,
-  GetMessageCountResponse
+  GetMessageCountResponse,
+  MessageProfile,
+  MessageStats,
+  MessageValidationSchema,
+  MessageServiceConfig
 } from './MessageDto';
 
 // Auth DTOs
@@ -153,60 +165,6 @@ export type {
   IsConnectedResponse
 } from './WebSocketDto';
 
-// GetCurrentUser DTOs
-export type {
-  GetCurrentUserRequest,
-  GetCurrentUserResponse
-} from './GetCurrentUserDto';
-
-// CreateChannel DTOs
-export type {
-  CreateChannelRequest,
-  CreateChannelResponse
-} from './CreateChannelDto';
-
-// SendMessage DTOs
-export type {
-  SendMessageRequest,
-  SendMessageResponse
-} from './SendMessageDto';
-
-// RegisterUser DTOs
-export type {
-  RegisterUserRequest,
-  RegisterUserResponse
-} from './RegisterUserDto';
-
-// UpdateUser DTOs
-export type {
-  UpdateUserRequest,
-  UpdateUserResponse
-} from './UpdateUserDto';
-
-// LogoutUser DTOs
-export type {
-  LogoutUserRequest,
-  LogoutUserResponse
-} from './LogoutUserDto';
-
-// InviteToChannel DTOs
-export type {
-  InviteToChannelRequest,
-  InviteToChannelResponse
-} from './InviteToChannelDto';
-
-// LeaveChannel DTOs
-export type {
-  LeaveChannelRequest,
-  LeaveChannelResponse
-} from './LeaveChannelDto';
-
-// SearchMessages DTOs
-export type {
-  SearchMessagesRequest,
-  SearchMessagesResponse
-} from './SearchMessagesDto';
-
 // FileDownload DTOs
 export type {
   FileDownloadRequest,
@@ -220,7 +178,9 @@ export type {
   NotificationResponse,
   NotificationSettings,
   UpdateNotificationSettingsRequest,
-  UpdateNotificationSettingsResponse
+  UpdateNotificationSettingsResponse,
+  NotificationType,
+  NotificationOptions
 } from './NotificationDto';
 
 // Cache DTOs
@@ -231,7 +191,8 @@ export type {
   GetCacheResponse,
   DeleteCacheRequest,
   DeleteCacheResponse,
-  CacheStats
+  CacheOptions,
+  CacheEntry
 } from './CacheDto';
 
 // RedisCache DTOs
@@ -248,7 +209,6 @@ export type {
 
 // RealTimeChat DTOs
 export type {
-  RealTimeMessage,
   SendRealTimeMessageRequest,
   SendRealTimeMessageResponse,
   TypingIndicatorRequest,
@@ -261,15 +221,63 @@ export type {
   LeaveChatRoomResponse
 } from './RealTimeChatDto';
 
+// Performance DTOs
+export type {
+  PerformanceMetric,
+  PerformanceReport,
+  PerformanceAlert,
+  PerformanceConfig
+} from './PerformanceDto';
+
+// Error Handling DTOs
+export type {
+  ErrorLog,
+  ErrorReport,
+  ErrorHandlingConfig,
+  ErrorPatternAnalysis,
+  ErrorRecoveryResult
+} from './ErrorHandlingDto';
+
+// Analytics DTOs
+export type {
+  UserEvent,
+  UserSession,
+  AnalyticsReport,
+  UserBehavior,
+  RealTimeActivity,
+  UserJourney,
+  ChurnPrediction
+} from './AnalyticsDto';
+
+// Multi-Level Cache DTOs
+export type {
+  CacheLevel,
+  MultiLevelCacheEntry,
+  CacheStats,
+  CacheConfig,
+  CacheLifecycle,
+  CacheWarmupRequest,
+  CacheBatchRequest
+} from './MultiLevelCacheDto';
+
+// System Health DTOs
+export type {
+  SystemHealthStatus,
+  HealthCheckResult,
+  OptimizationRecommendation,
+  SystemBackup,
+  RestartPreparation
+} from './SystemHealthDto';
+
 // Monitoring DTOs
 export type {
-  SystemMetrics,
   ApplicationMetrics,
   HealthCheckRequest,
   HealthCheckResponse,
   PerformanceMetrics,
   GetPerformanceMetricsRequest,
-  GetPerformanceMetricsResponse
+  GetPerformanceMetricsResponse,
+  MonitoringConfig
 } from './MonitoringDto';
 
 // APMMonitoring DTOs
@@ -291,4 +299,16 @@ export type {
   GetTracesResponse,
   GetAlertsRequest,
   GetAlertsResponse
-} from './APMMonitoringDto'; 
+} from './APMMonitoringDto';
+
+// Security DTOs
+export type {
+  SecurityConfig,
+  RateLimitConfig,
+  SecurityViolation,
+  SecurityReport,
+  InputValidationResult,
+  RateLimitResult,
+  SecurityPatternAnalysis,
+  SecurityViolationFilters
+} from './SecurityDto'; 

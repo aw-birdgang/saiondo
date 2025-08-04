@@ -1,38 +1,7 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-
-export interface PerformanceMetric {
-  operation: string;
-  duration: number;
-  timestamp: Date;
-  success: boolean;
-  error?: string;
-  metadata?: Record<string, any>;
-}
-
-export interface PerformanceReport {
-  totalOperations: number;
-  averageResponseTime: number;
-  p95ResponseTime: number;
-  p99ResponseTime: number;
-  errorRate: number;
-  operationsByType: Record<string, number>;
-  slowestOperations: PerformanceMetric[];
-  recentErrors: PerformanceMetric[];
-  timeRange: {
-    start: Date;
-    end: Date;
-  };
-}
-
-export interface PerformanceAlert {
-  type: 'slow_response' | 'high_error_rate' | 'memory_usage' | 'cpu_usage';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  message: string;
-  timestamp: Date;
-  metadata?: Record<string, any>;
-}
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import type {PerformanceAlert, PerformanceMetric, PerformanceReport} from '../dto/PerformanceDto';
 
 export class PerformanceMonitoringService {
   private metrics: PerformanceMetric[] = [];
@@ -327,4 +296,4 @@ export class PerformanceMonitoringService {
       }
     }
   }
-} 
+}

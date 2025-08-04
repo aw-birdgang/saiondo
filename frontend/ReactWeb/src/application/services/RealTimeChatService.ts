@@ -3,66 +3,18 @@ import type { IChannelRepository } from '../../domain/repositories/IChannelRepos
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { MessageEntity } from '../../domain/entities/Message';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-
-export interface SendRealTimeMessageRequest {
-  message: {
-    id: string;
-    content: string;
-    channelId: string;
-    senderId: string;
-    type: 'text' | 'image' | 'file' | 'system';
-    timestamp: Date;
-    metadata?: Record<string, unknown>;
-  };
-}
-
-export interface SendRealTimeMessageResponse {
-  success: boolean;
-  messageId: string;
-  timestamp: Date;
-}
-
-export interface TypingIndicatorRequest {
-  userId: string;
-  channelId: string;
-  isTyping: boolean;
-}
-
-export interface TypingIndicatorResponse {
-  success: boolean;
-}
-
-export interface ReadReceiptRequest {
-  userId: string;
-  messageId: string;
-  channelId: string;
-  readAt?: Date;
-}
-
-export interface ReadReceiptResponse {
-  success: boolean;
-  readAt: Date;
-}
-
-export interface JoinChatRoomRequest {
-  userId: string;
-  channelId: string;
-}
-
-export interface JoinChatRoomResponse {
-  success: boolean;
-  participants: string[];
-}
-
-export interface LeaveChatRoomRequest {
-  userId: string;
-  channelId: string;
-}
-
-export interface LeaveChatRoomResponse {
-  success: boolean;
-  leftAt: Date;
-}
+import type {
+  SendRealTimeMessageRequest,
+  SendRealTimeMessageResponse,
+  TypingIndicatorRequest,
+  TypingIndicatorResponse,
+  ReadReceiptRequest,
+  ReadReceiptResponse,
+  JoinChatRoomRequest,
+  JoinChatRoomResponse,
+  LeaveChatRoomRequest,
+  LeaveChatRoomResponse
+} from '../dto/RealTimeChatDto';
 
 export class RealTimeChatService {
   private typingUsers: Map<string, Set<string>> = new Map(); // channelId -> Set<userId>
@@ -143,7 +95,6 @@ export class RealTimeChatService {
     }
 
     // In real implementation, this would broadcast to other channel members
-    console.log(`User ${request.userId} is ${request.isTyping ? 'typing' : 'not typing'} in channel ${request.channelId}`);
 
     return { success: true };
   }

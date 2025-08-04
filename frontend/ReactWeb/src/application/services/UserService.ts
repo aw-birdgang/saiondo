@@ -6,39 +6,12 @@ import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import { PerformanceMonitoringService } from './PerformanceMonitoringService';
 import { ErrorHandlingService } from './ErrorHandlingService';
 import { SecurityService } from './SecurityService';
-
-export interface UserProfile {
-  id: string;
-  username: string;
-  email: string;
-  avatar?: string;
-  status: 'online' | 'offline' | 'away' | 'busy';
-  lastSeen: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserStats {
-  totalChannels: number;
-  totalMessages: number;
-  lastActivity: Date;
-  joinDate: Date;
-}
-
-export interface UserValidationSchema {
-  username: { required: boolean; type: string; minLength: number; maxLength: number; pattern?: RegExp };
-  email: { required: boolean; type: string; pattern: RegExp };
-  password?: { required: boolean; type: string; minLength: number; maxLength: number };
-}
-
-export interface UserServiceConfig {
-  enableValidation?: boolean;
-  enablePerformanceMonitoring?: boolean;
-  enableSecurityChecks?: boolean;
-  maxUsernameLength?: number;
-  minUsernameLength?: number;
-  maxEmailLength?: number;
-}
+import type {
+  UserProfile,
+  UserStats,
+  UserValidationSchema,
+  UserServiceConfig
+} from '../dto/UserDto';
 
 export class UserService {
   private readonly performanceService: PerformanceMonitoringService;
