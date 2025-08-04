@@ -1,93 +1,35 @@
-import React, { useState } from 'react';
-import {useTranslation} from 'react-i18next';
-import {useNavigate} from 'react-router-dom';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import {ROUTES} from "../../../shared/constants/app";
-import { useDataLoader } from '../../hooks/useDataLoader';
-import {EmptyState} from '../../components/common';
-import {AssistantFilters, AssistantGrid, ErrorState, LoadingState, PageHeader} from '../../components/specific';
-import {Container} from '../../components/common';
-import type {Assistant, AssistantCategory} from '../../../domain/types';
+import { ROUTES } from '../../../shared/constants/app';
+import { EmptyState, LoadingState } from '../../components/common';
+import { ErrorState, PageHeader } from '../../components/specific';
+import {
+  AssistantContainer,
+  AssistantFilters,
+  AssistantGrid
+} from '../../components/specific/assistant';
+import { useAssistantData } from './hooks/useAssistantData';
+import type { Assistant } from './types/assistantTypes';
 
 const AssistantListScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  // 커스텀 훅으로 데이터 관리
+  const {
+    filteredAssistants,
+    categories,
+    searchTerm,
+    selectedCategory,
+    isLoading,
+    error,
+    setSearchTerm,
+    setSelectedCategory
+  } = useAssistantData();
 
-  // Use custom hook for data loading
-  const { data: assistants = [], loading: isLoading, error } = useDataLoader(
-    async () => {
-      // TODO: 실제 API 호출로 대체
-      // const response = await getAssistants();
-
-      // 시뮬레이션을 위한 지연
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Mock 데이터
-      const mockAssistants: Assistant[] = [
-        {
-          id: 'assistant_001',
-          name: '연애 상담사',
-          description: '연인 관계와 데이트에 대한 조언을 제공합니다.',
-          category: 'relationship',
-          isActive: true,
-          lastUsed: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2시간 전
-          messageCount: 45,
-        },
-        {
-          id: 'assistant_002',
-          name: '감정 분석가',
-          description: '대화의 감정을 분석하고 개선 방안을 제시합니다.',
-          category: 'emotion',
-          isActive: true,
-          lastUsed: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1일 전
-          messageCount: 23,
-        },
-        {
-          id: 'assistant_003',
-          name: '커뮤니케이션 전문가',
-          description: '효과적인 의사소통 방법을 가르쳐줍니다.',
-          category: 'communication',
-          isActive: false,
-          messageCount: 12,
-        },
-        {
-          id: 'assistant_004',
-          name: '갈등 해결사',
-          description: '관계에서 발생하는 갈등을 해결하는 방법을 제시합니다.',
-          category: 'conflict',
-          isActive: true,
-          lastUsed: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3), // 3일 전
-          messageCount: 8,
-        },
-        {
-          id: 'assistant_005',
-          name: '미래 계획가',
-          description: '관계의 미래를 계획하고 목표를 설정하는 것을 도와줍니다.',
-          category: 'planning',
-          isActive: false,
-          messageCount: 5,
-        },
-      ];
-
-      return mockAssistants;
-    },
-    [],
-    {
-      autoLoad: true,
-      errorMessage: 'AI 상담사를 불러오는데 실패했습니다.'
-    }
-  );
-
-  const filteredAssistants = (assistants || []).filter(assistant => {
-    const matchesSearch = assistant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         assistant.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || assistant.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
+  // 어시스턴트 선택 처리
   const handleAssistantSelect = (assistant: Assistant) => {
     try {
       // 채팅 페이지로 이동하면서 AI 상담사 정보를 전달
@@ -108,15 +50,7 @@ const AssistantListScreen: React.FC = () => {
     }
   };
 
-  const categories: AssistantCategory[] = [
-    { id: 'all', name: t('all_categories') || '전체', icon: '📋' },
-    { id: 'relationship', name: t('relationship') || '관계', icon: '💕' },
-    { id: 'emotion', name: t('emotion') || '감정', icon: '❤️' },
-    { id: 'communication', name: t('communication') || '소통', icon: '💬' },
-    { id: 'conflict', name: t('conflict') || '갈등', icon: '⚡' },
-    { id: 'planning', name: t('planning') || '계획', icon: '🎯' },
-  ];
-
+  // 로딩 상태
   if (isLoading) {
     return (
       <LoadingState
@@ -125,6 +59,7 @@ const AssistantListScreen: React.FC = () => {
     );
   }
 
+  // 에러 상태
   if (error) {
     return (
       <ErrorState
@@ -136,27 +71,29 @@ const AssistantListScreen: React.FC = () => {
   }
 
   return (
-    <Container variant="page">
+    <AssistantContainer>
       {/* Header */}
-      <Container variant="header">
+      <div className="mb-6">
         <PageHeader
           title={t('ai_assistants') || 'AI 상담사'}
-          subtitle={`${assistants?.length || 0}명의 상담사`}
+          subtitle={`${filteredAssistants.length}명의 상담사`}
           showBackButton
         />
-      </Container>
+      </div>
 
       {/* Search and Filter */}
-      <Container variant="header">
+      <div className="mb-6">
         <AssistantFilters
           selectedCategory={selectedCategory}
-          categories={categories.map(cat => cat.id)}
+          categories={categories}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
           onCategoryChange={setSelectedCategory}
         />
-      </Container>
+      </div>
 
       {/* Content */}
-      <Container variant="content">
+      <div>
         {filteredAssistants.length === 0 ? (
           <EmptyState
             icon="🤖"
@@ -169,8 +106,8 @@ const AssistantListScreen: React.FC = () => {
             onAssistantSelect={handleAssistantSelect}
           />
         )}
-      </Container>
-    </Container>
+      </div>
+    </AssistantContainer>
   );
 };
 
