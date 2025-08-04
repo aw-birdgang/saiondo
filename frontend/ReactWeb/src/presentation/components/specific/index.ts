@@ -4,6 +4,7 @@ export * from './chat';
 export * from './assistant';
 export * from './mypage';
 export * from './channel';
+export * from './auth';
 export { default as QuickActionsCard } from './QuickActionsCard';
 export { default as SystemStatusCard } from './SystemStatusCard';
 export { default as ChannelInfoCard } from './ChannelInfoCard';

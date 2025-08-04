@@ -1,20 +1,16 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Form, AuthHeader } from "../common";
-
-interface RegisterFormData {
-  email: string;
-  password: string;
-  confirmPassword: string;
-  name: string;
-  gender: string;
-}
-
-interface RegisterFormProps {
-  onSubmit: (data: RegisterFormData) => Promise<void>;
-  loading: boolean;
-  className?: string;
-}
+import { Form } from "../common";
+import AuthHeader from "./auth/AuthHeader";
+import { cn } from "../../../utils/cn";
+import { 
+  DEFAULT_REGISTER_DATA, 
+  EMAIL_REGEX, 
+  PASSWORD_MIN_LENGTH, 
+  NAME_MIN_LENGTH,
+  GENDER_OPTIONS 
+} from "../../pages/auth/constants/authData";
+import type { RegisterFormProps, RegisterFormData } from "../../pages/auth/types/authTypes";
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ 
   onSubmit, 
