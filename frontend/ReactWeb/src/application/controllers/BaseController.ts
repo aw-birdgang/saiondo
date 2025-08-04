@@ -18,7 +18,7 @@ export abstract class BaseController implements IController {
   protected readonly flowTracker: FlowTracker;
   protected readonly errorHandler: ErrorHandler;
   protected readonly middlewareChain: IMiddlewareChain;
-  
+
   public readonly name: string;
   private isInitialized = false;
   private lastActivity = new Date();
@@ -36,7 +36,7 @@ export abstract class BaseController implements IController {
     this.flowTracker = new FlowTracker();
     this.errorHandler = new ErrorHandler();
     this.middlewareChain = new MiddlewareChain();
-    
+
     // 기본 미들웨어 등록
     this.setupDefaultMiddlewares();
   }
@@ -56,7 +56,7 @@ export abstract class BaseController implements IController {
    */
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
-    
+
     this.logger.info('Initializing controller');
     this.isInitialized = true;
     this.lastActivity = new Date();
@@ -91,14 +91,14 @@ export abstract class BaseController implements IController {
       timestamp: new Date(),
       metadata: { params }
     };
-    
+
     try {
       this.metrics.totalOperations++;
       this.lastActivity = new Date();
       this.metrics.lastOperationTime = new Date();
 
       const startTime = performance.now();
-      
+
       // 미들웨어 체인을 통한 실행
       const result = await this.middlewareChain.execute(
         this.name,
@@ -107,7 +107,7 @@ export abstract class BaseController implements IController {
         context,
         operationFn
       );
-      
+
       const endTime = performance.now();
       const executionTime = endTime - startTime;
 
@@ -127,24 +127,6 @@ export abstract class BaseController implements IController {
       this.flowTracker.completeFlow(flowId, false, error);
       throw this.errorHandler.handleError(error, this.name, operation);
     }
-  }
-
-  /**
-   * 민감한 정보를 제거하여 로깅에 안전한 파라미터 생성
-   */
-  private sanitizeParams(params: any): any {
-    if (!params) return params;
-    
-    const sensitiveFields = ['password', 'token', 'secret', 'key', 'authorization'];
-    const sanitized = { ...params };
-    
-    sensitiveFields.forEach(field => {
-      if (sanitized[field]) {
-        sanitized[field] = '[REDACTED]';
-      }
-    });
-    
-    return sanitized;
   }
 
   /**
@@ -169,10 +151,10 @@ export abstract class BaseController implements IController {
       totalOperations: this.metrics.totalOperations,
       successfulOperations: this.metrics.successfulOperations,
       failedOperations: this.metrics.failedOperations,
-      averageExecutionTime: this.metrics.totalOperations > 0 
-        ? this.metrics.totalExecutionTime / this.metrics.totalOperations 
+      averageExecutionTime: this.metrics.totalOperations > 0
+        ? this.metrics.totalExecutionTime / this.metrics.totalOperations
         : 0,
       lastOperationTime: this.metrics.lastOperationTime
     };
   }
-} 
+}

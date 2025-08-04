@@ -1,9 +1,14 @@
 import type { FileService } from '../services/FileService';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type { FileDownloadProgress, FileDownloadRequest, FileDownloadResponse } from '../dto/FileDownloadDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class FileDownloadUseCase {
+export class FileDownloadUseCase implements IUseCase<FileDownloadRequest, FileDownloadResponse> {
   constructor(private readonly fileService: FileService) {}
+
+  async execute(request: FileDownloadRequest): Promise<FileDownloadResponse> {
+    return this.downloadFile(request);
+  }
 
   async downloadFile(request: FileDownloadRequest): Promise<FileDownloadResponse> {
     try {

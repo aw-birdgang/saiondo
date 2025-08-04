@@ -1,11 +1,11 @@
-import type { IController, ControllerMetadata } from './interfaces/IController';
-import { UserController } from './UserController';
-import { ChannelController } from './ChannelController';
-import { MessageController } from './MessageController';
-import { NotificationController } from './NotificationController';
-import { FileController } from './FileController';
-import { AnalyticsController } from './AnalyticsController';
-import { Logger } from '../../shared/utils/Logger';
+import type {ControllerMetadata, IController} from './interfaces/IController';
+import {UserController} from './UserController';
+import {ChannelController} from './ChannelController';
+import {MessageController} from './MessageController';
+import {NotificationController} from './NotificationController';
+import {FileController} from './FileController';
+import {AnalyticsController} from './AnalyticsController';
+import {Logger} from '../../shared/utils/Logger';
 
 /**
  * Controller Factory - Controller 인스턴스 생성 및 관리
@@ -62,7 +62,7 @@ export class ControllerFactory {
 
     this.controllers.set(type, controller);
     this.logger.info(`Controller created: ${type}`);
-    
+
     return controller;
   }
 
@@ -99,11 +99,11 @@ export class ControllerFactory {
    */
   async initializeAllControllers(): Promise<void> {
     this.logger.info('Initializing all controllers');
-    
+
     const initPromises = Array.from(this.controllers.values()).map(controller =>
       controller.initialize()
     );
-    
+
     await Promise.all(initPromises);
     this.logger.info('All controllers initialized');
   }
@@ -113,11 +113,11 @@ export class ControllerFactory {
    */
   async cleanupAllControllers(): Promise<void> {
     this.logger.info('Cleaning up all controllers');
-    
+
     const cleanupPromises = Array.from(this.controllers.values()).map(controller =>
       controller.cleanup()
     );
-    
+
     await Promise.all(cleanupPromises);
     this.controllers.clear();
     this.logger.info('All controllers cleaned up');
@@ -144,7 +144,7 @@ export class ControllerFactory {
    */
   getControllerStats(): Record<string, any> {
     const stats: Record<string, any> = {};
-    
+
     for (const [type, controller] of this.controllers.entries()) {
       stats[type] = {
         info: controller.getControllerInfo(),
@@ -152,7 +152,7 @@ export class ControllerFactory {
         isActive: controller.isActive()
       };
     }
-    
+
     return stats;
   }
 
@@ -166,4 +166,4 @@ export class ControllerFactory {
       controllerTypes: Array.from(this.controllers.keys())
     };
   }
-} 
+}

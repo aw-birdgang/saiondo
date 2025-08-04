@@ -18,13 +18,18 @@ import type {
   GetAlertsRequest,
   GetAlertsResponse
 } from '../dto/APMMonitoringDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class APMMonitoringUseCase {
+export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, CreateTraceResponse> {
   private traces = new Map<string, Trace>();
   private spans = new Map<string, Span>();
   private alerts = new Map<string, Alert>();
 
   constructor(private readonly performanceService: PerformanceMonitoringService) {}
+
+  async execute(request: CreateTraceRequest): Promise<CreateTraceResponse> {
+    return this.createTrace(request);
+  }
 
   async createTrace(request: CreateTraceRequest): Promise<CreateTraceResponse> {
     const traceId = `trace_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;

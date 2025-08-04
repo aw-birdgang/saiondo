@@ -1,303 +1,113 @@
-import { container } from '../../app/di/container';
-import { GetCurrentUserUseCase } from './GetCurrentUserUseCase';
-import { UpdateUserUseCase } from './UpdateUserUseCase';
-import { CreateChannelUseCase } from './CreateChannelUseCase';
-import { SendMessageUseCase } from './SendMessageUseCase';
-import { AuthenticateUserUseCase } from './AuthenticateUserUseCase';
-import { RegisterUserUseCase } from './RegisterUserUseCase';
-import { InviteToChannelUseCase } from './InviteToChannelUseCase';
-import { SearchMessagesUseCase } from './SearchMessagesUseCase';
-import { LogoutUserUseCase } from './LogoutUserUseCase';
-import { LeaveChannelUseCase } from './LeaveChannelUseCase';
-import { UploadFileUseCase } from './UploadFileUseCase';
-import { NotificationUseCase } from './NotificationUseCase';
-import { UserPermissionUseCase } from './UserPermissionUseCase';
-import { CacheUseCase } from './CacheUseCase';
-import { RealTimeChatUseCase } from './RealTimeChatUseCase';
-import { FileDownloadUseCase } from './FileDownloadUseCase';
-import { UserActivityLogUseCase } from './UserActivityLogUseCase';
-import { MonitoringUseCase } from './MonitoringUseCase';
-import { RedisCacheUseCase } from './RedisCacheUseCase';
-import { WebSocketUseCase } from './WebSocketUseCase';
-import { APMMonitoringUseCase } from './APMMonitoringUseCase';
-import { AnalyticsUseCase } from './AnalyticsUseCase';
-import { SystemManagementUseCase } from './SystemManagementUseCase';
-import { PaymentUseCase } from './PaymentUseCase';
-import { SearchUseCase } from './SearchUseCase';
-import { InviteUseCase } from './InviteUseCase';
-import { CategoryUseCase } from './CategoryUseCase';
-import type { IPaymentRepository } from './PaymentUseCase';
-import type { ISearchRepository } from './SearchUseCase';
-import type { IInviteRepository } from './InviteUseCase';
-import type { ICategoryRepository } from './CategoryUseCase';
-import { UserActivityService } from '../services/UserActivityService';
-import { DI_TOKENS } from '../../app/di/tokens';
-import { UserPermissionService } from '../services/UserPermissionService';
-import { RealTimeChatService } from '../services/RealTimeChatService';
-import { NotificationService } from '../services/NotificationService';
-import { FileService } from '../services/FileService';
-import { CacheService } from '../services/CacheService';
-import { MonitoringService } from '../services/MonitoringService';
-import { WebSocketService } from '../services/WebSocketService';
-import { AnalyticsService } from '../services/AnalyticsService';
-import { SystemHealthService } from '../services/SystemHealthService';
-import { PerformanceMonitoringService } from '../services/PerformanceMonitoringService';
-import { ErrorHandlingService } from '../services/ErrorHandlingService';
-import { SecurityService } from '../services/SecurityService';
-import { MultiLevelCacheService } from '../services/MultiLevelCacheService';
-import { ChannelService } from '../services/ChannelService';
+import { container, DI_TOKENS } from '../../di/container';
+import { useCaseRegistry } from '../../di/UseCaseRegistry';
 
 /**
  * Use Case Factory
- * 모든 Use Case 인스턴스를 쉽게 생성할 수 있는 팩토리 클래스
+ * DI Container를 사용하여 Use Case 인스턴스를 생성하는 팩토리 클래스
  */
 export class UseCaseFactory {
+  /**
+   * UseCase 레지스트리 초기화
+   */
+  static async initialize(): Promise<void> {
+    await useCaseRegistry.initialize();
+  }
+
   // User related use cases
-  static createGetCurrentUserUseCase(): GetCurrentUserUseCase {
-    const userService = container.getUserService();
-    return new GetCurrentUserUseCase(userService);
+  static createGetCurrentUserUseCase() {
+    return container.createUseCase(DI_TOKENS.GET_CURRENT_USER_USE_CASE);
   }
 
-  static createUpdateUserUseCase(): UpdateUserUseCase {
-    const userService = container.getUserService();
-    return new UpdateUserUseCase(userService);
+  static createUpdateUserUseCase() {
+    return container.createUseCase(DI_TOKENS.UPDATE_USER_USE_CASE);
   }
 
-  static createAuthenticateUserUseCase(): AuthenticateUserUseCase {
-    const userService = container.getUserService();
-    return new AuthenticateUserUseCase(userService);
+  static createAuthenticateUserUseCase() {
+    return container.createUseCase(DI_TOKENS.AUTHENTICATE_USER_USE_CASE);
   }
 
-  static createRegisterUserUseCase(): RegisterUserUseCase {
-    const userService = container.getUserService();
-    return new RegisterUserUseCase(userService);
+  static createRegisterUserUseCase() {
+    return container.createUseCase(DI_TOKENS.REGISTER_USER_USE_CASE);
   }
 
-  static createLogoutUserUseCase(): LogoutUserUseCase {
-    const userService = container.getUserService();
-    return new LogoutUserUseCase(userService);
+  static createLogoutUserUseCase() {
+    return container.createUseCase(DI_TOKENS.LOGOUT_USER_USE_CASE);
   }
 
   // Channel related use cases
-  static createCreateChannelUseCase(): CreateChannelUseCase {
-    const channelService = container.getChannelService();
-    return new CreateChannelUseCase(channelService);
+  static createCreateChannelUseCase() {
+    return container.createUseCase(DI_TOKENS.CREATE_CHANNEL_USE_CASE);
   }
 
-  static createInviteToChannelUseCase(): InviteToChannelUseCase {
-    const channelService = container.getChannelService();
-    return new InviteToChannelUseCase(channelService);
+  static createInviteToChannelUseCase() {
+    return container.createUseCase(DI_TOKENS.INVITE_TO_CHANNEL_USE_CASE);
   }
 
-  static createLeaveChannelUseCase(): LeaveChannelUseCase {
-    const channelService = container.getChannelService();
-    return new LeaveChannelUseCase(channelService);
+  static createLeaveChannelUseCase() {
+    return container.createUseCase(DI_TOKENS.LEAVE_CHANNEL_USE_CASE);
   }
 
   // Message related use cases
-  static createSendMessageUseCase(): SendMessageUseCase {
-    const messageService = container.getMessageService();
-    return new SendMessageUseCase(messageService);
+  static createSendMessageUseCase() {
+    return container.createUseCase(DI_TOKENS.SEND_MESSAGE_USE_CASE);
   }
 
-  static createSearchMessagesUseCase(): SearchMessagesUseCase {
-    const messageService = container.getMessageService();
-    return new SearchMessagesUseCase(messageService);
+  static createSearchMessagesUseCase() {
+    return container.createUseCase(DI_TOKENS.SEARCH_MESSAGES_USE_CASE);
   }
 
-  static createUploadFileUseCase(): UploadFileUseCase {
-    const fileService = new FileService(
-      container.getMessageRepository(),
-      container.getChannelRepository()
-    );
-    return new UploadFileUseCase(fileService);
+  // File related use cases
+  static createUploadFileUseCase() {
+    return container.createUseCase(DI_TOKENS.UPLOAD_FILE_USE_CASE);
   }
 
-  // Real-time related use cases
-  static createRealTimeChatUseCase(): RealTimeChatUseCase {
-    const realTimeChatService = new RealTimeChatService(
-      container.getMessageRepository(),
-      container.getChannelRepository(),
-      container.getUserRepository()
-    );
-    return new RealTimeChatUseCase(realTimeChatService);
+  static createFileDownloadUseCase() {
+    return container.createUseCase(DI_TOKENS.FILE_DOWNLOAD_USE_CASE);
   }
 
-  // File management use cases
-  static createFileDownloadUseCase(): FileDownloadUseCase {
-    const fileService = container.getFileService();
-    return new FileDownloadUseCase(fileService);
+  // System related use cases
+  static createNotificationUseCase() {
+    return container.createUseCase(DI_TOKENS.NOTIFICATION_USE_CASE);
   }
 
-  // Notification related use cases
-  static createNotificationUseCase(): NotificationUseCase {
-    const notificationService = new NotificationService(
-      container.getUserRepository(),
-      container.getChannelRepository()
-    );
-    return new NotificationUseCase(notificationService);
+  static createUserPermissionUseCase() {
+    return container.createUseCase(DI_TOKENS.USER_PERMISSION_USE_CASE);
   }
 
-  // Permission related use cases
-  static createUserPermissionUseCase(): UserPermissionUseCase {
-    const userPermissionService = new UserPermissionService(
-      container.getUserRepository(),
-      container.getChannelRepository()
-    );
-    return new UserPermissionUseCase(userPermissionService);
+  static createCacheUseCase() {
+    return container.createUseCase(DI_TOKENS.CACHE_USE_CASE);
   }
 
-  // Cache related use cases
-  static createCacheUseCase(options?: any): CacheUseCase {
-    const cacheService = new CacheService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository(),
-      options
-    );
-    return new CacheUseCase(cacheService);
+  static createRealTimeChatUseCase() {
+    return container.createUseCase(DI_TOKENS.REAL_TIME_CHAT_USE_CASE);
   }
 
-  // Redis cache use cases
-  static createRedisCacheUseCase(config?: any): RedisCacheUseCase {
-    const cacheService = new CacheService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-    return new RedisCacheUseCase(cacheService);
+  static createUserActivityLogUseCase() {
+    return container.createUseCase(DI_TOKENS.USER_ACTIVITY_LOG_USE_CASE);
   }
 
-  // WebSocket use cases
-  static createWebSocketUseCase(config?: any): WebSocketUseCase {
-    const webSocketService = new WebSocketService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository(),
-      config || {}
-    );
-    return new WebSocketUseCase(webSocketService);
+  static createMonitoringUseCase() {
+    return container.createUseCase(DI_TOKENS.MONITORING_USE_CASE);
   }
 
-  // Activity logging use cases
-  static createUserActivityLogUseCase(): UserActivityLogUseCase {
-    const userActivityService = new UserActivityService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-    return new UserActivityLogUseCase(userActivityService);
+  static createRedisCacheUseCase() {
+    return container.createUseCase(DI_TOKENS.REDIS_CACHE_USE_CASE);
   }
 
-  // Monitoring use cases
-  static createMonitoringUseCase(): MonitoringUseCase {
-    const monitoringService = new MonitoringService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-    return new MonitoringUseCase(monitoringService);
+  static createWebSocketUseCase() {
+    return container.createUseCase(DI_TOKENS.WEB_SOCKET_USE_CASE);
   }
 
-  // APM monitoring use cases
-  static createAPMMonitoringUseCase(): APMMonitoringUseCase {
-    const performanceService = new PerformanceMonitoringService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-    return new APMMonitoringUseCase(performanceService);
+  static createAPMMonitoringUseCase() {
+    return container.createUseCase(DI_TOKENS.APM_MONITORING_USE_CASE);
   }
 
-  // Analytics use cases
-  static createAnalyticsUseCase(): AnalyticsUseCase {
-    const analyticsService = new AnalyticsService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-    return new AnalyticsUseCase(analyticsService);
+  static createAnalyticsUseCase() {
+    return container.createUseCase(DI_TOKENS.ANALYTICS_USE_CASE);
   }
 
-  // Payment use cases
-  static createPaymentUseCase(): PaymentUseCase {
-    const paymentRepository = container.get<IPaymentRepository>(DI_TOKENS.PAYMENT_REPOSITORY);
-    return new PaymentUseCase(paymentRepository);
-  }
-
-  // Search use cases
-  static createSearchUseCase(): SearchUseCase {
-    const searchRepository = container.get<ISearchRepository>(DI_TOKENS.SEARCH_REPOSITORY);
-    return new SearchUseCase(searchRepository);
-  }
-
-  // Invite use cases
-  static createInviteUseCase(): InviteUseCase {
-    const inviteRepository = container.get<IInviteRepository>(DI_TOKENS.INVITE_REPOSITORY);
-    return new InviteUseCase(inviteRepository);
-  }
-
-  // Category use cases
-  static createCategoryUseCase(): CategoryUseCase {
-    const categoryRepository = container.get<ICategoryRepository>(DI_TOKENS.CATEGORY_REPOSITORY);
-    return new CategoryUseCase(categoryRepository);
-  }
-
-  // System Management use cases
-  static createSystemManagementUseCase(): SystemManagementUseCase {
-    const systemHealthService = new SystemHealthService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-
-    const performanceService = new PerformanceMonitoringService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-
-    const errorService = new ErrorHandlingService({
-      enableConsoleLogging: true,
-      enableRemoteLogging: false,
-    });
-
-    const securityService = new SecurityService({
-      enableRateLimiting: true,
-      enableInputValidation: true,
-      enableXSSProtection: true,
-      enableCSRFProtection: true,
-    });
-
-    const cacheService = new MultiLevelCacheService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository(),
-      {
-        levels: [
-          { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 },
-          { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 },
-          { name: 'L3', ttl: 1800000, maxSize: 10000, priority: 3 },
-        ],
-        enableCompression: true,
-        enableMetrics: true,
-      }
-    );
-
-    const analyticsService = new AnalyticsService(
-      container.getUserRepository(),
-      container.getChannelRepository(),
-      container.getMessageRepository()
-    );
-
-    return new SystemManagementUseCase(
-      systemHealthService,
-      performanceService,
-      errorService,
-      securityService,
-      cacheService,
-      analyticsService
-    );
+  static createSystemManagementUseCase() {
+    return container.createUseCase(DI_TOKENS.SYSTEM_MANAGEMENT_USE_CASE);
   }
 
   // Convenience methods for common operations
@@ -326,12 +136,6 @@ export class UseCaseFactory {
     };
   }
 
-  static createRealTimeUseCases() {
-    return {
-      chat: this.createRealTimeChatUseCase(),
-    };
-  }
-
   static createFileUseCases() {
     return {
       upload: this.createUploadFileUseCase(),
@@ -346,41 +150,17 @@ export class UseCaseFactory {
     };
   }
 
-  static createNotificationUseCases() {
+  static createSystemUseCases() {
     return {
       notification: this.createNotificationUseCase(),
-    };
-  }
-
-  static createPermissionUseCases() {
-    return {
       permission: this.createUserPermissionUseCase(),
-    };
-  }
-
-  static createCacheUseCases() {
-    return {
       cache: this.createCacheUseCase(),
-      redis: this.createRedisCacheUseCase(),
-    };
-  }
-
-  static createWebSocketUseCases() {
-    return {
-      websocket: this.createWebSocketUseCase(),
-    };
-  }
-
-  static createActivityUseCases() {
-    return {
+      realTimeChat: this.createRealTimeChatUseCase(),
       activityLog: this.createUserActivityLogUseCase(),
-    };
-  }
-
-  static createMonitoringUseCases() {
-    return {
       monitoring: this.createMonitoringUseCase(),
-      apm: this.createAPMMonitoringUseCase(),
+      redisCache: this.createRedisCacheUseCase(),
+      webSocket: this.createWebSocketUseCase(),
+      apmMonitoring: this.createAPMMonitoringUseCase(),
       analytics: this.createAnalyticsUseCase(),
       systemManagement: this.createSystemManagementUseCase(),
     };
@@ -392,15 +172,23 @@ export class UseCaseFactory {
       auth: this.createAuthUseCases(),
       channel: this.createChannelUseCases(),
       message: this.createMessageUseCases(),
-      realTime: this.createRealTimeUseCases(),
       file: this.createFileUseCases(),
       user: this.createUserUseCases(),
-      notification: this.createNotificationUseCases(),
-      permission: this.createPermissionUseCases(),
-      cache: this.createCacheUseCases(),
-      websocket: this.createWebSocketUseCases(),
-      activity: this.createActivityUseCases(),
-      monitoring: this.createMonitoringUseCases(),
+      system: this.createSystemUseCases(),
     };
+  }
+
+  /**
+   * 등록된 UseCase 목록 조회
+   */
+  static getRegisteredUseCases(): string[] {
+    return useCaseRegistry.getRegisteredUseCases();
+  }
+
+  /**
+   * UseCase 메타데이터 조회
+   */
+  static getUseCaseMetadata(token: string) {
+    return useCaseRegistry.getUseCaseMetadata(token);
   }
 } 

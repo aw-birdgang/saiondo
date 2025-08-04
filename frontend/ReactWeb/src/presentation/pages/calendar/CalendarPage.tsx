@@ -1,12 +1,7 @@
 import React from 'react';
-import { LoadingSpinner, Modal } from '../../components/common';
-import { 
-  CalendarHeader, 
-  MonthView, 
-  CalendarSidebar, 
-  CalendarContainer 
-} from '../../components/specific/calendar';
-import { useCalendarData } from './hooks/useCalendarData';
+import {LoadingSpinner, Modal} from '../../components/common';
+import {CalendarContainer, CalendarHeader, CalendarSidebar, MonthView} from '../../components/specific/calendar';
+import {useCalendarData} from './hooks/useCalendarData';
 
 const CalendarPage: React.FC = () => {
   const {
@@ -18,9 +13,7 @@ const CalendarPage: React.FC = () => {
     filteredEvents,
     isEventFormOpen,
     editingEvent,
-    selectedEventType,
     isLoading,
-    eventStats,
 
     // 액션
     goToPrevious,
@@ -32,9 +25,7 @@ const CalendarPage: React.FC = () => {
     handleEventEdit,
     handleEventDelete,
     handleEventFormClose,
-    handleEventTypeChange,
     handleEventClick,
-    getEventsForDate
   } = useCalendarData();
 
   if (isLoading) {
@@ -82,7 +73,7 @@ const CalendarPage: React.FC = () => {
           onToday={goToToday}
           onViewModeChange={handleViewModeChange}
         />
-        
+
         <CalendarContainer>
           {renderCalendarView()}
         </CalendarContainer>
@@ -114,7 +105,7 @@ const CalendarPage: React.FC = () => {
               placeholder="이벤트 제목을 입력하세요"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-txt mb-1">타입</label>
             <select className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
@@ -126,7 +117,7 @@ const CalendarPage: React.FC = () => {
               <option value="other">기타</option>
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-txt mb-1">시간</label>
             <input
@@ -135,7 +126,7 @@ const CalendarPage: React.FC = () => {
               className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-txt mb-1">설명</label>
             <textarea
@@ -146,7 +137,7 @@ const CalendarPage: React.FC = () => {
             />
           </div>
         </div>
-        
+
         <div className="flex justify-end space-x-2 mt-6">
           <button
             onClick={handleEventFormClose}

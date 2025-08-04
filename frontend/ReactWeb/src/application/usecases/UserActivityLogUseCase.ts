@@ -6,9 +6,14 @@ import type {
   ActivityStats,
   UserActivitySummary
 } from '../dto/UserActivityDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class UserActivityLogUseCase {
+export class UserActivityLogUseCase implements IUseCase<ActivityLogRequest, ActivityLogResponse> {
   constructor(private readonly userActivityService: UserActivityService) {}
+
+  async execute(request: ActivityLogRequest): Promise<ActivityLogResponse> {
+    return this.logActivity(request);
+  }
 
   async logActivity(request: ActivityLogRequest): Promise<ActivityLogResponse> {
     return await this.userActivityService.logActivity(request);

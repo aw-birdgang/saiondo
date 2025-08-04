@@ -1,8 +1,13 @@
 import { NotificationService } from '../services/NotificationService';
 import type { NotificationRequest, NotificationResponse, NotificationSettings } from '../dto/NotificationDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class NotificationUseCase {
+export class NotificationUseCase implements IUseCase<NotificationRequest, NotificationResponse> {
   constructor(private readonly notificationService: NotificationService) {}
+
+  async execute(request: NotificationRequest): Promise<NotificationResponse> {
+    return this.sendNotification(request);
+  }
 
   async sendNotification(request: NotificationRequest): Promise<NotificationResponse> {
     return await this.notificationService.sendNotification(request);

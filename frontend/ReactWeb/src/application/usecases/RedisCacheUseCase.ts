@@ -1,8 +1,13 @@
 import type { CacheService } from '../services/CacheService';
 import type { RedisCacheStats } from '../dto/RedisCacheDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class RedisCacheUseCase {
+export class RedisCacheUseCase implements IUseCase<string, any> {
   constructor(private readonly cacheService: CacheService) {}
+
+  async execute(userId: string): Promise<any> {
+    return this.getUserWithCache(userId);
+  }
 
   async getUserWithCache(userId: string): Promise<any> {
     try {

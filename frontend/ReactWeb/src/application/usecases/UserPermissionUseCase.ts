@@ -8,9 +8,14 @@ import type {
   AssignRoleRequest,
   AssignRoleResponse
 } from '../dto/UserPermissionDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class UserPermissionUseCase {
+export class UserPermissionUseCase implements IUseCase<CheckPermissionRequest, CheckPermissionResponse> {
   constructor(private readonly userPermissionService: UserPermissionService) {}
+
+  async execute(request: CheckPermissionRequest): Promise<CheckPermissionResponse> {
+    return this.checkPermission(request);
+  }
 
   async checkPermission(request: CheckPermissionRequest): Promise<CheckPermissionResponse> {
     return await this.userPermissionService.checkPermission(request);

@@ -27,11 +27,16 @@ import type {
   WebSocketEvent,
   WebSocketMessage
 } from '../dto/WebSocketDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class WebSocketUseCase {
+export class WebSocketUseCase implements IUseCase<ConnectWebSocketRequest, ConnectWebSocketResponse> {
   constructor(
     private readonly webSocketService: WebSocketService
   ) {}
+
+  async execute(request: ConnectWebSocketRequest): Promise<ConnectWebSocketResponse> {
+    return this.connect(request);
+  }
 
   async connect(request: ConnectWebSocketRequest): Promise<ConnectWebSocketResponse> {
     return await this.webSocketService.connect(request);

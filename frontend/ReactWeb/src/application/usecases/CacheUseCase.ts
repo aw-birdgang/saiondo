@@ -1,8 +1,13 @@
 import { CacheService } from '../services/CacheService';
 import type { CacheStats } from '../dto/CacheDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class CacheUseCase {
+export class CacheUseCase implements IUseCase<string, any> {
   constructor(private readonly cacheService: CacheService) {}
+
+  async execute(userId: string): Promise<any> {
+    return this.getUserWithCache(userId);
+  }
 
   async getUserWithCache(userId: string): Promise<any> {
     return await this.cacheService.getUserWithCache(userId);

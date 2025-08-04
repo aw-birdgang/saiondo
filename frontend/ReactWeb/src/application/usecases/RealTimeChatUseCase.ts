@@ -11,9 +11,14 @@ import type {
   TypingIndicatorRequest,
   TypingIndicatorResponse
 } from '../dto/RealTimeChatDto';
+import type { IUseCase } from './interfaces/IUseCase';
 
-export class RealTimeChatUseCase {
+export class RealTimeChatUseCase implements IUseCase<SendRealTimeMessageRequest, SendRealTimeMessageResponse> {
   constructor(private readonly realTimeChatService: RealTimeChatService) {}
+
+  async execute(request: SendRealTimeMessageRequest): Promise<SendRealTimeMessageResponse> {
+    return this.sendRealTimeMessage(request);
+  }
 
   async sendRealTimeMessage(request: SendRealTimeMessageRequest): Promise<SendRealTimeMessageResponse> {
     return await this.realTimeChatService.sendRealTimeMessage(request);
