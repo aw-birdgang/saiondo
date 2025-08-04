@@ -9,6 +9,8 @@ export interface Channel {
   type: 'public' | 'private' | 'direct';
   ownerId: string;
   members: string[];
+  blockedUsers?: string[];
+  maxMembers?: number;
   createdAt: Date;
   updatedAt: Date;
   lastMessageAt?: Date;

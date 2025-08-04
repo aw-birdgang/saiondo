@@ -1,18 +1,17 @@
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { Message } from '../../domain/dto/MessageDto';
-import { MessageEntity } from '../../domain/entities/Message';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import {MessageEntity} from '../../domain/entities/Message';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
 import type {
   CreateMessageRequest,
   CreateMessageResponse,
+  DeleteMessageRequest,
+  DeleteMessageResponse,
   GetMessageRequest,
   GetMessageResponse,
   GetMessagesRequest,
   GetMessagesResponse,
   UpdateMessageRequest,
-  UpdateMessageResponse,
-  DeleteMessageRequest,
-  DeleteMessageResponse
+  UpdateMessageResponse
 } from '../dto/MessageDto';
 
 export class MessageUseCases {
@@ -62,10 +61,10 @@ export class MessageUseCases {
         request.limit,
         request.offset
       );
-      return { 
-        messages, 
-        total: messages.length, 
-        hasMore: false 
+      return {
+        messages,
+        total: messages.length,
+        hasMore: false
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -115,10 +114,10 @@ export class MessageUseCases {
   async getRecentMessages(channelId: string, limit: number): Promise<GetMessagesResponse> {
     try {
       const messages = await this.messageRepository.findByChannelId(channelId, limit, 0);
-      return { 
-        messages, 
-        total: messages.length, 
-        hasMore: false 
+      return {
+        messages,
+        total: messages.length,
+        hasMore: false
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -135,4 +134,4 @@ export class MessageUseCases {
       return 0;
     }
   }
-} 
+}

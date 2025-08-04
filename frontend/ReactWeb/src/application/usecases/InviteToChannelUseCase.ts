@@ -1,8 +1,7 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { Channel } from '../../domain/dto/ChannelDto';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { InviteToChannelRequest, InviteToChannelResponse } from '../dto/InviteToChannelDto';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {InviteToChannelRequest, InviteToChannelResponse} from '../dto/InviteToChannelDto';
 
 export class InviteToChannelUseCase {
   constructor(
@@ -79,4 +78,4 @@ export class InviteToChannelUseCase {
       throw DomainErrorFactory.createChannelValidation('Failed to invite users to channel');
     }
   }
-} 
+}

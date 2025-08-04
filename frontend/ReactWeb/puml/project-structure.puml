@@ -1,0 +1,65 @@
+@startuml ReactWeb Project Structure
+
+skinparam backgroundColor #FFFFFF
+skinparam package {
+    BackgroundColor #E3F2FD
+    BorderColor #1976D2
+}
+
+title ReactWeb - 프로젝트 구조
+
+folder "frontend/ReactWeb/" as Root {
+    folder "src/" as Src {
+        folder "domain/" as Domain {
+            folder "entities/" as Entities
+            folder "value-objects/" as ValueObjects
+            folder "repositories/" as RepoInterfaces
+            folder "errors/" as Errors
+            folder "types/" as Types
+        }
+        
+        folder "application/" as Application {
+            folder "usecases/" as UseCases
+            folder "services/" as Services
+            folder "controllers/" as Controllers
+            folder "dto/" as DTOs
+        }
+        
+        folder "infrastructure/" as Infrastructure {
+            folder "api/" as API
+            folder "repositories/" as RepoImpl
+            folder "websocket/" as WebSocket
+            folder "payment/" as Payment
+            folder "notification/" as Notification
+        }
+        
+        folder "presentation/" as Presentation {
+            folder "components/" as Components
+            folder "pages/" as Pages
+            folder "hooks/" as Hooks
+            folder "routes/" as Routes
+        }
+        
+        folder "stores/" as Stores
+        folder "contexts/" as Contexts
+        folder "shared/" as Shared
+        folder "di/" as DI
+        folder "app/" as App
+    }
+    
+    folder "public/" as Public
+    folder "scripts/" as Scripts
+}
+
+' 계층별 색상 구분
+Domain -[#E8F5E8]> Domain : Domain Layer
+Application -[#FFF3E0]> Application : Application Layer
+Infrastructure -[#F3E5F5]> Infrastructure : Infrastructure Layer
+Presentation -[#E3F2FD]> Presentation : Presentation Layer
+
+' 주요 의존성 관계
+Presentation --> Application : uses
+Application --> Domain : depends on
+Infrastructure --> Domain : implements
+
+@enduml 

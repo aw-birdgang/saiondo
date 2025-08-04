@@ -1,8 +1,7 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User } from '../../domain/dto/UserDto';
-import { UserId } from '../../domain/value-objects/UserId';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { GetCurrentUserRequest, GetCurrentUserResponse } from '../dto/GetCurrentUserDto';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import {UserId} from '../../domain/value-objects/UserId';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {GetCurrentUserRequest, GetCurrentUserResponse} from '../dto/GetCurrentUserDto';
 
 export class GetCurrentUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -10,7 +9,7 @@ export class GetCurrentUserUseCase {
   async execute(request?: GetCurrentUserRequest): Promise<GetCurrentUserResponse> {
     try {
       let user;
-      
+
       if (request?.userId) {
         // Get specific user by ID
         const userId = UserId.create(request.userId);
@@ -19,7 +18,7 @@ export class GetCurrentUserUseCase {
         // Get current user
         user = await this.userRepository.getCurrentUser();
       }
-      
+
       if (!user) {
         const errorId = request?.userId || 'current user';
         throw DomainErrorFactory.createUserNotFound(errorId);
@@ -33,4 +32,4 @@ export class GetCurrentUserUseCase {
       throw DomainErrorFactory.createUserValidation('Failed to get current user');
     }
   }
-} 
+}

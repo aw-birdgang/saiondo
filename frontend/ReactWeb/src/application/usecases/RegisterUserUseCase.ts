@@ -1,8 +1,7 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User } from '../../domain/dto/UserDto';
-import { UserEntity } from '../../domain/entities/User';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { RegisterUserRequest, RegisterUserResponse } from '../dto/RegisterUserDto';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import {UserEntity} from '../../domain/entities/User';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {RegisterUserRequest, RegisterUserResponse} from '../dto/RegisterUserDto';
 
 export class RegisterUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -71,4 +70,4 @@ export class RegisterUserUseCase {
     // In real implementation, this would create a refresh JWT token
     return `refresh_token_${user.id}_${Date.now()}`;
   }
-} 
+}

@@ -1,7 +1,6 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User } from '../../domain/dto/UserDto';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { UpdateUserRequest, UpdateUserResponse } from '../dto/UpdateUserDto';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {UpdateUserRequest, UpdateUserResponse} from '../dto/UpdateUserDto';
 
 export class UpdateUserUseCase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -21,4 +20,4 @@ export class UpdateUserUseCase {
       throw DomainErrorFactory.createUserValidation('Failed to update user');
     }
   }
-} 
+}

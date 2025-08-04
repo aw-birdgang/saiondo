@@ -1,30 +1,26 @@
-import React, { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useAuthStore } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
-import { useChannelStore } from '../../../stores/channelStore';
-import { useDataLoader } from "../../hooks/useDataLoader";
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent, 
-  CardFooter,
-  Button,
-  TouchFriendlyButton,
-  LoadingSpinner,
-  Skeleton,
+import React, {useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useAuthStore} from '../../../stores/authStore';
+import {useUserStore} from '../../../stores/userStore';
+import {useChannelStore} from '../../../stores/channelStore';
+import {useDataLoader} from "../../hooks/useDataLoader";
+import {
   Badge,
-  StatusBadge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
   CounterBadge,
-  SwipeableCard,
-  SwipeableListItem
+  Skeleton,
+  StatusBadge,
+  SwipeableListItem,
+  TouchFriendlyButton
 } from "../../components/common";
-import { AnimatedCounter, StatCounter } from "../../components/common/AnimatedCounter";
-import { LineChart, BarChart } from "../../components/common/InteractiveChart";
-import { useToastContext } from "../../providers/ToastProvider";
-import { cn } from '../../../utils/cn';
+import {AnimatedCounter} from "../../components/common/AnimatedCounter";
+import {BarChart, LineChart} from "../../components/common/InteractiveChart";
+import {useToastContext} from "../../providers/ToastProvider";
+import {cn} from '../../../utils/cn';
 
 interface StatCardProps {
   title: string;
@@ -39,17 +35,17 @@ interface StatCardProps {
   delay?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ 
-  title, 
-  value, 
-  description, 
-  icon, 
-  trend, 
+const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  description,
+  icon,
+  trend,
   className,
   delay = 0
 }) => (
-  <Card 
-    variant="elevated" 
+  <Card
+    variant="elevated"
     hover="lift"
     className={cn("group", className)}
   >
@@ -60,8 +56,8 @@ const StatCard: React.FC<StatCardProps> = ({
             {title}
           </p>
           <div className="text-3xl font-bold text-txt mt-2">
-            <AnimatedCounter 
-              value={value} 
+            <AnimatedCounter
+              value={value}
               formatNumber={true}
               delay={delay}
               className="group-hover:text-primary transition-colors duration-200"
@@ -76,12 +72,12 @@ const StatCard: React.FC<StatCardProps> = ({
                 "text-sm font-medium flex items-center",
                 trend.isPositive ? "text-green-600" : "text-red-600"
               )}>
-                <svg 
+                <svg
                   className={cn(
                     "w-4 h-4 mr-1 transition-transform duration-200",
                     trend.isPositive ? "rotate-0" : "rotate-180"
                   )}
-                  fill="currentColor" 
+                  fill="currentColor"
                   viewBox="0 0 20 20"
                 >
                   <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd" />
@@ -112,16 +108,16 @@ interface QuickActionProps {
   gradient?: boolean;
 }
 
-const QuickAction: React.FC<QuickActionProps> = ({ 
-  title, 
-  description, 
-  icon, 
-  href, 
+const QuickAction: React.FC<QuickActionProps> = ({
+  title,
+  description,
+  icon,
+  href,
   color,
   badge,
   gradient = false
 }) => (
-  <Card 
+  <Card
     variant={gradient ? "gradient" : "interactive"}
     hover="lift"
     className="cursor-pointer group"
@@ -137,8 +133,8 @@ const QuickAction: React.FC<QuickActionProps> = ({
             {icon}
           </div>
           {badge && (
-            <CounterBadge 
-              count={parseInt(badge)} 
+            <CounterBadge
+              count={parseInt(badge)}
               className="absolute -top-2 -right-2 group-hover:scale-110 transition-transform duration-200"
             />
           )}
@@ -315,8 +311,8 @@ const HomePage: React.FC = () => {
         </div>
         <div className="hidden md:flex items-center space-x-3">
           <StatusBadge status="online" showText={false} />
-          <TouchFriendlyButton 
-            variant="outline" 
+          <TouchFriendlyButton
+            variant="outline"
             size="sm"
             leftIcon={
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,9 +322,9 @@ const HomePage: React.FC = () => {
           >
             새 프로젝트
           </TouchFriendlyButton>
-          <TouchFriendlyButton 
+          <TouchFriendlyButton
             variant="gradient"
-            size="sm" 
+            size="sm"
             onClick={() => toast.info('새로운 기능이 곧 출시됩니다!')}
             pulse
             haptic
@@ -433,8 +429,8 @@ const HomePage: React.FC = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {quickActions.map((action, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               onClick={() => handleQuickAction(action)}
               className="animate-fade-in"
               style={{ animationDelay: `${0.6 + index * 0.1}s` }}

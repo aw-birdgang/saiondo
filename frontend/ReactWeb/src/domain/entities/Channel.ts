@@ -1,13 +1,16 @@
 import type { Channel } from '../dto/ChannelDto';
+import { ChannelType } from '../types/ChannelType';
 
 export class ChannelEntity {
   private constructor(
     private readonly _id: string,
     private readonly _name: string,
     private readonly _description: string | undefined,
-    private readonly _type: 'public' | 'private' | 'direct',
+    private readonly _type: ChannelType,
     private readonly _ownerId: string,
     private readonly _members: string[],
+    private readonly _blockedUsers: string[],
+    private readonly _maxMembers: number,
     private readonly _createdAt: Date,
     private readonly _updatedAt: Date,
     private readonly _lastMessageAt: Date | undefined,
@@ -22,9 +25,11 @@ export class ChannelEntity {
       crypto.randomUUID(),
       channelData.name,
       channelData.description,
-      channelData.type,
+      channelData.type as ChannelType,
       channelData.ownerId,
       channelData.members,
+      channelData.blockedUsers || [],
+      channelData.maxMembers || 100,
       new Date(),
       new Date(),
       channelData.lastMessageAt,
@@ -37,9 +42,11 @@ export class ChannelEntity {
       channelData.id,
       channelData.name,
       channelData.description,
-      channelData.type,
+      channelData.type as ChannelType,
       channelData.ownerId,
       channelData.members,
+      channelData.blockedUsers || [],
+      channelData.maxMembers || 100,
       channelData.createdAt,
       channelData.updatedAt,
       channelData.lastMessageAt,
@@ -84,6 +91,10 @@ export class ChannelEntity {
       throw new Error('User is already a member of this channel');
     }
     
+    if (this.isFull()) {
+      throw new Error('Channel is full');
+    }
+    
     return new ChannelEntity(
       this._id,
       this._name,
@@ -91,6 +102,8 @@ export class ChannelEntity {
       this._type,
       this._ownerId,
       [...this._members, userId],
+      this._blockedUsers,
+      this._maxMembers,
       this._createdAt,
       new Date(),
       this._lastMessageAt,
@@ -114,6 +127,8 @@ export class ChannelEntity {
       this._type,
       this._ownerId,
       this._members.filter(id => id !== userId),
+      this._blockedUsers,
+      this._maxMembers,
       this._createdAt,
       new Date(),
       this._lastMessageAt,
@@ -129,6 +144,8 @@ export class ChannelEntity {
       this._type,
       this._ownerId,
       this._members,
+      this._blockedUsers,
+      this._maxMembers,
       this._createdAt,
       new Date(),
       new Date(),
@@ -144,6 +161,8 @@ export class ChannelEntity {
       this._type,
       this._ownerId,
       this._members,
+      this._blockedUsers,
+      this._maxMembers,
       this._createdAt,
       this._updatedAt,
       this._lastMessageAt,
@@ -159,20 +178,47 @@ export class ChannelEntity {
     return this._ownerId === userId;
   }
 
+  hasUser(userId: string): boolean {
+    return this._members.includes(userId);
+  }
+
+  isUserBlocked(userId: string): boolean {
+    return this._blockedUsers.includes(userId);
+  }
+
+  isFull(): boolean {
+    return this._members.length >= this._maxMembers;
+  }
+
   canJoin(userId: string): boolean {
-    if (this._type === 'private' && !this.isMember(userId)) {
+    if (this._type === ChannelType.DIRECT) {
       return false;
     }
-    return !this.isMember(userId);
+    
+    if (this._members.includes(userId)) {
+      return false;
+    }
+    
+    if (this._blockedUsers.includes(userId)) {
+      return false;
+    }
+    
+    if (this.isFull()) {
+      return false;
+    }
+    
+    return this._type === ChannelType.PUBLIC;
   }
 
   // Getters
   get id(): string { return this._id; }
   get name(): string { return this._name; }
   get description(): string | undefined { return this._description; }
-  get type(): 'public' | 'private' | 'direct' { return this._type; }
+  get type(): ChannelType { return this._type; }
   get ownerId(): string { return this._ownerId; }
   get members(): string[] { return [...this._members]; }
+  get blockedUsers(): string[] { return [...this._blockedUsers]; }
+  get maxMembers(): number { return this._maxMembers; }
   get createdAt(): Date { return this._createdAt; }
   get updatedAt(): Date { return this._updatedAt; }
   get lastMessageAt(): Date | undefined { return this._lastMessageAt; }
@@ -187,6 +233,8 @@ export class ChannelEntity {
       type: this._type,
       ownerId: this._ownerId,
       members: this._members,
+      blockedUsers: this._blockedUsers,
+      maxMembers: this._maxMembers,
       createdAt: this._createdAt,
       updatedAt: this._updatedAt,
       lastMessageAt: this._lastMessageAt,

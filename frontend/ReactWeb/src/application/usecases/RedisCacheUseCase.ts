@@ -1,15 +1,7 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { 
-  RedisCacheRequest,
-  RedisCacheResponse,
-  GetRedisCacheRequest,
-  GetRedisCacheResponse,
-  DeleteRedisCacheRequest,
-  DeleteRedisCacheResponse,
-  RedisCacheStats
-} from '../dto/RedisCacheDto';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import type {RedisCacheStats} from '../dto/RedisCacheDto';
 
 export class RedisCacheUseCase {
   private redisClient: any; // Redis client instance
@@ -37,7 +29,7 @@ export class RedisCacheUseCase {
   async getUserWithCache(userId: string): Promise<any> {
     try {
       const cacheKey = `user:${userId}`;
-      
+
       // Try to get from Redis cache
       const cached = await this.getFromCache(cacheKey);
       if (cached) {
@@ -49,7 +41,7 @@ export class RedisCacheUseCase {
       if (user) {
         await this.setCache(cacheKey, user.toJSON());
       }
-      
+
       return user;
     } catch (error) {
       console.error('Failed to get user with cache:', error);
@@ -60,7 +52,7 @@ export class RedisCacheUseCase {
   async getChannelWithCache(channelId: string): Promise<any> {
     try {
       const cacheKey = `channel:${channelId}`;
-      
+
       // Try to get from Redis cache
       const cached = await this.getFromCache(cacheKey);
       if (cached) {
@@ -72,7 +64,7 @@ export class RedisCacheUseCase {
       if (channel) {
         await this.setCache(cacheKey, channel.toJSON());
       }
-      
+
       return channel;
     } catch (error) {
       console.error('Failed to get channel with cache:', error);
@@ -83,7 +75,7 @@ export class RedisCacheUseCase {
   async getMessagesWithCache(channelId: string, limit?: number, offset?: number): Promise<any[]> {
     try {
       const cacheKey = `messages:${channelId}:${limit}:${offset}`;
-      
+
       // Try to get from Redis cache
       const cached = await this.getFromCache(cacheKey);
       if (cached) {
@@ -93,9 +85,9 @@ export class RedisCacheUseCase {
       // If not in cache, fetch from repository
       const messages = await this.messageRepository.findByChannelId(channelId, limit, offset);
       const messageData = messages.map(message => message.toJSON());
-      
+
       await this.setCache(cacheKey, messageData, 2 * 60); // 2 minutes TTL for messages
-      
+
       return messageData;
     } catch (error) {
       console.error('Failed to get messages with cache:', error);
@@ -116,7 +108,7 @@ export class RedisCacheUseCase {
     try {
       const cacheKey = `channel:${channelId}`;
       await this.deleteFromCache(cacheKey);
-      
+
       // Also invalidate related message caches
       await this.invalidateMessageCaches(channelId);
     } catch (error) {
@@ -171,14 +163,14 @@ export class RedisCacheUseCase {
   async warmupCache(userIds: string[], channelIds: string[]): Promise<void> {
     try {
       // Pre-load frequently accessed data into cache
-      const userPromises = userIds.map(userId => 
+      const userPromises = userIds.map(userId =>
         this.getUserWithCache(userId).catch(() => null)
       );
-      
-      const channelPromises = channelIds.map(channelId => 
+
+      const channelPromises = channelIds.map(channelId =>
         this.getChannelWithCache(channelId).catch(() => null)
       );
-      
+
       await Promise.all([...userPromises, ...channelPromises]);
       console.log(`Cache warmup completed. Users: ${userIds.length}, Channels: ${channelIds.length}`);
     } catch (error) {
@@ -218,7 +210,7 @@ export class RedisCacheUseCase {
 
   async batchGetUsers(userIds: string[]): Promise<Map<string, any>> {
     const result = new Map<string, any>();
-    
+
     try {
       // In a real implementation, you would use Redis MGET for better performance
       for (const userId of userIds) {
@@ -230,7 +222,7 @@ export class RedisCacheUseCase {
     } catch (error) {
       console.error('Failed to batch get users:', error);
     }
-    
+
     return result;
   }
-} 
+}

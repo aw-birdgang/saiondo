@@ -1,13 +1,7 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { 
-  NotificationRequest, 
-  NotificationResponse, 
-  NotificationSettings,
-  UpdateNotificationSettingsRequest,
-  UpdateNotificationSettingsResponse 
-} from '../dto/NotificationDto';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {NotificationRequest, NotificationResponse, NotificationSettings} from '../dto/NotificationDto';
 
 export class NotificationUseCase {
   constructor(
@@ -203,4 +197,4 @@ export class NotificationUseCase {
     // In real implementation, this would send in-app notification
     console.log(`Sending in-app notification ${notificationId} to user ${request.userId}: ${request.title}`);
   }
-} 
+}

@@ -1,8 +1,7 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { Channel } from '../../domain/dto/ChannelDto';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { LeaveChannelRequest, LeaveChannelResponse } from '../dto/LeaveChannelDto';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {LeaveChannelRequest, LeaveChannelResponse} from '../dto/LeaveChannelDto';
 
 export class LeaveChannelUseCase {
   constructor(
@@ -52,4 +51,4 @@ export class LeaveChannelUseCase {
       throw DomainErrorFactory.createChannelValidation('Failed to leave channel');
     }
   }
-} 
+}

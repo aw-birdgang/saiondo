@@ -1,0 +1,109 @@
+@startuml ReactWeb Clean Architecture
+
+skinparam backgroundColor #FFFFFF
+skinparam package {
+    BackgroundColor #E9ECEF
+    BorderColor #6C757D
+}
+
+title ReactWeb - 완전한 클린 아키텍처 구조
+
+package "Presentation Layer" as Presentation {
+    class "React Components" as Components
+    class "Zustand Stores" as Stores
+    class "React Contexts" as Contexts
+    class "Custom Hooks" as Hooks
+    class "Route Guards" as RouteGuards
+    class "Error Boundaries" as ErrorBoundaries
+}
+
+package "Application Layer" as Application {
+    class "Use Cases" as UseCases
+    class "Controllers" as Controllers
+    class "Services" as Services
+    class "DTOs" as DTOs
+    class "Use Case Factory" as UseCaseFactory
+}
+
+package "Domain Layer" as Domain {
+    class "Entities" as Entities
+    class "Value Objects" as ValueObjects
+    class "Repository Interfaces" as RepoInterfaces
+    class "Domain Services" as DomainServices
+    class "Domain Events" as DomainEvents
+    class "Domain Errors" as DomainErrors
+}
+
+package "Infrastructure Layer" as Infrastructure {
+    class "API Client" as APIClient
+    class "Repository Impl" as RepoImpl
+    class "WebSocket" as WebSocket
+    class "Local Storage" as LocalStorage
+    class "Session Storage" as SessionStorage
+    class "IndexedDB" as IndexedDB
+    class "Cache Service" as CacheService
+}
+
+package "Shared" as Shared {
+    class "Constants" as Constants
+    class "Types" as Types
+    class "Utils" as Utils
+    class "Validators" as Validators
+}
+
+package "Dependency Injection" as DI {
+    class "Container" as Container
+    class "Tokens" as Tokens
+    class "Provider" as Provider
+}
+
+' 핵심 의존성 관계 (클린 아키텍처 원칙)
+Presentation --> Application : depends on
+Application --> Domain : depends on
+Infrastructure --> Domain : implements
+
+' Shared Layer (모든 계층에서 사용)
+Presentation --> Shared : uses
+Application --> Shared : uses
+Domain --> Shared : uses
+Infrastructure --> Shared : uses
+
+' DI Container 관계
+Presentation --> DI : uses
+Application --> DI : uses
+Infrastructure --> DI : uses
+
+' 주요 구현 관계
+RepoImpl ..|> RepoInterfaces : implements
+UseCases --> RepoInterfaces : uses
+Controllers --> UseCases : uses
+Components --> Hooks : uses
+Hooks --> Stores : uses
+
+' Use Case Factory 관계
+UseCaseFactory --> UseCases : creates
+Controllers --> UseCaseFactory : uses
+
+' 상태 관리 관계
+Stores --> Contexts : provides state
+Hooks --> Contexts : uses
+
+' 에러 처리 관계
+ErrorBoundaries --> DomainErrors : handles
+UseCases --> DomainErrors : throws
+
+' 데이터 영속성 관계
+Infrastructure --> LocalStorage : uses
+Infrastructure --> SessionStorage : uses
+Infrastructure --> IndexedDB : uses
+Infrastructure --> CacheService : uses
+
+' 도메인 서비스 관계
+UseCases --> DomainServices : uses
+Entities --> DomainServices : uses
+
+' 도메인 이벤트 관계
+DomainEvents --> UseCases : triggers
+UseCases --> DomainEvents : publishes
+
+@enduml 

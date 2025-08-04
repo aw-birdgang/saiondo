@@ -1,0 +1,63 @@
+@startuml ReactWeb Data Flow Sequence
+
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+    ArrowColor #1976D2
+    ParticipantBackgroundColor #E3F2FD
+}
+
+title ReactWeb - 데이터 흐름
+
+actor User as U
+participant "Component" as RC
+participant "Hook" as CH
+participant "Store" as ZS
+participant "Use Case" as UC
+participant "Repository" as Repo
+participant "API" as API
+participant "Backend" as Backend
+
+== 사용자 인증 플로우 ==
+
+U -> RC : 로그인 요청
+RC -> CH : useAuth() 호출
+CH -> UC : AuthenticateUserUseCase.execute()
+UC -> Repo : userRepository.authenticate()
+Repo -> API : apiClient.post('/auth/login')
+API -> Backend : HTTP POST
+Backend --> API : JWT 토큰
+API --> Repo : 응답 데이터
+Repo --> UC : 인증 결과
+UC --> CH : 인증 성공/실패
+CH -> ZS : authStore.setUser(user)
+CH --> RC : 인증 결과 반환
+RC -> U : 로그인 성공/실패 메시지
+
+== 메시지 전송 플로우 ==
+
+U -> RC : 메시지 전송
+RC -> CH : useMessage() 호출
+CH -> UC : SendMessageUseCase.execute()
+UC -> Repo : messageRepository.send()
+Repo -> API : apiClient.post('/messages')
+API -> Backend : HTTP POST
+Backend --> API : 메시지 저장 완료
+API --> Repo : 메시지 데이터
+Repo --> UC : 메시지 전송 결과
+UC --> CH : 메시지 전송 성공/실패
+CH -> ZS : messageStore.addMessage(message)
+CH --> RC : 메시지 전송 완료
+RC -> U : 메시지 전송 성공 표시
+
+== 실시간 메시지 수신 플로우 ==
+
+Backend -> API : WebSocket 메시지
+API -> Repo : websocketClient.onMessage()
+Repo -> UC : WebSocketUseCase.handleMessage()
+UC -> ZS : messageStore.addMessage(message)
+UC --> Repo : 메시지 처리 완료
+Repo --> API : 메시지 처리 완료
+API -> RC : React 컴포넌트 업데이트
+RC -> U : 새 메시지 표시
+
+@enduml 

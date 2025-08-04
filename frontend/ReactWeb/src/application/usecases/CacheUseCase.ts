@@ -1,15 +1,7 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { 
-  CacheRequest, 
-  CacheResponse, 
-  GetCacheRequest, 
-  GetCacheResponse, 
-  DeleteCacheRequest, 
-  DeleteCacheResponse, 
-  CacheStats 
-} from '../dto/CacheDto';
+import type {IUserRepository} from '../../domain/repositories/IUserRepository';
+import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
+import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import type {CacheStats} from '../dto/CacheDto';
 
 export class CacheUseCase {
   private cache = new Map<string, any>();
@@ -27,7 +19,7 @@ export class CacheUseCase {
 
   async getUserWithCache(userId: string): Promise<any> {
     const cacheKey = this.generateCacheKey({ type: 'user', id: userId });
-    
+
     // Try to get from cache first
     const cached = this.getFromCache(cacheKey);
     if (cached) {
@@ -39,13 +31,13 @@ export class CacheUseCase {
     if (user) {
       this.setCache(cacheKey, user.toJSON());
     }
-    
+
     return user;
   }
 
   async getChannelWithCache(channelId: string): Promise<any> {
     const cacheKey = this.generateCacheKey({ type: 'channel', id: channelId });
-    
+
     // Try to get from cache first
     const cached = this.getFromCache(cacheKey);
     if (cached) {
@@ -57,17 +49,17 @@ export class CacheUseCase {
     if (channel) {
       this.setCache(cacheKey, channel.toJSON());
     }
-    
+
     return channel;
   }
 
   async getMessagesWithCache(channelId: string, limit?: number, offset?: number): Promise<any[]> {
-    const cacheKey = this.generateCacheKey({ 
-      type: 'message', 
-      id: channelId, 
-      subKey: `limit_${limit}_offset_${offset}` 
+    const cacheKey = this.generateCacheKey({
+      type: 'message',
+      id: channelId,
+      subKey: `limit_${limit}_offset_${offset}`
     });
-    
+
     // Try to get from cache first
     const cached = this.getFromCache<any[]>(cacheKey);
     if (cached) {
@@ -77,9 +69,9 @@ export class CacheUseCase {
     // If not in cache, fetch from repository
     const messages = await this.messageRepository.findByChannelId(channelId, limit, offset);
     const messageData = messages.map(message => message.toJSON());
-    
+
     this.setCache(cacheKey, messageData, 2 * 60 * 1000); // 2 minutes TTL for messages
-    
+
     return messageData;
   }
 
@@ -100,7 +92,7 @@ export class CacheUseCase {
   }
 
   async getCacheStats(): Promise<CacheStats> {
-    return { 
+    return {
       ...this.stats,
       totalKeys: this.cache.size,
       memoryUsage: 0,
@@ -212,4 +204,4 @@ export class CacheUseCase {
 
     return result;
   }
-} 
+}

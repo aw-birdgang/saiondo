@@ -1,7 +1,6 @@
-import type { IChannelRepository, IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { Message } from '../../domain/dto/MessageDto';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { SearchMessagesRequest, SearchMessagesResponse } from '../dto/SearchMessagesDto';
+import type {IChannelRepository, IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import {DomainErrorFactory} from '../../domain/errors/DomainError';
+import type {SearchMessagesRequest, SearchMessagesResponse} from '../dto/SearchMessagesDto';
 
 export class SearchMessagesUseCase {
   constructor(
@@ -52,4 +51,4 @@ export class SearchMessagesUseCase {
       throw DomainErrorFactory.createMessageValidation('Failed to search messages');
     }
   }
-} 
+}

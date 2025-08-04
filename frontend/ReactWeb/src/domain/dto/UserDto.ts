@@ -9,6 +9,12 @@ export interface User {
   displayName?: string;
   avatar?: string;
   isOnline: boolean;
+  status?: string;
+  roles?: string[];
+  permissions?: string[];
+  friends?: string[];
+  createdChannelsCount?: number;
+  maxChannelsAllowed?: number;
   createdAt: Date;
   updatedAt: Date;
   lastSeenAt?: Date;
