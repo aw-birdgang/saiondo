@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { LoadingSpinner } from '../../components/common';
 import { ErrorState } from '../../components/specific';
 import {
@@ -11,6 +11,7 @@ import { useSettingsData } from './hooks/useSettingsData';
 
 const SettingsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('general');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const {
     // 상태
@@ -24,8 +25,25 @@ const SettingsPage: React.FC = () => {
     updateSetting,
     handleSave,
     handleReset,
-    loadSettings
+    loadSettings,
+    exportSettings,
+    importSettings
   } = useSettingsData();
+
+  // 파일 업로드 처리
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      importSettings(file);
+      // 파일 입력 초기화
+      event.target.value = '';
+    }
+  };
+
+  // 파일 선택 다이얼로그 열기
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -43,6 +61,15 @@ const SettingsPage: React.FC = () => {
 
   return (
     <SettingsContainer>
+      {/* 숨겨진 파일 입력 */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        onChange={handleFileUpload}
+        style={{ display: 'none' }}
+      />
+      
       {/* 헤더 */}
       <div className="w-full flex flex-col">
         <SettingsHeader
@@ -62,6 +89,8 @@ const SettingsPage: React.FC = () => {
             activeSection={activeSection}
             settings={settings}
             onSettingChange={updateSetting}
+            onExportSettings={exportSettings}
+            onImportSettings={handleImportClick}
           />
         </div>
       </div>

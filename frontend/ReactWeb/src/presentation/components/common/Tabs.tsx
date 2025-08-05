@@ -1,80 +1,93 @@
-import React from 'react';
+import React, { useState } from 'react';
+import type { ReactNode } from 'react';
+import { cn } from '../../../utils/cn';
 
 interface Tab {
-  id: string;
+  key: string;
   label: string;
-  icon?: string;
+  count?: number;
   disabled?: boolean;
 }
 
 interface TabsProps {
   tabs: Tab[];
   activeTab: string;
-  onTabChange: (tabId: string) => void;
-  variant?: 'default' | 'pills' | 'underline';
+  onTabChange: (tabKey: string) => void;
   className?: string;
+  variant?: 'default' | 'pills' | 'underline';
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const Tabs: React.FC<TabsProps> = ({
   tabs,
   activeTab,
   onTabChange,
+  className,
   variant = 'default',
-  className = ''
+  size = 'md'
 }) => {
-  const getVariantClasses = () => {
-    switch (variant) {
-      case 'pills':
-        return {
-          container: 'flex space-x-1 bg-secondary p-1 rounded-lg',
-          tab: 'flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200',
-          active: 'bg-surface text-primary shadow-sm',
-          inactive: 'text-txt-secondary hover:text-txt hover:bg-secondary/50',
-          disabled: 'text-txt-secondary/50 cursor-not-allowed'
-        };
-      case 'underline':
-        return {
-          container: 'border-b border-border',
-          tab: 'px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200',
-          active: 'border-primary text-primary',
-          inactive: 'border-transparent text-txt-secondary hover:text-txt hover:border-border',
-          disabled: 'text-txt-secondary/50 cursor-not-allowed border-transparent'
-        };
-      default:
-        return {
-          container: 'flex space-x-8',
-          tab: 'px-1 py-3 text-sm font-medium border-b-2 transition-all duration-200',
-          active: 'border-primary text-primary',
-          inactive: 'border-transparent text-txt-secondary hover:text-txt hover:border-border',
-          disabled: 'text-txt-secondary/50 cursor-not-allowed border-transparent'
-        };
-    }
+  const getTabClasses = (tab: Tab, isActive: boolean) => {
+    const baseClasses = 'flex items-center space-x-2 px-4 py-2 rounded-md transition-colors duration-200 font-medium';
+    
+    const sizeClasses = {
+      sm: 'text-sm px-3 py-1.5',
+      md: 'text-base px-4 py-2',
+      lg: 'text-lg px-6 py-3'
+    };
+
+    const variantClasses = {
+      default: cn(
+        baseClasses,
+        isActive
+          ? 'bg-blue-100 text-blue-700 border border-blue-200'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
+        tab.disabled && 'opacity-50 cursor-not-allowed'
+      ),
+      pills: cn(
+        baseClasses,
+        isActive
+          ? 'bg-blue-600 text-white'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
+        tab.disabled && 'opacity-50 cursor-not-allowed'
+      ),
+      underline: cn(
+        'flex items-center space-x-2 px-4 py-2 border-b-2 transition-colors duration-200 font-medium',
+        isActive
+          ? 'border-blue-600 text-blue-600'
+          : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300',
+        tab.disabled && 'opacity-50 cursor-not-allowed'
+      )
+    };
+
+    return cn(
+      sizeClasses[size],
+      variantClasses[variant]
+    );
   };
 
-  const classes = getVariantClasses();
-
   return (
-    <div className={`${classes.container} ${className}`}>
+    <div className={cn('flex space-x-1', className)}>
       {tabs.map((tab) => {
-        const isActive = activeTab === tab.id;
-        const isDisabled = tab.disabled;
+        const isActive = activeTab === tab.key;
         
         return (
           <button
-            key={tab.id}
-            onClick={() => !isDisabled && onTabChange(tab.id)}
-            disabled={isDisabled}
-            className={`
-              ${classes.tab}
-              ${isActive ? classes.active : ''}
-              ${!isActive && !isDisabled ? classes.inactive : ''}
-              ${isDisabled ? classes.disabled : ''}
-            `}
+            key={tab.key}
+            onClick={() => !tab.disabled && onTabChange(tab.key)}
+            className={getTabClasses(tab, isActive)}
+            disabled={tab.disabled}
           >
-            <div className="flex items-center space-x-2">
-              {tab.icon && <span className="text-lg">{tab.icon}</span>}
-              <span>{tab.label}</span>
-            </div>
+            <span>{tab.label}</span>
+            {tab.count !== undefined && (
+              <span className={cn(
+                'inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full',
+                isActive
+                  ? variant === 'pills' ? 'bg-blue-100 text-blue-700' : 'bg-blue-600 text-white'
+                  : 'bg-gray-200 text-gray-700'
+              )}>
+                {tab.count}
+              </span>
+            )}
           </button>
         );
       })}

@@ -13,8 +13,8 @@ const EmptyChannelState: React.FC<EmptyChannelStateProps> = ({
   return (
     <EmptyState
       icon="💬"
-      title={t('no_channels') || '채널이 없습니다'}
-      description={t('create_first_channel') || '첫 번째 채널을 만들어보세요!'}
+      title={t('channels.no_channels') || '채널이 없습니다'}
+      description={t('channels.no_channels_description') || '첫 번째 채널을 만들어보세요!'}
       className={cn("", className)}
       action={
         <Button
@@ -22,7 +22,7 @@ const EmptyChannelState: React.FC<EmptyChannelStateProps> = ({
           onClick={onCreateChannel}
           leftIcon="➕"
         >
-          {t('create_new_channel') || '새 채널 만들기'}
+          {t('channels.create_new_channel') || '새 채널 만들기'}
         </Button>
       }
     />

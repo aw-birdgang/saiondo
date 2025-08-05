@@ -16,6 +16,8 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
   activeSection,
   settings,
   onSettingChange,
+  onExportSettings,
+  onImportSettings,
   className
 }) => {
   if (!settings) {
@@ -216,6 +218,27 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
         <button className="mt-3 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
           계정 관리로 이동
         </button>
+      </div>
+      
+      <div className="mt-6 p-4 border border-border rounded-lg">
+        <h3 className="font-medium text-txt mb-3">설정 백업 및 복원</h3>
+        <p className="text-sm text-txt-secondary mb-4">
+          설정을 JSON 파일로 내보내거나 가져올 수 있습니다.
+        </p>
+        <div className="flex space-x-3">
+          <button
+            onClick={onExportSettings}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            설정 내보내기
+          </button>
+          <button
+            onClick={onImportSettings}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            설정 가져오기
+          </button>
+        </div>
       </div>
     </SettingsSection>
   );

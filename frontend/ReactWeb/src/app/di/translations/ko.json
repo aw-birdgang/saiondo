@@ -170,7 +170,14 @@
     "quick_login_lee": "이 사용자로 로그인",
     "login_required": "로그인이 필요합니다",
     "login": "로그인",
-    "quick_login_description": "테스트 계정으로 빠르게 로그인"
+    "quick_login_description": "테스트 계정으로 빠르게 로그인",
+    "enter_name": "이름을 입력해주세요",
+    "name_min_length": "이름은 2자 이상이어야 합니다",
+    "enter_confirm_password": "비밀번호 확인을 입력해주세요",
+    "select_gender": "성별을 선택해주세요",
+    "create_account": "계정 만들기",
+    "sign_in_to_existing_account": "기존 계정으로 로그인",
+    "name": "이름"
   },
   "navigation": {
     "home": "홈",
@@ -197,6 +204,8 @@
     "pricing": "가격",
     "quick_actions": "빠른 작업"
   },
+  "welcome_title": "Saiondo에 오신 것을 환영합니다",
+  "welcome_message": "AI 상담사와 함께 더 나은 관계를 만들어보세요",
   "dashboard": {
     "overview": "개요",
     "stats": "통계",
@@ -244,7 +253,10 @@
     "no_channels_description": "첫 번째 채널을 만들어보세요!",
     "create_first_channel": "첫 번째 채널 만들기",
     "channel_info": "채널 정보",
-    "channel_stats": "채널 통계"
+    "channel_stats": "채널 통계",
+    "my_channels": "내 채널",
+    "create_new_channel": "새 채널 만들기",
+    "channel_description": "나만의 대화 채널을 만들어보세요"
   },
   "invitations": {
     "title": "초대",
@@ -266,7 +278,9 @@
     "profile_description": "프로필 정보를 관리하세요",
     "settings_description": "앱 설정을 관리하세요",
     "chat_description": "채팅 기능을 사용하세요",
-    "channels_description": "채널을 관리하세요"
+    "channels_description": "채널을 관리하세요",
+    "user": "사용자",
+    "view_profile": "프로필 보기"
   },
   "errors": {
     "general": "오류가 발생했습니다",
@@ -348,6 +362,13 @@
   "calendar_description": "일정 관리하기",
   "total_chats": "총 대화",
   "total_chats_description": "전체 대화 수",
+  "active_channels": "활성 채널",
+  "active_channels_description": "활성 채널 수",
+  "unread_messages": "읽지 않은 메시지",
+  "unread_messages_description": "새로운 메시지",
+  "last_activity": "마지막 활동",
+  "last_activity_description": "최근 활동 시간",
+  "recent_activity": "최근 활동",
   "member_since": "가입일",
   "app": {
     "name": "Saiondo"

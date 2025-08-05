@@ -11,7 +11,8 @@ import {
   ProfileFollowers,
   ProfileFollowing
 } from '../../components/specific/profile';
-import { LoadingState, ErrorState } from '../../components/common';
+import { LoadingState } from '../../components/common';
+import { ErrorState } from '../../components/specific';
 
 const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
@@ -101,7 +102,7 @@ const ProfilePage: React.FC = () => {
                   ].map((tab) => (
                     <button
                       key={tab.key}
-                      onClick={() => handleTabChange(tab.key)}
+                      onClick={() => handleTabChange(tab.key as 'posts' | 'followers' | 'following')}
                       className={`py-4 px-1 border-b-2 font-medium text-sm ${
                         activeTab === tab.key
                           ? 'border-blue-500 text-blue-600'

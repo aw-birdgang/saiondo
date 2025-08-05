@@ -12,10 +12,10 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({
   return (
     <div className={`mb-8 ${className}`}>
       <h2 className="text-2xl font-bold text-txt mb-3 leading-tight">
-        {t('my_channels') || '내 채널'}
+        {t('channels.my_channels') || '내 채널'}
       </h2>
       <p className="text-txt-secondary mb-6 leading-relaxed">
-        {t('channel_description') || '나만의 대화 채널을 만들어보세요'}
+        {t('channels.channel_description') || '나만의 대화 채널을 만들어보세요'}
       </p>
       
       <Button
@@ -24,7 +24,7 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({
         onClick={onCreateChannel}
         leftIcon="➕"
       >
-        {t('create_new_channel') || '새 채널 만들기'}
+        {t('channels.create_new_channel') || '새 채널 만들기'}
       </Button>
     </div>
   );

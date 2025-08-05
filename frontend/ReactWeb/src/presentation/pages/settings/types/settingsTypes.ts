@@ -123,5 +123,7 @@ export interface SettingsContentProps {
   activeSection: string;
   settings: UserSettings | null;
   onSettingChange: (key: string, value: any) => void;
+  onExportSettings?: () => void;
+  onImportSettings?: () => void;
   className?: string;
 } 

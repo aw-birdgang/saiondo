@@ -57,7 +57,7 @@ const ChannelStats: React.FC<ChannelStatsProps> = ({
   return (
     <Stack spacing="lg" className={className}>
       <h3 className="text-xl font-bold text-txt leading-tight">
-        {t('channel_stats') || '채널 통계'}
+        {t('channels.channel_stats') || '채널 통계'}
       </h3>
       
       <Grid cols={{ sm: 1, md: 2, lg: 3 }} gap="lg">
