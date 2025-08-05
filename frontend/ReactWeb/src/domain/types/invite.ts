@@ -5,6 +5,7 @@ export interface ChannelInvitationItem {
   channelId: string;
   status: 'pending' | 'accepted' | 'rejected';
   createdAt: Date;
+  expiresAt: Date;
   inviterName?: string;
   channelName?: string;
 }
@@ -19,6 +20,7 @@ export interface InviteState {
 }
 
 export interface InviteRequest {
+  senderId: string;
   partnerEmail: string;
   channelId?: string;
   message?: string;
@@ -53,4 +55,9 @@ export interface InviteStats {
   pendingInvitations: number;
   acceptedInvitations: number;
   rejectedInvitations: number;
+  totalSent: number;
+  accepted: number;
+  todaySent: number;
+  acceptanceRate?: number;
+  averageResponseTime?: number;
 } 
