@@ -16,10 +16,9 @@ import {
   QuickActionsSection,
   StatsGrid,
   SystemStatusSection,
-  WelcomeSection,
+  DashboardHeader,
   SearchSection,
-  AIInfoWidget,
-  ProfileQuickAccess
+  AIInfoWidget
 } from "../../components/specific/home";
 import {useHomeData} from "./hooks/useHomeData";
 
@@ -30,7 +29,6 @@ const HomePage: React.FC = () => {
   const { user } = useAuthStore();
   const { loading, fetchCurrentUser } = useUserStore();
   const { channels, fetchChannelsByUserId } = useChannelStore();
-  const [greeting, setGreeting] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const toast = useToastContext();
@@ -47,18 +45,6 @@ const HomePage: React.FC = () => {
     isLoading: dataLoading,
     refreshData
   } = useHomeData();
-
-  // Set greeting based on time of day
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      setGreeting('좋은 아침입니다');
-    } else if (hour < 18) {
-      setGreeting('좋은 오후입니다');
-    } else {
-      setGreeting('좋은 저녁입니다');
-    }
-  }, []);
 
   // Animation trigger
   useEffect(() => {
@@ -98,15 +84,6 @@ const HomePage: React.FC = () => {
 
     loadSearchSuggestions();
   }, []);
-
-  // Event handlers
-  const handleNewProject = () => {
-    toast.info('새 프로젝트 기능이 곧 출시됩니다!');
-  };
-
-  const handleGetStarted = () => {
-    toast.info('새로운 기능이 곧 출시됩니다!');
-  };
 
   const handleQuickAction = (action: any) => {
     if (action.title === 'AI 어시스턴트 선택') {
@@ -152,14 +129,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <HomeContainer isVisible={isVisible}>
-        <WelcomeSection
-          greeting={greeting}
-          userName={user?.name || '사용자'}
-          onNewProject={handleNewProject}
-          onGetStarted={handleGetStarted}
-        />
-
-        <ProfileQuickAccess className="mb-6" />
+        <DashboardHeader />
 
         <SearchSection
           onSearch={handleSearch}

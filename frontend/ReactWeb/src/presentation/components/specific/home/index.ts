@@ -1,4 +1,4 @@
-export { default as WelcomeSection } from './WelcomeSection';
+export { default as DashboardHeader } from './DashboardHeader';
 export { default as StatsGrid } from './StatsGrid';
 export { default as ChartsSection } from './ChartsSection';
 export { default as QuickActionsSection } from './QuickActionsSection';
@@ -8,5 +8,7 @@ export { default as HomeLoadingState } from './LoadingState';
 export { default as HomeContainer } from './HomeContainer';
 export { default as SearchSection } from './SearchSection';
 export { default as AIInfoWidget } from './AIInfoWidget';
-export { default as ProfileQuickAccess } from './ProfileQuickAccess';
+export { default as UserProfileSection } from './UserProfileSection';
+export { default as ActionButtons } from './ActionButtons';
+export { default as BackgroundPattern } from './BackgroundPattern';
 export * from './IconComponents'; 

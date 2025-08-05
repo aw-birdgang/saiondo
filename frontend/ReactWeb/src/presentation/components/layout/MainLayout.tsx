@@ -7,17 +7,20 @@ import { cn } from '../../../utils/cn';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import { SearchInput } from '../search';
 
 interface NavItem {
   name: string;
   href: string;
   icon: React.ReactNode;
   description?: string;
+  badge?: number;
 }
 
 export const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const isTablet = useMediaQuery('(max-width: 1024px)');
@@ -44,11 +47,12 @@ export const MainLayout: React.FC = () => {
 
   const navItems: NavItem[] = [
     { 
-      name: 'Home', 
+      name: 'Dashboard', 
       href: '/', 
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
         </svg>
       ),
       description: '메인 대시보드'
@@ -61,7 +65,8 @@ export const MainLayout: React.FC = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
       ),
-      description: '실시간 채팅'
+      description: '실시간 채팅',
+      badge: 3
     },
     { 
       name: 'Channels', 
@@ -74,7 +79,7 @@ export const MainLayout: React.FC = () => {
       description: '채널 관리'
     },
     { 
-      name: 'Assistant', 
+      name: 'AI Assistant', 
       href: '/assistant', 
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +89,7 @@ export const MainLayout: React.FC = () => {
       description: 'AI 어시스턴트'
     },
     { 
-      name: 'Analysis', 
+      name: 'Analytics', 
       href: '/analysis', 
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,65 +109,71 @@ export const MainLayout: React.FC = () => {
       description: '일정 관리'
     },
     { 
-      name: 'My Page', 
-      href: '/mypage', 
+      name: 'Settings', 
+      href: '/settings', 
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       ),
-      description: '내 정보 관리'
-    },
-    { 
-      name: 'Profile', 
-      href: '/profile/me', 
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      ),
-      description: '프로필 상세 보기'
+      description: '설정'
     },
   ];
 
-  // 네비게이션 그룹 예시
+  // 네비게이션 그룹
   const navGroups = [
     {
-      label: '메인',
+      label: 'Main',
       items: [
-        navItems[0], // Home
+        navItems[0], // Dashboard
         navItems[1], // Chat
         navItems[2], // Channels
       ],
     },
     {
-      label: 'AI/분석',
+      label: 'Tools',
       items: [
-        navItems[3], // Assistant
-        navItems[4], // Analysis
+        navItems[3], // AI Assistant
+        navItems[4], // Analytics
         navItems[5], // Calendar
       ],
     },
     {
-      label: '내 정보',
+      label: 'System',
       items: [
-        navItems[6], // My Page
-        navItems[7], // Profile
+        navItems[6], // Settings
       ],
     },
   ];
 
   // 모바일 하단 네비게이션 아이템
   const mobileNavItems = [
-    { name: '홈', href: '/', icon: navItems[0].icon },
-    { name: '채팅', href: '/chat', icon: navItems[1].icon },
-    { name: '채널', href: '/channels', icon: navItems[2].icon },
+    { name: 'Dashboard', href: '/', icon: navItems[0].icon },
+    { name: 'Chat', href: '/chat', icon: navItems[1].icon, badge: navItems[1].badge },
+    { name: 'Channels', href: '/channels', icon: navItems[2].icon },
     { name: 'AI', href: '/assistant', icon: navItems[3].icon },
-    { name: '내정보', href: '/mypage', icon: navItems[6].icon },
+    { name: 'Settings', href: '/settings', icon: navItems[6].icon },
   ];
 
+  // 브레드크럼 생성
+  const getBreadcrumbs = () => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    const breadcrumbs = [{ name: 'Dashboard', href: '/' }];
+    
+    pathSegments.forEach((segment, index) => {
+      const href = '/' + pathSegments.slice(0, index + 1).join('/');
+      const name = segment.charAt(0).toUpperCase() + segment.slice(1);
+      breadcrumbs.push({ name, href });
+    });
+    
+    return breadcrumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+
   return (
-    <div className="flex h-screen bg-bg">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       {/* Desktop Sidebar */}
       {!isMobile && (
         <div 
@@ -170,22 +181,21 @@ export const MainLayout: React.FC = () => {
             'fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0',
             sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           )}
-          style={{ backgroundColor: 'var(--color-surface)' }}
         >
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
             {/* Sidebar Header */}
-            <div className="flex items-center justify-between h-16 px-6 border-b border-border">
+            <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-on-primary font-bold text-sm">S</span>
+                <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-sm">S</span>
                 </div>
-                <h1 className="text-xl font-bold text-txt">Saiondo</h1>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Saiondo</h1>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden"
+                className="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -197,7 +207,7 @@ export const MainLayout: React.FC = () => {
             <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
               {navGroups.map((group, gi) => (
                 <div key={group.label}>
-                  <div className="text-xs font-bold text-txt-secondary mb-2 px-2 tracking-widest uppercase">
+                  <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 px-2 tracking-widest uppercase">
                     {group.label}
                   </div>
                   <div className="space-y-1">
@@ -208,28 +218,34 @@ export const MainLayout: React.FC = () => {
                           <Link
                             to={item.href}
                             className={cn(
-                              'flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200 relative overflow-hidden',
+                              'flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 relative overflow-hidden',
                               isActive 
-                                ? 'bg-primary text-on-primary shadow-lg ring-2 ring-primary' 
-                                : 'text-txt hover:bg-focus hover:text-primary'
+                                ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg' 
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
                             )}
                             title={item.description}
                           >
                             <span className={cn(
                               'mr-3 transition-colors duration-200',
-                              isActive ? 'text-on-primary' : 'text-txt-secondary group-hover:text-primary'
+                              isActive ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-red-500 dark:group-hover:text-red-400'
                             )}>
                               {item.icon}
                             </span>
                             <span className="flex-1">{item.name}</span>
+                            {item.badge && (
+                              <span className={cn(
+                                "inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full",
+                                isActive 
+                                  ? "bg-white/20 text-white" 
+                                  : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                              )}>
+                                {item.badge}
+                              </span>
+                            )}
                             {isActive && (
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse pointer-events-none" />
                             )}
                           </Link>
-                          {/* 툴팁 */}
-                          <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 hidden group-hover:block bg-txt text-on-primary text-xs rounded px-2 py-1 shadow-lg z-10">
-                            {item.description}
-                          </span>
                         </div>
                       );
                     })}
@@ -239,26 +255,26 @@ export const MainLayout: React.FC = () => {
             </nav>
 
             {/* Sidebar Footer - 프로필/설정/로그아웃 */}
-            <div className="p-4 border-t border-border">
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <Menu as="div" className="relative inline-block w-full text-left">
                 <div>
-                  <Menu.Button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-focus transition-colors">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                      <span className="text-on-primary font-bold text-sm">U</span>
+                  <Menu.Button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">U</span>
                     </div>
-                    <span className="flex-1 text-txt font-medium">내 프로필</span>
-                    <svg className="w-4 h-4 text-txt-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <span className="flex-1 text-gray-700 dark:text-gray-300 font-medium">내 프로필</span>
+                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </Menu.Button>
                 </div>
                 <Transition as={Fragment} enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100" leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">
-                  <Menu.Items className="absolute left-0 bottom-12 w-56 origin-bottom-left bg-surface border border-border rounded-lg shadow-lg focus:outline-none z-50">
+                  <Menu.Items className="absolute left-0 bottom-12 w-56 origin-bottom-left bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg focus:outline-none z-50">
                     <div className="py-1">
                       <Menu.Item>
                         {(props: { active: boolean }) => (
                           <button
-                            className={cn('w-full text-left px-4 py-2 text-sm', props.active && 'bg-focus')}
+                            className={cn('w-full text-left px-4 py-2 text-sm', props.active && 'bg-gray-100 dark:bg-gray-700')}
                             onClick={() => navigate('/mypage')}
                           >
                             마이페이지
@@ -268,7 +284,7 @@ export const MainLayout: React.FC = () => {
                       <Menu.Item>
                         {(props: { active: boolean }) => (
                           <button
-                            className={cn('w-full text-left px-4 py-2 text-sm', props.active && 'bg-focus')}
+                            className={cn('w-full text-left px-4 py-2 text-sm', props.active && 'bg-gray-100 dark:bg-gray-700')}
                             onClick={() => navigate('/profile/me')}
                           >
                             프로필 보기
@@ -278,17 +294,18 @@ export const MainLayout: React.FC = () => {
                       <Menu.Item>
                         {(props: { active: boolean }) => (
                           <button
-                            className={cn('w-full text-left px-4 py-2 text-sm', props.active && 'bg-focus')}
+                            className={cn('w-full text-left px-4 py-2 text-sm', props.active && 'bg-gray-100 dark:bg-gray-700')}
                             onClick={() => navigate('/settings')}
                           >
                             설정
                           </button>
                         )}
                       </Menu.Item>
+                      <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
                       <Menu.Item>
                         {(props: { active: boolean }) => (
                           <button
-                            className={cn('w-full text-left px-4 py-2 text-sm text-error', props.active && 'bg-error/10')}
+                            className={cn('w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400', props.active && 'bg-red-50 dark:bg-red-900/20')}
                             onClick={() => {/* 로그아웃 로직 */}}
                           >
                             로그아웃
@@ -299,7 +316,7 @@ export const MainLayout: React.FC = () => {
                   </Menu.Items>
                 </Transition>
               </Menu>
-              <div className="text-xs text-txt-secondary text-center mt-2">
+              <div className="text-xs text-gray-500 dark:text-gray-400 text-center mt-2">
                 © 2024 Saiondo
               </div>
             </div>
@@ -310,7 +327,7 @@ export const MainLayout: React.FC = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-surface border-b border-border shadow-sm">
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="flex items-center justify-between h-16 px-4 lg:px-6">
             <div className="flex items-center space-x-4">
               {!isMobile && (
@@ -318,27 +335,54 @@ export const MainLayout: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden"
+                  className="lg:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </Button>
               )}
-              <div className="hidden md:block">
-                <h2 className="text-lg font-semibold text-txt">
-                  {navItems.find(item => item.href === location.pathname)?.name || 'Dashboard'}
-                </h2>
-              </div>
+              
+              {/* Breadcrumbs */}
+              <nav className="hidden md:flex items-center space-x-2">
+                {breadcrumbs.map((crumb, index) => (
+                  <div key={crumb.href} className="flex items-center">
+                    {index > 0 && (
+                      <svg className="w-4 h-4 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                    <Link
+                      to={crumb.href}
+                      className={cn(
+                        "text-sm font-medium transition-colors",
+                        index === breadcrumbs.length - 1
+                          ? "text-gray-900 dark:text-white"
+                          : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                      )}
+                    >
+                      {crumb.name}
+                    </Link>
+                  </div>
+                ))}
+              </nav>
             </div>
             
             <div className="flex items-center space-x-3">
+              {/* Search */}
+              <div className="hidden md:block w-64">
+                <SearchInput
+                  placeholder="Search..."
+                  className="w-full"
+                />
+              </div>
+              
               {/* Notifications */}
-              <Button variant="ghost" size="sm" className="relative">
+              <Button variant="ghost" size="sm" className="relative text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5z" />
                 </svg>
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-error rounded-full" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-800" />
               </Button>
               
               {/* Theme Toggle */}
@@ -346,9 +390,9 @@ export const MainLayout: React.FC = () => {
               
               {/* User Menu */}
               {!isMobile && (
-                <Button variant="ghost" size="sm">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <span className="text-on-primary font-medium text-sm">U</span>
+                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                    <span className="text-white font-medium text-sm">U</span>
                   </div>
                 </Button>
               )}
@@ -357,15 +401,15 @@ export const MainLayout: React.FC = () => {
         </header>
 
         {/* Main content area */}
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-bg pb-16 lg:pb-0">
-          <div className="container mx-auto px-4 lg:px-6 py-4 lg:py-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 pb-16 lg:pb-0">
+          <div className="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
             <Outlet />
           </div>
         </main>
 
         {/* Mobile Bottom Navigation */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-around py-2">
               {mobileNavItems.map((item) => {
                 const isActive = location.pathname === item.href;
@@ -374,17 +418,22 @@ export const MainLayout: React.FC = () => {
                     key={item.href}
                     to={item.href}
                     className={cn(
-                      'flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all duration-200 min-w-0 flex-1',
+                      'flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all duration-200 min-w-0 flex-1 relative',
                       isActive 
-                        ? 'text-primary bg-primary/10' 
-                        : 'text-txt-secondary hover:text-primary hover:bg-focus'
+                        ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20' 
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                     )}
                   >
                     <div className={cn(
-                      'w-6 h-6 mb-1',
-                      isActive ? 'text-primary' : 'text-txt-secondary'
+                      'w-6 h-6 mb-1 relative',
+                      isActive ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
                     )}>
                       {item.icon}
+                      {item.badge && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                          {item.badge}
+                        </span>
+                      )}
                     </div>
                     <span className="text-xs font-medium truncate">{item.name}</span>
                   </Link>
@@ -398,7 +447,7 @@ export const MainLayout: React.FC = () => {
       {/* Mobile overlay */}
       {sidebarOpen && isTablet && (
         <div 
-          className="fixed inset-0 z-40 bg-overlay lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
