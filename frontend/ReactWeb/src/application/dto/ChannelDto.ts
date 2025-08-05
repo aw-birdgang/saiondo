@@ -14,6 +14,7 @@ export interface CreateChannelRequest {
 export interface CreateChannelResponse {
   channel: any; // Channel DTO
   success: boolean;
+  error?: string;
   createdAt: Date;
 }
 
@@ -24,6 +25,8 @@ export interface GetChannelRequest {
 export interface GetChannelResponse {
   channel: any; // Channel DTO
   success: boolean;
+  error?: string;
+  cached?: boolean;
   fetchedAt: Date;
 }
 
@@ -37,6 +40,8 @@ export interface GetChannelsRequest {
 export interface GetChannelsResponse {
   channels: any[]; // Channel DTO array
   success: boolean;
+  error?: string;
+  cached?: boolean;
   fetchedAt: Date;
   totalCount: number;
   total: number;
@@ -44,6 +49,7 @@ export interface GetChannelsResponse {
 }
 
 export interface UpdateChannelRequest {
+  id: string;
   channelId: string;
   userId: string;
   updates: {
@@ -55,6 +61,7 @@ export interface UpdateChannelRequest {
 export interface UpdateChannelResponse {
   channel: any; // Channel DTO
   success: boolean;
+  error?: string;
   updatedAt: Date;
 }
 
@@ -66,6 +73,8 @@ export interface AddMemberRequest {
 
 export interface AddMemberResponse {
   success: boolean;
+  error?: string;
+  message?: string;
   addedAt: Date;
   channelId: string;
   memberId: string;
@@ -79,6 +88,8 @@ export interface RemoveMemberRequest {
 
 export interface RemoveMemberResponse {
   success: boolean;
+  error?: string;
+  message?: string;
   removedAt: Date;
   channelId: string;
   memberId: string;

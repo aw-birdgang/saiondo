@@ -55,7 +55,7 @@ export class MemoryCache implements ICache {
 
 /**
  * 캐시 서비스의 기본 추상 클래스
- * 공통 캐싱 기능을 제공
+ * UseCase Services에서 사용할 공통 캐싱 기능을 제공
  */
 export abstract class BaseCacheService {
   protected cache: ICache;
@@ -105,7 +105,7 @@ export abstract class BaseCacheService {
   }
 
   /**
-   * 캐시 무효화 (단일 키)
+   * 캐시 무효화
    */
   protected invalidateCache(key: string): void {
     try {
@@ -117,17 +117,20 @@ export abstract class BaseCacheService {
   }
 
   /**
-   * 패턴 기반 캐시 무효화
+   * 패턴으로 캐시 무효화
    */
   protected invalidateCachePattern(pattern: string): void {
     try {
       const keys = this.cache.keys();
-      const matchingKeys = keys.filter(key => key.includes(pattern));
+      const regex = new RegExp(pattern);
       
-      matchingKeys.forEach(key => {
-        this.cache.delete(key);
-        this.logger?.debug(`Invalidated cache for pattern: ${pattern}, key: ${key}`);
-      });
+      for (const key of keys) {
+        if (regex.test(key)) {
+          this.cache.delete(key);
+        }
+      }
+      
+      this.logger?.debug(`Invalidated cache pattern: ${pattern}`);
     } catch (error) {
       this.logger?.error(`Failed to invalidate cache pattern: ${pattern}`, { error });
     }
@@ -140,18 +143,18 @@ export abstract class BaseCacheService {
     const keys = this.cache.keys();
     return {
       totalKeys: keys.length,
-      keys: keys,
-      size: keys.length // 간단한 구현, 실제로는 메모리 사용량을 측정해야 함
+      keys,
+      size: keys.length
     };
   }
 
   /**
-   * 캐시 전체 클리어
+   * 캐시 전체 삭제
    */
   protected clearCache(): void {
     try {
       this.cache.clear();
-      this.logger?.info('Cache cleared');
+      this.logger?.debug('Cache cleared');
     } catch (error) {
       this.logger?.error('Failed to clear cache', { error });
     }
@@ -159,7 +162,6 @@ export abstract class BaseCacheService {
 
   /**
    * 캐시 키 생성
-   * 서비스별로 일관된 캐시 키를 생성할 수 있도록 도움
    */
   protected generateCacheKey(prefix: string, ...parts: (string | number)[]): string {
     const sanitizedParts = parts.map(part => 
@@ -169,27 +171,25 @@ export abstract class BaseCacheService {
   }
 
   /**
-   * 캐시 TTL 계산
-   * 데이터 타입에 따라 적절한 TTL을 계산
+   * 데이터 타입별 TTL 계산
    */
   protected calculateTTL(dataType: CacheDataType): number {
     const ttlMap: Record<CacheDataType, number> = {
-      'user_profile': 1800,    // 30분
-      'channel_info': 900,     // 15분
-      'channel_list': 900,     // 15분
-      'message_list': 300,     // 5분
-      'analytics_report': 3600, // 1시간
-      'search_results': 600,   // 10분
-      'permissions': 1800,     // 30분
-      'temporary': 60,         // 1분
-      'session': 3600,         // 1시간
+      user_profile: 300,      // 5분
+      channel_info: 600,      // 10분
+      channel_list: 180,      // 3분
+      message_list: 120,      // 2분
+      analytics_report: 1800, // 30분
+      search_results: 300,    // 5분
+      permissions: 900,       // 15분
+      temporary: 60,          // 1분
+      session: 3600          // 1시간
     };
     
-    return ttlMap[dataType] || 300; // 기본 5분
+    return ttlMap[dataType] || 300;
   }
 }
 
-// 타입 정의
 export interface CacheStats {
   totalKeys: number;
   keys: string[];

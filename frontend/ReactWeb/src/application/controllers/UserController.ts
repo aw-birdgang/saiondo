@@ -1,21 +1,35 @@
-import { BaseController } from './BaseController';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
-import type { IUseCase } from '../usecases/interfaces/IUseCase';
-import type { User } from '../../domain/dto/UserDto';
-import type { UserActivityDto } from '../dto/UserActivityDto';
-import type { UserPermissionDto } from '../dto/UserPermissionDto';
+import {BaseController} from './BaseController';
+import {UseCaseFactory} from '../usecases/UseCaseFactory';
+import type {User} from '../../domain/dto/UserDto';
+import type {ActivityLog} from '../dto/UserActivityDto';
+import type {Permission} from '../dto/UserPermissionDto';
+
+/**
+ * 사용자 활동 타입 정의
+ */
+type UserActivity = 'USER_PROFILE_VIEW' | 'USER_LOGIN' | 'USER_REGISTER' | 'USER_PROFILE_UPDATE';
+
+/**
+ * 사용자 통계 정보 타입
+ */
+interface UserStats {
+  totalActivities: number;
+  recentActivities: ActivityLog[];
+  totalPermissions: number;
+  permissions: string[];
+}
 
 /**
  * UserController - 사용자 관련 비즈니스 로직 조정
  */
 export class UserController extends BaseController {
-  private getCurrentUserUseCase: IUseCase | null = null;
-  private authenticateUserUseCase: IUseCase | null = null;
-  private registerUserUseCase: IUseCase | null = null;
-  private updateUserUseCase: IUseCase | null = null;
-  private logoutUserUseCase: IUseCase | null = null;
-  private userActivityLogUseCase: IUseCase | null = null;
-  private userPermissionUseCase: IUseCase | null = null;
+  private getCurrentUserUseCase: any = null;
+  private authenticateUserUseCase: any = null;
+  private registerUserUseCase: any = null;
+  private updateUserUseCase: any = null;
+  private logoutUserUseCase: any = null;
+  private userActivityLogUseCase: any = null;
+  private userPermissionUseCase: any = null;
   private useCasesInitialized = false;
 
   constructor() {
@@ -26,12 +40,10 @@ export class UserController extends BaseController {
    * UseCase 인스턴스 초기화
    */
   private async initializeUseCases(): Promise<void> {
-    if (this.useCasesInitialized) {
-      return;
-    }
+    if (this.useCasesInitialized) return;
 
     try {
-      // Use Case 인스턴스 생성
+      // UseCaseFactory를 통해 UseCase 인스턴스 생성
       this.getCurrentUserUseCase = UseCaseFactory.createGetCurrentUserUseCase();
       this.authenticateUserUseCase = UseCaseFactory.createAuthenticateUserUseCase();
       this.registerUserUseCase = UseCaseFactory.createRegisterUserUseCase();
@@ -39,10 +51,10 @@ export class UserController extends BaseController {
       this.logoutUserUseCase = UseCaseFactory.createLogoutUserUseCase();
       this.userActivityLogUseCase = UseCaseFactory.createUserActivityLogUseCase();
       this.userPermissionUseCase = UseCaseFactory.createUserPermissionUseCase();
-      
+
       this.useCasesInitialized = true;
     } catch (error) {
-      console.error('Failed to initialize UseCases:', error);
+      this.logger.error('Failed to initialize UseCases:', error);
       throw new Error('UseCase 초기화에 실패했습니다.');
     }
   }
@@ -57,6 +69,27 @@ export class UserController extends BaseController {
   }
 
   /**
+   * 사용자 활동 로그 기록 헬퍼 함수
+   */
+  private async logUserActivity(
+    userId: string,
+    activity: UserActivity,
+    details: string
+  ): Promise<void> {
+    try {
+      if (this.userActivityLogUseCase && typeof this.userActivityLogUseCase.logActivity === 'function') {
+        await this.userActivityLogUseCase.logActivity({
+          userId,
+          activity,
+          details
+        });
+      }
+    } catch (error) {
+      this.logger.warn(`Failed to log user activity: ${activity}`, error);
+    }
+  }
+
+  /**
    * 현재 사용자 정보 조회
    */
   async getCurrentUser(): Promise<User | null> {
@@ -64,17 +97,19 @@ export class UserController extends BaseController {
       'getCurrentUser',
       {},
       async () => {
-        const user = await this.getCurrentUserUseCase.execute();
-        
-        // 사용자 활동 로그 기록
+        await this.ensureInitialized();
+
+        const result = await this.getCurrentUserUseCase?.execute();
+        const user = result?.user || null;
+
         if (user) {
-          await this.userActivityLogUseCase.logActivity({
-            userId: user.id,
-            activity: 'USER_PROFILE_VIEW',
-            details: '사용자 프로필 조회'
-          });
+          await this.logUserActivity(
+            user.id,
+            'USER_PROFILE_VIEW',
+            '사용자 프로필 조회'
+          );
         }
-        
+
         return user;
       }
     );
@@ -88,16 +123,21 @@ export class UserController extends BaseController {
       'authenticateUser',
       { email },
       async () => {
-        const user = await this.authenticateUserUseCase.execute({ email, password });
-        
-        // 로그인 활동 로그 기록
-        await this.userActivityLogUseCase.logActivity({
-          userId: user.id,
-          activity: 'USER_LOGIN',
-          details: '사용자 로그인'
-        });
-        
-        return user;
+        await this.ensureInitialized();
+
+        const result = await this.authenticateUserUseCase?.execute({ email, password });
+
+        if (!result?.user) {
+          throw new Error('인증에 실패했습니다.');
+        }
+
+        await this.logUserActivity(
+          result.user.id,
+          'USER_LOGIN',
+          '사용자 로그인'
+        );
+
+        return result.user;
       }
     );
   }
@@ -115,16 +155,21 @@ export class UserController extends BaseController {
       'registerUser',
       { email: userData.email, name: userData.name },
       async () => {
-        const user = await this.registerUserUseCase.execute(userData);
-        
-        // 회원가입 활동 로그 기록
-        await this.userActivityLogUseCase.logActivity({
-          userId: user.id,
-          activity: 'USER_REGISTER',
-          details: '사용자 회원가입'
-        });
-        
-        return user;
+        await this.ensureInitialized();
+
+        const result = await this.registerUserUseCase?.execute(userData);
+
+        if (!result?.user) {
+          throw new Error('사용자 등록에 실패했습니다.');
+        }
+
+        await this.logUserActivity(
+          result.user.id,
+          'USER_REGISTER',
+          '사용자 회원가입'
+        );
+
+        return result.user;
       }
     );
   }
@@ -137,16 +182,21 @@ export class UserController extends BaseController {
       'updateUser',
       { userId, updateFields: Object.keys(updateData) },
       async () => {
-        const user = await this.updateUserUseCase.execute({ userId, ...updateData });
-        
-        // 프로필 업데이트 활동 로그 기록
-        await this.userActivityLogUseCase.logActivity({
-          userId: user.id,
-          activity: 'USER_PROFILE_UPDATE',
-          details: `프로필 업데이트: ${Object.keys(updateData).join(', ')}`
-        });
-        
-        return user;
+        await this.ensureInitialized();
+
+        const result = await this.updateUserUseCase?.execute({ userId, ...updateData });
+
+        if (!result?.user) {
+          throw new Error('사용자 정보 업데이트에 실패했습니다.');
+        }
+
+        await this.logUserActivity(
+          result.user.id,
+          'USER_PROFILE_UPDATE',
+          `프로필 업데이트: ${Object.keys(updateData).join(', ')}`
+        );
+
+        return result.user;
       }
     );
   }
@@ -159,9 +209,9 @@ export class UserController extends BaseController {
       'logoutUser',
       {},
       async () => {
-        await this.logoutUserUseCase.execute();
-        
-        // 로그아웃 활동 로그 기록 (사용자 ID가 없으므로 별도 처리)
+        await this.ensureInitialized();
+
+        await this.logoutUserUseCase?.execute();
         this.logger.info('User logged out successfully');
       }
     );
@@ -179,11 +229,18 @@ export class UserController extends BaseController {
       'checkUserPermission',
       { userId, permission, resource },
       async () => {
-        return this.userPermissionUseCase.checkPermission({
-          userId,
-          permission,
-          resource
-        });
+        await this.ensureInitialized();
+
+        if (this.userPermissionUseCase && typeof this.userPermissionUseCase.checkPermission === 'function') {
+          const result = await this.userPermissionUseCase.checkPermission({
+            userId,
+            permission,
+            resource
+          });
+          return result?.hasPermission || false;
+        }
+
+        return false;
       }
     );
   }
@@ -199,12 +256,18 @@ export class UserController extends BaseController {
       activity?: string;
       limit?: number;
     }
-  ): Promise<UserActivityDto[]> {
+  ): Promise<ActivityLog[]> {
     return this.executeWithTracking(
       'getUserActivityLogs',
       { userId, options },
       async () => {
-        return this.userActivityLogUseCase.getUserActivities(userId, options);
+        await this.ensureInitialized();
+
+        if (this.userActivityLogUseCase && typeof this.userActivityLogUseCase.getUserActivityLogs === 'function') {
+          return this.userActivityLogUseCase.getUserActivityLogs(userId, options?.limit || 50, 0, options?.activity) || [];
+        }
+
+        return [];
       }
     );
   }
@@ -212,12 +275,18 @@ export class UserController extends BaseController {
   /**
    * 사용자 권한 목록 조회
    */
-  async getUserPermissions(userId: string): Promise<UserPermissionDto[]> {
+  async getUserPermissions(userId: string): Promise<Permission[]> {
     return this.executeWithTracking(
       'getUserPermissions',
       { userId },
       async () => {
-        return this.userPermissionUseCase.getUserPermissions(userId);
+        await this.ensureInitialized();
+
+        if (this.userPermissionUseCase && typeof this.userPermissionUseCase.getUserPermissions === 'function') {
+          return this.userPermissionUseCase.getUserPermissions(userId) || [];
+        }
+
+        return [];
       }
     );
   }
@@ -225,23 +294,25 @@ export class UserController extends BaseController {
   /**
    * 사용자 통계 정보 조회
    */
-  async getUserStats(userId: string) {
+  async getUserStats(userId: string): Promise<UserStats> {
     return this.executeWithTracking(
       'getUserStats',
       { userId },
       async () => {
+        await this.ensureInitialized();
+
         const [activities, permissions] = await Promise.all([
-          this.userActivityLogUseCase.getUserActivities(userId),
-          this.userPermissionUseCase.getUserPermissions(userId)
+          this.getUserActivityLogs(userId),
+          this.getUserPermissions(userId)
         ]);
 
         return {
           totalActivities: activities.length,
           recentActivities: activities.slice(0, 10),
           totalPermissions: permissions.length,
-          permissions: permissions.map(p => p.permission)
+          permissions: permissions.map(p => p.name)
         };
       }
     );
   }
-} 
+}

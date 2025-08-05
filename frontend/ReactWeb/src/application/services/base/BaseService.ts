@@ -121,8 +121,8 @@ export abstract class BaseService<T> {
   }
 
   /**
-   * 에러 처리 래퍼
-   * 공통 에러 처리 로직을 제공
+   * 에러 처리
+   * 공통 에러 처리 로직
    */
   protected handleError(
     error: unknown, 
@@ -131,29 +131,28 @@ export abstract class BaseService<T> {
   ): never {
     const errorMessage = error instanceof Error ? error.message : String(error);
     
-    this.logger?.error(`Service error in ${operation}`, {
-      operation,
+    this.logger?.error(`Error in ${operation}`, {
       error: errorMessage,
       context,
       stack: error instanceof Error ? error.stack : undefined
     });
     
-    // 도메인 에러로 변환하거나 원본 에러를 재던지기
     throw error;
   }
 
   /**
    * 비즈니스 규칙 검증
-   * 서비스별 특화된 비즈니스 규칙을 검증할 수 있는 훅
+   * 도메인 규칙 검증을 위한 공통 메서드
    */
-  protected validateBusinessRules(
+  protected async validateBusinessRules(
     data: any, 
     rules: BusinessRule[]
-  ): BusinessRuleValidationResult {
+  ): Promise<BusinessRuleValidationResult> {
     const violations: BusinessRuleViolation[] = [];
     
     for (const rule of rules) {
-      if (!rule.validate(data)) {
+      const isValid = await rule.validate(data);
+      if (!isValid) {
         violations.push({
           rule: rule.name,
           message: rule.message,
@@ -176,7 +175,6 @@ export abstract class BaseService<T> {
   }
 }
 
-// 타입 정의
 export interface ValidationSchema {
   [field: string]: {
     required?: boolean;
@@ -198,7 +196,7 @@ export interface BusinessRule {
   name: string;
   field?: string;
   message: string;
-  validate: (data: any) => boolean;
+  validate: (data: any) => boolean | Promise<boolean>;
 }
 
 export interface BusinessRuleViolation {

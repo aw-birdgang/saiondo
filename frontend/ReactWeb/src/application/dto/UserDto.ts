@@ -43,6 +43,7 @@ export interface SearchUsersResponse {
   users: any[]; // User DTO array
   total: number;
   hasMore: boolean;
+  cached?: boolean;
 }
 
 export interface GetCurrentUserRequest {
@@ -127,15 +128,15 @@ export interface GetUsersResponse {
   fetchedAt: Date;
 }
 
+// Base Service용 DTO들
+
 export interface UserProfile {
   id: string;
   username: string;
   email: string;
-  displayName?: string;
+  bio?: string;
   avatar?: string;
   status: 'online' | 'offline' | 'away' | 'busy';
-  isActive: boolean;
-  lastSeen: Date;
   createdAt: Date;
   updatedAt: Date;
   permissions: string[];
@@ -143,17 +144,21 @@ export interface UserProfile {
 
 export interface UserStats {
   userId: string;
-  totalChannels: number;
-  totalMessages: number;
+  channelCount: number;
+  messageCount: number;
   lastActivity: Date;
   joinDate: Date;
-  isActive: boolean;
 }
 
 export interface UserValidationSchema {
-  username: { required: boolean; type: string; minLength: number; maxLength: number; pattern?: RegExp };
-  email: { required: boolean; type: string; pattern: RegExp };
-  displayName?: { required: boolean; type: string; maxLength: number };
+  [key: string]: {
+    required?: boolean;
+    type?: 'string' | 'number' | 'boolean' | 'array' | 'object';
+    minLength?: number;
+    maxLength?: number;
+    pattern?: RegExp;
+    enum?: any[];
+  };
 }
 
 export interface UserServiceConfig {
@@ -162,5 +167,5 @@ export interface UserServiceConfig {
   enableSecurityChecks?: boolean;
   maxUsernameLength?: number;
   minUsernameLength?: number;
-  maxEmailLength?: number;
+  maxBioLength?: number;
 } 

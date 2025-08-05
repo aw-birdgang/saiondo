@@ -13,23 +13,21 @@ import type {
 } from '../../dto/UserDto';
 
 /**
- * UserService - BaseService를 상속하여 사용자 관련 도메인 로직 처리
- * 성능 측정, 에러 처리, 검증 등의 공통 기능은 BaseService에서 제공
+ * UserService - 사용자 도메인 로직을 담당하는 Base Service
+ * 핵심 비즈니스 로직과 도메인 규칙을 처리
  */
 export class UserService extends BaseService<IUserRepository> {
   protected repository: IUserRepository;
-  private readonly config: UserServiceConfig;
 
   constructor(
     userRepository: IUserRepository,
     private readonly channelRepository: IChannelRepository,
     private readonly messageRepository: IMessageRepository,
-    logger?: ILogger,
-    config: UserServiceConfig = {}
+    private readonly config: UserServiceConfig = {},
+    logger?: ILogger
   ) {
     super(logger);
     this.repository = userRepository;
-    this.config = config;
   }
 
   /**
@@ -39,23 +37,27 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'get_current_user',
       async () => {
-        let user;
+        try {
+          let user;
 
-        if (userId) {
-          // 특정 사용자 ID로 조회
-          const userIdObj = UserId.create(userId);
-          user = await this.repository.findById(userIdObj.getValue());
-        } else {
-          // 현재 사용자 조회
-          user = await this.repository.getCurrentUser();
+          if (userId) {
+            // 특정 사용자 ID로 조회
+            const userIdObj = UserId.create(userId);
+            user = await this.repository.findById(userIdObj.getValue());
+          } else {
+            // 현재 사용자 조회
+            user = await this.repository.getCurrentUser();
+          }
+
+          if (!user) {
+            const errorId = userId || 'current user';
+            throw DomainErrorFactory.createUserNotFound(errorId);
+          }
+
+          return this.mapToUserProfile(user);
+        } catch (error) {
+          this.handleError(error, 'getCurrentUser', { userId: userId || 'current' });
         }
-
-        if (!user) {
-          const errorId = userId || 'current user';
-          throw DomainErrorFactory.createUserNotFound(errorId);
-        }
-
-        return this.mapToUserProfile(user);
       },
       { userId: userId || 'current' }
     );
@@ -68,26 +70,63 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'update_user_profile',
       async () => {
-        // 입력 검증
-        if (this.config.enableValidation) {
-          this.validateUserProfileUpdates(updates);
-        }
+        try {
+          // 입력 검증
+          if (this.config.enableValidation) {
+            const validationSchema: UserValidationSchema = {
+              username: { 
+                required: false, 
+                type: 'string', 
+                minLength: this.config.minUsernameLength || 3, 
+                maxLength: this.config.maxUsernameLength || 20,
+                pattern: /^[a-zA-Z0-9_]+$/
+              },
+              email: { 
+                required: false, 
+                type: 'string', 
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+              },
+              bio: { 
+                required: false, 
+                type: 'string', 
+                maxLength: this.config.maxBioLength || 500
+              }
+            };
 
-        // 사용자 존재 확인
-        if (!(await this.userExists(userId))) {
-          throw new Error('User does not exist');
-        }
+            const validation = this.validateInput(updates, validationSchema);
+            if (!validation.isValid) {
+              throw DomainErrorFactory.createUserValidation(validation.errors.join(', '));
+            }
+          }
 
-        // 사용자 업데이트 (실제로는 repository에 updateUser 메서드가 있어야 함)
-        // const updatedUser = await this.repository.updateUser(userId, updates);
-        // return this.mapToUserProfile(updatedUser);
-        
-        // 임시로 기존 사용자 정보 반환
-        const user = await this.repository.findById(userId);
-        if (!user) {
-          throw new Error('User not found');
+          // 비즈니스 규칙 검증
+          const businessRules = [
+            {
+              name: 'user_exists',
+              message: 'User does not exist',
+              validate: (data: any) => {
+                return this.repository.findById(userId).then(user => !!user);
+              }
+            }
+          ];
+
+          const ruleValidation = await this.validateBusinessRules(updates, businessRules);
+          if (!ruleValidation.isValid) {
+            throw DomainErrorFactory.createUserValidation(ruleValidation.violations[0].message);
+          }
+
+          // 사용자 업데이트 (임시 구현)
+          const user = await this.repository.findById(userId);
+          if (!user) {
+            throw DomainErrorFactory.createUserNotFound(userId);
+          }
+          
+          // 실제로는 repository에 updateUser 메서드가 있어야 함
+          const updatedUser = { ...user, ...updates };
+          return this.mapToUserProfile(updatedUser);
+        } catch (error) {
+          this.handleError(error, 'updateUserProfile', { userId, updates });
         }
-        return this.mapToUserProfile(user);
       },
       { userId, updates }
     );
@@ -100,20 +139,23 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'get_user_stats',
       async () => {
-        // 사용자 존재 확인
-        if (!(await this.userExists(userId))) {
-          throw DomainErrorFactory.createUserNotFound(userId);
-        }
+        try {
+          const user = await this.repository.findById(userId);
+          if (!user) {
+            throw DomainErrorFactory.createUserNotFound(userId);
+          }
 
-        // 임시 통계 반환 (실제로는 repository에서 통계를 가져와야 함)
-        return {
-          userId,
-          totalChannels: 0,
-          totalMessages: 0,
-          lastActivity: new Date(),
-          joinDate: new Date(),
-          isActive: true
-        };
+          // 임시 통계 반환 (실제로는 repository에서 통계를 가져와야 함)
+          return {
+            userId,
+            channelCount: 0,
+            messageCount: 0,
+            lastActivity: new Date(),
+            joinDate: user.createdAt || new Date()
+          };
+        } catch (error) {
+          this.handleError(error, 'getUserStats', { userId });
+        }
       },
       { userId }
     );
@@ -126,13 +168,23 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'search_users',
       async () => {
-        // 검색어 검증
-        if (!query || query.trim().length < 2) {
-          throw new Error('Search query must be at least 2 characters long');
-        }
+        try {
+          // 입력 검증
+          const validationSchema = {
+            query: { required: true, type: 'string' as const, minLength: 1 },
+            limit: { required: false, type: 'number' as const, minLength: 1, maxLength: 100 }
+          };
 
-        // 임시 검색 결과 반환 (실제로는 repository에서 검색해야 함)
-        return [];
+          const validation = this.validateInput({ query, limit }, validationSchema);
+          if (!validation.isValid) {
+            throw DomainErrorFactory.createUserValidation(validation.errors.join(', '));
+          }
+
+          // 임시 검색 결과 반환 (실제로는 repository에서 검색해야 함)
+          return [];
+        } catch (error) {
+          this.handleError(error, 'searchUsers', { query, limit });
+        }
       },
       { query, limit }
     );
@@ -145,23 +197,18 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'update_user_status',
       async () => {
-        // 상태값 검증
-        const validStatuses: UserProfile['status'][] = ['online', 'offline', 'away', 'busy'];
-        if (!validStatuses.includes(status)) {
-          throw new Error(`Invalid status: ${status}`);
-        }
+        try {
+          const user = await this.repository.findById(userId);
+          if (!user) {
+            throw DomainErrorFactory.createUserNotFound(userId);
+          }
 
-        // 사용자 존재 확인
-        if (!(await this.userExists(userId))) {
-          throw DomainErrorFactory.createUserNotFound(userId);
+          // 임시로 기존 사용자 정보 반환 (실제로는 repository에서 업데이트해야 함)
+          const updatedUser = { ...user, status };
+          return this.mapToUserProfile(updatedUser);
+        } catch (error) {
+          this.handleError(error, 'updateUserStatus', { userId, status });
         }
-
-        // 임시로 기존 사용자 정보 반환
-        const user = await this.repository.findById(userId);
-        if (!user) {
-          throw new Error('User not found');
-        }
-        return this.mapToUserProfile(user);
       },
       { userId, status }
     );
@@ -174,29 +221,29 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'delete_user',
       async () => {
-        // 사용자 존재 확인
-        if (!(await this.userExists(userId))) {
-          throw DomainErrorFactory.createUserNotFound(userId);
-        }
+        try {
+          const user = await this.repository.findById(userId);
+          if (!user) {
+            throw DomainErrorFactory.createUserNotFound(userId);
+          }
 
-        // 임시로 삭제 성공 반환 (실제로는 repository에서 삭제해야 함)
-        return true;
+          // 임시로 삭제 성공 반환 (실제로는 repository에서 삭제해야 함)
+          return true;
+        } catch (error) {
+          this.handleError(error, 'deleteUser', { userId });
+        }
       },
       { userId }
     );
   }
 
   /**
-   * 사용자 목록 조회 (페이지네이션)
+   * 사용자 목록 조회
    */
-  async getUsers(
-    page: number = 1,
-    limit: number = 20,
-    filters?: {
-      status?: UserProfile['status'];
-      isActive?: boolean;
-    }
-  ): Promise<{
+  async getUsers(page: number = 1, limit: number = 20, filters?: {
+    status?: UserProfile['status'];
+    isActive?: boolean;
+  }): Promise<{
     users: UserProfile[];
     total: number;
     page: number;
@@ -205,30 +252,35 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'get_users',
       async () => {
-        // 페이지네이션 파라미터 검증
-        if (page < 1) page = 1;
-        if (limit < 1 || limit > 100) limit = 20;
-
-        // 임시 결과 반환 (실제로는 repository에서 조회해야 함)
-        return {
-          users: [],
-          total: 0,
-          page,
-          totalPages: 0
-        };
+        try {
+          // 임시 결과 반환 (실제로는 repository에서 조회해야 함)
+          return {
+            users: [],
+            total: 0,
+            page,
+            totalPages: 0
+          };
+        } catch (error) {
+          this.handleError(error, 'getUsers', { page, limit, filters });
+        }
       },
       { page, limit, filters }
     );
   }
 
   /**
-   * 사용자 존재 확인
+   * 사용자 존재 여부 확인
    */
   async userExists(userId: string): Promise<boolean> {
     return await this.measurePerformance(
       'user_exists',
       async () => {
-        return await this.repository.userExists(userId);
+        try {
+          const user = await this.repository.findById(userId);
+          return !!user;
+        } catch (error) {
+          this.handleError(error, 'userExists', { userId });
+        }
       },
       { userId }
     );
@@ -241,53 +293,35 @@ export class UserService extends BaseService<IUserRepository> {
     return await this.measurePerformance(
       'has_permission',
       async () => {
-        // 사용자 존재 확인
-        if (!(await this.userExists(userId))) {
-          return false;
-        }
+        try {
+          const user = await this.repository.findById(userId);
+          if (!user) {
+            return false;
+          }
 
-        // 임시 권한 확인 (실제로는 권한 시스템과 연동해야 함)
-        return true;
+          // 권한 검증 로직
+          return user.permissions?.includes(permission) || false;
+        } catch (error) {
+          this.handleError(error, 'hasPermission', { userId, permission });
+        }
       },
       { userId, permission }
     );
   }
 
-  // Private helper methods
-
   /**
-   * 사용자 프로필 업데이트 검증
-   */
-  private validateUserProfileUpdates(updates: Partial<UserProfile>): void {
-    // 기본 검증
-    if (updates.username && (updates.username.length < 3 || updates.username.length > 20)) {
-      throw new Error('Username must be between 3 and 20 characters');
-    }
-
-    if (updates.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updates.email)) {
-      throw new Error('Invalid email format');
-    }
-
-    if (updates.displayName && updates.displayName.length > 50) {
-      throw new Error('Display name must be at most 50 characters');
-    }
-  }
-
-  /**
-   * 사용자 엔티티를 프로필 DTO로 변환
+   * 도메인 객체를 DTO로 변환
    */
   private mapToUserProfile(user: any): UserProfile {
     return {
       id: user.id,
       username: user.username,
       email: user.email,
-      displayName: user.displayName || user.username,
-      avatar: user.avatar,
+      bio: user.bio || '',
       status: user.status || 'offline',
-      isActive: user.isActive ?? true,
+      avatar: user.avatar || '',
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-      lastSeen: user.lastSeen,
       permissions: user.permissions || []
     };
   }

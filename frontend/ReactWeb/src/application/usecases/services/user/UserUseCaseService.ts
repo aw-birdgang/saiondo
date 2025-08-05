@@ -105,36 +105,31 @@ export class UserUseCaseService extends BaseCacheService {
   async searchUsers(request: SearchUsersRequest): Promise<SearchUsersResponse> {
     try {
       // 캐시 확인
-      const cacheKey = this.generateCacheKey('user', 'search', request.query, request.limit);
+      const cacheKey = this.generateCacheKey('user', 'search', request.query, request.limit || 10);
       const cached = await this.getCached<SearchUsersResponse>(cacheKey);
       if (cached) {
         return { ...cached, cached: true };
       }
 
       // Base Service 호출
-      const users = await this.userService.searchUsers(request.query, request.limit);
+      const users = await this.userService.searchUsers(request.query, request.limit || 10);
 
+      // 응답 구성
       const response: SearchUsersResponse = {
         users,
-        success: true,
-        error: undefined,
         total: users.length,
-        query: request.query,
-        fetchedAt: new Date()
+        hasMore: false
       };
 
-      // 캐시 저장 (검색 결과는 짧은 TTL)
-      await this.setCached(cacheKey, response, this.calculateTTL('user_search'));
+      // 캐시 저장
+      await this.setCached(cacheKey, response, this.calculateTTL('search_results'));
 
       return response;
     } catch (error) {
       return {
         users: [],
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
         total: 0,
-        query: request.query,
-        fetchedAt: new Date()
+        hasMore: false
       };
     }
   }
@@ -154,6 +149,7 @@ export class UserUseCaseService extends BaseCacheService {
       // Base Service 호출
       const stats = await this.userService.getUserStats(request.userId);
 
+      // 응답 구성
       const response: GetUserStatsResponse = {
         stats,
         success: true,
@@ -162,7 +158,7 @@ export class UserUseCaseService extends BaseCacheService {
       };
 
       // 캐시 저장
-      await this.setCached(cacheKey, response, this.calculateTTL('user_stats'));
+      await this.setCached(cacheKey, response, this.calculateTTL('user_profile'));
 
       return response;
     } catch (error) {
@@ -182,7 +178,13 @@ export class UserUseCaseService extends BaseCacheService {
   async getUsers(request: GetUsersRequest): Promise<GetUsersResponse> {
     try {
       // 캐시 확인
-      const cacheKey = this.generateCacheKey('user', 'list', request.page, request.limit);
+      const cacheKey = this.generateCacheKey(
+        'user', 
+        'list', 
+        request.page || 1, 
+        request.limit || 20,
+        JSON.stringify(request.filters || {})
+      );
       const cached = await this.getCached<GetUsersResponse>(cacheKey);
       if (cached) {
         return { ...cached, cached: true };
@@ -190,11 +192,12 @@ export class UserUseCaseService extends BaseCacheService {
 
       // Base Service 호출
       const result = await this.userService.getUsers(
-        request.page,
-        request.limit,
+        request.page || 1,
+        request.limit || 20,
         request.filters
       );
 
+      // 응답 구성
       const response: GetUsersResponse = {
         users: result.users,
         success: true,
@@ -206,7 +209,7 @@ export class UserUseCaseService extends BaseCacheService {
       };
 
       // 캐시 저장
-      await this.setCached(cacheKey, response, this.calculateTTL('user_list'));
+      await this.setCached(cacheKey, response, this.calculateTTL('user_profile'));
 
       return response;
     } catch (error) {
@@ -216,7 +219,7 @@ export class UserUseCaseService extends BaseCacheService {
         error: error instanceof Error ? error.message : 'Unknown error',
         cached: false,
         total: 0,
-        page: request.page,
+        page: request.page || 1,
         totalPages: 0,
         fetchedAt: new Date()
       };
@@ -224,7 +227,7 @@ export class UserUseCaseService extends BaseCacheService {
   }
 
   /**
-   * 사용자 상태 업데이트
+   * 사용자 상태 업데이트 - 캐시 무효화
    */
   async updateUserStatus(userId: string, status: string): Promise<UpdateUserProfileResponse> {
     try {
@@ -253,7 +256,7 @@ export class UserUseCaseService extends BaseCacheService {
   }
 
   /**
-   * 사용자 삭제
+   * 사용자 삭제 - 캐시 무효화
    */
   async deleteUser(userId: string): Promise<{ success: boolean; error?: string }> {
     try {
@@ -261,15 +264,17 @@ export class UserUseCaseService extends BaseCacheService {
       await this.checkUserPermissions(userId, 'delete_user');
 
       // Base Service 호출
-      const deleted = await this.userService.deleteUser(userId);
+      const result = await this.userService.deleteUser(userId);
 
-      if (deleted) {
+      if (result) {
         // 관련 캐시 무효화
         this.invalidateUserCache(userId);
         this.invalidateUserListCache();
-      }
 
-      return { success: deleted };
+        return { success: true };
+      } else {
+        return { success: false, error: 'Failed to delete user' };
+      }
     } catch (error) {
       return {
         success: false,
@@ -286,25 +291,20 @@ export class UserUseCaseService extends BaseCacheService {
   }
 
   /**
-   * 사용자 존재 확인
+   * 사용자 존재 여부 확인
    */
   async userExists(userId: string): Promise<boolean> {
     return await this.userService.userExists(userId);
   }
 
-  // Private helper methods
-
   /**
    * 사용자 권한 검증
    */
   private async checkUserPermissions(userId: string, operation: string): Promise<boolean> {
-    // 기본 권한 검증 (실제로는 더 복잡한 권한 시스템 사용)
     const hasPermission = await this.userService.hasPermission(userId, operation);
-    
     if (!hasPermission) {
-      throw new Error(`User ${userId} does not have permission to ${operation}`);
+      throw new Error(`User ${userId} does not have permission for ${operation}`);
     }
-    
     return true;
   }
 
@@ -312,7 +312,7 @@ export class UserUseCaseService extends BaseCacheService {
    * 사용자 관련 캐시 무효화
    */
   private invalidateUserCache(userId: string): void {
-    this.invalidateCachePattern(`user:${userId}:*`);
+    this.invalidateCachePattern(`user:${userId}`);
     this.invalidateCachePattern(`user:current:${userId}`);
     this.invalidateCachePattern(`user:stats:${userId}`);
   }
@@ -321,23 +321,13 @@ export class UserUseCaseService extends BaseCacheService {
    * 사용자 목록 캐시 무효화
    */
   private invalidateUserListCache(): void {
-    this.invalidateCachePattern('user:list:*');
-    this.invalidateCachePattern('user:search:*');
+    this.invalidateCachePattern('user:list');
   }
 
   /**
-   * 사용자 캐시 통계 조회
+   * 캐시 통계 조회
    */
   async getUserCacheStats(): Promise<any> {
-    const keys = await this.cache.keys();
-    const userKeys = keys.filter(key => key.startsWith('user:'));
-    
-    return {
-      totalKeys: keys.length,
-      userKeys: userKeys.length,
-      hitRate: 0.85, // 실제 구현에서는 히트율 계산
-      missRate: 0.15,
-      averageTTL: 300
-    };
+    return this.getCacheStats();
   }
 } 

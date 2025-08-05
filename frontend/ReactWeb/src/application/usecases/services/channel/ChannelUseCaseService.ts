@@ -1,7 +1,7 @@
 import type { ILogger } from '../../../../domain/interfaces/ILogger';
 import { BaseCacheService, type ICache } from '../../../services/base/BaseCacheService';
 import { ChannelService } from '../../../services/channel/ChannelService';
-import { ChannelEntity } from '../../../../domain/entities/Channel';
+import { UserService } from '../../../services/user/UserService';
 import type {
   CreateChannelRequest,
   CreateChannelResponse,
@@ -18,13 +18,13 @@ import type {
 } from '../../../dto/ChannelDto';
 
 /**
- * Channel UseCase Service - UseCase별 특화된 채널 로직
- * BaseCacheService를 상속받아 캐싱 기능 활용
+ * ChannelUseCaseService - 채널 관련 UseCase 전용 서비스
+ * 캐싱, 권한 검증, DTO 변환 등의 UseCase별 특화 로직 처리
  */
 export class ChannelUseCaseService extends BaseCacheService {
   constructor(
     private readonly channelService: ChannelService,
-    private readonly userService: any,
+    private readonly userService: UserService,
     cache?: ICache,
     logger?: ILogger
   ) {
@@ -32,17 +32,14 @@ export class ChannelUseCaseService extends BaseCacheService {
   }
 
   /**
-   * 채널 생성 - UseCase 특화 로직
+   * 채널 생성 - 캐시 무효화
    */
   async createChannel(request: CreateChannelRequest): Promise<CreateChannelResponse> {
     try {
       // 권한 검증
-      const hasPermission = await this.checkChannelPermissions(request.ownerId, '', 'create_channel');
-      if (!hasPermission) {
-        throw new Error('Insufficient permissions to create channel');
-      }
+      await this.checkChannelPermissions(request.ownerId, 'create_channel');
 
-      // Base Service 사용
+      // Base Service 호출
       const channel = await this.channelService.createChannel({
         name: request.name,
         description: request.description,
@@ -51,44 +48,44 @@ export class ChannelUseCaseService extends BaseCacheService {
         members: request.members
       });
 
-      // 캐시 무효화
+      // 관련 캐시 무효화
       this.invalidateChannelCache(request.ownerId);
 
-      const response: CreateChannelResponse = {
+      return {
         channel: this.mapToChannelProfile(channel),
         success: true,
         createdAt: new Date()
       };
-
-      return response;
     } catch (error) {
-      this.logger?.error('Failed to create channel', { 
-        request, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to create channel: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        channel: null,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        createdAt: new Date()
+      };
     }
   }
 
   /**
-   * 채널 조회 - UseCase 특화 로직
+   * 채널 조회 - 캐싱 적용
    */
   async getChannel(request: GetChannelRequest): Promise<GetChannelResponse> {
     try {
       // 캐시 확인
-      const cacheKey = this.generateCacheKey('channel', request.id);
-      const cached = await this.getCached<GetChannelResponse>(cacheKey, this.calculateTTL('channel_info'));
+      const cacheKey = this.generateCacheKey('channel', 'info', request.id);
+      const cached = await this.getCached<GetChannelResponse>(cacheKey);
       if (cached) {
-        this.logger?.debug('Returning cached channel', { cacheKey });
-        return cached;
+        return { ...cached, cached: true };
       }
 
-      // Base Service 사용
+      // Base Service 호출
       const channel = await this.channelService.getChannel(request.id);
 
+      // 응답 구성
       const response: GetChannelResponse = {
         channel: this.mapToChannelProfile(channel),
         success: true,
+        cached: false,
         fetchedAt: new Date()
       };
 
@@ -97,41 +94,38 @@ export class ChannelUseCaseService extends BaseCacheService {
 
       return response;
     } catch (error) {
-      this.logger?.error('Failed to get channel', { 
-        request, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to get channel: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        channel: null,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        cached: false,
+        fetchedAt: new Date()
+      };
     }
   }
 
   /**
-   * 사용자의 채널 목록 조회 - UseCase 특화 로직
+   * 사용자 채널 목록 조회 - 캐싱 적용
    */
   async getChannels(request: GetChannelsRequest): Promise<GetChannelsResponse> {
     try {
-      if (!request.userId) {
-        throw new Error('User ID is required');
-      }
-
       // 캐시 확인
-      const cacheKey = this.generateCacheKey('channels', request.userId);
-      const cached = await this.getCached<GetChannelsResponse>(cacheKey, this.calculateTTL('channel_list'));
+      const cacheKey = this.generateCacheKey('channel', 'list', request.userId);
+      const cached = await this.getCached<GetChannelsResponse>(cacheKey);
       if (cached) {
-        this.logger?.debug('Returning cached channels', { cacheKey });
-        return cached;
+        return { ...cached, cached: true };
       }
 
-      // Base Service 사용
+      // Base Service 호출
       const channels = await this.channelService.getUserChannels(request.userId);
 
+      // 응답 구성
       const response: GetChannelsResponse = {
         channels: channels.map(channel => this.mapToChannelProfile(channel)),
         success: true,
-        fetchedAt: new Date(),
-        totalCount: channels.length,
+        cached: false,
         total: channels.length,
-        hasMore: false
+        fetchedAt: new Date()
       };
 
       // 캐시 저장
@@ -139,209 +133,155 @@ export class ChannelUseCaseService extends BaseCacheService {
 
       return response;
     } catch (error) {
-      this.logger?.error('Failed to get channels', { 
-        request, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to get channels: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        channels: [],
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        cached: false,
+        total: 0,
+        fetchedAt: new Date()
+      };
     }
   }
 
   /**
-   * 채널 업데이트 - UseCase 특화 로직
+   * 채널 업데이트 - 캐시 무효화
    */
   async updateChannel(request: UpdateChannelRequest): Promise<UpdateChannelResponse> {
     try {
       // 권한 검증
-      const hasPermission = await this.checkChannelPermissions(request.userId, request.channelId, 'update_channel');
-      if (!hasPermission) {
-        throw new Error('Insufficient permissions to update channel');
-      }
+      await this.checkChannelPermissions(request.userId, 'update_channel');
 
-      // Base Service 사용
-      const channel = await this.channelService.updateChannel(request.channelId, request.updates);
+      // Base Service 호출
+      const updatedChannel = await this.channelService.updateChannel(request.id, request.updates);
 
-      // 캐시 무효화
-      this.invalidateChannelCache(request.channelId);
+      // 관련 캐시 무효화
+      this.invalidateChannelCache(request.id);
 
-      const response: UpdateChannelResponse = {
-        channel: this.mapToChannelProfile(channel),
+      return {
+        channel: this.mapToChannelProfile(updatedChannel),
         success: true,
         updatedAt: new Date()
       };
-
-      return response;
     } catch (error) {
-      this.logger?.error('Failed to update channel', { 
-        request, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to update channel: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        channel: null,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        updatedAt: new Date()
+      };
     }
   }
 
   /**
-   * 멤버 추가 - UseCase 특화 로직
+   * 멤버 추가 - 캐시 무효화
    */
   async addMember(request: AddMemberRequest): Promise<AddMemberResponse> {
     try {
       // 권한 검증
-      const hasPermission = await this.checkChannelPermissions(request.userId, request.channelId, 'add_member');
-      if (!hasPermission) {
-        throw new Error('Insufficient permissions to add member');
-      }
+      await this.checkChannelPermissions(request.userId, 'add_member');
 
-      // Base Service 사용
-      const success = await this.channelService.addMember(request.channelId, request.memberId);
+      // Base Service 호출
+      const result = await this.channelService.addMember(request.channelId, request.memberId);
 
-      if (success) {
-        // 캐시 무효화
+      if (result) {
+        // 관련 캐시 무효화
         this.invalidateMemberCache(request.channelId);
+        this.invalidateChannelCache(request.channelId);
+
+        return {
+          success: true,
+          message: 'Member added successfully'
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Failed to add member'
+        };
       }
-
-      const response: AddMemberResponse = {
-        success,
-        addedAt: new Date(),
-        channelId: request.channelId,
-        memberId: request.memberId
-      };
-
-      return response;
     } catch (error) {
-      this.logger?.error('Failed to add member', { 
-        request, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to add member: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
     }
   }
 
   /**
-   * 멤버 제거 - UseCase 특화 로직
+   * 멤버 제거 - 캐시 무효화
    */
   async removeMember(request: RemoveMemberRequest): Promise<RemoveMemberResponse> {
     try {
       // 권한 검증
-      const hasPermission = await this.checkChannelPermissions(request.userId, request.channelId, 'remove_member');
-      if (!hasPermission) {
-        throw new Error('Insufficient permissions to remove member');
-      }
+      await this.checkChannelPermissions(request.userId, 'remove_member');
 
-      // Base Service 사용
-      const success = await this.channelService.removeMember(request.channelId, request.memberId);
+      // Base Service 호출
+      const result = await this.channelService.removeMember(request.channelId, request.memberId);
 
-      if (success) {
-        // 캐시 무효화
+      if (result) {
+        // 관련 캐시 무효화
         this.invalidateMemberCache(request.channelId);
+        this.invalidateChannelCache(request.channelId);
+
+        return {
+          success: true,
+          message: 'Member removed successfully'
+        };
+      } else {
+        return {
+          success: false,
+          error: 'Failed to remove member'
+        };
       }
-
-      const response: RemoveMemberResponse = {
-        success,
-        removedAt: new Date(),
-        channelId: request.channelId,
-        memberId: request.memberId
-      };
-
-      return response;
     } catch (error) {
-      this.logger?.error('Failed to remove member', { 
-        request, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to remove member: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
     }
   }
 
   /**
-   * 채널 삭제 - UseCase 특화 로직
+   * 채널 삭제 - 캐시 무효화
    */
-  async deleteChannel(channelId: string, userId: string): Promise<boolean> {
+  async deleteChannel(channelId: string, userId: string): Promise<{ success: boolean; error?: string }> {
     try {
       // 권한 검증
-      const hasPermission = await this.checkChannelPermissions(userId, channelId, 'delete_channel');
-      if (!hasPermission) {
-        throw new Error('Insufficient permissions to delete channel');
-      }
+      await this.checkChannelPermissions(userId, 'delete_channel');
 
-      // Base Service 사용
-      const success = await this.channelService.deleteChannel(channelId, userId);
+      // Base Service 호출
+      const result = await this.channelService.deleteChannel(channelId, userId);
 
-      if (success) {
-        // 캐시 무효화
+      if (result) {
+        // 관련 캐시 무효화
         this.invalidateChannelCache(channelId);
-        this.invalidateMemberCache(channelId);
+        this.invalidateChannelListCache();
+
+        return { success: true };
+      } else {
+        return { success: false, error: 'Failed to delete channel' };
       }
-
-      return success;
     } catch (error) {
-      this.logger?.error('Failed to delete channel', { 
-        channelId, 
-        userId, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to delete channel: ${error instanceof Error ? error.message : String(error)}`);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
     }
   }
 
   /**
-   * 채널 멤버 목록 조회 - UseCase 특화 로직
-   */
-  async getChannelMembers(channelId: string): Promise<string[]> {
-    try {
-      // 캐시 확인
-      const cacheKey = this.generateCacheKey('channel_members', channelId);
-      const cached = await this.getCached<string[]>(cacheKey, this.calculateTTL('channel_info'));
-      if (cached) {
-        return cached;
-      }
-
-      // Base Service 사용 (간접적으로 멤버 정보 조회)
-      const channel = await this.channelService.getChannel(channelId);
-      const members = channel.members || [];
-
-      // 캐시 저장
-      await this.setCached(cacheKey, members, this.calculateTTL('channel_info'));
-
-      return members;
-    } catch (error) {
-      this.logger?.error('Failed to get channel members', { 
-        channelId, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to get channel members: ${error instanceof Error ? error.message : String(error)}`);
-    }
-  }
-
-  /**
-   * 멤버 여부 확인 - UseCase 특화 로직
-   */
-  async isMember(channelId: string, userId: string): Promise<boolean> {
-    try {
-      // Base Service 사용
-      return await this.channelService.isMember(channelId, userId);
-    } catch (error) {
-      this.logger?.error('Failed to check member status', { 
-        channelId, 
-        userId, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      return false;
-    }
-  }
-
-  /**
-   * 채널 검색 - UseCase 특화 로직
+   * 채널 검색 - 캐싱 적용
    */
   async searchChannels(query: string, userId?: string, limit: number = 10): Promise<any[]> {
     try {
       // 캐시 확인
-      const cacheKey = this.generateCacheKey('channel_search', query, userId || '', limit);
-      const cached = await this.getCached<any[]>(cacheKey, this.calculateTTL('search_results'));
+      const cacheKey = this.generateCacheKey('channel', 'search', query, userId || 'all', limit);
+      const cached = await this.getCached<any[]>(cacheKey);
       if (cached) {
         return cached;
       }
 
-      // Base Service 사용
+      // Base Service 호출
       const channels = await this.channelService.searchChannels(query, userId, limit);
 
       // 캐시 저장
@@ -349,29 +289,23 @@ export class ChannelUseCaseService extends BaseCacheService {
 
       return channels;
     } catch (error) {
-      this.logger?.error('Failed to search channels', { 
-        query, 
-        userId, 
-        limit, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to search channels: ${error instanceof Error ? error.message : String(error)}`);
+      return [];
     }
   }
 
   /**
-   * 채널 통계 조회 - UseCase 특화 로직
+   * 채널 통계 조회 - 캐싱 적용
    */
   async getChannelStats(channelId: string): Promise<any> {
     try {
       // 캐시 확인
-      const cacheKey = this.generateCacheKey('channel_stats', channelId);
-      const cached = await this.getCached<any>(cacheKey, this.calculateTTL('channel_info'));
+      const cacheKey = this.generateCacheKey('channel', 'stats', channelId);
+      const cached = await this.getCached<any>(cacheKey);
       if (cached) {
         return cached;
       }
 
-      // Base Service 사용
+      // Base Service 호출
       const stats = await this.channelService.getChannelStats(channelId);
 
       // 캐시 저장
@@ -379,12 +313,26 @@ export class ChannelUseCaseService extends BaseCacheService {
 
       return stats;
     } catch (error) {
-      this.logger?.error('Failed to get channel stats', { 
-        channelId, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      throw new Error(`Failed to get channel stats: ${error instanceof Error ? error.message : String(error)}`);
+      return null;
     }
+  }
+
+  /**
+   * 멤버 여부 확인
+   */
+  async isMember(channelId: string, userId: string): Promise<boolean> {
+    return await this.channelService.isMember(channelId, userId);
+  }
+
+  /**
+   * 채널 권한 검증
+   */
+  private async checkChannelPermissions(userId: string, operation: string): Promise<boolean> {
+    const hasPermission = await this.userService.hasPermission(userId, operation);
+    if (!hasPermission) {
+      throw new Error(`User ${userId} does not have permission for ${operation}`);
+    }
+    return true;
   }
 
   /**
@@ -392,65 +340,35 @@ export class ChannelUseCaseService extends BaseCacheService {
    */
   private invalidateChannelCache(channelId: string): void {
     this.invalidateCachePattern(`channel:${channelId}`);
-    this.invalidateCachePattern(`channel_stats:${channelId}`);
+    this.invalidateCachePattern(`channel:info:${channelId}`);
+    this.invalidateCachePattern(`channel:stats:${channelId}`);
   }
 
   /**
    * 멤버 관련 캐시 무효화
    */
   private invalidateMemberCache(channelId: string): void {
-    this.invalidateCachePattern(`channel_members:${channelId}`);
+    this.invalidateCachePattern(`channel:${channelId}:members`);
   }
 
   /**
-   * 권한 검증
+   * 채널 목록 캐시 무효화
    */
-  private async checkChannelPermissions(userId: string, channelId: string, operation: string): Promise<boolean> {
-    try {
-      // 기본 권한 검증 로직
-      // 실제 구현에서는 더 복잡한 권한 시스템을 사용해야 함
-      
-      if (operation === 'create_channel') {
-        // 채널 생성 권한은 모든 인증된 사용자에게 허용
-        return true;
-      }
-
-      if (operation === 'delete_channel') {
-        // 채널 삭제는 소유자만 가능
-        const channel = await this.channelService.getChannel(channelId);
-        return channel.ownerId === userId;
-      }
-
-      // 기타 작업은 채널 멤버이거나 소유자인 경우 허용
-      const isMember = await this.channelService.isMember(channelId, userId);
-      if (isMember) {
-        return true;
-      }
-
-      const channel = await this.channelService.getChannel(channelId);
-      return channel.ownerId === userId;
-    } catch (error) {
-      this.logger?.error('Failed to check channel permissions', { 
-        userId, 
-        channelId, 
-        operation, 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      return false;
-    }
+  private invalidateChannelListCache(): void {
+    this.invalidateCachePattern('channel:list');
   }
 
   /**
-   * 채널 엔티티를 프로필로 매핑
+   * 채널 엔티티를 DTO로 변환
    */
-  private mapToChannelProfile(channel: ChannelEntity): any {
+  private mapToChannelProfile(channel: any): any {
     return {
       id: channel.id,
       name: channel.name,
-      description: channel.description,
+      description: channel.description || '',
       type: channel.type,
       ownerId: channel.ownerId,
-      members: channel.members,
+      memberCount: channel.members?.length || 0,
       createdAt: channel.createdAt,
       updatedAt: channel.updatedAt
     };
