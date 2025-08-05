@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Button, Badge } from '../common';
 import { cn } from '../../../utils/cn';
 import type { SearchFilter } from '../../../domain/types/search';
@@ -19,7 +19,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   onClearFilters,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const hasActiveFilters =
     selectedFilters.length > 0 && !selectedFilters.includes('all');

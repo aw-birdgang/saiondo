@@ -120,7 +120,7 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
 
   const renderBars = () => {
     const barWidth = (chartWidth / data.length) * 0.8;
-    const barSpacing = (chartWidth / data.length) * 0.2;
+    // const barSpacing = (chartWidth / data.length) * 0.2;
 
     return points.map((point, index) => (
       <rect

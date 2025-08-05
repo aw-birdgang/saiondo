@@ -44,6 +44,7 @@ export interface CardProps
   children: React.ReactNode;
   interactive?: boolean;
   loading?: boolean;
+  hoverable?: boolean;
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(

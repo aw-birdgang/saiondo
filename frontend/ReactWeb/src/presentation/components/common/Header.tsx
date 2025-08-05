@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../../shared/constants/app';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useAuthStore } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
+// import { useUserStore } from '../../../stores/userStore';
 import { ThemeToggle } from './ThemeToggle';
 
 interface HeaderProps {
@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { user } = useAuthStore();
-  const { currentUser } = useUserStore();
+  // const { currentUser } = useUserStore();
 
   const handleLogout = () => {
     logout();

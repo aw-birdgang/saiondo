@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useUserStore } from '../../stores/userStore';
 import { useAuthStore } from '../../stores/authStore';
-import { useUseCases } from '../../app/di';
+import { useUseCases } from '../../di/useDI';
 import { toast } from 'react-hot-toast';
 
 interface UseUserManagerOptions {
@@ -15,7 +15,7 @@ export const useUserManager = (options: UseUserManagerOptions = {}) => {
 
   const userStore = useUserStore();
   const { user } = useAuthStore();
-  const { userUseCases } = useUseCases();
+  const { user: userUseCases } = useUseCases();
 
   const refreshUser = useCallback(async (): Promise<void> => {
     try {
@@ -31,7 +31,7 @@ export const useUserManager = (options: UseUserManagerOptions = {}) => {
 
       // 임시로 현재 인증된 사용자 정보 사용
       if (user) {
-        userStore.setCurrentUser(user);
+        // userStore.setCurrentUser(user);
         onUserLoad?.(user);
         toast.success('사용자 정보를 새로고침했습니다.');
       }

@@ -1,7 +1,7 @@
-import { initializeFileUploadService } from '../../infrastructure/api/FileUploadService';
-import { initializeWebSocket } from '../../infrastructure/websocket/WebSocketService';
-import { initializePaymentService } from '../../infrastructure/payment/PaymentService';
-import { initializePushNotificationService } from '../../infrastructure/notification/PushNotificationService';
+import { initializeFileUploadService } from '../infrastructure/api/FileUploadService';
+import { initializeWebSocket } from '../infrastructure/websocket/WebSocketService';
+import { initializePaymentService } from '../infrastructure/payment/PaymentService';
+import { initializePushNotificationService } from '../infrastructure/notification/PushNotificationService';
 
 // 서비스 초기화 함수
 export const initializeServices = (token?: string) => {
@@ -43,12 +43,15 @@ export { DI_TOKENS, type DIToken } from './tokens';
 export {
   type ApiConfig,
   type WebSocketConfig,
+  type I18nConfig,
   type AppConfig,
   defaultApiConfig,
   defaultWebSocketConfig,
+  defaultI18nConfig,
   defaultAppConfig,
   createApiConfig,
   createWebSocketConfig,
+  createI18nConfig,
   createAppConfig,
 } from './config';
 
@@ -64,5 +67,16 @@ export {
   useConfig,
 } from './useDI';
 
+// i18n and language utilities
+export { default as i18n } from './i18n';
+export {
+  initializeLanguage,
+  setLanguage,
+  getCurrentLanguage,
+  getLanguageName,
+  getNativeLanguageName,
+  availableLanguages,
+} from './languageUtils';
+
 // Re-export for convenience
-export { container as di } from './container';
+export { container as di } from './container'; 

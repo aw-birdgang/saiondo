@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../shared/constants/app';
 import { useToastContext } from '../providers/ToastProvider';
 import type { CategoryState, CategoryStats } from '../../domain/types/category';
-import type { ICategoryUseCase } from '../../application/usecases/CategoryUseCase';
+import type { CategoryUseCase } from '../../application/usecases/CategoryUseCase';
 
-export const useCategory = (categoryUseCase: ICategoryUseCase) => {
+export const useCategory = (categoryUseCase: CategoryUseCase) => {
   const navigate = useNavigate();
   const toast = useToastContext();
 

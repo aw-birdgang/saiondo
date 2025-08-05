@@ -39,25 +39,25 @@ export const useIsAuthenticated = () => {
 };
 
 // 유닛 함수들로 분리
-const validateLoginInputs = (email: string, password: string): void => {
-  if (!email || typeof email !== 'string') {
-    throw new Error('유효한 이메일을 입력해주세요.');
-  }
+// const validateLoginInputs = (email: string, password: string): void => {
+//   if (!email || typeof email !== 'string') {
+//     throw new Error('유효한 이메일을 입력해주세요.');
+//   }
 
-  if (!password || typeof password !== 'string') {
-    throw new Error('유효한 비밀번호를 입력해주세요.');
-  }
+//   if (!password || typeof password !== 'string') {
+//     throw new Error('유효한 비밀번호를 입력해주세요.');
+//   }
 
-  if (password.length < 6) {
-    throw new Error('비밀번호는 6자 이상이어야 합니다.');
-  }
+//   if (password.length < 6) {
+//     throw new Error('비밀번호는 6자 이상이어야 합니다.');
+//   }
 
-  // 이메일 형식 검증
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new Error('유효한 이메일 형식을 입력해주세요.');
-  }
-};
+//   // 이메일 형식 검증
+//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   if (!emailRegex.test(email)) {
+//     throw new Error('유효한 이메일 형식을 입력해주세요.');
+//   }
+// };
 
 const saveAuthData = (response: { token: string }): void => {
   localStorage.setItem('accessToken', response.token);
@@ -87,37 +87,37 @@ const handleLoginError = (set: any, error: unknown): void => {
   throw error;
 };
 
-const validateRegisterInputs = (
-  email: string,
-  password: string,
-  username: string
-): void => {
-  if (!email?.trim() || typeof email !== 'string') {
-    throw new Error('유효한 이메일을 입력해주세요.');
-  }
+// const validateRegisterInputs = (
+//   email: string,
+//   password: string,
+//   username: string
+// ): void => {
+//   if (!email?.trim() || typeof email !== 'string') {
+//     throw new Error('유효한 이메일을 입력해주세요.');
+//   }
 
-  if (!password?.trim() || typeof password !== 'string') {
-    throw new Error('유효한 비밀번호를 입력해주세요.');
-  }
+//   if (!password?.trim() || typeof password !== 'string') {
+//     throw new Error('유효한 비밀번호를 입력해주세요.');
+//   }
 
-  if (!username?.trim() || typeof username !== 'string') {
-    throw new Error('유효한 사용자명을 입력해주세요.');
-  }
+//   if (!username?.trim() || typeof username !== 'string') {
+//     throw new Error('유효한 사용자명을 입력해주세요.');
+//   }
 
-  if (password.length < 6) {
-    throw new Error('비밀번호는 6자 이상이어야 합니다.');
-  }
+//   if (password.length < 6) {
+//     throw new Error('비밀번호는 6자 이상이어야 합니다.');
+//   }
 
-  if (username.length < 2) {
-    throw new Error('사용자명은 2자 이상이어야 합니다.');
-  }
+//   if (username.length < 2) {
+//     throw new Error('사용자명은 2자 이상이어야 합니다.');
+//   }
 
-  // 이메일 형식 검증
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new Error('유효한 이메일 형식을 입력해주세요.');
-  }
-};
+//   // 이메일 형식 검증
+//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   if (!emailRegex.test(email)) {
+//     throw new Error('유효한 이메일 형식을 입력해주세요.');
+//   }
+// };
 
 // 실제 API 함수들로 변경
 const api = {
@@ -174,7 +174,7 @@ const api = {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // Initial state
       user: null,
       token: null,

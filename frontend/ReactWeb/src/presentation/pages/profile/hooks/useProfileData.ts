@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../../../stores/authStore';
 import { useProfileStore } from '../../../../stores/profileStore';
 import type { Profile } from '../../../../domain/dto/ProfileDto';
@@ -33,7 +33,7 @@ interface UseProfileDataReturn {
 }
 
 export const useProfileData = (userId?: string): UseProfileDataReturn => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { user } = useAuthStore();
   const {
     profile,

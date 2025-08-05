@@ -27,8 +27,8 @@ export interface IUseCaseMetadata {
  * DI Container에서 UseCase를 등록할 때 사용
  */
 export interface UseCaseRegistration {
-  token: string;
+  token: string | symbol;
   useCase: new (...args: any[]) => IUseCase;
-  dependencies: string[];
+  dependencies: (string | symbol)[];
   metadata?: IUseCaseMetadata;
 }

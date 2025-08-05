@@ -1,10 +1,10 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import {
   setLanguage,
   getCurrentLanguage,
   availableLanguages,
-} from '../../../app/di/languageUtils';
+} from '../../../di/languageUtils';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -15,7 +15,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   className = '',
   variant = 'dropdown',
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const currentLanguage = getCurrentLanguage();
 
   const handleLanguageChange = (languageCode: string) => {

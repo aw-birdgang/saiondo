@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { LoadingSpinner } from '../../common';
 import { cn } from '../../../../utils/cn';
 import type { Message } from '../../../pages/chat/types/chatTypes';

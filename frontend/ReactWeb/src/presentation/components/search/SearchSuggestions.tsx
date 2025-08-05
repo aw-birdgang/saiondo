@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Button } from '../common';
 import { cn } from '../../../utils/cn';
 
@@ -20,7 +20,7 @@ export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   onClearHistory,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div className={cn('max-w-4xl mx-auto p-6', className)}>

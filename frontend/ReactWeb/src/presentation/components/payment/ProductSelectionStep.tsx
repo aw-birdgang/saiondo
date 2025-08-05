@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardHeader,
@@ -27,7 +27,7 @@ export const ProductSelectionStep: React.FC<ProductSelectionStepProps> = ({
   onProductSelect,
   onRetry,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   if (isLoading) {
     return (

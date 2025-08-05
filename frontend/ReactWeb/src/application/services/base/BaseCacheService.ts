@@ -71,7 +71,7 @@ export abstract class BaseCacheService {
    */
   protected async getCached<T>(
     key: string,
-    ttl: number = 300 // 기본 5분
+    // ttl: number = 300 // 기본 5분
   ): Promise<T | null> {
     try {
       const cached = this.cache.get<T>(key);

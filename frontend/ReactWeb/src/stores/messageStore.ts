@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { container } from '../di/container';
-import type { Message } from '../domain/dto/MessageDto';
-import type { MessageReaction } from '../domain/dto/MessageDto';
+import type { Message } from '../domain/types/message';
+import type { MessageReaction } from '../domain/types/message';
 
 export interface MessageState {
   // State
@@ -121,9 +121,15 @@ export const useMessageStore = create<MessageState>()((set, get) => ({
           message.id === messageId
             ? {
                 ...message,
-                reactions: ((message as any).reactions || []).filter(
+                reactions: ((message as any).reactions || []).map(
                   (reaction: MessageReaction) =>
-                    !(reaction.userId === userId && reaction.emoji === emoji)
+                    reaction.emoji === emoji
+                      ? {
+                          ...reaction,
+                          users: reaction.users.filter(id => id !== userId),
+                          count: reaction.count - 1,
+                        }
+                      : reaction
                 ),
               }
             : message
@@ -189,15 +195,20 @@ export const useMessageStore = create<MessageState>()((set, get) => ({
       set({ loading: true, error: null });
       const messageRepository = container.getMessageRepository();
 
-      // Create message entity
-      const { MessageEntity } = await import('../domain/entities/Message');
-      const messageEntity = MessageEntity.create(messageData);
+      // Create message with required properties
+      const messageToCreate = {
+        ...messageData,
+        senderName: 'User', // 기본값 설정
+        isRead: false,
+        isDeleted: false,
+        isEdited: false,
+        toJSON: () => messageToCreate,
+      };
 
-      const savedMessage = await messageRepository.save(messageEntity);
-      const message = savedMessage.toJSON();
+      const savedMessage = await messageRepository.create(messageToCreate);
 
       // Add to local state
-      get().addMessage(messageData.channelId, message);
+      get().addMessage(messageData.channelId, savedMessage);
       set({ loading: false });
     } catch (error) {
       const errorMessage =

@@ -1,10 +1,11 @@
 import React from 'react';
 
 interface AiAdviceCardProps {
-  title: string;
-  content: string;
-  category: string;
-  timestamp: Date;
+  title?: string;
+  content?: string;
+  category?: string;
+  timestamp?: Date;
+  onStartChat?: () => void;
 }
 
 export const AiAdviceCard: React.FC<AiAdviceCardProps> = ({
@@ -25,7 +26,7 @@ export const AiAdviceCard: React.FC<AiAdviceCardProps> = ({
           </span>
         </div>
         <span className='text-sm text-gray-500 dark:text-gray-400'>
-          {timestamp.toLocaleDateString()}
+          {timestamp?.toLocaleDateString() || '날짜 없음'}
         </span>
       </div>
       <p className='text-gray-600 dark:text-gray-300 leading-relaxed'>

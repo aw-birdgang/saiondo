@@ -38,6 +38,7 @@ export interface StatusBadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof statusBadgeVariants> {
   text?: string;
+  type?: 'success' | 'error' | 'warning' | 'default';
 }
 
 export const StatusBadge = React.forwardRef<HTMLDivElement, StatusBadgeProps>(

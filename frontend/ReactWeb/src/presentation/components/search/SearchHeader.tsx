@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Input, Button, LoadingSpinner } from '../common';
 import { cn } from '../../../utils/cn';
 
@@ -24,7 +24,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
   totalResults,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div

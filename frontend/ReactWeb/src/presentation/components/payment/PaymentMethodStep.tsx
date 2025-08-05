@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardHeader,
@@ -44,7 +44,7 @@ export const PaymentMethodStep: React.FC<PaymentMethodStepProps> = ({
   onNext,
   onPrevious,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const handleNext = () => {
     if (selectedPaymentMethod === 'card') {

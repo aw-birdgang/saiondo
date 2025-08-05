@@ -142,12 +142,12 @@ export const useUserStore = create<UserState>()(
 
           set({ loading: true, error: null });
           const userRepository = container.getUserRepository();
-          const updatedUserEntity = await userRepository.updateOnlineStatus(
+          await userRepository.updateOnlineStatus(
             currentUser.id,
             isOnline
           );
           set({
-            currentUser: updatedUserEntity.toJSON() as UserProfile,
+            currentUser: { ...currentUser, isOnline },
             loading: false,
           });
         } catch (error) {

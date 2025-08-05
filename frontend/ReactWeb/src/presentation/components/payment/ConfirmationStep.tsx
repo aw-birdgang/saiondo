@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardContent, Button } from '../common';
 import type {
   SubscriptionProduct,
@@ -26,7 +26,7 @@ export const ConfirmationStep: React.FC<ConfirmationStepProps> = ({
   onConfirm,
   isProcessing,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div className='space-y-6'>

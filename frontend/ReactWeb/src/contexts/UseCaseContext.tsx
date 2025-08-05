@@ -1,10 +1,10 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useUseCases } from '../app/di';
+import { useUseCases } from '../di/useDI';
 
 interface UseCaseContextType {
-  userUseCases: ReturnType<typeof useUseCases>['userUseCases'];
-  channelUseCases: ReturnType<typeof useUseCases>['channelUseCases'];
-  messageUseCases: ReturnType<typeof useUseCases>['messageUseCases'];
+  user: ReturnType<typeof useUseCases>['user'];
+  channel: ReturnType<typeof useUseCases>['channel'];
+  message: ReturnType<typeof useUseCases>['message'];
 }
 
 const UseCaseContext = createContext<UseCaseContextType | undefined>(undefined);
@@ -16,12 +16,12 @@ interface UseCaseProviderProps {
 export const UseCaseProvider: React.FC<UseCaseProviderProps> = ({
   children,
 }) => {
-  const { userUseCases, channelUseCases, messageUseCases } = useUseCases();
+  const { user, channel, message } = useUseCases();
 
   const value: UseCaseContextType = {
-    userUseCases,
-    channelUseCases,
-    messageUseCases,
+    user,
+    channel,
+    message,
   };
 
   return (

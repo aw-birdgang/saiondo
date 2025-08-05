@@ -10,8 +10,8 @@ const RegisterPage: React.FC = () => {
   const {
     // 상태
     isLoading,
-    error,
-    isAuthenticated,
+    // error,
+    // isAuthenticated,
 
     // 액션
     handleRegister,

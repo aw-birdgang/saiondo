@@ -8,13 +8,28 @@ export interface Channel {
   description?: string;
   type: 'public' | 'private' | 'direct';
   ownerId: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
   members: string[];
   blockedUsers?: string[];
   maxMembers?: number;
-  createdAt: Date;
-  updatedAt: Date;
   lastMessageAt?: Date;
   unreadCount?: number;
+  lastMessage?: {
+    id: string;
+    content: string;
+    senderId: string;
+    senderName: string;
+    createdAt: Date;
+  };
+  settings?: {
+    allowInvites: boolean;
+    allowFileUploads: boolean;
+    maxMembers: number;
+    autoArchive: boolean;
+  };
+  toJSON(): Channel;
 }
 
 /**

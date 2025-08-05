@@ -131,7 +131,7 @@ export const VirtualizedListLoaderExample: React.FC = () => {
           items={items}
           itemHeight={40}
           containerHeight={256}
-          renderItem={(item: any, index: number) => (
+          renderItem={(item: any) => (
             <div className='p-2 border-b'>
               <span className='font-medium'>#{item.id}</span> {item.text}
             </div>

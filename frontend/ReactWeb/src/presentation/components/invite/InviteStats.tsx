@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { cn } from '../../../utils/cn';
 import type { InviteStats as InviteStatsType } from '../../../domain/types/invite';
 
@@ -12,7 +12,7 @@ export const InviteStats: React.FC<InviteStatsProps> = ({
   stats,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const statItems = [
     {

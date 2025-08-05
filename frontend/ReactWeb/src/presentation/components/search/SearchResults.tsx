@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Button, LoadingSpinner } from '../common';
 import { SearchResultItem } from './SearchResultItem';
 import type { SearchResult } from '../../../domain/types/search';
@@ -21,7 +21,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   onResultClick,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   if (isLoading && results.length === 0) {
     return (

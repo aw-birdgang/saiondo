@@ -1,4 +1,5 @@
-import { container, DI_TOKENS } from './container';
+import { container } from './container';
+import { DI_TOKENS } from './tokens';
 import type { UseCaseRegistration } from '../application/usecases/interfaces/IUseCase';
 
 /**

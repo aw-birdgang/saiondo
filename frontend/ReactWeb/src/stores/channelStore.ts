@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { container } from '../di/container';
-import type { Channel } from '../domain/dto/ChannelDto';
+import type { Channel } from '../domain/types/channel';
 import type { ChannelInvitation } from '../domain/types';
 
 export interface Channels {
@@ -40,7 +40,7 @@ export interface ChannelState {
   deleteChannel: (channelId: string) => Promise<void>;
   addMember: (channelId: string, userId: string) => Promise<void>;
   removeMember: (channelId: string, userId: string) => Promise<void>;
-  markAsRead: (channelId: string) => Promise<void>;
+  markAsRead: (channelId: string, userId: string) => Promise<void>;
 }
 
 export const useChannelStore = create<ChannelState>()(
@@ -79,13 +79,10 @@ export const useChannelStore = create<ChannelState>()(
           const ownedChannels: Channel[] = [];
           const memberChannels: Channel[] = [];
 
-          userChannels.forEach(channelEntity => {
-            const channel = channelEntity.toJSON();
-            if (channelEntity.isOwner(userId)) {
-              ownedChannels.push(channel);
-            } else {
-              memberChannels.push(channel);
-            }
+          // userChannels는 이미 { ownedChannels, memberChannels } 형태로 반환됨
+          set({
+            channels: userChannels,
+            loading: false,
           });
 
           set({
@@ -122,12 +119,14 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
 
-          // Create channel entity
-          const { ChannelEntity } = await import('../domain/entities/Channel');
-          const channelEntity = ChannelEntity.create(channelData);
+          // Create channel with required properties
+          const channelToCreate = {
+            ...channelData,
+            createdBy: channelData.ownerId,
+            toJSON: () => channelToCreate,
+          };
 
-          const savedChannel = await channelRepository.save(channelEntity);
-          const channel = savedChannel.toJSON();
+          const savedChannel = await channelRepository.create(channelToCreate);
 
           // Update local state
           const { channels } = get();
@@ -135,7 +134,7 @@ export const useChannelStore = create<ChannelState>()(
             set({
               channels: {
                 ...channels,
-                ownedChannels: [...channels.ownedChannels, channel],
+                ownedChannels: [...channels.ownedChannels, savedChannel],
               },
               loading: false,
             });
@@ -147,7 +146,7 @@ export const useChannelStore = create<ChannelState>()(
         }
       },
 
-      joinByInvite: async (inviteCode: string, userId: string) => {
+      joinByInvite: async (_inviteCode: string, userId: string) => {
         try {
           set({ loading: true, error: null });
           // This would need to be implemented in the API
@@ -233,11 +232,11 @@ export const useChannelStore = create<ChannelState>()(
         }
       },
 
-      markAsRead: async (channelId: string) => {
+      markAsRead: async (channelId: string, userId: string) => {
         try {
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
-          await channelRepository.markAsRead(channelId);
+          await channelRepository.markAsRead(channelId, userId);
 
           // Refresh current channel
           await get().fetchChannelById(channelId);

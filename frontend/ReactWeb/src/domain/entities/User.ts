@@ -1,4 +1,4 @@
-import type { User } from '../dto/UserDto';
+import type { User } from '../types/user';
 import { UserStatus } from '../types/UserStatus';
 
 // Domain Entity with Business Logic

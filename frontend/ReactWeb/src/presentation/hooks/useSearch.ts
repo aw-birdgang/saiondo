@@ -7,7 +7,7 @@ import type {
   SearchFilter,
   SearchRequest,
 } from '../../domain/types/search';
-import type { ISearchUseCase } from '../../application/usecases/SearchUseCase';
+import type { SearchUseCase } from '../../application/usecases/SearchUseCase';
 
 const SEARCH_FILTERS: SearchFilter[] = [
   { type: 'all', label: '전체', count: 0, isActive: true },
@@ -19,7 +19,7 @@ const SEARCH_FILTERS: SearchFilter[] = [
   { type: 'category', label: '카테고리', count: 0, isActive: false },
 ];
 
-export const useSearch = (searchUseCase: ISearchUseCase) => {
+export const useSearch = (searchUseCase: SearchUseCase) => {
   const navigate = useNavigate();
   const toast = useToastContext();
 
@@ -300,7 +300,7 @@ export const useSearch = (searchUseCase: ISearchUseCase) => {
   // 초기 데이터 로드
   const loadInitialData = useCallback(async () => {
     try {
-      const [history, trending] = await Promise.all([
+      const [history] = await Promise.all([
         searchUseCase.getSearchHistory(),
         searchUseCase.getTrendingSearches(),
       ]);

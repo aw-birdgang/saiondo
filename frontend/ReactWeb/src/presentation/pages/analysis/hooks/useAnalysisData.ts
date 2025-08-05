@@ -56,7 +56,7 @@ export const useAnalysisData = () => {
   // 에러 처리
   useErrorHandler(analysisState.error, {
     showToast: true,
-    onError: error => {
+    onError: () => {
       setAnalysisState(prev => ({ ...prev, error: null }));
     },
   });

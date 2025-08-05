@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../app/di/container';
-import { DI_TOKENS } from '../../../app/di/tokens';
+// import { useTranslation } from 'react-i18next';
+import { getContainer } from '../../../di/container';
+import { DI_TOKENS } from '../../../di/tokens';
 import { usePayment } from '../../hooks/usePayment';
 import { useDataLoader } from '../../hooks/useDataLoader';
 import { useToastContext } from '../../providers/ToastProvider';
@@ -13,7 +13,7 @@ import {
   CompleteStep,
   PaymentProgress,
 } from '../../components/payment';
-import type { IPaymentUseCase } from '../../../application/usecases/PaymentUseCase';
+import type { PaymentUseCase } from '../../../application/usecases/PaymentUseCase';
 import type { PaymentStep } from '../../../domain/types/payment';
 
 const PAYMENT_STEPS: PaymentStep[] = [
@@ -50,19 +50,19 @@ const PAYMENT_STEPS: PaymentStep[] = [
 ];
 
 const PaymentPage: React.FC = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const toast = useToastContext();
   const container = getContainer();
 
   // Payment Use Case 가져오기
-  const [paymentUseCase] = useState<IPaymentUseCase>(() =>
-    container.get<IPaymentUseCase>(DI_TOKENS.PAYMENT_USE_CASE)
+      const [paymentUseCase] = useState<PaymentUseCase>(() =>
+    container.get<PaymentUseCase>(DI_TOKENS.PAYMENT_USE_CASE)
   );
 
   // Payment 상태 관리 훅
   const {
     state,
-    currentStepInfo,
+    // currentStepInfo,
     discountedPrice,
     selectProduct,
     selectPaymentMethod,
@@ -74,7 +74,7 @@ const PaymentPage: React.FC = () => {
     goToPreviousStep,
     processPayment,
     clearError,
-    reset,
+    // reset,
   } = usePayment(paymentUseCase);
 
   // 상품 데이터 로딩
@@ -82,7 +82,7 @@ const PaymentPage: React.FC = () => {
     data: products = [],
     loading: isLoadingProducts,
     error: productsError,
-    refetch: refetchProducts,
+    refresh: refetchProducts,
   } = useDataLoader(() => paymentUseCase.getSubscriptionProducts(), [], {
     autoLoad: true,
     errorMessage: '구독 상품을 불러오는데 실패했습니다.',
@@ -107,7 +107,7 @@ const PaymentPage: React.FC = () => {
   }, [state.error, toast, clearError]);
 
   // 결제 방법 선택된 결제 방법 정보
-  const selectedPaymentMethodInfo = paymentMethods.find(
+  const selectedPaymentMethodInfo = paymentMethods?.find(
     method => method.id === state.selectedPaymentMethod
   );
 
@@ -117,18 +117,18 @@ const PaymentPage: React.FC = () => {
       case 'product':
         return (
           <ProductSelectionStep
-            products={products}
+            products={products || []}
             isLoading={isLoadingProducts}
             error={productsError}
             onProductSelect={selectProduct}
-            onRetry={refetchProducts}
+            onRetry={() => refetchProducts?.()}
           />
         );
 
       case 'payment':
         return (
           <PaymentMethodStep
-            paymentMethods={paymentMethods}
+            paymentMethods={paymentMethods || []}
             selectedPaymentMethod={state.selectedPaymentMethod}
             cardDetails={state.cardDetails}
             couponCode={state.couponCode}

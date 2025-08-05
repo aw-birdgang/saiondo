@@ -16,7 +16,7 @@ export const useUser = () => {
     // Actions from Context
     refreshUser: userContext.refreshUser,
     updateUser: userContext.updateUser,
-    clearUser: userContext.clearUser,
+    // clearUser: userContext.clearUser,
 
     // Additional Zustand actions
     setCurrentUser: userStore.setCurrentUser,

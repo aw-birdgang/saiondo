@@ -17,14 +17,14 @@ const AnalysisPage: React.FC = () => {
     data,
     isLoading,
     isCreating,
-    error,
-    channelId,
+    // error,
+    // channelId,
 
     // 액션
     handleCreateAnalysis,
     handleRefreshAnalysis,
-    handleShareAnalysis,
-    handleExportAnalysis,
+    // handleShareAnalysis,
+    // handleExportAnalysis,
   } = useAnalysisData();
 
   if (isLoading) {

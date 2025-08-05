@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Button, Badge } from '../common';
 import { cn } from '../../../utils/cn';
 import type { ChannelInvitationItem } from '../../../domain/types/invite';
@@ -57,7 +57,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
   onCancel,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div

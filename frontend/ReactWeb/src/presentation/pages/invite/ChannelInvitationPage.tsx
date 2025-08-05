@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../app/di/container';
-import { DI_TOKENS } from '../../../app/di/tokens';
+import { getContainer } from '../../../di/container';
+import { DI_TOKENS } from '../../../di/tokens';
 import { useInvite } from '../../hooks/useInvite';
 import { useAuthStore } from '../../../stores/authStore';
 import { useToastContext } from '../../providers/ToastProvider';
 import { PageHeader } from '../../components/layout';
 import { Container, RefreshButton } from '../../components/common';
 import { InvitationList, InviteStats } from '../../components/invite';
-import type { IInviteUseCase } from '../../../application/usecases/InviteUseCase';
+import type { InviteUseCase } from '../../../application/usecases/InviteUseCase';
 
 const ChannelInvitationPage: React.FC = () => {
   const { t } = useTranslation();
@@ -17,8 +17,8 @@ const ChannelInvitationPage: React.FC = () => {
   const container = getContainer();
 
   // Invite Use Case 가져오기
-  const [inviteUseCase] = useState<IInviteUseCase>(() =>
-    container.get<IInviteUseCase>(DI_TOKENS.INVITE_USE_CASE)
+      const [inviteUseCase] = useState<InviteUseCase>(() =>
+    container.get<InviteUseCase>(DI_TOKENS.INVITE_USE_CASE)
   );
 
   // Invite 상태 관리 훅
@@ -29,7 +29,7 @@ const ChannelInvitationPage: React.FC = () => {
     respondToInvitation,
     cancelInvitation,
     clearError,
-    reset,
+    // reset,
   } = useInvite(inviteUseCase, user?.id);
 
   // 에러 처리

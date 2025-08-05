@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Button } from '../common';
 
 interface CompleteStepProps {
@@ -7,7 +7,7 @@ interface CompleteStepProps {
 }
 
 export const CompleteStep: React.FC<CompleteStepProps> = ({ onGoHome }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div className='text-center space-y-6'>

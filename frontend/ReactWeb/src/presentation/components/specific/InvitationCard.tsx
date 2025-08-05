@@ -104,7 +104,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
               {t('accept') || '수락'}
             </Button>
             <Button
-              variant='danger'
+              variant='destructive'
               size='sm'
               onClick={() => onReject(invitation.id)}
             >

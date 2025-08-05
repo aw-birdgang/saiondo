@@ -258,7 +258,7 @@ export const usePerformanceMeasure = (name: string) => {
 
   const end = useCallback(() => {
     if (startTime.current) {
-      const duration = performance.now() - startTime.current;
+      // const duration = performance.now() - startTime.current;
       // console.log(`${name} took ${duration.toFixed(2)}ms`);
       startTime.current = 0;
     }

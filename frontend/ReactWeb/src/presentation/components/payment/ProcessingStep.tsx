@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { LoadingSpinner, ProgressBar } from '../common';
 
 interface ProcessingStepProps {
@@ -7,7 +7,7 @@ interface ProcessingStepProps {
 }
 
 export const ProcessingStep: React.FC<ProcessingStepProps> = ({ progress }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   return (
     <div className='text-center space-y-6'>

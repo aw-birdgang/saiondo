@@ -11,7 +11,7 @@ import {
 } from '../contexts';
 import { ToastProvider } from '../presentation/providers/ToastProvider';
 import { AccessibilityProvider } from '../presentation/components/common/AccessibilityProvider';
-import { initializeServices } from './di/index';
+import { initializeServices } from '../di/index';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
 import { AppRoutes } from '../presentation/routes/AppRoutes';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Badge } from '../common';
 import { cn } from '../../../utils/cn';
 import type { SearchResult } from '../../../domain/types/search';
@@ -117,7 +117,7 @@ export const SearchResultItem: React.FC<SearchResultItemProps> = ({
   onClick,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const formatTimestamp = (timestamp?: Date) => {
     if (!timestamp) return '';

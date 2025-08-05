@@ -15,7 +15,7 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   className = '',
 }) => {
   return (
-    <Button variant={variant} fullWidth onClick={onClick} className={className}>
+    <Button variant={variant === 'danger' ? 'destructive' : variant} fullWidth onClick={onClick} className={className}>
       {label}
     </Button>
   );

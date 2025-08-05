@@ -32,7 +32,7 @@ interface AnalyticsData {
 }
 
 const ProfileAnalytics: React.FC<ProfileAnalyticsProps> = ({
-  userId,
+  // userId,
   className = '',
 }) => {
   const { t } = useTranslation();
@@ -345,7 +345,7 @@ const ProfileAnalytics: React.FC<ProfileAnalyticsProps> = ({
         </CardHeader>
         <CardContent>
           <div className='h-64 flex items-end space-x-2'>
-            {analytics.activity.map((day, index) => (
+            {analytics.activity.map((day) => (
               <div
                 key={day.date}
                 className='flex-1 flex flex-col items-center space-y-2'

@@ -5,15 +5,76 @@
 export interface Message {
   id: string;
   content: string;
-  type: 'text' | 'image' | 'file' | 'system';
-  channelId: string;
   senderId: string;
-  senderName?: string;
-  createdAt: string;
-  updatedAt: string;
-  reactions?: MessageReaction[];
+  senderName: string;
+  channelId: string;
+  type: 'text' | 'image' | 'file' | 'audio' | 'video' | 'system';
+  createdAt: Date;
+  updatedAt: Date;
+  isRead: boolean;
   isEdited: boolean;
-  metadata?: MessageMetadata;
+  isDeleted: boolean;
+  reactions?: MessageReaction[];
+  attachments?: MessageAttachment[];
+  metadata?: {
+    avatar?: string;
+    sender?: string;
+    timestamp?: Date;
+    category?: string;
+    tags?: string[];
+    relevance?: number;
+  };
+  replyTo?: string;
+  toJSON(): Message;
+}
+
+// Message 클래스 구현
+export class MessageImpl implements Message {
+  constructor(
+    public id: string,
+    public content: string,
+    public senderId: string,
+    public senderName: string,
+    public channelId: string,
+    public type: 'text' | 'image' | 'file' | 'audio' | 'video' | 'system',
+    public createdAt: Date,
+    public updatedAt: Date,
+    public isRead: boolean,
+    public isEdited: boolean,
+    public isDeleted: boolean,
+    public reactions: MessageReaction[] | undefined,
+    public attachments: MessageAttachment[] | undefined,
+    public metadata: {
+      avatar?: string;
+      sender?: string;
+      timestamp?: Date;
+      category?: string;
+      tags?: string[];
+      relevance?: number;
+    } | undefined,
+    public replyTo: string | undefined
+  ) {}
+
+  toJSON(): Message {
+    return {
+      id: this.id,
+      content: this.content,
+      senderId: this.senderId,
+      senderName: this.senderName,
+      channelId: this.channelId,
+      type: this.type,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      isRead: this.isRead,
+      isEdited: this.isEdited,
+      isDeleted: this.isDeleted,
+      reactions: this.reactions,
+      attachments: this.attachments,
+      metadata: this.metadata,
+      replyTo: this.replyTo,
+      toJSON: this.toJSON,
+    };
+  }
 }
 
 export interface MessageRequest {
@@ -30,11 +91,9 @@ export interface MessageUpdateRequest {
 }
 
 export interface MessageReaction {
-  id: string;
-  messageId: string;
-  userId: string;
   emoji: string;
-  createdAt: string;
+  count: number;
+  users: string[];
 }
 
 export interface ReactionRequest {
@@ -53,6 +112,24 @@ export interface MessageMetadata {
     width: number;
     height: number;
   };
+}
+
+export interface MessageAttachment {
+  id: string;
+  name: string;
+  url: string;
+  type: 'image' | 'file' | 'audio' | 'video';
+  size: number;
+  mimeType: string;
+  uploadedAt: Date;
+}
+
+export interface MessageStats {
+  totalMessages: number;
+  todayMessages: number;
+  averageMessagesPerDay: number;
+  mostActiveHour: number;
+  mostActiveDay: string;
 }
 
 export interface MessageSearchParams {

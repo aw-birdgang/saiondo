@@ -4,7 +4,7 @@ import type { Profile } from '../domain/dto/ProfileDto';
 import { container } from '../di/container';
 import { ProfileUseCases } from '../application/usecases/ProfileUseCases';
 // ProfileUseCaseService가 삭제되었으므로 any 타입으로 대체
-type ProfileUseCaseService = any;
+// type ProfileUseCaseService = any;
 
 interface ProfileState {
   // 상태
@@ -223,7 +223,7 @@ export const useProfileStore = create<ProfileState>()(
       },
 
       // 게시물 목록 조회 (임시 구현)
-      fetchPosts: async (userId: string) => {
+      fetchPosts: async (_userId: string) => {
         try {
           // TODO: 실제 게시물 API 연동
           set({ posts: [] });

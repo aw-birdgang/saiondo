@@ -20,7 +20,7 @@ interface NavItem {
 export const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  // const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const isTablet = useMediaQuery('(max-width: 1024px)');
@@ -38,7 +38,7 @@ export const MainLayout: React.FC = () => {
 
   // Use custom hook for route change handling
   useRouteChange({
-    onRouteChange: pathname => {
+    onRouteChange: () => {
       if (isMobile) {
         setSidebarOpen(false);
       }
@@ -302,7 +302,7 @@ export const MainLayout: React.FC = () => {
 
             {/* Navigation Groups */}
             <nav className='flex-1 px-4 py-6 space-y-6 overflow-y-auto'>
-              {navGroups.map((group, gi) => (
+              {navGroups.map((group) => (
                 <div key={group.label}>
                   <div className='text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 px-2 tracking-widest uppercase'>
                     {group.label}

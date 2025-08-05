@@ -1,6 +1,6 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type { IUserRepository } from '../../application/usecases/interfaces/IUserRepository';
+import type { IChannelRepository } from '../../application/usecases/interfaces/IChannelRepository';
+import type { IMessageRepository } from '../../application/usecases/interfaces/IMessageRepository';
 import type { CacheStats, CacheOptions, CacheEntry } from '../dto/CacheDto';
 
 export class CacheService {
@@ -12,7 +12,7 @@ export class CacheService {
     private readonly userRepository: IUserRepository,
     private readonly channelRepository: IChannelRepository,
     private readonly messageRepository: IMessageRepository,
-    private readonly options: CacheOptions = {}
+    // private readonly options: CacheOptions = {}
   ) {
     this.stats.maxSize = options.maxSize || 1000;
   }

@@ -25,9 +25,9 @@ export class MessageService {
     private readonly config: MessageServiceConfig = {}
   ) {
     this.performanceService = new PerformanceMonitoringService(
-      userRepository,
-      channelRepository,
-      messageRepository
+      this.userRepository,
+      this.channelRepository,
+      this.messageRepository
     );
 
     this.errorService = new ErrorHandlingService({

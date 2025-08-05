@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '../common';
 import { InvitationCard } from './InvitationCard';
 import type { ChannelInvitationItem } from '../../../domain/types/invite';
@@ -21,7 +21,7 @@ export const InvitationList: React.FC<InvitationListProps> = ({
   onCancel,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   if (isLoading) {
     return (

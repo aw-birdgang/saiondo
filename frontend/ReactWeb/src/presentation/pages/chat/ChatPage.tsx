@@ -19,8 +19,8 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [typingUsers, setTypingUsers] = useState<string[]>([]);
+  // const [isTyping, setIsTyping] = useState(false);
+  // const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -270,14 +270,14 @@ const ChatPage: React.FC = () => {
 
       <div ref={messagesEndRef} />
 
-      <TypingIndicator typingUsers={typingUsers} />
+      <TypingIndicator typingUsers={[]} />
 
       <ChatMessageInput
         channelId={channelId || ''}
         userId={currentUser.id}
         onMessageSent={handleMessageSent}
-        onTyping={() => setIsTyping(true)}
-        onStopTyping={() => setIsTyping(false)}
+        onTyping={() => {}}
+        onStopTyping={() => {}}
       />
     </ChatContainer>
   );

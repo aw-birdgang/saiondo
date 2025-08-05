@@ -34,6 +34,20 @@ export interface PushSubscription {
   };
 }
 
+// 브라우저 PushSubscription을 우리 타입으로 변환하는 헬퍼 함수
+function convertPushSubscription(subscription: globalThis.PushSubscription): PushSubscription {
+  const p256dhKey = subscription.getKey('p256dh');
+  const authKey = subscription.getKey('auth');
+  
+  return {
+    endpoint: subscription.endpoint,
+    keys: {
+      p256dh: p256dhKey ? btoa(String.fromCharCode(...new Uint8Array(p256dhKey))) : '',
+      auth: authKey ? btoa(String.fromCharCode(...new Uint8Array(authKey))) : '',
+    },
+  };
+}
+
 export class PushNotificationService {
   private config: NotificationConfig;
   private registration: ServiceWorkerRegistration | null = null;
@@ -44,13 +58,28 @@ export class PushNotificationService {
     this.isSupported = 'serviceWorker' in navigator && 'PushManager' in window;
   }
 
+  // 누락된 메서드들 추가
+  get vapidPublicKey(): string {
+    return this.config.vapidPublicKey;
+  }
+
+  private handleError(error: unknown): void {
+    console.error('PushNotificationService error:', error);
+    toast.error('푸시 알림 서비스 오류가 발생했습니다.');
+  }
+
+  private getCurrentUserId(): string {
+    // 실제 구현에서는 인증 상태에서 사용자 ID를 가져와야 함
+    return 'current-user-id';
+  }
+
   /**
    * 서비스 워커 등록
    */
   async registerServiceWorker(): Promise<boolean> {
     try {
       if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.register(
+        this.registration = await navigator.serviceWorker.register(
           '/firebase-messaging-sw.js'
         );
         return true;
@@ -90,10 +119,10 @@ export class PushNotificationService {
 
       const subscription = await this.registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.vapidPublicKey,
+        applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey),
       });
 
-      return subscription;
+      return convertPushSubscription(subscription);
     } catch (error) {
       this.handleError(error);
       return null;
@@ -136,7 +165,13 @@ export class PushNotificationService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          subscription: subscription.toJSON(),
+          subscription: {
+            endpoint: subscription.endpoint,
+            keys: {
+              p256dh: subscription.keys.p256dh,
+              auth: subscription.keys.auth,
+            },
+          },
           userId: this.getCurrentUserId(),
         }),
       });
@@ -178,10 +213,10 @@ export class PushNotificationService {
         body: message.body,
         icon: message.icon || '/favicon.ico',
         badge: message.badge,
-        image: message.image,
+        // image: message.image, // NotificationOptions에 image 속성이 없어서 주석 처리
         tag: message.tag,
         data: message.data,
-        actions: message.actions,
+        // actions: message.actions, // NotificationOptions에 actions 속성이 없어서 주석 처리
         requireInteraction: message.requireInteraction,
         silent: message.silent,
       });

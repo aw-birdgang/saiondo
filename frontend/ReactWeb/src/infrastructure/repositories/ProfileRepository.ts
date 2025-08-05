@@ -25,6 +25,21 @@ import type {
 } from '../../domain/dto/ProfileDto';
 import { ApiClient } from '../api/ApiClient';
 
+// API Response 타입 정의
+interface ApiResponse<T = unknown> {
+  data: T;
+  status: number;
+  statusText: string;
+}
+
+interface ProfileApiResponse {
+  success: boolean;
+  profile?: any;
+  error?: string;
+  cached?: boolean;
+  fetchedAt?: Date;
+}
+
 interface CacheItem {
   data: unknown;
   timestamp: number;
@@ -52,17 +67,17 @@ export class ProfileRepository implements IProfileRepository {
     request: CreateProfileRequest
   ): Promise<CreateProfileResponse> {
     try {
-      const response = await this.apiClient.post(`${this.baseUrl}`, request);
+      const response = await this.apiClient.post<ProfileApiResponse>(`${this.baseUrl}`, request);
 
-      if (response.data.success && response.data.profile) {
+      if (response.success && response.profile) {
         // 캐시에 저장
         this.setCache(
-          `profile:${response.data.profile.userId}`,
-          response.data.profile
+          `profile:${response.profile.userId}`,
+          response.profile
         );
       }
 
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -81,23 +96,23 @@ export class ProfileRepository implements IProfileRepository {
       if (cached) {
         return {
           success: true,
-          profile: cached,
+          profile: cached as any,
           cached: true,
           fetchedAt: new Date(),
         };
       }
 
-      const response = await this.apiClient.get(
+      const response = await this.apiClient.get<ProfileApiResponse>(
         `${this.baseUrl}/${request.userId}`
       );
 
-      if (response.data.success && response.data.profile) {
+      if (response.success && response.profile) {
         // 캐시에 저장
-        this.setCache(`profile:${request.userId}`, response.data.profile);
+        this.setCache(`profile:${request.userId}`, response.profile);
       }
 
       return {
-        ...response.data,
+        ...response,
         cached: false,
         fetchedAt: new Date(),
       };
@@ -116,17 +131,17 @@ export class ProfileRepository implements IProfileRepository {
     request: UpdateProfileRequest
   ): Promise<UpdateProfileResponse> {
     try {
-      const response = await this.apiClient.put(
+      const response = await this.apiClient.put<ProfileApiResponse>(
         `${this.baseUrl}/${request.userId}`,
         request
       );
 
-      if (response.data.success && response.data.profile) {
+      if (response.success && response.profile) {
         // 캐시 업데이트
-        this.setCache(`profile:${request.userId}`, response.data.profile);
+        this.setCache(`profile:${request.userId}`, response.profile);
       }
 
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -142,14 +157,14 @@ export class ProfileRepository implements IProfileRepository {
     request: DeleteProfileRequest
   ): Promise<DeleteProfileResponse> {
     try {
-      const response = await this.apiClient.delete(
+      const response = await this.apiClient.delete<ProfileApiResponse>(
         `${this.baseUrl}/${request.userId}`
       );
 
       // 캐시 삭제
       this.deleteCache(`profile:${request.userId}`);
 
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -180,10 +195,10 @@ export class ProfileRepository implements IProfileRepository {
         }),
       });
 
-      const response = await this.apiClient.get(
+      const response = await this.apiClient.get<SearchProfilesResponse>(
         `${this.baseUrl}/search?${params}`
       );
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -202,10 +217,10 @@ export class ProfileRepository implements IProfileRepository {
     request: GetProfileStatsRequest
   ): Promise<GetProfileStatsResponse> {
     try {
-      const response = await this.apiClient.get(
+      const response = await this.apiClient.get<GetProfileStatsResponse>(
         `${this.baseUrl}/${request.userId}/stats`
       );
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -221,11 +236,11 @@ export class ProfileRepository implements IProfileRepository {
     request: UpdateProfileStatsRequest
   ): Promise<UpdateProfileStatsResponse> {
     try {
-      const response = await this.apiClient.put(
+      const response = await this.apiClient.put<UpdateProfileStatsResponse>(
         `${this.baseUrl}/${request.userId}/stats`,
         request.stats
       );
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -239,7 +254,7 @@ export class ProfileRepository implements IProfileRepository {
    */
   async followUser(request: FollowUserRequest): Promise<FollowUserResponse> {
     try {
-      const response = await this.apiClient.post(
+      const response = await this.apiClient.post<FollowUserResponse>(
         `${this.baseUrl}/${request.followingId}/follow`,
         {
           followerId: request.followerId,
@@ -250,7 +265,7 @@ export class ProfileRepository implements IProfileRepository {
       this.deleteCache(`profile:${request.followerId}`);
       this.deleteCache(`profile:${request.followingId}`);
 
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -267,7 +282,7 @@ export class ProfileRepository implements IProfileRepository {
     request: UnfollowUserRequest
   ): Promise<UnfollowUserResponse> {
     try {
-      const response = await this.apiClient.delete(
+      const response = await this.apiClient.delete<UnfollowUserResponse>(
         `${this.baseUrl}/${request.followingId}/follow`,
         {
           data: { followerId: request.followerId },
@@ -278,7 +293,7 @@ export class ProfileRepository implements IProfileRepository {
       this.deleteCache(`profile:${request.followerId}`);
       this.deleteCache(`profile:${request.followingId}`);
 
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -300,10 +315,10 @@ export class ProfileRepository implements IProfileRepository {
         offset: (request.offset || 0).toString(),
       });
 
-      const response = await this.apiClient.get(
+      const response = await this.apiClient.get<GetFollowersResponse>(
         `${this.baseUrl}/${request.userId}/followers?${params}`
       );
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -327,10 +342,10 @@ export class ProfileRepository implements IProfileRepository {
         offset: (request.offset || 0).toString(),
       });
 
-      const response = await this.apiClient.get(
+      const response = await this.apiClient.get<GetFollowingResponse>(
         `${this.baseUrl}/${request.userId}/following?${params}`
       );
-      return response.data;
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -359,10 +374,10 @@ export class ProfileRepository implements IProfileRepository {
    */
   async isFollowing(followerId: string, followingId: string): Promise<boolean> {
     try {
-      const response = await this.apiClient.get(
+      const response = await this.apiClient.get<{ isFollowing: boolean }>(
         `${this.baseUrl}/${followingId}/followers/${followerId}`
       );
-      return response.data.isFollowing;
+      return response.isFollowing;
     } catch (error) {
       return false;
     }

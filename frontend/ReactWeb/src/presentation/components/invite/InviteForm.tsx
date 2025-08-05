@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Input, Button, TextArea } from '../common';
 import { cn } from '../../../utils/cn';
 
@@ -20,7 +20,7 @@ export const InviteForm: React.FC<InviteFormProps> = ({
   error,
   className,
 }) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const [message, setMessage] = useState('');
 
   const handleInvite = () => {

@@ -70,7 +70,7 @@ const MyPageContent: React.FC<MyPageContentProps> = ({
       {/* Logout Button */}
       <Card>
         <Button
-          variant='danger'
+          variant='destructive'
           fullWidth
           onClick={onLogout}
           disabled={isLoading}

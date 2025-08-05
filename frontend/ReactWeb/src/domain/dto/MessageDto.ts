@@ -5,14 +5,35 @@
 export interface Message {
   id: string;
   content: string;
-  channelId: string;
   senderId: string;
-  type: 'text' | 'image' | 'file' | 'system';
-  metadata?: Record<string, unknown>;
+  senderName: string;
+  channelId: string;
+  type: 'text' | 'image' | 'file' | 'audio' | 'video' | 'system';
   createdAt: Date;
   updatedAt: Date;
+  isRead: boolean;
   isEdited: boolean;
+  isDeleted: boolean;
+  reactions?: MessageReaction[];
+  attachments?: {
+    id: string;
+    name: string;
+    url: string;
+    type: 'image' | 'file' | 'audio' | 'video';
+    size: number;
+    mimeType: string;
+    uploadedAt: Date;
+  }[];
+  metadata?: {
+    avatar?: string;
+    sender?: string;
+    timestamp?: Date;
+    category?: string;
+    tags?: string[];
+    relevance?: number;
+  };
   replyTo?: string;
+  toJSON(): Message;
 }
 
 /**
@@ -71,9 +92,7 @@ export interface MessageMetadata {
  * Message 반응 DTO
  */
 export interface MessageReaction {
-  id: string;
-  messageId: string;
-  userId: string;
   emoji: string;
-  createdAt: Date;
+  count: number;
+  users: string[];
 }

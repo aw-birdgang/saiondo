@@ -9,7 +9,7 @@ import type {
   CardDetails,
   PaymentRequest,
 } from '../../domain/types/payment';
-import type { IPaymentUseCase } from '../../application/usecases/PaymentUseCase';
+import type { PaymentUseCase } from '../../application/usecases/PaymentUseCase';
 
 const PAYMENT_STEPS: PaymentStep[] = [
   {
@@ -44,7 +44,7 @@ const PAYMENT_STEPS: PaymentStep[] = [
   },
 ];
 
-export const usePayment = (paymentUseCase: IPaymentUseCase) => {
+export const usePayment = (paymentUseCase: PaymentUseCase) => {
   const navigate = useNavigate();
   const toast = useToastContext();
 

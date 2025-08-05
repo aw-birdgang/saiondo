@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useSearchData } from './hooks/useSearchData';
 import { useToastContext } from '../../providers/ToastProvider';
@@ -13,7 +13,7 @@ import {
 import { ErrorState } from '../../components/specific';
 
 const SearchPage: React.FC = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const toast = useToastContext();
 
@@ -27,7 +27,7 @@ const SearchPage: React.FC = () => {
     isLoading,
     error,
     total,
-    page,
+    // page,
     hasMore,
     selectedFilters,
     handleQueryChange,
@@ -42,7 +42,7 @@ const SearchPage: React.FC = () => {
 
   // 검색 제안 및 인기 검색어 상태
   const [suggestions, setSuggestions] = React.useState<string[]>([]);
-  const [trendingSearches, setTrendingSearches] = React.useState<string[]>([]);
+  // const [trendingSearches, setTrendingSearches] = React.useState<string[]>([]);
   const [recentSearches, setRecentSearches] = React.useState<string[]>([]);
 
   // URL 쿼리 파라미터가 있으면 초기 검색 실행
@@ -70,11 +70,11 @@ const SearchPage: React.FC = () => {
   // 초기 데이터 로드
   React.useEffect(() => {
     const loadInitialData = async () => {
-      const [trending, recent] = await Promise.all([
+      const [recent] = await Promise.all([
         getTrendingSearches(),
         getSearchHistory(),
       ]);
-      setTrendingSearches(trending);
+              // setTrendingSearches(trending);
       setRecentSearches(recent);
     };
 
@@ -220,6 +220,14 @@ const SearchPage: React.FC = () => {
               description: result.content || '',
               url: `/${result.type}/${result.id}`,
               type: result.type === 'file' ? 'category' : (result.type as any),
+              metadata: {
+                avatar: result.metadata?.avatar,
+                sender: result.metadata?.sender,
+                timestamp: result.metadata?.timestamp ? new Date(result.metadata.timestamp) : undefined,
+                category: result.metadata?.category,
+                tags: result.metadata?.tags,
+                relevance: result.metadata?.relevance,
+              },
             }))}
             isLoading={isLoading}
             hasMore={hasMore}

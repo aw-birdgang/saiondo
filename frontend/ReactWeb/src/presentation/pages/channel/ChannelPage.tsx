@@ -2,7 +2,7 @@ import React from 'react';
 import { LoadingState } from '../../components/common';
 import { PageLayout } from '../../components/specific';
 import {
-  ChannelHeader,
+  // ChannelHeader,
   ChannelStats,
   ChannelList,
 } from '../../components/specific';
@@ -20,8 +20,8 @@ const ChannelTab: React.FC = () => {
     // 액션
     handleChannelClick,
     handleCreateChannel,
-    handleDeleteChannel,
-    handleSearchChannels,
+    // handleDeleteChannel,
+    // handleSearchChannels,
   } = useChannelData();
 
   if (isLoading) {
@@ -40,7 +40,7 @@ const ChannelTab: React.FC = () => {
     <PageLayout>
       <ChannelContainer>
         {/* Header */}
-        <ChannelHeader onCreateChannel={handleCreateChannel} />
+        {/* <ChannelHeader onCreateChannel={handleCreateChannel} /> */}
 
         {/* Channel Stats */}
         <ChannelStats stats={stats} />

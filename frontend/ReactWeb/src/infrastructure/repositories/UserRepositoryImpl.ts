@@ -1,5 +1,5 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User } from '../../domain/entities/User';
+import type { User, UserProfile } from '../../domain/types/user';
 import { UserEntity } from '../../domain/entities/User';
 import { ApiClient } from '../api/ApiClient';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
@@ -36,18 +36,7 @@ export class UserRepositoryImpl implements IUserRepository {
     }
   }
 
-  async save(user: UserEntity): Promise<UserEntity> {
-    try {
-      const userData = user.toJSON();
-      const response = await this.apiClient.post<User>('/users', userData);
-      return UserEntity.fromData(response);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw error;
-      }
-      throw DomainErrorFactory.createUserValidation('Failed to save user');
-    }
-  }
+
 
   async update(id: string, user: Partial<User>): Promise<UserEntity> {
     try {
@@ -69,6 +58,23 @@ export class UserRepositoryImpl implements IUserRepository {
         throw error;
       }
       throw DomainErrorFactory.createUserValidation('Failed to delete user');
+    }
+  }
+
+  async save(user: User): Promise<User> {
+    try {
+      if (user.id) {
+        const response = await this.apiClient.put<User>(`/users/${user.id}`, user);
+        return response;
+      } else {
+        const response = await this.apiClient.post<User>('/users', user);
+        return response;
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to save user');
     }
   }
 
@@ -114,19 +120,12 @@ export class UserRepositoryImpl implements IUserRepository {
   }
 
   // Business operations
-  async updateOnlineStatus(id: string, isOnline: boolean): Promise<UserEntity> {
+  async updateOnlineStatus(userId: string, isOnline: boolean): Promise<void> {
     try {
-      const currentUser = await this.findById(id);
-      if (!currentUser) {
-        throw DomainErrorFactory.createUserNotFound(id);
-      }
-
-      const updatedUser = currentUser.updateOnlineStatus(isOnline);
-      const response = await this.apiClient.put<User>(
-        `/users/${id}`,
-        updatedUser.toJSON()
-      );
-      return UserEntity.fromData(response);
+      await this.apiClient.put<User>(`/users/${userId}/status`, {
+        isOnline,
+        lastSeenAt: new Date(),
+      });
     } catch (error) {
       if (error instanceof Error) {
         throw error;
@@ -138,27 +137,161 @@ export class UserRepositoryImpl implements IUserRepository {
   }
 
   async updateProfile(
-    id: string,
-    displayName?: string,
-    avatar?: string
-  ): Promise<UserEntity> {
+    userId: string,
+    profile: Partial<UserProfile>
+  ): Promise<UserProfile> {
     try {
-      const currentUser = await this.findById(id);
-      if (!currentUser) {
-        throw DomainErrorFactory.createUserNotFound(id);
-      }
-
-      const updatedUser = currentUser.updateProfile(displayName, avatar);
-      const response = await this.apiClient.put<User>(
-        `/users/${id}`,
-        updatedUser.toJSON()
+      const response = await this.apiClient.put<UserProfile>(
+        `/users/${userId}/profile`,
+        profile
       );
-      return UserEntity.fromData(response);
+      return response;
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
       throw DomainErrorFactory.createUserValidation('Failed to update profile');
+    }
+  }
+
+  // 추가 메서드들
+  async create(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
+    try {
+      const response = await this.apiClient.post<User>('/users', user);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to create user');
+    }
+  }
+
+  async getProfile(userId: string): Promise<UserProfile | null> {
+    try {
+      const response = await this.apiClient.get<UserProfile>(`/users/${userId}/profile`);
+      return response || null;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to get profile');
+    }
+  }
+
+  async updateAvatar(userId: string, avatarUrl: string): Promise<void> {
+    try {
+      await this.apiClient.put(`/users/${userId}/avatar`, { avatarUrl });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to update avatar');
+    }
+  }
+
+  async authenticate(email: string, password: string): Promise<User | null> {
+    try {
+      const response = await this.apiClient.post<User>('/auth/login', { email, password });
+      return response || null;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Authentication failed');
+    }
+  }
+
+  async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<void> {
+    try {
+      await this.apiClient.put(`/users/${userId}/password`, { oldPassword, newPassword });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to change password');
+    }
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    try {
+      await this.apiClient.post('/auth/reset-password', { email });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to reset password');
+    }
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    try {
+      await this.apiClient.post('/auth/verify-email', { token });
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to verify email');
+    }
+  }
+
+  async getOnlineUsers(): Promise<User[]> {
+    try {
+      const response = await this.apiClient.get<User[]>('/users/online');
+      return response || [];
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to get online users');
+    }
+  }
+
+  async searchByName(name: string): Promise<User[]> {
+    try {
+      const response = await this.apiClient.get<User[]>(`/users/search?name=${encodeURIComponent(name)}`);
+      return response || [];
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to search users by name');
+    }
+  }
+
+  async searchByEmail(email: string): Promise<User[]> {
+    try {
+      const response = await this.apiClient.get<User[]>(`/users/search?email=${encodeURIComponent(email)}`);
+      return response || [];
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to search users by email');
+    }
+  }
+
+  async getUserCount(): Promise<number> {
+    try {
+      const response = await this.apiClient.get<{ count: number }>('/users/count');
+      return response?.count || 0;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to get user count');
+    }
+  }
+
+  async getActiveUserCount(): Promise<number> {
+    try {
+      const response = await this.apiClient.get<{ count: number }>('/users/active-count');
+      return response?.count || 0;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw DomainErrorFactory.createUserValidation('Failed to get active user count');
     }
   }
 }

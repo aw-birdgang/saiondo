@@ -14,9 +14,17 @@ export interface WebSocketConfig {
   };
 }
 
+export interface I18nConfig {
+  defaultLanguage: string;
+  fallbackLanguage: string;
+  supportedLanguages: string[];
+  debug: boolean;
+}
+
 export interface AppConfig {
   api: ApiConfig;
   websocket: WebSocketConfig;
+  i18n: I18nConfig;
   environment: 'development' | 'production' | 'test';
   debug: boolean;
 }
@@ -39,9 +47,17 @@ export const defaultWebSocketConfig: WebSocketConfig = {
   },
 };
 
+export const defaultI18nConfig: I18nConfig = {
+  defaultLanguage: 'en',
+  fallbackLanguage: 'en',
+  supportedLanguages: ['en', 'ko'],
+  debug: import.meta.env.DEV,
+};
+
 export const defaultAppConfig: AppConfig = {
   api: defaultApiConfig,
   websocket: defaultWebSocketConfig,
+  i18n: defaultI18nConfig,
   environment:
     (import.meta.env.MODE as AppConfig['environment']) || 'development',
   debug: import.meta.env.DEV,
@@ -59,7 +75,12 @@ export const createWebSocketConfig = (
   ...overrides,
 });
 
+export const createI18nConfig = (overrides?: Partial<I18nConfig>): I18nConfig => ({
+  ...defaultI18nConfig,
+  ...overrides,
+});
+
 export const createAppConfig = (overrides?: Partial<AppConfig>): AppConfig => ({
   ...defaultAppConfig,
   ...overrides,
-});
+}); 

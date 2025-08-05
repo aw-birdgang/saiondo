@@ -137,7 +137,7 @@ export const OptimizedList = memo(
   }
 ) as <T>(props: OptimizedListProps<T>) => React.ReactElement;
 
-OptimizedList.displayName = 'OptimizedList';
+// OptimizedList.displayName = 'OptimizedList';
 
 // Virtualized list for large datasets
 interface VirtualizedListProps<T> {
@@ -205,4 +205,4 @@ export const VirtualizedList = memo(
   }
 ) as <T>(props: VirtualizedListProps<T>) => React.ReactElement;
 
-VirtualizedList.displayName = 'VirtualizedList';
+// VirtualizedList.displayName = 'VirtualizedList';

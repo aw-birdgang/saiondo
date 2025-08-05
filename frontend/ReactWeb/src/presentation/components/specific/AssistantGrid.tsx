@@ -82,6 +82,7 @@ const AssistantGrid: React.FC<AssistantGridProps> = ({
         <AssistantCard
           key={assistant.id}
           assistant={assistant}
+          onSelect={onAssistantSelect}
           categoryName={getCategoryName(assistant.category)}
           categoryColor={getCategoryColor(assistant.category)}
           categoryIcon={getCategoryIcon(assistant.category)}

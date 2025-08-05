@@ -95,7 +95,7 @@ export const usePerformanceMonitor = (
 ) => {
   const {
     enabled = true,
-    logToConsole = false,
+    // logToConsole = false,
     maxMetrics = 100,
     onMetricRecorded,
   } = options;

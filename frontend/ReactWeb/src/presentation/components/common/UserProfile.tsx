@@ -25,7 +25,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   const { currentUser } = useUserStore();
 
   const displayUser = currentUser || user;
-  const userName = displayUser?.name || t('common.user');
+  const userName = (displayUser as any)?.name || t('common.user');
   const userEmail = displayUser?.email || 'user@example.com';
   const userInitial = userName.charAt(0).toUpperCase();
 

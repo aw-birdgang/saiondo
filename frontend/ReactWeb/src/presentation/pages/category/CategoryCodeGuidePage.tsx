@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../app/di/container';
-import { DI_TOKENS } from '../../../app/di/tokens';
+// import { useTranslation } from 'react-i18next';
+import { getContainer } from '../../../di/container';
+import { DI_TOKENS } from '../../../di/tokens';
 import { useCategory } from '../../hooks/useCategory';
 import { useToastContext } from '../../providers/ToastProvider';
 import { LoadingSpinner } from '../../components/common';
@@ -11,22 +11,22 @@ import {
   CategoryCodeHeader,
   CategoryCodeSearch,
 } from '../../components/category';
-import type { ICategoryUseCase } from '../../../application/usecases/CategoryUseCase';
+import type { CategoryUseCase } from '../../../application/usecases/CategoryUseCase';
 
 const CategoryCodeGuidePage: React.FC = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const toast = useToastContext();
   const container = getContainer();
 
   // Category Use Case 가져오기
-  const [categoryUseCase] = useState<ICategoryUseCase>(() =>
-    container.get<ICategoryUseCase>(DI_TOKENS.CATEGORY_USE_CASE)
+      const [categoryUseCase] = useState<CategoryUseCase>(() =>
+    container.get<CategoryUseCase>(DI_TOKENS.CATEGORY_USE_CASE)
   );
 
   // Category 상태 관리 훅
   const {
     state,
-    categoryStats,
+    // categoryStats,
     selectCategoryCode,
     clearSelectedCode,
     updateSearchTerm,

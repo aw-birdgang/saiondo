@@ -7,7 +7,7 @@ export const useAuth = () => {
     // State from Zustand store
     user: authStore.user,
     token: authStore.token,
-    isAuthenticated: authStore.isAuthenticated,
+    isAuthenticated: !!authStore.token,
     loading: authStore.loading,
     error: authStore.error,
 

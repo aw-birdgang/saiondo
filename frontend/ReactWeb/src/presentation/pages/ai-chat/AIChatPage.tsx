@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useToastContext } from '../../providers/ToastProvider';
 import { useAIChat } from '../../hooks/useAIChat';
 import { ChatContainer, ChatHeader } from '../../components/chat';
 
 const AIChatPage: React.FC = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const toast = useToastContext();

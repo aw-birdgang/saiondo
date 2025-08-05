@@ -31,9 +31,9 @@ class SentryService implements LoggingService {
   }
 
   captureMessage(
-    message: string,
-    level: string = 'info',
-    context?: Record<string, unknown>
+    _message: string,
+    _level: string = 'info',
+    _context?: Record<string, unknown>
   ) {
     if (!this.isInitialized) return;
 
@@ -41,21 +41,21 @@ class SentryService implements LoggingService {
     // 실제 구현에서는 Sentry SDK를 사용
   }
 
-  captureException(error: Error, context?: Record<string, unknown>) {
+  captureException(_error: Error, _context?: Record<string, unknown>) {
     if (!this.isInitialized) return;
 
     // Sentry가 설정된 경우에만 예외 캡처
     // 실제 구현에서는 Sentry SDK를 사용
   }
 
-  setUser(user: { id: string; email?: string; name?: string }) {
+  setUser(_user: { id: string; email?: string; name?: string }) {
     if (!this.isInitialized) return;
 
     // Sentry가 설정된 경우에만 사용자 설정
     // 실제 구현에서는 Sentry SDK를 사용
   }
 
-  setTag(key: string, value: string) {
+  setTag(_key: string, _value: string) {
     if (!this.isInitialized) return;
 
     // Sentry가 설정된 경우에만 태그 설정
@@ -80,9 +80,9 @@ class LogRocketService implements LoggingService {
   }
 
   captureMessage(
-    message: string,
-    level: string = 'info',
-    context?: Record<string, unknown>
+    _message: string,
+    _level: string = 'info',
+    _context?: Record<string, unknown>
   ) {
     if (!this.isInitialized) return;
 
@@ -90,21 +90,21 @@ class LogRocketService implements LoggingService {
     // 실제 구현에서는 LogRocket SDK를 사용
   }
 
-  captureException(error: Error, context?: Record<string, unknown>) {
+  captureException(_error: Error, _context?: Record<string, unknown>) {
     if (!this.isInitialized) return;
 
     // LogRocket이 설정된 경우에만 예외 캡처
     // 실제 구현에서는 LogRocket SDK를 사용
   }
 
-  setUser(user: { id: string; email?: string; name?: string }) {
+  setUser(_user: { id: string; email?: string; name?: string }) {
     if (!this.isInitialized) return;
 
     // LogRocket이 설정된 경우에만 사용자 설정
     // 실제 구현에서는 LogRocket SDK를 사용
   }
 
-  setTag(key: string, value: string) {
+  setTag(_key: string, _value: string) {
     if (!this.isInitialized) return;
 
     // LogRocket이 설정된 경우에만 태그 설정
@@ -193,7 +193,7 @@ export class Logger {
    */
   private log(level: string, message: string, data?: Record<string, unknown>) {
     const timestamp = new Date().toISOString();
-    const logEntry = {
+    const _logEntry = {
       timestamp,
       level,
       context: this.context,

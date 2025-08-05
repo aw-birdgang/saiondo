@@ -22,8 +22,8 @@ const QuickAction: React.FC<QuickActionProps> = ({
   title,
   description,
   icon,
-  href,
-  color,
+  // href,
+  // color,
   badge,
   gradient = false,
 }) => (

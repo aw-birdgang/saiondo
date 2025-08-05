@@ -94,6 +94,10 @@ export class ApiClient {
     const response = await this.client.delete<T>(url, config);
     return response.data;
   }
+
+  public async head<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+    return await this.client.head<T>(url, config);
+  }
 }
 
 export const apiClient = new ApiClient();

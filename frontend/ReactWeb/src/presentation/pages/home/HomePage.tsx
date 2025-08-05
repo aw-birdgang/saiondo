@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../../stores/authStore';
+// import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
-import { useChannelStore } from '../../../stores/channelStore';
-import { useDataLoader } from '../../hooks/useDataLoader';
+// import { useChannelStore } from '../../../stores/channelStore';
+// import { useDataLoader } from '../../hooks/useDataLoader';
 import { useToastContext } from '../../providers/ToastProvider';
 import { AIChatWidget } from '../../components/chat/AIChatWidget';
 import {
@@ -22,11 +22,11 @@ import {
 import { useHomeData } from './hooks/useHomeData';
 
 const HomePage: React.FC = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user } = useAuthStore();
-  const { loading, fetchCurrentUser } = useUserStore();
-  const { channels, fetchChannelsByUserId } = useChannelStore();
+  // const { user } = useAuthStore();
+  const { loading } = useUserStore();
+  // const { fetchChannelsByUserId } = useChannelStore();
   const [isVisible, setIsVisible] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const toast = useToastContext();
@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
     systemStatus,
     notifications,
     isLoading: dataLoading,
-    refreshData,
+    // refreshData,
   } = useHomeData();
 
   // Animation trigger
@@ -51,13 +51,13 @@ const HomePage: React.FC = () => {
   }, []);
 
   // 임시로 데이터 로딩을 비활성화하여 무한 로딩 문제 해결
-  const { loadData: loadHomeData } = useDataLoader(
-    async () => {
-      console.log('HomePage data loading disabled temporarily');
-    },
-    [user?.id, fetchCurrentUser, fetchChannelsByUserId],
-    { autoLoad: false }
-  );
+  // const { loadData: loadHomeData } = useDataLoader(
+  //   async () => {
+  //     console.log('HomePage data loading disabled temporarily');
+  //   },
+  //   [user?.id, fetchCurrentUser, fetchChannelsByUserId],
+  //   { autoLoad: false }
+  // );
 
   // 검색 제안 로드
   useEffect(() => {
@@ -107,7 +107,7 @@ const HomePage: React.FC = () => {
     toast.info(`항목 ${index + 1}을 편집합니다!`);
   };
 
-  const handleChartPointClick = (point: any, index: number) => {
+  const handleChartPointClick = (point: any) => {
     toast.info(`${point.label}: ${point.y}점`);
   };
 

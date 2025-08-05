@@ -14,6 +14,10 @@ interface AssistantCardProps {
   assistant: Assistant;
   onSelect: (assistant: Assistant) => void;
   className?: string;
+  categoryName?: string;
+  categoryColor?: string;
+  categoryIcon?: string;
+  onClick?: (assistant: Assistant) => void;
 }
 
 const AssistantCard: React.FC<AssistantCardProps> = ({

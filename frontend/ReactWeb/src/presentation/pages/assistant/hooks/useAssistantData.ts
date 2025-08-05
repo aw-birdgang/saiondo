@@ -33,6 +33,7 @@ export const useAssistantData = () => {
           languages: ['ko', 'en'], // API에서 제공하지 않는 경우 기본값
           responseTime: '1-2분', // API에서 제공하지 않는 경우 기본값
           isOnline: assistant.isAvailable,
+          messageCount: 0, // 기본값으로 설정
         }));
       } catch (error) {
         console.error('AI 어시스턴트 로드 실패:', error);

@@ -97,7 +97,7 @@ export const AppRoutes: React.FC = () => {
   // Memoize routes to prevent unnecessary re-renders
   const routes = useMemo(
     () =>
-      routeConfig.map(({ path, element: Element, name }) => (
+      routeConfig.map(({ path, element: Element }) => (
         <Route
           key={path}
           path={path}

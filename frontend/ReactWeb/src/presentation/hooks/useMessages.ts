@@ -127,17 +127,31 @@ export const useMessages = (channelId: string) => {
         setMessages(prev =>
           prev.map(msg => {
             if (msg.id === messageId) {
-              const newReaction = {
-                id: crypto.randomUUID(),
-                messageId,
-                userId: 'current-user',
-                emoji,
-                createdAt: new Date().toISOString(),
-              };
-              return {
-                ...msg,
-                reactions: [...(msg.reactions || []), newReaction],
-              };
+              // 기존 반응이 있는지 확인
+              const existingReaction = msg.reactions?.find(r => r.emoji === emoji);
+              
+              if (existingReaction) {
+                // 기존 반응에 사용자 추가
+                return {
+                  ...msg,
+                  reactions: msg.reactions?.map(r =>
+                    r.emoji === emoji
+                      ? { ...r, count: r.count + 1, users: [...r.users, 'current-user'] }
+                      : r
+                  ),
+                };
+              } else {
+                // 새로운 반응 생성
+                const newReaction = {
+                  emoji,
+                  count: 1,
+                  users: ['current-user'],
+                };
+                return {
+                  ...msg,
+                  reactions: [...(msg.reactions || []), newReaction],
+                };
+              }
             }
             return msg;
           })
@@ -164,9 +178,15 @@ export const useMessages = (channelId: string) => {
             if (msg.id === messageId) {
               return {
                 ...msg,
-                reactions: (msg.reactions || []).filter(
-                  r => !(r.emoji === emoji && r.userId === 'current-user')
-                ),
+                reactions: msg.reactions?.map(r =>
+                  r.emoji === emoji
+                    ? {
+                        ...r,
+                        count: r.count - 1,
+                        users: r.users.filter(user => user !== 'current-user'),
+                      }
+                    : r
+                ).filter(r => r.count > 0), // count가 0인 반응 제거
               };
             }
             return msg;

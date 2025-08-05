@@ -1,12 +1,13 @@
 import { useEffect, useCallback } from 'react';
 import { useChannelStore } from '../../stores/channelStore';
 import { useAuthStore } from '../../stores/authStore';
-import { useUseCases } from '../../app/di';
+// import { useUseCases } from '../../di/useDI';
 import { toast } from 'react-hot-toast';
+import type { Channel } from '../../domain/types/channel';
 
 // 임시 API 함수들 (실제 구현 시 교체)
 const channelApi = {
-  loadChannels: async (userId: string, token: string) => {
+  loadChannels: async (userId: string) => {
     // TODO: 실제 API 호출로 대체
     // const response = await fetch(`/api/channels/user/${userId}`, {
     //   headers: {
@@ -27,6 +28,7 @@ const channelApi = {
           name: '커플 상담실',
           description: '연인 관계 상담을 위한 채널입니다.',
           type: 'private' as const,
+          ownerId: userId,
           createdBy: userId,
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1일 전
           updatedAt: new Date(Date.now() - 1000 * 60 * 30), // 30분 전
@@ -38,6 +40,7 @@ const channelApi = {
             senderName: 'AI 상담사',
             createdAt: new Date(Date.now() - 1000 * 60 * 30),
           },
+          toJSON: function() { return this; },
         },
       ],
       memberChannels: [
@@ -46,6 +49,7 @@ const channelApi = {
           name: '감정 공유방',
           description: '감정을 나누고 공유하는 채널입니다.',
           type: 'public' as const,
+          ownerId: 'other-user-id',
           createdBy: 'other-user-id',
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7), // 1주일 전
           updatedAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2시간 전
@@ -57,6 +61,7 @@ const channelApi = {
             senderName: '다른 사용자',
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
           },
+          toJSON: function() { return this; },
         },
       ],
     };
@@ -70,7 +75,7 @@ const channelApi = {
       ownerId: string;
       members: string[];
     },
-    token: string
+    // token: string
   ) => {
     // TODO: 실제 API 호출로 대체
     // const response = await fetch('/api/channels', {
@@ -100,12 +105,11 @@ const channelApi = {
   },
 
   updateChannel: async (
-    channelId: string,
-    updates: {
-      name?: string;
-      description?: string;
-    },
-    token: string
+    // channelId: string,
+    // updates: {
+    //   name?: string;
+    //   description?: string;
+    // }
   ) => {
     // TODO: 실제 API 호출로 대체
     // const response = await fetch(`/api/channels/${channelId}`, {
@@ -124,7 +128,7 @@ const channelApi = {
     return { success: true };
   },
 
-  deleteChannel: async (channelId: string, token: string) => {
+  deleteChannel: async (_channelId: string) => {
     // TODO: 실제 API 호출로 대체
     // const response = await fetch(`/api/channels/${channelId}`, {
     //   method: 'DELETE',
@@ -136,16 +140,19 @@ const channelApi = {
     // return response.json();
 
     // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-    return { success: true };
+    return {
+      success: true,
+      message: 'Channel deleted successfully'
+    };
   },
 };
 
 export const useChannels = () => {
   const channelStore = useChannelStore();
   const { user, token } = useAuthStore();
-  const { channelUseCases } = useUseCases();
+  // const { channel } = useUseCases();
 
   const loadChannels = useCallback(async () => {
     if (!user?.id) return;
@@ -155,7 +162,7 @@ export const useChannels = () => {
       channelStore.setError(null);
 
       // 실제 API 호출
-      const channels = await channelApi.loadChannels(user.id, token || '');
+      const channels = await channelApi.loadChannels(user.id);
       channelStore.setChannels(channels);
     } catch (err) {
       const errorMessage =
@@ -183,14 +190,18 @@ export const useChannels = () => {
         channelStore.setError(null);
 
         // 실제 API 호출
-        const channel = await channelApi.createChannel(
-          {
-            ...channelData,
-            ownerId: user.id,
-            members: [user.id],
-          },
-          token || ''
-        );
+        const channel: Channel = {
+          id: `channel-${Date.now()}`,
+          name: channelData.name,
+          description: channelData.description,
+          type: channelData.type,
+          ownerId: user.id,
+          createdBy: user.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          members: [user.id],
+          toJSON: () => channel,
+        };
 
         // 로컬 상태 업데이트
         const currentChannels = channelStore.channels;
@@ -233,7 +244,7 @@ export const useChannels = () => {
         channelStore.setError(null);
 
         // 실제 API 호출
-        await channelApi.updateChannel(channelId, updates, token || '');
+        // await channelApi.updateChannel(channelId, updates);
 
         // 로컬 상태 업데이트
         const currentChannels = channelStore.channels;
@@ -283,7 +294,7 @@ export const useChannels = () => {
         channelStore.setError(null);
 
         // 실제 API 호출
-        await channelApi.deleteChannel(channelId, token || '');
+        await channelApi.deleteChannel(channelId);
 
         // 로컬 상태 업데이트
         const currentChannels = channelStore.channels;

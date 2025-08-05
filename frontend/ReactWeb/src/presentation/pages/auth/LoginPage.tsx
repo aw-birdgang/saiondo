@@ -13,8 +13,8 @@ const LoginPage: React.FC = () => {
   const {
     // 상태
     isLoading,
-    error,
-    isAuthenticated,
+    // error,
+    // isAuthenticated,
 
     // 액션
     handleLogin,
