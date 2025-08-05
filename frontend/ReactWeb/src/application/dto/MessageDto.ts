@@ -18,10 +18,15 @@ export interface CreateMessageResponse {
 
 export interface GetMessageRequest {
   id: string;
+  messageId?: string; // UseCase Service용
 }
 
 export interface GetMessageResponse {
   message: any; // Message DTO
+  success?: boolean;
+  error?: string;
+  cached?: boolean;
+  fetchedAt?: Date;
 }
 
 export interface GetMessagesRequest {
@@ -84,6 +89,8 @@ export interface SendMessageRequest {
 export interface SendMessageResponse {
   message: any; // Message DTO
   success: boolean;
+  error?: string;
+  sentAt?: Date;
 }
 
 export interface GetRecentMessagesRequest {
@@ -103,6 +110,53 @@ export interface GetMessageCountResponse {
   count: number;
 }
 
+// 새로운 UseCase Service용 DTO들
+
+export interface GetChannelMessagesRequest {
+  channelId: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface GetChannelMessagesResponse {
+  messages: MessageProfile[];
+  success: boolean;
+  error?: string;
+  cached: boolean;
+  total: number;
+  hasMore: boolean;
+  fetchedAt: Date;
+}
+
+export interface GetUserMessagesRequest {
+  userId: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface GetUserMessagesResponse {
+  messages: MessageProfile[];
+  success: boolean;
+  error?: string;
+  cached: boolean;
+  total: number;
+  hasMore: boolean;
+  fetchedAt: Date;
+}
+
+export interface GetMessageStatsRequest {
+  channelId?: string;
+  userId?: string;
+}
+
+export interface GetMessageStatsResponse {
+  stats: MessageStats | null;
+  success: boolean;
+  error?: string;
+  cached: boolean;
+  fetchedAt: Date;
+}
+
 export interface MessageProfile {
   id: string;
   content: string;
@@ -119,9 +173,13 @@ export interface MessageProfile {
 
 export interface MessageStats {
   totalMessages: number;
-  messagesByType: Record<string, number>;
+  totalChannels?: number;
   averageLength: number;
+  lastMessage?: MessageProfile | null;
+  messagesByType: Record<string, number>;
   lastMessageAt: Date;
+  channelId?: string;
+  userId?: string;
 }
 
 export interface MessageValidationSchema {

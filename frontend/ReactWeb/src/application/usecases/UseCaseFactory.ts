@@ -1,9 +1,22 @@
 import { container, DI_TOKENS } from '../../di/container';
 import { useCaseRegistry } from '../../di/UseCaseRegistry';
+import { AnalyticsUseCase } from './AnalyticsUseCase';
+import { CreateChannelUseCase } from './CreateChannelUseCase';
+import { UserUseCases } from './UserUseCases';
+import { MessageUseCases } from './MessageUseCases';
+import { FileUseCases } from './FileUseCases';
+import { NotificationUseCases } from './NotificationUseCases';
+import { AnalyticsUseCaseService } from './services/analytics/AnalyticsUseCaseService';
+import { ChannelUseCaseService } from './services/channel/ChannelUseCaseService';
+import { UserUseCaseService } from './services/user/UserUseCaseService';
+import { MessageUseCaseService } from './services/message/MessageUseCaseService';
+import { FileUseCaseService } from './services/file/FileUseCaseService';
+import { NotificationUseCaseService } from './services/notification/NotificationUseCaseService';
 
 /**
  * Use Case Factory
  * DI Container를 사용하여 Use Case 인스턴스를 생성하는 팩토리 클래스
+ * 새로운 UseCase Service 구조를 지원
  */
 export class UseCaseFactory {
   /**
@@ -37,6 +50,41 @@ export class UseCaseFactory {
   // Channel related use cases
   static createCreateChannelUseCase() {
     return container.createUseCase(DI_TOKENS.CREATE_CHANNEL_USE_CASE);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 CreateChannelUseCase 생성
+   */
+  static createCreateChannelUseCaseWithService(channelUseCaseService: ChannelUseCaseService): CreateChannelUseCase {
+    return new CreateChannelUseCase(channelUseCaseService);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 UserUseCases 생성
+   */
+  static createUserUseCasesWithService(userUseCaseService: UserUseCaseService): UserUseCases {
+    return new UserUseCases(userUseCaseService);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 MessageUseCases 생성
+   */
+  static createMessageUseCasesWithService(messageUseCaseService: MessageUseCaseService): MessageUseCases {
+    return new MessageUseCases(messageUseCaseService);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 FileUseCases 생성
+   */
+  static createFileUseCasesWithService(fileUseCaseService: FileUseCaseService): FileUseCases {
+    return new FileUseCases(fileUseCaseService);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 NotificationUseCases 생성
+   */
+  static createNotificationUseCasesWithService(notificationUseCaseService: NotificationUseCaseService): NotificationUseCases {
+    return new NotificationUseCases(notificationUseCaseService);
   }
 
   static createInviteToChannelUseCase() {
@@ -98,25 +146,28 @@ export class UseCaseFactory {
     return container.createUseCase(DI_TOKENS.WEB_SOCKET_USE_CASE);
   }
 
-  static createAPMMonitoringUseCase() {
-    return container.createUseCase(DI_TOKENS.APM_MONITORING_USE_CASE);
-  }
-
+  // Analytics related use cases
   static createAnalyticsUseCase() {
     return container.createUseCase(DI_TOKENS.ANALYTICS_USE_CASE);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 AnalyticsUseCase 생성
+   */
+  static createAnalyticsUseCaseWithService(analyticsUseCaseService: AnalyticsUseCaseService): AnalyticsUseCase {
+    return new AnalyticsUseCase(analyticsUseCaseService);
   }
 
   static createSystemManagementUseCase() {
     return container.createUseCase(DI_TOKENS.SYSTEM_MANAGEMENT_USE_CASE);
   }
 
-  // Convenience methods for common operations
+  // Grouped use cases
   static createAuthUseCases() {
     return {
       authenticate: this.createAuthenticateUserUseCase(),
       register: this.createRegisterUserUseCase(),
       logout: this.createLogoutUserUseCase(),
-      getCurrentUser: this.createGetCurrentUserUseCase(),
     };
   }
 
@@ -128,11 +179,20 @@ export class UseCaseFactory {
     };
   }
 
+  /**
+   * 새로운 UseCase Service를 사용하는 ChannelUseCases 그룹 생성
+   */
+  static createChannelUseCasesWithService(channelUseCaseService: ChannelUseCaseService) {
+    return {
+      create: this.createCreateChannelUseCaseWithService(channelUseCaseService),
+      // 다른 채널 UseCase들도 필요시 추가
+    };
+  }
+
   static createMessageUseCases() {
     return {
       send: this.createSendMessageUseCase(),
       search: this.createSearchMessagesUseCase(),
-      uploadFile: this.createUploadFileUseCase(),
     };
   }
 
@@ -145,8 +205,8 @@ export class UseCaseFactory {
 
   static createUserUseCases() {
     return {
-      update: this.createUpdateUserUseCase(),
       getCurrent: this.createGetCurrentUserUseCase(),
+      update: this.createUpdateUserUseCase(),
     };
   }
 
@@ -160,13 +220,21 @@ export class UseCaseFactory {
       monitoring: this.createMonitoringUseCase(),
       redisCache: this.createRedisCacheUseCase(),
       webSocket: this.createWebSocketUseCase(),
-      apmMonitoring: this.createAPMMonitoringUseCase(),
       analytics: this.createAnalyticsUseCase(),
       systemManagement: this.createSystemManagementUseCase(),
     };
   }
 
-  // All use cases grouped by domain
+  /**
+   * 새로운 UseCase Service를 사용하는 SystemUseCases 그룹 생성
+   */
+  static createSystemUseCasesWithService(analyticsUseCaseService: AnalyticsUseCaseService) {
+    return {
+      ...this.createSystemUseCases(),
+      analytics: this.createAnalyticsUseCaseWithService(analyticsUseCaseService),
+    };
+  }
+
   static createAllUseCases() {
     return {
       auth: this.createAuthUseCases(),
@@ -179,15 +247,26 @@ export class UseCaseFactory {
   }
 
   /**
-   * 등록된 UseCase 목록 조회
+   * 새로운 UseCase Service를 사용하는 모든 UseCases 그룹 생성
    */
+  static createAllUseCasesWithService(
+    analyticsUseCaseService: AnalyticsUseCaseService,
+    channelUseCaseService: ChannelUseCaseService
+  ) {
+    return {
+      auth: this.createAuthUseCases(),
+      channel: this.createChannelUseCasesWithService(channelUseCaseService),
+      message: this.createMessageUseCases(),
+      file: this.createFileUseCases(),
+      user: this.createUserUseCases(),
+      system: this.createSystemUseCasesWithService(analyticsUseCaseService),
+    };
+  }
+
   static getRegisteredUseCases(): string[] {
     return useCaseRegistry.getRegisteredUseCases();
   }
 
-  /**
-   * UseCase 메타데이터 조회
-   */
   static getUseCaseMetadata(token: string) {
     return useCaseRegistry.getUseCaseMetadata(token);
   }

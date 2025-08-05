@@ -51,6 +51,10 @@ export interface GetCurrentUserRequest {
 
 export interface GetCurrentUserResponse {
   user: any; // User DTO
+  success: boolean;
+  error?: string;
+  cached: boolean;
+  fetchedAt: Date;
 }
 
 export interface DeleteUserRequest {
@@ -77,28 +81,79 @@ export interface UserProfileUpdateResponse {
   updatedFields: string[];
 }
 
+// 새로운 UseCase Service용 DTO들
+
+export interface UpdateUserProfileRequest {
+  userId: string;
+  updates: Partial<UserProfile>;
+}
+
+export interface UpdateUserProfileResponse {
+  user: UserProfile | null;
+  success: boolean;
+  error?: string;
+  updatedAt: Date;
+}
+
+export interface GetUserStatsRequest {
+  userId: string;
+}
+
+export interface GetUserStatsResponse {
+  stats: UserStats | null;
+  success: boolean;
+  error?: string;
+  cached: boolean;
+  fetchedAt: Date;
+}
+
+export interface GetUsersRequest {
+  page?: number;
+  limit?: number;
+  filters?: {
+    status?: UserProfile['status'];
+    isActive?: boolean;
+  };
+}
+
+export interface GetUsersResponse {
+  users: UserProfile[];
+  success: boolean;
+  error?: string;
+  cached: boolean;
+  total: number;
+  page: number;
+  totalPages: number;
+  fetchedAt: Date;
+}
+
 export interface UserProfile {
   id: string;
   username: string;
   email: string;
+  displayName?: string;
   avatar?: string;
   status: 'online' | 'offline' | 'away' | 'busy';
+  isActive: boolean;
   lastSeen: Date;
   createdAt: Date;
   updatedAt: Date;
+  permissions: string[];
 }
 
 export interface UserStats {
+  userId: string;
   totalChannels: number;
   totalMessages: number;
   lastActivity: Date;
   joinDate: Date;
+  isActive: boolean;
 }
 
 export interface UserValidationSchema {
   username: { required: boolean; type: string; minLength: number; maxLength: number; pattern?: RegExp };
   email: { required: boolean; type: string; pattern: RegExp };
-  password?: { required: boolean; type: string; minLength: number; maxLength: number };
+  displayName?: { required: boolean; type: string; maxLength: number };
 }
 
 export interface UserServiceConfig {

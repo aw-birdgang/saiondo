@@ -39,6 +39,11 @@ export interface AnalyticsReport {
     start: Date;
     end: Date;
   };
+  realTimeData?: {
+    eventCount: number;
+    uniqueUsers: number;
+    topEventTypes: Array<{ eventType: string; count: number }>;
+  };
 }
 
 export interface UserBehavior {
@@ -53,6 +58,11 @@ export interface UserBehavior {
     night: number;
   };
   engagementScore: number;
+  realTimePatterns?: {
+    eventCount: number;
+    lastActivity: Date | null;
+    activityPattern: string;
+  };
 }
 
 export interface RealTimeActivity {
@@ -67,10 +77,76 @@ export interface UserJourney {
   totalEvents: number;
   eventSequence: UserEvent['eventType'][];
   conversionPath: string[];
+  currentSession?: UserSession;
+  recentEvents?: UserEvent[];
 }
 
 export interface ChurnPrediction {
   churnProbability: number;
   riskFactors: string[];
   recommendations: string[];
+  realTimeRiskFactors?: string[];
+  realTimeProbability?: number;
+}
+
+// Request/Response DTOs for UseCase Services
+export interface TrackEventRequest {
+  userId: string;
+  eventType: UserEvent['eventType'];
+  properties?: Record<string, any>;
+  sessionId?: string;
+}
+
+export interface TrackEventResponse {
+  success: boolean;
+  eventId: string;
+  timestamp: Date;
+  cacheKey?: string;
+}
+
+export interface AnalyticsReportRequest {
+  timeRange: {
+    start: Date;
+    end: Date;
+  };
+}
+
+export interface AnalyticsReportResponse {
+  report: AnalyticsReport;
+  generatedAt: Date;
+  cacheKey?: string;
+  timeRange: {
+    start: Date;
+    end: Date;
+  };
+}
+
+export interface UserBehaviorRequest {
+  userId: string;
+  timeRange: {
+    start: Date;
+    end: Date;
+  };
+}
+
+export interface UserBehaviorResponse {
+  behavior: UserBehavior;
+  analyzedAt: Date;
+  cacheKey?: string;
+  userId: string;
+  timeRange: {
+    start: Date;
+    end: Date;
+  };
+}
+
+export interface RealTimeActivityRequest {
+  // 빈 인터페이스 - 실시간 데이터는 요청 파라미터가 없음
+}
+
+export interface RealTimeActivityResponse {
+  activity: RealTimeActivity;
+  fetchedAt: Date;
+  cacheKey?: string;
+  ttl: number;
 } 

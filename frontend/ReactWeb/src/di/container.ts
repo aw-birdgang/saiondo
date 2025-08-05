@@ -12,6 +12,10 @@ import { ChannelService } from '../application/services/ChannelService';
 import { MessageService } from '../application/services/MessageService';
 import { FileService } from '../application/services/FileService';
 
+// Base Services
+import { ConsoleLogger } from '../domain/interfaces/ILogger';
+import { MemoryCache } from '../application/services/base/BaseCacheService';
+
 /**
  * DI Container 토큰 정의
  */
@@ -24,7 +28,11 @@ export const DI_TOKENS = {
   CHANNEL_REPOSITORY: 'ChannelRepository',
   MESSAGE_REPOSITORY: 'MessageRepository',
   
-  // Services
+  // Base Services
+  LOGGER: 'Logger',
+  CACHE: 'Cache',
+  
+  // Services (Legacy)
   USER_SERVICE: 'UserService',
   CHANNEL_SERVICE: 'ChannelService',
   MESSAGE_SERVICE: 'MessageService',
@@ -87,6 +95,10 @@ export class DIContainer {
     // Infrastructure services
     this.services.set(DI_TOKENS.API_CLIENT, new ApiClient());
 
+    // Base services
+    this.services.set(DI_TOKENS.LOGGER, new ConsoleLogger());
+    this.services.set(DI_TOKENS.CACHE, new MemoryCache());
+
     // Repository implementations
     this.services.set(DI_TOKENS.USER_REPOSITORY, new UserRepositoryImpl(
       this.get<ApiClient>(DI_TOKENS.API_CLIENT)
@@ -100,165 +112,133 @@ export class DIContainer {
       this.get<ApiClient>(DI_TOKENS.API_CLIENT)
     ));
 
-    // Service implementations
+    // Application services
     this.initializeApplicationServices();
   }
 
   private initializeApplicationServices(): void {
-    // User Service
+    // Legacy services (기존 구조 유지)
     this.services.set(DI_TOKENS.USER_SERVICE, new UserService(
-      this.get(DI_TOKENS.USER_REPOSITORY),
-      this.get(DI_TOKENS.CHANNEL_REPOSITORY),
-      this.get(DI_TOKENS.MESSAGE_REPOSITORY)
+      this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
+      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY),
+      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
+      {} // config 매개변수 추가
     ));
-
-    // Channel Service
+    
     this.services.set(DI_TOKENS.CHANNEL_SERVICE, new ChannelService(
-      this.get(DI_TOKENS.CHANNEL_REPOSITORY),
-      this.get(DI_TOKENS.USER_REPOSITORY),
-      this.get(DI_TOKENS.MESSAGE_REPOSITORY)
+      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY),
+      this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
+      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY)
     ));
-
-    // Message Service
+    
     this.services.set(DI_TOKENS.MESSAGE_SERVICE, new MessageService(
-      this.get(DI_TOKENS.MESSAGE_REPOSITORY),
-      this.get(DI_TOKENS.USER_REPOSITORY),
-      this.get(DI_TOKENS.CHANNEL_REPOSITORY)
+      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
+      this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
+      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY)
     ));
-
-    // File Service
+    
     this.services.set(DI_TOKENS.FILE_SERVICE, new FileService(
-      this.get(DI_TOKENS.MESSAGE_REPOSITORY),
-      this.get(DI_TOKENS.CHANNEL_REPOSITORY)
+      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
+      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY)
     ));
   }
 
   private initializeUseCases(): void {
-    // UseCase 등록은 별도 메서드에서 처리
     this.registerUseCases();
   }
 
-  /**
-   * UseCase 등록
-   */
   private registerUseCases(): void {
-    // UseCase 등록은 별도 메서드에서 처리
-    // 실제 등록은 lazy loading 방식으로 처리
+    // 기존 UseCase 등록 로직 유지
   }
 
-  /**
-   * UseCase 등록 메서드
-   */
   public registerUseCase(registration: UseCaseRegistration): void {
     this.useCases.set(registration.token, registration);
   }
 
-  /**
-   * UseCase 인스턴스 생성
-   */
   public createUseCase<T extends IUseCase>(token: string): T {
     const registration = this.useCases.get(token);
     if (!registration) {
-      throw new Error(`UseCase '${token}' not found in container`);
+      throw new Error(`UseCase not found: ${token}`);
     }
-
     const dependencies = registration.dependencies.map(dep => this.get(dep));
     return new registration.useCase(...dependencies) as T;
   }
 
-  /**
-   * 서비스 등록
-   */
   public register<T>(token: string, service: T): void {
     this.services.set(token, service);
   }
 
-  /**
-   * 팩토리 등록
-   */
   public registerFactory<T>(token: string, factory: () => T): void {
     this.factories.set(token, factory);
   }
 
-  /**
-   * 서비스 조회
-   */
   public get<T>(serviceName: string): T {
-    // 팩토리에서 생성
-    if (this.factories.has(serviceName)) {
-      return this.factories.get(serviceName)!() as T;
-    }
-
-    // 서비스에서 조회
     const service = this.services.get(serviceName);
     if (!service) {
-      throw new Error(`Service '${serviceName}' not found in container`);
+      throw new Error(`Service not found: ${serviceName}`);
     }
     return service as T;
   }
 
-  /**
-   * Repository 조회 편의 메서드
-   */
+  // Repository getters
   public getRepository<T>(repositoryType: 'User' | 'Channel' | 'Message'): T {
-    const repositoryName = `${repositoryType}Repository`;
-    return this.get<T>(DI_TOKENS[`${repositoryType.toUpperCase()}_REPOSITORY` as keyof typeof DI_TOKENS]);
+    const token = `${repositoryType.toUpperCase()}_REPOSITORY` as keyof typeof DI_TOKENS;
+    return this.get<T>(DI_TOKENS[token]);
   }
 
-  // Convenience methods for getting repositories
   public getUserRepository(): IUserRepository {
-    return this.getRepository<IUserRepository>('User');
+    return this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
   }
 
   public getChannelRepository(): IChannelRepository {
-    return this.getRepository<IChannelRepository>('Channel');
+    return this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
   }
 
   public getMessageRepository(): IMessageRepository {
-    return this.getRepository<IMessageRepository>('Message');
+    return this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
   }
 
   public getApiClient(): ApiClient {
     return this.get<ApiClient>(DI_TOKENS.API_CLIENT);
   }
 
-  // Service access methods
+  // Service getters
   public getUserService() {
-    return this.get(DI_TOKENS.USER_SERVICE);
+    return this.get<UserService>(DI_TOKENS.USER_SERVICE);
   }
 
   public getChannelService() {
-    return this.get(DI_TOKENS.CHANNEL_SERVICE);
+    return this.get<ChannelService>(DI_TOKENS.CHANNEL_SERVICE);
   }
 
   public getMessageService() {
-    return this.get(DI_TOKENS.MESSAGE_SERVICE);
+    return this.get<MessageService>(DI_TOKENS.MESSAGE_SERVICE);
   }
 
   public getFileService() {
-    return this.get(DI_TOKENS.FILE_SERVICE);
+    return this.get<FileService>(DI_TOKENS.FILE_SERVICE);
   }
 
-  // Use Case Factory access (기존 호환성 유지)
+  // Base Service getters
+  public getLogger(): ConsoleLogger {
+    return this.get<ConsoleLogger>(DI_TOKENS.LOGGER);
+  }
+
+  public getCache(): MemoryCache {
+    return this.get<MemoryCache>(DI_TOKENS.CACHE);
+  }
+
   public getUseCaseFactory(): typeof UseCaseFactory {
     return UseCaseFactory;
   }
 
-  /**
-   * 등록된 UseCase 목록 조회
-   */
   public getRegisteredUseCases(): string[] {
     return Array.from(this.useCases.keys());
   }
 
-  /**
-   * UseCase 메타데이터 조회
-   */
   public getUseCaseMetadata(token: string) {
-    const registration = this.useCases.get(token);
-    return registration?.metadata;
+    return this.useCases.get(token);
   }
 }
 
-// Singleton instance export
 export const container = DIContainer.getInstance(); 
