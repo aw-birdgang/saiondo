@@ -7,9 +7,9 @@ import type {
   InviteValidationError,
   InviteStats
 } from '../../domain/types/invite';
-import { IInviteRepository } from './interfaces/IInviteRepository';
-import { IInviteService } from './interfaces/IInviteService';
-import { IInviteUseCase } from './interfaces/IInviteUseCase';
+import type { IInviteRepository } from './interfaces/IInviteRepository';
+import type { IInviteService } from './interfaces/IInviteService';
+import type { IInviteUseCase } from './interfaces/IInviteUseCase';
 import { InviteService } from './services/InviteService';
 import { createInviteUseCase, createMockInviteUseCase } from './factories/InviteUseCaseFactory';
 
@@ -50,7 +50,6 @@ export class InviteUseCase implements IInviteUseCase {
   }
 }
 
-// Re-export interfaces and factories for backward compatibility
-export { IInviteRepository, IInviteService, IInviteUseCase };
+// Re-export factories for backward compatibility
 export { InviteService } from './services/InviteService';
 export { createInviteUseCase, createMockInviteUseCase }; 

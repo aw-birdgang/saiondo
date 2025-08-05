@@ -6,7 +6,7 @@ import type {
   InvitationResponseResponse,
   InviteStats
 } from '../../domain/types/invite';
-import type { IInviteRepository } from '../../application/usecases/InviteUseCase';
+import type { IInviteRepository } from '../../application/usecases/interfaces/IInviteRepository';
 
 export class InviteRepository implements IInviteRepository {
   async sendInvitation(request: InviteRequest): Promise<InviteResponse> {
@@ -44,6 +44,7 @@ export class InviteRepository implements IInviteRepository {
         channelId: 'channel1',
         status: 'pending',
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2시간 전
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7일 후 만료
         inviterName: '김철수',
         channelName: '우리만의 채널',
       },
@@ -54,6 +55,7 @@ export class InviteRepository implements IInviteRepository {
         channelId: 'channel2',
         status: 'accepted',
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1일 전
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7일 후 만료
         inviterName: '이영희',
         channelName: '커플 채널',
       },
@@ -64,6 +66,7 @@ export class InviteRepository implements IInviteRepository {
         channelId: 'channel3',
         status: 'rejected',
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2일 전
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7일 후 만료
         inviterName: '박민수',
         channelName: '친구 채널',
       },
@@ -106,6 +109,13 @@ export class InviteRepository implements IInviteRepository {
       pendingInvitations: invitations.filter(inv => inv.status === 'pending').length,
       acceptedInvitations: invitations.filter(inv => inv.status === 'accepted').length,
       rejectedInvitations: invitations.filter(inv => inv.status === 'rejected').length,
+      totalSent: invitations.length,
+      accepted: invitations.filter(inv => inv.status === 'accepted').length,
+      todaySent: invitations.filter(inv => {
+        const today = new Date();
+        const inviteDate = new Date(inv.createdAt);
+        return inviteDate.toDateString() === today.toDateString();
+      }).length,
     };
 
     return stats;

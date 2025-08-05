@@ -24,7 +24,7 @@ const QuickLoginButtons: React.FC<QuickLoginButtonsProps> = ({
     <div className={cn("space-y-3", className)}>
       <div className="text-center">
         <p className="text-sm text-txt-secondary mb-4">
-          {t('quick_login_description') || '테스트 계정으로 빠르게 로그인'}
+          {t('auth.quick_login_description') || '테스트 계정으로 빠르게 로그인'}
         </p>
       </div>
       

@@ -99,7 +99,8 @@
     "quick_login_kim": "Login as Kim",
     "quick_login_lee": "Login as Lee",
     "login_required": "Login required",
-    "login": "Login"
+    "login": "Login",
+    "quick_login_description": "Quick login with test accounts"
   },
   "navigation": {
     "home": "Home",

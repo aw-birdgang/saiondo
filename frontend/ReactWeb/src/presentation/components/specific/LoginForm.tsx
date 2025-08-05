@@ -25,16 +25,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
     // 이메일 검증
     if (!formData.email) {
-      newErrors.email = t('enter_email') || '이메일을 입력해주세요';
+      newErrors.email = t('auth.enter_email') || '이메일을 입력해주세요';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('invalid_email_format') || '올바른 이메일 형식이 아닙니다';
+      newErrors.email = t('auth.invalid_email_format') || '올바른 이메일 형식이 아닙니다';
     }
 
     // 비밀번호 검증
     if (!formData.password) {
-      newErrors.password = t('enter_password') || '비밀번호를 입력해주세요';
+      newErrors.password = t('auth.enter_password') || '비밀번호를 입력해주세요';
     } else if (formData.password.length < 6) {
-      newErrors.password = t('password_min_length') || '비밀번호는 최소 6자 이상이어야 합니다';
+      newErrors.password = t('auth.password_min_length') || '비밀번호는 최소 6자 이상이어야 합니다';
     }
 
     setErrors(newErrors);
@@ -66,9 +66,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <div className={`max-w-md w-full space-y-8 ${className}`}>
       <AuthHeader
-        title={t('sign_in_to_account') || '계정에 로그인'}
-        subtitle={t('or') || '또는'}
-        linkText={t('create_new_account') || '새 계정 만들기'}
+        title={t('auth.sign_in_to_account') || '계정에 로그인'}
+        subtitle={t('auth.or') || '또는'}
+        linkText={t('auth.create_new_account') || '새 계정 만들기'}
         linkTo={registerRoute}
       />
       
@@ -78,16 +78,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
             {
               name: 'email',
               type: 'email',
-              label: t('email_address') || '이메일 주소',
-              placeholder: t('email_address') || '이메일 주소',
+              label: t('auth.email_address') || '이메일 주소',
+              placeholder: t('auth.email_address') || '이메일 주소',
               required: true,
               autoComplete: 'email',
             },
             {
               name: 'password',
               type: 'password',
-              label: t('password') || '비밀번호',
-              placeholder: t('password') || '비밀번호',
+              label: t('auth.password') || '비밀번호',
+              placeholder: t('auth.password') || '비밀번호',
               required: true,
               autoComplete: 'current-password',
             },
@@ -96,7 +96,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           errors={errors}
           onChange={handleInputChange}
           onSubmit={handleSubmit}
-          submitText={loading ? t('signing_in') || '로그인 중...' : t('sign_in') || '로그인'}
+          submitText={loading ? t('auth.signing_in') || '로그인 중...' : t('auth.sign_in') || '로그인'}
           loading={loading}
         />
       </div>

@@ -10,7 +10,7 @@ import type {
   ChannelInvitationItem,
   InviteStats
 } from '../../domain/types/invite';
-import type { IInviteUseCase } from '../../application/usecases/InviteUseCase';
+import type { IInviteUseCase } from '../../application/usecases/interfaces/IInviteUseCase';
 
 export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
   const navigate = useNavigate();
@@ -32,6 +32,13 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
       pendingInvitations: state.invitations.filter(inv => inv.status === 'pending').length,
       acceptedInvitations: state.invitations.filter(inv => inv.status === 'accepted').length,
       rejectedInvitations: state.invitations.filter(inv => inv.status === 'rejected').length,
+      totalSent: state.invitations.length,
+      accepted: state.invitations.filter(inv => inv.status === 'accepted').length,
+      todaySent: state.invitations.filter(inv => {
+        const today = new Date();
+        const inviteDate = new Date(inv.createdAt);
+        return inviteDate.toDateString() === today.toDateString();
+      }).length,
     };
     return stats;
   }, [state.invitations]);
@@ -65,6 +72,7 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
 
     try {
       const request: InviteRequest = {
+        senderId: userId,
         partnerEmail: email.trim(),
         message
       };
