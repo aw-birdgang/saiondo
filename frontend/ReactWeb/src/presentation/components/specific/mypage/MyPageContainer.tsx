@@ -1,10 +1,11 @@
 import React from 'react';
 import { cn } from '../../../../utils/cn';
+import { getMaxWidthClasses, type MaxWidth } from './utils/containerUtils';
 
 interface MyPageContainerProps {
   children: React.ReactNode;
   className?: string;
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+  maxWidth?: MaxWidth;
 }
 
 const MyPageContainer: React.FC<MyPageContainerProps> = ({
@@ -12,14 +13,7 @@ const MyPageContainer: React.FC<MyPageContainerProps> = ({
   className,
   maxWidth = 'full'
 }) => {
-  const maxWidthClasses = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-xl',
-    '2xl': 'max-w-2xl',
-    full: 'max-w-full'
-  };
+  const maxWidthClasses = getMaxWidthClasses();
 
   return (
     <div className={cn(
