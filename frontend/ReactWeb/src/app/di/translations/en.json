@@ -196,7 +196,9 @@
     "profile_description": "Manage your profile information",
     "settings_description": "Manage app settings",
     "chat_description": "Use chat features",
-    "channels_description": "Manage channels"
+    "channels_description": "Manage channels",
+    "user": "User",
+    "view_profile": "View Profile"
   },
   "errors": {
     "general": "An error occurred",

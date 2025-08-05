@@ -48,6 +48,7 @@ const PaymentPage = createLazyPage(() => import("../pages/payment"));
 const SettingsPage = createLazyPage(() => import("../pages/settings"));
 const SearchPage = createLazyPage(() => import("../pages/search"));
 const AIChatPage = createLazyPage(() => import("../pages/ai-chat"));
+const ProfilePage = createLazyPage(() => import("../pages/profile"));
 
 
 // Route configuration for better maintainability
@@ -72,6 +73,7 @@ const routeConfig = [
   { path: "/settings", element: SettingsPage, name: "Settings" },
   { path: "/search", element: SearchPage, name: "Search" },
   { path: "/ai-chat", element: AIChatPage, name: "AI Chat" },
+  { path: "/profile/:userId", element: ProfilePage, name: "Profile" },
 ];
 
 export const AppRoutes: React.FC = () => {

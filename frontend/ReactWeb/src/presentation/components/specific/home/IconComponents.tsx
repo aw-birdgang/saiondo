@@ -36,6 +36,12 @@ export const ChartIcon: React.FC<{ className?: string }> = ({ className = "w-6 h
   </svg>
 );
 
+export const UserIcon: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+  </svg>
+);
+
 // 아이콘 매핑 함수
 export const getIconComponent = (iconName: string): React.ReactNode => {
   const iconMap: Record<string, React.ReactNode> = {
@@ -45,6 +51,7 @@ export const getIconComponent = (iconName: string): React.ReactNode => {
     star: <StarIcon />,
     plus: <PlusIcon />,
     chart: <ChartIcon />,
+    user: <UserIcon />,
   };
 
   return iconMap[iconName] || <ChatIcon />; // 기본값으로 chat 아이콘 반환

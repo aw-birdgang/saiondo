@@ -2,9 +2,11 @@ import { ApiClient } from '../infrastructure/api/ApiClient';
 import type { IUserRepository } from '../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../domain/repositories/IChannelRepository';
 import type { IMessageRepository } from '../domain/repositories/IMessageRepository';
+import type { IProfileRepository } from '../domain/repositories/IProfileRepository';
 import { UserRepositoryImpl } from '../infrastructure/repositories/UserRepositoryImpl';
 import { ChannelRepositoryImpl } from '../infrastructure/repositories/ChannelRepositoryImpl';
 import { MessageRepositoryImpl } from '../infrastructure/repositories/MessageRepositoryImpl';
+import { ProfileRepository } from '../infrastructure/repositories/ProfileRepository';
 import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
 import type { IUseCase, UseCaseRegistration } from '../application/usecases/interfaces/IUseCase';
 import { UserService } from '../application/services/UserService';
@@ -27,6 +29,7 @@ export const DI_TOKENS = {
   USER_REPOSITORY: 'UserRepository',
   CHANNEL_REPOSITORY: 'ChannelRepository',
   MESSAGE_REPOSITORY: 'MessageRepository',
+  PROFILE_REPOSITORY: 'ProfileRepository',
   
   // Base Services
   LOGGER: 'Logger',
@@ -66,6 +69,7 @@ export const DI_TOKENS = {
   SEARCH_USE_CASE: 'SearchUseCase',
   INVITE_USE_CASE: 'InviteUseCase',
   CATEGORY_USE_CASE: 'CategoryUseCase',
+  PROFILE_USE_CASE: 'ProfileUseCase',
 } as const;
 
 /**
@@ -111,6 +115,8 @@ export class DIContainer {
     this.services.set(DI_TOKENS.MESSAGE_REPOSITORY, new MessageRepositoryImpl(
       this.get<ApiClient>(DI_TOKENS.API_CLIENT)
     ));
+    
+    this.services.set(DI_TOKENS.PROFILE_REPOSITORY, new ProfileRepository());
 
     // Application services
     this.initializeApplicationServices();
@@ -196,6 +202,10 @@ export class DIContainer {
 
   public getMessageRepository(): IMessageRepository {
     return this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
+  }
+
+  public getProfileRepository(): IProfileRepository {
+    return this.get<IProfileRepository>(DI_TOKENS.PROFILE_REPOSITORY);
   }
 
   public getApiClient(): ApiClient {

@@ -82,6 +82,14 @@ export const QUICK_ACTIONS = [
     href: '/analysis',
     color: 'bg-orange-500',
     gradient: true
+  },
+  {
+    title: '프로필 관리',
+    description: '내 프로필을 확인하고 관리하세요',
+    icon: 'user',
+    href: '/profile',
+    color: 'bg-pink-500',
+    gradient: true
   }
 ];
 

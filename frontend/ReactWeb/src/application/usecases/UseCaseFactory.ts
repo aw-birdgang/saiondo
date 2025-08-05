@@ -12,6 +12,8 @@ import { UserUseCaseService } from './services/user/UserUseCaseService';
 import { MessageUseCaseService } from './services/message/MessageUseCaseService';
 import { FileUseCaseService } from './services/file/FileUseCaseService';
 import { NotificationUseCaseService } from './services/notification/NotificationUseCaseService';
+import { ProfileUseCases } from './ProfileUseCases';
+import { ProfileUseCaseService } from './services/profile/ProfileUseCaseService';
 
 /**
  * Use Case Factory
@@ -85,6 +87,13 @@ export class UseCaseFactory {
    */
   static createNotificationUseCasesWithService(notificationUseCaseService: NotificationUseCaseService): NotificationUseCases {
     return new NotificationUseCases(notificationUseCaseService);
+  }
+
+  /**
+   * 새로운 UseCase Service를 사용하는 ProfileUseCases 생성
+   */
+  static createProfileUseCasesWithService(profileUseCaseService: ProfileUseCaseService): ProfileUseCases {
+    return new ProfileUseCases(profileUseCaseService);
   }
 
   static createInviteToChannelUseCase() {

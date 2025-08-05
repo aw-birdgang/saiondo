@@ -36,6 +36,7 @@ export { Toast } from './Toast';
 // Utility Components
 export { default as UserProfile } from './UserProfile';
 export { default as UserAvatar } from './UserAvatar';
+export { default as MainNavigation } from './MainNavigation';
 export { default as TimeFormatter } from './TimeFormatter';
 export { default as Tooltip } from './Tooltip';
 export { default as Tabs } from './Tabs';

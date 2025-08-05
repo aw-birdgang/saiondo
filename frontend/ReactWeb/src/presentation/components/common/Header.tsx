@@ -77,12 +77,20 @@ const Header: React.FC<HeaderProps> = ({
               </h1>
             )}
             {showUserInfo && user?.name && (
-              <span 
-                className="text-sm"
-                style={{ color: 'var(--color-txt-secondary)' }}
-              >
-                {t("common.welcome")}, {user.name}
-              </span>
+              <div className="flex items-center space-x-2">
+                <span 
+                  className="text-sm"
+                  style={{ color: 'var(--color-txt-secondary)' }}
+                >
+                  {t("common.welcome")}, {user.name}
+                </span>
+                <button
+                  onClick={() => navigate(`${ROUTES.PROFILE}/${user?.id || 'me'}`)}
+                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                >
+                  {t('common.view_profile')}
+                </button>
+              </div>
             )}
           </div>
           <div className="flex items-center space-x-4">

@@ -25,7 +25,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   const { currentUser } = useUserStore();
 
   const displayUser = currentUser || user;
-  const userName = displayUser?.name || t('user');
+  const userName = displayUser?.name || t('common.user');
   const userEmail = displayUser?.email || 'user@example.com';
   const userInitial = userName.charAt(0).toUpperCase();
 
@@ -80,6 +80,13 @@ const UserProfile: React.FC<UserProfileProps> = ({
             {t('edit')}
           </Button>
         )}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => navigate(`${ROUTES.PROFILE}/${displayUser?.id || 'me'}`)}
+        >
+          {t('common.view_profile')}
+        </Button>
       </div>
     </Card>
   );

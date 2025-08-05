@@ -6,4 +6,7 @@ export { default as ActivityListSection } from './ActivityListSection';
 export { default as SystemStatusSection } from './SystemStatusSection';
 export { default as HomeLoadingState } from './LoadingState';
 export { default as HomeContainer } from './HomeContainer';
+export { default as SearchSection } from './SearchSection';
+export { default as AIInfoWidget } from './AIInfoWidget';
+export { default as ProfileQuickAccess } from './ProfileQuickAccess';
 export * from './IconComponents'; 
