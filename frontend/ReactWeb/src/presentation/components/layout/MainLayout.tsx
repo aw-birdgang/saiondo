@@ -402,7 +402,7 @@ export const MainLayout: React.FC = () => {
 
         {/* Main content area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 pb-16 lg:pb-0">
-          <div className="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
+          <div className="container mx-auto px-2 lg:px-4 py-6 lg:py-8">
             <Outlet />
           </div>
         </main>

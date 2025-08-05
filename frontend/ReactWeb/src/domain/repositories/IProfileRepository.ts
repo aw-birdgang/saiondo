@@ -1,5 +1,4 @@
 import type {
-  Profile,
   CreateProfileRequest,
   CreateProfileResponse,
   GetProfileRequest,

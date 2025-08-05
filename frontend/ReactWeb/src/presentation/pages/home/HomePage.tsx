@@ -6,19 +6,18 @@ import {useUserStore} from '../../../stores/userStore';
 import {useChannelStore} from '../../../stores/channelStore';
 import {useDataLoader} from "../../hooks/useDataLoader";
 import {useToastContext} from "../../providers/ToastProvider";
-import {SearchInput} from "../../components/search";
 import {AIChatWidget} from "../../components/chat/AIChatWidget";
 import {
   ActivityListSection,
+  AIInfoWidget,
   ChartsSection,
+  DashboardHeader,
   HomeContainer,
   HomeLoadingState,
   QuickActionsSection,
-  StatsGrid,
-  SystemStatusSection,
-  DashboardHeader,
   SearchSection,
-  AIInfoWidget
+  StatsGrid,
+  SystemStatusSection
 } from "../../components/specific/home";
 import {useHomeData} from "./hooks/useHomeData";
 
@@ -164,7 +163,7 @@ const HomePage: React.FC = () => {
 
       {/* AI 채팅 위젯 */}
       <AIChatWidget />
-      
+
       {/* AI 기능 안내 */}
       <AIInfoWidget />
     </>

@@ -21,8 +21,7 @@ import type {
   GetFollowersRequest,
   GetFollowersResponse,
   GetFollowingRequest,
-  GetFollowingResponse,
-  Profile
+  GetFollowingResponse
 } from '../../domain/dto/ProfileDto';
 import { ApiClient } from '../api/ApiClient';
 

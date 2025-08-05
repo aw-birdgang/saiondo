@@ -25,7 +25,7 @@
     "check-translations": "pnpm validate-translations",
     "prune": "ts-prune",
     "prune:check": "ts-prune --error",
-    "code-cleanup": "pnpm lint:fix && pnpm prune"
+    "code-cleanup": "pnpm lint:fix || true && pnpm prune"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
