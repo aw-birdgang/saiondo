@@ -51,7 +51,7 @@ const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
 );
 
 const AppContent: React.FC<AppContentProps> = ({ onError }) => {
-  const { token } = useAuthStore();
+  const { token, setToken, setUser } = useAuthStore();
   const { initializeTheme, isInitialized } = useThemeStore();
   const [isServicesInitialized, setIsServicesInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -105,10 +105,45 @@ const AppContent: React.FC<AppContentProps> = ({ onError }) => {
     }
   }, [initializeTheme, isInitialized, onError]);
 
-  // 서비스 초기화 (토큰 변경 시)
+  // 인증 상태 복원 및 서비스 초기화
   useEffect(() => {
-    initializeAppServices(token);
-  }, [token, initializeAppServices]);
+    const initializeAuth = async () => {
+      try {
+        // localStorage에서 토큰 확인
+        const storedToken = localStorage.getItem('accessToken');
+        const storedUser = localStorage.getItem('user');
+        
+        console.log('🔍 Checking stored auth data:', {
+          hasToken: !!storedToken,
+          hasUser: !!storedUser,
+          tokenLength: storedToken?.length
+        });
+        
+        // 토큰이 있지만 store에 없는 경우 복원
+        if (storedToken && !token) {
+          console.log('🔄 Restoring auth state from localStorage');
+          setToken(storedToken);
+          
+          if (storedUser) {
+            try {
+              const user = JSON.parse(storedUser);
+              setUser(user);
+            } catch (e) {
+              console.warn('Failed to parse stored user data');
+            }
+          }
+        }
+        
+        // 서비스 초기화
+        await initializeAppServices(storedToken || token);
+      } catch (error) {
+        console.error('Failed to initialize auth:', error);
+        onError(error instanceof Error ? error : new Error('Auth initialization failed'));
+      }
+    };
+    
+    initializeAuth();
+  }, [token, setToken, setUser, initializeAppServices, onError]);
 
   // 테마 초기화 (한 번만)
   useEffect(() => {

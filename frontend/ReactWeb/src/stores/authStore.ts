@@ -59,8 +59,10 @@ export const useIsAuthenticated = () => {
 //   }
 // };
 
-const saveAuthData = (response: { token: string }): void => {
+const saveAuthData = (response: { user: User; token: string }): void => {
   localStorage.setItem('accessToken', response.token);
+  localStorage.setItem('user', JSON.stringify(response.user));
+  // ApiClient와 동기화를 위해 localStorage에도 저장
 };
 
 const handleLoginSuccess = (
@@ -201,6 +203,13 @@ export const useAuthStore = create<AuthState>()(
 
           saveAuthData(authData);
           handleLoginSuccess(set, authData);
+          
+          // 디버깅용 로그
+          console.log('✅ Login successful:', {
+            user: authData.user,
+            tokenExists: !!authData.token,
+            tokenLength: authData.token?.length
+          });
         } catch (error) {
           handleLoginError(set, error);
         }
@@ -225,8 +234,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        // 로컬 스토리지에서 토큰 제거
+        // 로컬 스토리지에서 토큰과 사용자 정보 제거
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
 
         set({
           user: null,

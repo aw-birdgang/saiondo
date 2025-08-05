@@ -49,7 +49,10 @@ const ProfilePage: React.FC = () => {
 
   if (isError || !profile) {
     return (
-      <ErrorState message={t('profile_not_found')} onRetry={handleRefresh} />
+      <ErrorState 
+        message={userId === 'me' ? t('authentication_required') || '로그인이 필요합니다.' : t('profile_not_found')} 
+        onRetry={handleRefresh} 
+      />
     );
   }
 

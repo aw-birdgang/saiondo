@@ -119,5 +119,8 @@
   "error_loading_assistants": "Error loading AI assistants",
   "ai_assistants": "AI Assistants",
   "no_assistants_found": "No AI assistants found",
-  "no_assistants_found_description": "Add a new AI assistant"
+  "no_assistants_found_description": "Add a new AI assistant",
+  "authentication_required": "Authentication required",
+  "error_occurred": "An error occurred",
+  "retry": "Retry"
 } 

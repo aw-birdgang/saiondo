@@ -10,15 +10,15 @@ import type {
 export class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<ApiResponse<AuthResponse>>(
+      const response = await apiClient.post<AuthResponse>(
         ENDPOINTS.AUTH_LOGIN,
         credentials
       );
 
       // Store token in localStorage
-      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('accessToken', response.accessToken);
 
-      return response.data;
+      return response;
     } catch (error: any) {
       const message =
         error.response?.data?.message || error.message || '로그인 실패';
@@ -28,15 +28,15 @@ export class AuthService {
 
   async register(userData: RegisterRequest): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<ApiResponse<AuthResponse>>(
+      const response = await apiClient.post<AuthResponse>(
         ENDPOINTS.AUTH_REGISTER,
         userData
       );
 
       // Store token in localStorage
-      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('accessToken', response.accessToken);
 
-      return response.data;
+      return response;
     } catch (error: any) {
       const message =
         error.response?.data?.message || error.message || '회원가입 실패';

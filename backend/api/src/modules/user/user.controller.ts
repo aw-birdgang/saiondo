@@ -8,6 +8,9 @@ import {
   Param,
   Patch,
   Post,
+  Put,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.services';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,6 +18,7 @@ import { CreateUserDto } from '@modules/user/dto/user.dto';
 import { UpdateFcmTokenDto } from '@modules/user/dto/update-fcm-token.dto';
 import { UserWithPointHistoryDto } from './dto/user-with-point-history.dto';
 import { UserWithWalletDto } from './dto/user-with-wallet.dto';
+import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 
 @ApiTags('User')
 @Controller('users')
@@ -47,6 +51,61 @@ export class UserController {
     } catch (e) {
       throw new HttpException(e.message ?? '유저 생성 실패', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '현재 로그인한 유저 정보 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '현재 유저 정보 반환',
+    type: UserWithWalletDto,
+  })
+  @ApiResponse({ status: 401, description: '인증되지 않은 요청' })
+  @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
+  async getCurrentUser(@Req() req: any) {
+    // JWT 토큰에서 유저 ID 추출
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      throw new HttpException('인증되지 않은 요청입니다.', HttpStatus.UNAUTHORIZED);
+    }
+
+    const user = await this.userService.findById(userId);
+
+    if (!user) {
+      throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  @Put('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '현재 로그인한 유저 정보 업데이트' })
+  @ApiBody({ type: CreateUserDto })
+  @ApiResponse({
+    status: 200,
+    description: '업데이트된 유저 정보 반환',
+    type: UserWithWalletDto,
+  })
+  @ApiResponse({ status: 401, description: '인증되지 않은 요청' })
+  @ApiResponse({ status: 404, description: '유저를 찾을 수 없음' })
+  async updateCurrentUser(@Req() req: any, @Body() body: CreateUserDto) {
+    // JWT 토큰에서 유저 ID 추출
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      throw new HttpException('인증되지 않은 요청입니다.', HttpStatus.UNAUTHORIZED);
+    }
+
+    const updatedUser = await this.userService.updateUser(userId, body);
+
+    if (!updatedUser) {
+      throw new HttpException('유저를 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    return updatedUser;
   }
 
   @Get(':id')

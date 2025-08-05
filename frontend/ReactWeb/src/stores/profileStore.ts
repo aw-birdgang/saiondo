@@ -35,15 +35,15 @@ const createProfileUseCases = () => {
   const profileRepository = container.getProfileRepository();
   // ProfileUseCaseService가 삭제되었으므로 mock 객체 사용
   const profileUseCaseService: any = {
-    getProfile: profileRepository.getProfile,
-    updateProfile: profileRepository.updateProfile,
-    getProfileStats: profileRepository.getProfileStats,
-    followUser: profileRepository.followUser,
-    unfollowUser: profileRepository.unfollowUser,
-    getFollowers: profileRepository.getFollowers,
-    getFollowing: profileRepository.getFollowing,
+    getProfile: profileRepository.getProfile.bind(profileRepository),
+    updateProfile: profileRepository.updateProfile.bind(profileRepository),
+    getProfileStats: profileRepository.getProfileStats.bind(profileRepository),
+    followUser: profileRepository.followUser.bind(profileRepository),
+    unfollowUser: profileRepository.unfollowUser.bind(profileRepository),
+    getFollowers: profileRepository.getFollowers.bind(profileRepository),
+    getFollowing: profileRepository.getFollowing.bind(profileRepository),
     getPosts: async () => ({ posts: [] }),
-    searchProfiles: profileRepository.searchProfiles,
+    searchProfiles: profileRepository.searchProfiles.bind(profileRepository),
   };
   return new ProfileUseCases(profileUseCaseService);
 };
@@ -76,7 +76,6 @@ export const useProfileStore = create<ProfileState>()(
             });
 
             // 통계도 함께 로드
-            const profileUseCases = createProfileUseCases();
             const statsResponse = await profileUseCases.getProfileStats({
               userId,
             });

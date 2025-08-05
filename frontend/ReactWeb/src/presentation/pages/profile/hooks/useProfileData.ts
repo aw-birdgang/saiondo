@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../../../stores/authStore';
 import { useProfileStore } from '../../../../stores/profileStore';
@@ -34,7 +35,8 @@ interface UseProfileDataReturn {
 
 export const useProfileData = (userId?: string): UseProfileDataReturn => {
   // const { t } = useTranslation();
-  const { user } = useAuthStore();
+  const navigate = useNavigate();
+  const { user, token } = useAuthStore();
   const {
     profile,
     stats,
@@ -63,9 +65,20 @@ export const useProfileData = (userId?: string): UseProfileDataReturn => {
   // 프로필 데이터 로드
   useEffect(() => {
     if (userId) {
+      console.log('🔍 Fetching profile for userId:', userId);
+      console.log('🔐 Current user:', user);
+      console.log('🔑 Token in localStorage:', localStorage.getItem('accessToken') ? 'exists' : 'missing');
+      
+      // 인증 확인
+      if (userId === 'me' && (!token || !user)) {
+        console.log('🚫 User not authenticated, redirecting to login');
+        navigate('/login');
+        return;
+      }
+      
       fetchProfile(userId);
     }
-  }, [userId, fetchProfile]);
+  }, [userId, fetchProfile, user, token, navigate]);
 
   // 탭 변경 시 해당 데이터 로드
   useEffect(() => {

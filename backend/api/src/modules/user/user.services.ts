@@ -75,6 +75,28 @@ export class UserService {
     return updated;
   }
 
+  async updateUser(userId: string, data: Partial<CreateUserDto>): Promise<User | null> {
+    // Convert birthDate string to Date if provided
+    const updateData: Partial<User> = {
+      name: data.name,
+      gender: data.gender,
+      email: data.email,
+      password: data.password,
+      fcmToken: data.fcmToken,
+    };
+    
+    if (data.birthDate) {
+      updateData.birthDate = new Date(data.birthDate);
+    }
+    
+    const updated = await this.userRepository.update(userId, updateData);
+    const client = this.redisService;
+
+    await client.del(`user:${userId}`);
+
+    return updated;
+  }
+
   async findUserWithPointHistory(userId: string): Promise<User | null> {
     const user = await this.userRepository.findWithRelations(userId, { pointHistories: true });
 

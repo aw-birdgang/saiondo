@@ -55,7 +55,7 @@ interface CacheStats {
  * ProfileRepository - 프로필 관련 데이터 접근 구현
  */
 export class ProfileRepository implements IProfileRepository {
-  private readonly baseUrl = '/api/profiles';
+  private readonly baseUrl = '/users';
   private readonly cache = new Map<string, CacheItem>();
   private readonly cacheTimeout = 5 * 60 * 1000; // 5분
   private readonly apiClient = new ApiClient();
@@ -91,9 +91,12 @@ export class ProfileRepository implements IProfileRepository {
    */
   async getProfile(request: GetProfileRequest): Promise<GetProfileResponse> {
     try {
+      console.log('🔍 ProfileRepository.getProfile called with:', request);
+      
       // 캐시 확인
       const cached = this.getCache(`profile:${request.userId}`);
       if (cached) {
+        console.log('📦 Returning cached profile for:', request.userId);
         return {
           success: true,
           profile: cached as any,
@@ -102,10 +105,30 @@ export class ProfileRepository implements IProfileRepository {
         };
       }
 
-      const response = await this.apiClient.get<ProfileApiResponse>(
-        `${this.baseUrl}/${request.userId}`
-      );
+      // "me"인 경우 현재 사용자 정보 조회
+      const endpoint = request.userId === 'me' ? `${this.baseUrl}/me` : `${this.baseUrl}/${request.userId}`;
+      console.log('🌐 Making API call to:', endpoint);
+      
+      const response = await this.apiClient.get<any>(endpoint);
+      console.log('✅ API response:', response);
 
+      // API가 직접 사용자 데이터를 반환하는 경우 처리
+      if (response && response.id) {
+        // API 응답을 Profile 형식으로 변환
+        const profile = this.transformApiResponseToProfile(response);
+        
+        // 캐시에 저장
+        this.setCache(`profile:${request.userId}`, profile);
+        
+        return {
+          success: true,
+          profile: profile,
+          cached: false,
+          fetchedAt: new Date(),
+        };
+      }
+
+      // 기존 형식 (success, profile 속성이 있는 경우)
       if (response.success && response.profile) {
         // 캐시에 저장
         this.setCache(`profile:${request.userId}`, response.profile);
@@ -117,6 +140,14 @@ export class ProfileRepository implements IProfileRepository {
         fetchedAt: new Date(),
       };
     } catch (error) {
+      console.error('❌ ProfileRepository.getProfile error:', error);
+      console.error('❌ Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        status: (error as any)?.response?.status,
+        data: (error as any)?.response?.data,
+        config: (error as any)?.config
+      });
+      
       return {
         success: false,
         error: this.getErrorMessage(error),
@@ -131,8 +162,11 @@ export class ProfileRepository implements IProfileRepository {
     request: UpdateProfileRequest
   ): Promise<UpdateProfileResponse> {
     try {
+      // "me"인 경우 현재 사용자 정보 업데이트
+      const endpoint = request.userId === 'me' ? `${this.baseUrl}/me` : `${this.baseUrl}/${request.userId}`;
+      
       const response = await this.apiClient.put<ProfileApiResponse>(
-        `${this.baseUrl}/${request.userId}`,
+        endpoint,
         request
       );
 
@@ -446,5 +480,49 @@ export class ProfileRepository implements IProfileRepository {
       return (error as { message: string }).message;
     }
     return 'An unexpected error occurred';
+  }
+
+  /**
+   * API 응답을 Profile 형식으로 변환
+   */
+  private transformApiResponseToProfile(apiResponse: any): any {
+    return {
+      id: apiResponse.id,
+      userId: apiResponse.id,
+      displayName: apiResponse.name || apiResponse.displayName || 'Unknown User',
+      bio: apiResponse.bio || '',
+      avatar: apiResponse.avatar || '',
+      coverImage: apiResponse.coverImage || '',
+      location: apiResponse.location || '',
+      website: apiResponse.website || '',
+      socialLinks: {
+        twitter: apiResponse.socialLinks?.twitter || '',
+        instagram: apiResponse.socialLinks?.instagram || '',
+        linkedin: apiResponse.socialLinks?.linkedin || '',
+        github: apiResponse.socialLinks?.github || '',
+      },
+      preferences: {
+        theme: apiResponse.preferences?.theme || 'light',
+        language: apiResponse.preferences?.language || 'ko',
+        notifications: {
+          email: apiResponse.preferences?.notifications?.email ?? true,
+          push: apiResponse.preferences?.notifications?.push ?? true,
+          sms: apiResponse.preferences?.notifications?.sms ?? false,
+        },
+        privacy: {
+          profileVisibility: apiResponse.preferences?.privacy?.profileVisibility || 'public',
+          showOnlineStatus: apiResponse.preferences?.privacy?.showOnlineStatus ?? true,
+          showLastSeen: apiResponse.preferences?.privacy?.showLastSeen ?? true,
+        },
+      },
+      stats: {
+        followersCount: apiResponse.stats?.followersCount || 0,
+        followingCount: apiResponse.stats?.followingCount || 0,
+        postsCount: apiResponse.stats?.postsCount || 0,
+        viewsCount: apiResponse.stats?.viewsCount || 0,
+      },
+      createdAt: apiResponse.createdAt ? new Date(apiResponse.createdAt) : new Date(),
+      updatedAt: apiResponse.updatedAt ? new Date(apiResponse.updatedAt) : new Date(),
+    };
   }
 }
