@@ -28,7 +28,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     return sizeClasses[size];
   };
 
-  const getVariantClasses = (variant: 'default' | 'success' | 'warning' | 'error') => {
+  const getVariantClasses = (
+    variant: 'default' | 'success' | 'warning' | 'error'
+  ) => {
     const variantClasses = {
       default: 'bg-primary',
       success: 'bg-green-500',
@@ -41,12 +43,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div className={`w-full ${className}`}>
       {showLabel && (
-        <div className="flex justify-between text-sm text-txt-secondary mb-2">
+        <div className='flex justify-between text-sm text-txt-secondary mb-2'>
           <span>진행률</span>
-          <span className="font-medium">{Math.round(percentage)}%</span>
+          <span className='font-medium'>{Math.round(percentage)}%</span>
         </div>
       )}
-      <div className={`w-full bg-secondary rounded-full ${getSizeClasses(size)} overflow-hidden`}>
+      <div
+        className={`w-full bg-secondary rounded-full ${getSizeClasses(size)} overflow-hidden`}
+      >
         <div
           className={`${getVariantClasses(variant)} rounded-full transition-all duration-500 ease-out ${getSizeClasses(size)} shadow-sm`}
           style={{ width: `${percentage}%` }}
@@ -56,4 +60,4 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   );
 };
 
-export default ProgressBar; 
+export default ProgressBar;

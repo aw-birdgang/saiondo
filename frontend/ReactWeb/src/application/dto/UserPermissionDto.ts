@@ -85,4 +85,4 @@ export interface GetAvailableRolesRequest {
 
 export interface GetAvailableRolesResponse {
   roles: Role[];
-} 
+}

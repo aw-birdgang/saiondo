@@ -23,87 +23,115 @@ export const useSearchData = () => {
     total: 0,
     page: 1,
     hasMore: true,
-    selectedFilters: {}
+    selectedFilters: {},
   });
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // 검색 실행
-  const performSearch = useCallback(async (query: string, page = 1, filters = {}) => {
-    if (!query.trim()) {
-      setState(prev => ({ ...prev, results: [], total: 0, page: 1, hasMore: false }));
-      return;
-    }
+  const performSearch = useCallback(
+    async (query: string, page = 1, filters = {}) => {
+      if (!query.trim()) {
+        setState(prev => ({
+          ...prev,
+          results: [],
+          total: 0,
+          page: 1,
+          hasMore: false,
+        }));
+        return;
+      }
 
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      try {
+        setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-      const response = await searchService.search({
-        query,
-        page,
-        limit: 20,
-        filters
-      });
+        const response = await searchService.search({
+          query,
+          page,
+          limit: 20,
+          filters,
+        });
 
-      setState(prev => ({
-        ...prev,
-        results: page === 1 ? response.results : [...prev.results, ...response.results],
-        total: response.total,
-        page: response.page,
-        hasMore: response.page < response.limit,
-        isLoading: false
-      }));
-    } catch (error) {
-      console.error('Search failed:', error);
-      setState(prev => ({
-        ...prev,
-        error: '검색에 실패했습니다.',
-        isLoading: false
-      }));
-      toast.error('검색에 실패했습니다.');
-    }
-  }, []);
+        setState(prev => ({
+          ...prev,
+          results:
+            page === 1
+              ? response.results
+              : [...prev.results, ...response.results],
+          total: response.total,
+          page: response.page,
+          hasMore: response.page < response.limit,
+          isLoading: false,
+        }));
+      } catch (error) {
+        console.error('Search failed:', error);
+        setState(prev => ({
+          ...prev,
+          error: '검색에 실패했습니다.',
+          isLoading: false,
+        }));
+        toast.error('검색에 실패했습니다.');
+      }
+    },
+    []
+  );
 
   // 검색어 변경 처리 (디바운스)
-  const handleQueryChange = useCallback((query: string) => {
-    setState(prev => ({ ...prev, query }));
+  const handleQueryChange = useCallback(
+    (query: string) => {
+      setState(prev => ({ ...prev, query }));
 
-    // 이전 타이머 클리어
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
+      // 이전 타이머 클리어
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
 
-    // 새로운 검색 타이머 설정
-    searchTimeoutRef.current = setTimeout(() => {
-      performSearch(query, 1, state.selectedFilters);
-    }, 300);
-  }, [performSearch, state.selectedFilters]);
+      // 새로운 검색 타이머 설정
+      searchTimeoutRef.current = setTimeout(() => {
+        performSearch(query, 1, state.selectedFilters);
+      }, 300);
+    },
+    [performSearch, state.selectedFilters]
+  );
 
   // 필터 변경
-  const handleFilterChange = useCallback((filters: Record<string, any>) => {
-    setState(prev => ({ ...prev, selectedFilters: filters }));
-    performSearch(state.query, 1, filters);
-  }, [state.query, performSearch]);
+  const handleFilterChange = useCallback(
+    (filters: Record<string, any>) => {
+      setState(prev => ({ ...prev, selectedFilters: filters }));
+      performSearch(state.query, 1, filters);
+    },
+    [state.query, performSearch]
+  );
 
   // 더 많은 결과 로드
   const loadMore = useCallback(() => {
     if (!state.hasMore || state.isLoading) return;
-    
+
     const nextPage = state.page + 1;
     performSearch(state.query, nextPage, state.selectedFilters);
-  }, [state.hasMore, state.isLoading, state.page, state.query, state.selectedFilters, performSearch]);
+  }, [
+    state.hasMore,
+    state.isLoading,
+    state.page,
+    state.query,
+    state.selectedFilters,
+    performSearch,
+  ]);
 
   // 검색 제안 가져오기
-  const getSuggestions = useCallback(async (query: string): Promise<string[]> => {
-    if (!query.trim()) return [];
+  const getSuggestions = useCallback(
+    async (query: string): Promise<string[]> => {
+      if (!query.trim()) return [];
 
-    try {
-      return await searchService.getSuggestions(query);
-    } catch (error) {
-      console.error('Failed to get suggestions:', error);
-      return [];
-    }
-  }, []);
+      try {
+        return await searchService.getSuggestions(query);
+      } catch (error) {
+        console.error('Failed to get suggestions:', error);
+        return [];
+      }
+    },
+    []
+  );
 
   // 인기 검색어 가져오기
   const getTrendingSearches = useCallback(async (): Promise<string[]> => {
@@ -145,7 +173,7 @@ export const useSearchData = () => {
       total: 0,
       page: 1,
       hasMore: true,
-      selectedFilters: {}
+      selectedFilters: {},
     }));
   }, []);
 
@@ -161,6 +189,6 @@ export const useSearchData = () => {
     getTrendingSearches,
     getSearchHistory,
     clearSearchHistory,
-    resetSearch
+    resetSearch,
   };
-}; 
+};

@@ -88,4 +88,4 @@ export interface RestartPreparation {
   canRestart: boolean;
   warnings: string[];
   cleanupTasks: string[];
-} 
+}

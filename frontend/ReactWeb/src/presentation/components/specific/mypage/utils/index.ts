@@ -5,4 +5,4 @@ export * from './progressUtils';
 export * from './containerUtils';
 
 // Activity utilities
-export * from './activityUtils'; 
+export * from './activityUtils';

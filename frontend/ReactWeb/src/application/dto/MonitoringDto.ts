@@ -60,4 +60,4 @@ export interface MonitoringConfig {
   enableHealthChecks?: boolean;
   metricsInterval?: number;
   healthCheckInterval?: number;
-} 
+}

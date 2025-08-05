@@ -75,4 +75,4 @@ export interface CachePattern {
   pattern: string;
   keys: string[];
   count: number;
-} 
+}

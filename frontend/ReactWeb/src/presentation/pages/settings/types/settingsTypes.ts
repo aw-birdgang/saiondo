@@ -126,4 +126,4 @@ export interface SettingsContentProps {
   onExportSettings?: () => void;
   onImportSettings?: () => void;
   className?: string;
-} 
+}

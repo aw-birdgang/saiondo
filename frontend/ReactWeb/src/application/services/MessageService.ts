@@ -10,7 +10,7 @@ import type {
   MessageProfile,
   MessageStats,
   MessageValidationSchema,
-  MessageServiceConfig
+  MessageServiceConfig,
 } from '../dto/MessageDto';
 
 export class MessageService {
@@ -29,12 +29,12 @@ export class MessageService {
       channelRepository,
       messageRepository
     );
-    
+
     this.errorService = new ErrorHandlingService({
       enableConsoleLogging: true,
       enableRemoteLogging: false,
     });
-    
+
     this.securityService = new SecurityService({
       enableInputValidation: config.enableValidation ?? true,
       enableXSSProtection: true,
@@ -59,54 +59,80 @@ export class MessageService {
           // 입력 검증
           if (this.config.enableValidation) {
             const validationSchema: MessageValidationSchema = {
-              content: { 
-                required: true, 
-                type: 'string', 
-                minLength: this.config.minMessageLength || 1, 
-                maxLength: this.config.maxMessageLength || 2000
+              content: {
+                required: true,
+                type: 'string',
+                minLength: this.config.minMessageLength || 1,
+                maxLength: this.config.maxMessageLength || 2000,
               },
-              channelId: { 
-                required: true, 
-                type: 'string'
+              channelId: {
+                required: true,
+                type: 'string',
               },
-              senderId: { 
-                required: true, 
-                type: 'string'
+              senderId: {
+                required: true,
+                type: 'string',
               },
-              type: { 
-                required: false, 
-                type: 'string', 
-                enum: ['text', 'image', 'file', 'system']
-              }
+              type: {
+                required: false,
+                type: 'string',
+                enum: ['text', 'image', 'file', 'system'],
+              },
             };
 
-            const validation = this.securityService.validateInput(messageData, validationSchema);
+            const validation = this.securityService.validateInput(
+              messageData,
+              validationSchema
+            );
             if (!validation.isValid) {
-              throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
+              throw new Error(
+                `Validation failed: ${validation.errors.join(', ')}`
+              );
             }
           }
 
           // 비즈니스 규칙 검증
           if (!messageData.content || messageData.content.trim().length === 0) {
-            throw DomainErrorFactory.createMessageValidation('Message content is required');
+            throw DomainErrorFactory.createMessageValidation(
+              'Message content is required'
+            );
           }
 
-          if (messageData.content.length > (this.config.maxMessageLength || 2000)) {
-            throw DomainErrorFactory.createMessageValidation('Message content must be less than 2000 characters');
+          if (
+            messageData.content.length > (this.config.maxMessageLength || 2000)
+          ) {
+            throw DomainErrorFactory.createMessageValidation(
+              'Message content must be less than 2000 characters'
+            );
           }
 
-          if (!messageData.channelId || messageData.channelId.trim().length === 0) {
-            throw DomainErrorFactory.createMessageValidation('Channel ID is required');
+          if (
+            !messageData.channelId ||
+            messageData.channelId.trim().length === 0
+          ) {
+            throw DomainErrorFactory.createMessageValidation(
+              'Channel ID is required'
+            );
           }
 
-          if (!messageData.senderId || messageData.senderId.trim().length === 0) {
-            throw DomainErrorFactory.createMessageValidation('Sender ID is required');
+          if (
+            !messageData.senderId ||
+            messageData.senderId.trim().length === 0
+          ) {
+            throw DomainErrorFactory.createMessageValidation(
+              'Sender ID is required'
+            );
           }
 
           // 채널 멤버 확인
-          const isMember = await this.channelRepository.isMember(messageData.channelId, messageData.senderId);
+          const isMember = await this.channelRepository.isMember(
+            messageData.channelId,
+            messageData.senderId
+          );
           if (!isMember) {
-            throw DomainErrorFactory.createMessageValidation('Sender is not a member of this channel');
+            throw DomainErrorFactory.createMessageValidation(
+              'Sender is not a member of this channel'
+            );
           }
 
           // 메시지 엔티티 생성
@@ -127,14 +153,17 @@ export class MessageService {
 
           return this.mapToMessageProfile(savedMessage);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'MessageService.sendMessage',
-            messageData
+            messageData,
           });
           throw error;
         }
       },
-      { channelId: messageData.channelId, messageType: messageData.type || 'text' }
+      {
+        channelId: messageData.channelId,
+        messageType: messageData.type || 'text',
+      }
     );
   }
 
@@ -154,9 +183,9 @@ export class MessageService {
 
           return this.mapToMessageProfile(message);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'MessageService.getMessage',
-            messageId
+            messageId,
           });
           throw error;
         }
@@ -168,7 +197,11 @@ export class MessageService {
   /**
    * 채널 메시지 목록 조회
    */
-  async getChannelMessages(channelId: string, limit: number = 50, offset: number = 0): Promise<{
+  async getChannelMessages(
+    channelId: string,
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<{
     messages: MessageProfile[];
     total: number;
     hasMore: boolean;
@@ -177,20 +210,27 @@ export class MessageService {
       'get_channel_messages',
       async () => {
         try {
-          const messages = await this.messageRepository.findByChannelId(channelId, limit, offset);
-          const total = await this.messageRepository.countByChannelId(channelId);
-
-          return {
-            messages: messages.map(message => this.mapToMessageProfile(message)),
-            total,
-            hasMore: offset + limit < total
-          };
-        } catch (error) {
-          this.errorService.logError(error, { 
-            context: 'MessageService.getChannelMessages',
+          const messages = await this.messageRepository.findByChannelId(
             channelId,
             limit,
             offset
+          );
+          const total =
+            await this.messageRepository.countByChannelId(channelId);
+
+          return {
+            messages: messages.map(message =>
+              this.mapToMessageProfile(message)
+            ),
+            total,
+            hasMore: offset + limit < total,
+          };
+        } catch (error) {
+          this.errorService.logError(error, {
+            context: 'MessageService.getChannelMessages',
+            channelId,
+            limit,
+            offset,
           });
           throw error;
         }
@@ -202,7 +242,11 @@ export class MessageService {
   /**
    * 메시지 업데이트
    */
-  async updateMessage(messageId: string, updates: Partial<MessageProfile>, userId: string): Promise<MessageProfile> {
+  async updateMessage(
+    messageId: string,
+    updates: Partial<MessageProfile>,
+    userId: string
+  ): Promise<MessageProfile> {
     return await this.performanceService.measurePerformance(
       'update_message',
       async () => {
@@ -220,25 +264,32 @@ export class MessageService {
 
           // 입력 검증
           if (this.config.enableValidation && updates.content) {
-            const sanitizedContent = this.securityService.sanitizeInput(updates.content);
-            if (sanitizedContent.length > (this.config.maxMessageLength || 2000)) {
+            const sanitizedContent = this.securityService.sanitizeInput(
+              updates.content
+            );
+            if (
+              sanitizedContent.length > (this.config.maxMessageLength || 2000)
+            ) {
               throw new Error('Message content is too long');
             }
           }
 
-          const updatedMessage = await this.messageRepository.update(messageId, {
-            ...updates,
-            isEdited: true,
-            updatedAt: new Date()
-          });
+          const updatedMessage = await this.messageRepository.update(
+            messageId,
+            {
+              ...updates,
+              isEdited: true,
+              updatedAt: new Date(),
+            }
+          );
 
           return this.mapToMessageProfile(updatedMessage);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'MessageService.updateMessage',
             messageId,
             userId,
-            updates
+            updates,
           });
           throw error;
         }
@@ -269,15 +320,15 @@ export class MessageService {
           // 소프트 삭제
           await this.messageRepository.update(messageId, {
             isDeleted: true,
-            updatedAt: new Date()
+            updatedAt: new Date(),
           });
 
           return true;
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'MessageService.deleteMessage',
             messageId,
-            userId
+            userId,
           });
           throw error;
         }
@@ -289,7 +340,12 @@ export class MessageService {
   /**
    * 메시지 검색
    */
-  async searchMessages(query: string, channelId?: string, userId?: string, limit: number = 20): Promise<MessageProfile[]> {
+  async searchMessages(
+    query: string,
+    channelId?: string,
+    userId?: string,
+    limit: number = 20
+  ): Promise<MessageProfile[]> {
     return await this.performanceService.measurePerformance(
       'search_messages',
       async () => {
@@ -298,19 +354,26 @@ export class MessageService {
           if (this.config.enableValidation) {
             const sanitizedQuery = this.securityService.sanitizeInput(query);
             if (sanitizedQuery.length < 2) {
-              throw new Error('Search query must be at least 2 characters long');
+              throw new Error(
+                'Search query must be at least 2 characters long'
+              );
             }
           }
 
-          const messages = await this.messageRepository.search(query, channelId, userId, limit);
-          return messages.map(message => this.mapToMessageProfile(message));
-        } catch (error) {
-          this.errorService.logError(error, { 
-            context: 'MessageService.searchMessages',
+          const messages = await this.messageRepository.search(
             query,
             channelId,
             userId,
             limit
+          );
+          return messages.map(message => this.mapToMessageProfile(message));
+        } catch (error) {
+          this.errorService.logError(error, {
+            context: 'MessageService.searchMessages',
+            query,
+            channelId,
+            userId,
+            limit,
           });
           throw error;
         }
@@ -322,7 +385,11 @@ export class MessageService {
   /**
    * 사용자 메시지 목록 조회
    */
-  async getUserMessages(userId: string, limit: number = 50, offset: number = 0): Promise<{
+  async getUserMessages(
+    userId: string,
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<{
     messages: MessageProfile[];
     total: number;
     hasMore: boolean;
@@ -331,20 +398,26 @@ export class MessageService {
       'get_user_messages',
       async () => {
         try {
-          const messages = await this.messageRepository.findByUserId(userId, limit, offset);
-          const total = await this.messageRepository.countByUserId(userId);
-
-          return {
-            messages: messages.map(message => this.mapToMessageProfile(message)),
-            total,
-            hasMore: offset + limit < total
-          };
-        } catch (error) {
-          this.errorService.logError(error, { 
-            context: 'MessageService.getUserMessages',
+          const messages = await this.messageRepository.findByUserId(
             userId,
             limit,
             offset
+          );
+          const total = await this.messageRepository.countByUserId(userId);
+
+          return {
+            messages: messages.map(message =>
+              this.mapToMessageProfile(message)
+            ),
+            total,
+            hasMore: offset + limit < total,
+          };
+        } catch (error) {
+          this.errorService.logError(error, {
+            context: 'MessageService.getUserMessages',
+            userId,
+            limit,
+            offset,
           });
           throw error;
         }
@@ -356,7 +429,10 @@ export class MessageService {
   /**
    * 메시지 통계 조회
    */
-  async getMessageStats(channelId?: string, userId?: string): Promise<MessageStats> {
+  async getMessageStats(
+    channelId?: string,
+    userId?: string
+  ): Promise<MessageStats> {
     return await this.performanceService.measurePerformance(
       'get_message_stats',
       async () => {
@@ -388,13 +464,13 @@ export class MessageService {
             totalMessages,
             messagesByType,
             averageLength: totalMessages > 0 ? totalLength / totalMessages : 0,
-            lastMessageAt
+            lastMessageAt,
           };
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'MessageService.getMessageStats',
             channelId,
-            userId
+            userId,
           });
           throw error;
         }
@@ -411,9 +487,9 @@ export class MessageService {
       const message = await this.messageRepository.findById(messageId);
       return !!message && !message.isDeleted;
     } catch (error) {
-      this.errorService.logError(error, { 
+      this.errorService.logError(error, {
         context: 'MessageService.messageExists',
-        messageId
+        messageId,
       });
       return false;
     }
@@ -434,7 +510,7 @@ export class MessageService {
       createdAt: message.createdAt,
       updatedAt: message.updatedAt,
       isEdited: message.isEdited || false,
-      isDeleted: message.isDeleted || false
+      isDeleted: message.isDeleted || false,
     };
   }
-} 
+}

@@ -2,11 +2,11 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../shared/constants/app';
 import { useToastContext } from '../providers/ToastProvider';
-import type { 
-  InviteState, 
+import type {
+  InviteState,
   InviteRequest,
   InvitationResponseRequest,
-  InviteStats
+  InviteStats,
 } from '../../domain/types/invite';
 import type { IInviteUseCase } from '../../application/usecases/interfaces/IInviteUseCase';
 
@@ -20,18 +20,25 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
     error: null,
     partnerEmail: '',
     invitations: [],
-    currentInvitation: null
+    currentInvitation: null,
   });
 
   // 초대 통계 계산
   const inviteStats = useMemo((): InviteStats => {
     const stats: InviteStats = {
       totalInvitations: state.invitations.length,
-      pendingInvitations: state.invitations.filter(inv => inv.status === 'pending').length,
-      acceptedInvitations: state.invitations.filter(inv => inv.status === 'accepted').length,
-      rejectedInvitations: state.invitations.filter(inv => inv.status === 'rejected').length,
+      pendingInvitations: state.invitations.filter(
+        inv => inv.status === 'pending'
+      ).length,
+      acceptedInvitations: state.invitations.filter(
+        inv => inv.status === 'accepted'
+      ).length,
+      rejectedInvitations: state.invitations.filter(
+        inv => inv.status === 'rejected'
+      ).length,
       totalSent: state.invitations.length,
-      accepted: state.invitations.filter(inv => inv.status === 'accepted').length,
+      accepted: state.invitations.filter(inv => inv.status === 'accepted')
+        .length,
       todaySent: state.invitations.filter(inv => {
         const today = new Date();
         const inviteDate = new Date(inv.createdAt);
@@ -46,67 +53,71 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
     setState(prev => ({
       ...prev,
       partnerEmail: email,
-      error: null
+      error: null,
     }));
   }, []);
 
   // 초대 발송
-  const sendInvitation = useCallback(async (email: string, message?: string) => {
-    if (!userId) {
-      toast.error('로그인이 필요합니다.');
-      return;
-    }
-
-    if (!email.trim()) {
-      toast.error('파트너의 이메일 주소를 입력해주세요.');
-      return;
-    }
-
-    setState(prev => ({
-      ...prev,
-      isInviting: true,
-      error: null
-    }));
-
-    try {
-      const request: InviteRequest = {
-        senderId: userId,
-        partnerEmail: email.trim(),
-        message
-      };
-
-      const response = await inviteUseCase.sendInvitation(request);
-
-      if (response.success) {
-        toast.success(response.message);
-        setState(prev => ({
-          ...prev,
-          partnerEmail: '',
-          isInviting: false
-        }));
-        
-        // 홈으로 이동
-        setTimeout(() => {
-          navigate(ROUTES.HOME);
-        }, 1500);
-      } else {
-        setState(prev => ({
-          ...prev,
-          error: response.message,
-          isInviting: false
-        }));
-        toast.error(response.message);
+  const sendInvitation = useCallback(
+    async (email: string, message?: string) => {
+      if (!userId) {
+        toast.error('로그인이 필요합니다.');
+        return;
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '초대 발송에 실패했습니다.';
+
+      if (!email.trim()) {
+        toast.error('파트너의 이메일 주소를 입력해주세요.');
+        return;
+      }
+
       setState(prev => ({
         ...prev,
-        error: errorMessage,
-        isInviting: false
+        isInviting: true,
+        error: null,
       }));
-      toast.error(errorMessage);
-    }
-  }, [userId, inviteUseCase, toast, navigate]);
+
+      try {
+        const request: InviteRequest = {
+          senderId: userId,
+          partnerEmail: email.trim(),
+          message,
+        };
+
+        const response = await inviteUseCase.sendInvitation(request);
+
+        if (response.success) {
+          toast.success(response.message);
+          setState(prev => ({
+            ...prev,
+            partnerEmail: '',
+            isInviting: false,
+          }));
+
+          // 홈으로 이동
+          setTimeout(() => {
+            navigate(ROUTES.HOME);
+          }, 1500);
+        } else {
+          setState(prev => ({
+            ...prev,
+            error: response.message,
+            isInviting: false,
+          }));
+          toast.error(response.message);
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : '초대 발송에 실패했습니다.';
+        setState(prev => ({
+          ...prev,
+          error: errorMessage,
+          isInviting: false,
+        }));
+        toast.error(errorMessage);
+      }
+    },
+    [userId, inviteUseCase, toast, navigate]
+  );
 
   // 초대장 목록 로드
   const loadInvitations = useCallback(async () => {
@@ -117,7 +128,7 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
     setState(prev => ({
       ...prev,
       isLoading: true,
-      error: null
+      error: null,
     }));
 
     try {
@@ -125,67 +136,78 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
       setState(prev => ({
         ...prev,
         invitations,
-        isLoading: false
+        isLoading: false,
       }));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '초대장을 불러오는데 실패했습니다.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '초대장을 불러오는데 실패했습니다.';
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        isLoading: false
+        isLoading: false,
       }));
       toast.error(errorMessage);
     }
   }, [userId, inviteUseCase, toast]);
 
   // 초대 응답
-  const respondToInvitation = useCallback(async (invitationId: string, accepted: boolean) => {
-    try {
-      const request: InvitationResponseRequest = {
-        invitationId,
-        accepted
-      };
+  const respondToInvitation = useCallback(
+    async (invitationId: string, accepted: boolean) => {
+      try {
+        const request: InvitationResponseRequest = {
+          invitationId,
+          accepted,
+        };
 
-      const response = await inviteUseCase.respondToInvitation(request);
+        const response = await inviteUseCase.respondToInvitation(request);
 
-      if (response.success) {
-        toast.success(response.message);
-        
-        // 초대장 목록 새로고침
-        await loadInvitations();
+        if (response.success) {
+          toast.success(response.message);
 
-        if (accepted) {
-          // 채널로 이동
-          setTimeout(() => {
-            navigate(ROUTES.CHANNELS);
-          }, 1000);
+          // 초대장 목록 새로고침
+          await loadInvitations();
+
+          if (accepted) {
+            // 채널로 이동
+            setTimeout(() => {
+              navigate(ROUTES.CHANNELS);
+            }, 1000);
+          }
+        } else {
+          toast.error(response.message);
         }
-      } else {
-        toast.error(response.message);
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : '초대 응답에 실패했습니다.';
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '초대 응답에 실패했습니다.';
-      toast.error(errorMessage);
-    }
-  }, [inviteUseCase, loadInvitations, toast, navigate]);
+    },
+    [inviteUseCase, loadInvitations, toast, navigate]
+  );
 
   // 초대 취소
-  const cancelInvitation = useCallback(async (invitationId: string) => {
-    try {
-      const success = await inviteUseCase.cancelInvitation(invitationId);
-      
-      if (success) {
-        toast.success('초대가 취소되었습니다.');
-        // 초대장 목록 새로고침
-        await loadInvitations();
-      } else {
-        toast.error('초대 취소에 실패했습니다.');
+  const cancelInvitation = useCallback(
+    async (invitationId: string) => {
+      try {
+        const success = await inviteUseCase.cancelInvitation(invitationId);
+
+        if (success) {
+          toast.success('초대가 취소되었습니다.');
+          // 초대장 목록 새로고침
+          await loadInvitations();
+        } else {
+          toast.error('초대 취소에 실패했습니다.');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : '초대 취소에 실패했습니다.';
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '초대 취소에 실패했습니다.';
-      toast.error(errorMessage);
-    }
-  }, [inviteUseCase, loadInvitations, toast]);
+    },
+    [inviteUseCase, loadInvitations, toast]
+  );
 
   // 초대 통계 로드
   const loadInviteStats = useCallback(async () => {
@@ -205,7 +227,7 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
   const clearError = useCallback(() => {
     setState(prev => ({
       ...prev,
-      error: null
+      error: null,
     }));
   }, []);
 
@@ -217,7 +239,7 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
       error: null,
       partnerEmail: '',
       invitations: [],
-      currentInvitation: null
+      currentInvitation: null,
     });
   }, []);
 
@@ -232,7 +254,7 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
     // State
     state,
     inviteStats,
-    
+
     // Actions
     updatePartnerEmail,
     sendInvitation,
@@ -241,6 +263,6 @@ export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
     cancelInvitation,
     loadInviteStats,
     clearError,
-    reset
+    reset,
   };
-}; 
+};

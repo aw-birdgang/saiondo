@@ -1,4 +1,3 @@
-
 export interface PaymentConfig {
   apiKey: string;
   merchantId: string;
@@ -54,7 +53,9 @@ export class PaymentService {
   /**
    * 결제 요청 생성
    */
-  async createPayment(paymentRequest: PaymentRequest): Promise<PaymentResponse> {
+  async createPayment(
+    paymentRequest: PaymentRequest
+  ): Promise<PaymentResponse> {
     try {
       // TODO: 실제 결제 API 호출로 대체
       // const response = await fetch(`${this.config.baseUrl}/payments`, {
@@ -82,14 +83,16 @@ export class PaymentService {
         success: true,
         paymentId,
         paymentUrl,
-        status: 'pending'
+        status: 'pending',
       };
-
     } catch (error) {
       console.error('Payment creation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : '결제 요청 생성에 실패했습니다.'
+        error:
+          error instanceof Error
+            ? error.message
+            : '결제 요청 생성에 실패했습니다.',
       };
     }
   }
@@ -123,10 +126,9 @@ export class PaymentService {
         updatedAt: new Date(),
         metadata: {
           orderId: `order-${Date.now()}`,
-          customerEmail: 'user@example.com'
-        }
+          customerEmail: 'user@example.com',
+        },
       };
-
     } catch (error) {
       console.error('Payment status check failed:', error);
       return null;
@@ -136,7 +138,10 @@ export class PaymentService {
   /**
    * 결제 취소
    */
-  async cancelPayment(paymentId: string, reason?: string): Promise<PaymentResponse> {
+  async cancelPayment(
+    paymentId: string,
+    reason?: string
+  ): Promise<PaymentResponse> {
     try {
       // TODO: 실제 결제 취소 API 호출로 대체
       // const response = await fetch(`${this.config.baseUrl}/payments/${paymentId}/cancel`, {
@@ -156,14 +161,14 @@ export class PaymentService {
       return {
         success: true,
         paymentId,
-        status: 'cancelled'
+        status: 'cancelled',
       };
-
     } catch (error) {
       console.error('Payment cancellation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : '결제 취소에 실패했습니다.'
+        error:
+          error instanceof Error ? error.message : '결제 취소에 실패했습니다.',
       };
     }
   }
@@ -193,31 +198,37 @@ export class PaymentService {
       await new Promise(resolve => setTimeout(resolve, 600));
 
       // 임시 결제 내역 데이터
-      const payments: PaymentStatus[] = Array.from({ length: limit }, (_, index) => ({
-        paymentId: crypto.randomUUID(),
-        status: ['completed', 'failed', 'cancelled'][Math.floor(Math.random() * 3)] as any,
-        amount: Math.floor(Math.random() * 50000) + 5000, // 5,000원 ~ 55,000원
-        currency: 'KRW',
-        createdAt: new Date(Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 30), // 최근 30일
-        updatedAt: new Date(),
-        metadata: {
-          orderId: `order-${Date.now()}-${index}`,
-          customerEmail: 'user@example.com'
-        }
-      }));
+      const payments: PaymentStatus[] = Array.from(
+        { length: limit },
+        (_, index) => ({
+          paymentId: crypto.randomUUID(),
+          status: ['completed', 'failed', 'cancelled'][
+            Math.floor(Math.random() * 3)
+          ] as any,
+          amount: Math.floor(Math.random() * 50000) + 5000, // 5,000원 ~ 55,000원
+          currency: 'KRW',
+          createdAt: new Date(
+            Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 30
+          ), // 최근 30일
+          updatedAt: new Date(),
+          metadata: {
+            orderId: `order-${Date.now()}-${index}`,
+            customerEmail: 'user@example.com',
+          },
+        })
+      );
 
       return {
         payments,
         total: 150, // 총 150개의 결제 내역
-        hasMore: page * limit < 150
+        hasMore: page * limit < 150,
       };
-
     } catch (error) {
       console.error('Payment history fetch failed:', error);
       return {
         payments: [],
         total: 0,
-        hasMore: false
+        hasMore: false,
       };
     }
   }
@@ -229,13 +240,13 @@ export class PaymentService {
     if (currency === 'KRW') {
       return new Intl.NumberFormat('ko-KR', {
         style: 'currency',
-        currency: 'KRW'
+        currency: 'KRW',
       }).format(amount);
     }
-    
+
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency
+      currency: currency,
     }).format(amount);
   }
 
@@ -281,7 +292,7 @@ const defaultConfig: PaymentConfig = {
   apiKey: import.meta.env.VITE_PAYMENT_API_KEY || '',
   merchantId: import.meta.env.VITE_PAYMENT_MERCHANT_ID || '',
   baseUrl: import.meta.env.VITE_PAYMENT_BASE_URL || 'https://api.payment.com',
-  token: ''
+  token: '',
 };
 
 // 전역 인스턴스
@@ -307,19 +318,23 @@ export const getPaymentService = (): PaymentService | null => {
  * 결제 훅
  */
 export const usePayment = () => {
-  const createPayment = async (paymentRequest: PaymentRequest): Promise<PaymentResponse> => {
+  const createPayment = async (
+    paymentRequest: PaymentRequest
+  ): Promise<PaymentResponse> => {
     const service = getPaymentService();
     if (!service) {
       return {
         success: false,
-        error: '결제 서비스가 초기화되지 않았습니다.'
+        error: '결제 서비스가 초기화되지 않았습니다.',
       };
     }
 
     return service.createPayment(paymentRequest);
   };
 
-  const getPaymentStatus = async (paymentId: string): Promise<PaymentStatus | null> => {
+  const getPaymentStatus = async (
+    paymentId: string
+  ): Promise<PaymentStatus | null> => {
     const service = getPaymentService();
     if (!service) {
       return null;
@@ -328,12 +343,15 @@ export const usePayment = () => {
     return service.getPaymentStatus(paymentId);
   };
 
-  const cancelPayment = async (paymentId: string, reason?: string): Promise<PaymentResponse> => {
+  const cancelPayment = async (
+    paymentId: string,
+    reason?: string
+  ): Promise<PaymentResponse> => {
     const service = getPaymentService();
     if (!service) {
       return {
         success: false,
-        error: '결제 서비스가 초기화되지 않았습니다.'
+        error: '결제 서비스가 초기화되지 않았습니다.',
       };
     }
 
@@ -350,7 +368,7 @@ export const usePayment = () => {
       return {
         payments: [],
         total: 0,
-        hasMore: false
+        hasMore: false,
       };
     }
 
@@ -361,6 +379,6 @@ export const usePayment = () => {
     createPayment,
     getPaymentStatus,
     cancelPayment,
-    getPaymentHistory
+    getPaymentHistory,
   };
-}; 
+};

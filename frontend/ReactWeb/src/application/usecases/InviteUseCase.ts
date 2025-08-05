@@ -1,15 +1,18 @@
-import type { 
-  ChannelInvitationItem, 
-  InviteRequest, 
+import type {
+  ChannelInvitationItem,
+  InviteRequest,
   InviteResponse,
   InvitationResponseRequest,
   InvitationResponseResponse,
   InviteValidationError,
-  InviteStats
+  InviteStats,
 } from '../../domain/types/invite';
 import type { IInviteService } from './interfaces/IInviteService';
 import type { IInviteUseCase } from './interfaces/IInviteUseCase';
-import { createInviteUseCase, createMockInviteUseCase } from './factories/InviteUseCaseFactory';
+import {
+  createInviteUseCase,
+  createMockInviteUseCase,
+} from './factories/InviteUseCaseFactory';
 
 // UseCase 구현체 - Service를 사용하여 애플리케이션 로직 조율
 export class InviteUseCase implements IInviteUseCase {
@@ -23,7 +26,9 @@ export class InviteUseCase implements IInviteUseCase {
     return await this.inviteService.getInvitations(userId);
   }
 
-  async respondToInvitation(request: InvitationResponseRequest): Promise<InvitationResponseResponse> {
+  async respondToInvitation(
+    request: InvitationResponseRequest
+  ): Promise<InvitationResponseResponse> {
     return await this.inviteService.respondToInvitation(request);
   }
 
@@ -49,5 +54,4 @@ export class InviteUseCase implements IInviteUseCase {
 }
 
 // Re-export factories for backward compatibility
-export { InviteService } from './services/InviteService';
-export { createInviteUseCase, createMockInviteUseCase }; 
+export { createInviteUseCase, createMockInviteUseCase };

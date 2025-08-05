@@ -6,7 +6,7 @@ services:
       context: .
       target: development
     ports:
-      - "5173:5173"
+      - '5173:5173'
     volumes:
       - .:/app
       - /app/node_modules
@@ -23,7 +23,7 @@ services:
       context: .
       target: production
     ports:
-      - "80:80"
+      - '80:80'
     environment:
       - NODE_ENV=production
     networks:
@@ -37,7 +37,7 @@ services:
     volumes:
       - ../../backend/api:/app
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=development
     command: npm run start:dev

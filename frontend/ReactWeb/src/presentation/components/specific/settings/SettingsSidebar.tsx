@@ -6,14 +6,14 @@ import type { SettingsSidebarProps } from '../../../pages/settings/types/setting
 const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   activeSection,
   onSectionChange,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("w-64 bg-surface border-r border-border", className)}>
-      <div className="p-4">
-        <h2 className="text-lg font-semibold text-txt mb-4">설정 메뉴</h2>
-        <nav className="space-y-1">
-          {SETTINGS_SECTIONS.map((section) => (
+    <div className={cn('w-64 bg-surface border-r border-border', className)}>
+      <div className='p-4'>
+        <h2 className='text-lg font-semibold text-txt mb-4'>설정 메뉴</h2>
+        <nav className='space-y-1'>
+          {SETTINGS_SECTIONS.map(section => (
             <button
               key={section.id}
               onClick={() => onSectionChange(section.id)}
@@ -25,13 +25,17 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                   : 'text-txt hover:text-txt'
               )}
             >
-              <span className="text-lg">{section.icon}</span>
+              <span className='text-lg'>{section.icon}</span>
               <div>
-                <div className="font-medium">{section.title}</div>
-                <div className={cn(
-                  'text-xs',
-                  activeSection === section.id ? 'text-white/80' : 'text-txt-secondary'
-                )}>
+                <div className='font-medium'>{section.title}</div>
+                <div
+                  className={cn(
+                    'text-xs',
+                    activeSection === section.id
+                      ? 'text-white/80'
+                      : 'text-txt-secondary'
+                  )}
+                >
                   {section.description}
                 </div>
               </div>
@@ -43,4 +47,4 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   );
 };
 
-export default SettingsSidebar; 
+export default SettingsSidebar;

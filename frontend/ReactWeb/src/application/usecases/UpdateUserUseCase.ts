@@ -1,5 +1,8 @@
 import { UserService } from '../services/UserService';
-import type { UpdateUserRequest, UpdateUserResponse } from '../dto/UpdateUserDto';
+import type {
+  UpdateUserRequest,
+  UpdateUserResponse,
+} from '../dto/UpdateUserDto';
 
 export class UpdateUserUseCase {
   constructor(private readonly userService: UserService) {}
@@ -10,7 +13,10 @@ export class UpdateUserUseCase {
         throw new Error('User ID is required');
       }
 
-      const updatedUser = await this.userService.updateUserProfile(request.id, request.updates);
+      const updatedUser = await this.userService.updateUserProfile(
+        request.id,
+        request.updates
+      );
       return { user: updatedUser };
     } catch (error) {
       if (error instanceof Error) {

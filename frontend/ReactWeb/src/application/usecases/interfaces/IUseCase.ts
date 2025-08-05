@@ -31,4 +31,4 @@ export interface UseCaseRegistration {
   useCase: new (...args: any[]) => IUseCase;
   dependencies: string[];
   metadata?: IUseCaseMetadata;
-} 
+}

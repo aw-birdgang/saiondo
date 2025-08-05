@@ -33,4 +33,4 @@ export class Email {
   equals(other: Email): boolean {
     return this.value.toLowerCase() === other.value.toLowerCase();
   }
-} 
+}

@@ -53,11 +53,15 @@ export class CacheService {
     return channel;
   }
 
-  async getMessagesWithCache(channelId: string, limit?: number, offset?: number): Promise<any[]> {
+  async getMessagesWithCache(
+    channelId: string,
+    limit?: number,
+    offset?: number
+  ): Promise<any[]> {
     const cacheKey = this.generateCacheKey({
       type: 'message',
       id: channelId,
-      subKey: `limit_${limit}_offset_${offset}`
+      subKey: `limit_${limit}_offset_${offset}`,
     });
 
     // Try to get from cache first
@@ -67,7 +71,11 @@ export class CacheService {
     }
 
     // If not in cache, fetch from repository
-    const messages = await this.messageRepository.findByChannelId(channelId, limit, offset);
+    const messages = await this.messageRepository.findByChannelId(
+      channelId,
+      limit,
+      offset
+    );
     const messageData = messages.map(message => message.toJSON());
 
     this.setCache(cacheKey, messageData, 2 * 60 * 1000); // 2 minutes TTL for messages
@@ -97,7 +105,7 @@ export class CacheService {
       totalKeys: this.cache.size,
       memoryUsage: 0,
       hitRate: this.stats.hits / (this.stats.hits + this.stats.misses) || 0,
-      missRate: this.stats.misses / (this.stats.hits + this.stats.misses) || 0
+      missRate: this.stats.misses / (this.stats.hits + this.stats.misses) || 0,
     };
   }
 
@@ -112,7 +120,7 @@ export class CacheService {
     // Pre-load frequently accessed data into cache
     const promises = [
       ...userIds.map(userId => this.getUserWithCache(userId)),
-      ...channelIds.map(channelId => this.getChannelWithCache(channelId))
+      ...channelIds.map(channelId => this.getChannelWithCache(channelId)),
     ];
 
     await Promise.all(promises);
@@ -126,7 +134,7 @@ export class CacheService {
     for (const userId of userIds) {
       const cacheKey = this.generateCacheKey({ type: 'user', id: userId });
       const cached = this.getFromCache(cacheKey);
-      
+
       if (cached) {
         result.set(userId, cached);
       } else {
@@ -143,7 +151,7 @@ export class CacheService {
       for (let i = 0; i < uncachedUserIds.length; i++) {
         const userId = uncachedUserIds[i];
         const user = users[i];
-        
+
         if (user) {
           const cacheKey = this.generateCacheKey({ type: 'user', id: userId });
           this.setCache(cacheKey, user.toJSON());
@@ -155,13 +163,17 @@ export class CacheService {
     return result;
   }
 
-  private generateCacheKey(key: { type: string; id: string; subKey?: string }): string {
+  private generateCacheKey(key: {
+    type: string;
+    id: string;
+    subKey?: string;
+  }): string {
     return `${key.type}:${key.id}${key.subKey ? `:${key.subKey}` : ''}`;
   }
 
   private getFromCache<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       return null;
@@ -223,4 +235,4 @@ export class CacheService {
       this.stats.size--;
     }
   }
-} 
+}

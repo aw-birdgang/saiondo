@@ -8,7 +8,7 @@ import type {
   UserBehavior,
   RealTimeActivity,
   UserJourney,
-  ChurnPrediction
+  ChurnPrediction,
 } from '../dto/AnalyticsDto';
 
 export class AnalyticsService {
@@ -83,20 +83,27 @@ export class AnalyticsService {
     const session = this.userSessions.find(s => s.id === sessionId);
     if (session) {
       session.endTime = new Date();
-      session.duration = session.endTime.getTime() - session.startTime.getTime();
+      session.duration =
+        session.endTime.getTime() - session.startTime.getTime();
     }
   }
 
   /**
    * 분석 리포트 생성
    */
-  async generateAnalyticsReport(timeRange: { start: Date; end: Date }): Promise<AnalyticsReport> {
+  async generateAnalyticsReport(timeRange: {
+    start: Date;
+    end: Date;
+  }): Promise<AnalyticsReport> {
     const filteredEvents = this.userEvents.filter(
-      event => event.timestamp >= timeRange.start && event.timestamp <= timeRange.end
+      event =>
+        event.timestamp >= timeRange.start && event.timestamp <= timeRange.end
     );
 
     const filteredSessions = this.userSessions.filter(
-      session => session.startTime >= timeRange.start && session.startTime <= timeRange.end
+      session =>
+        session.startTime >= timeRange.start &&
+        session.startTime <= timeRange.end
     );
 
     // 이벤트 타입별 통계
@@ -110,10 +117,14 @@ export class AnalyticsService {
     const activeUsers = activeUserIds.size;
 
     // 평균 세션 시간
-    const completedSessions = filteredSessions.filter(s => s.duration !== undefined);
-    const averageSessionDuration = completedSessions.length > 0
-      ? completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / completedSessions.length
-      : 0;
+    const completedSessions = filteredSessions.filter(
+      s => s.duration !== undefined
+    );
+    const averageSessionDuration =
+      completedSessions.length > 0
+        ? completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
+          completedSessions.length
+        : 0;
 
     // 채널별 통계
     const channelStats = await this.getChannelStatistics(timeRange);
@@ -136,17 +147,22 @@ export class AnalyticsService {
   /**
    * 사용자 행동 분석
    */
-  analyzeUserBehavior(userId: string, timeRange: { start: Date; end: Date }): UserBehavior {
+  analyzeUserBehavior(
+    userId: string,
+    timeRange: { start: Date; end: Date }
+  ): UserBehavior {
     const userEvents = this.userEvents.filter(
-      event => event.userId === userId && 
-      event.timestamp >= timeRange.start && 
-      event.timestamp <= timeRange.end
+      event =>
+        event.userId === userId &&
+        event.timestamp >= timeRange.start &&
+        event.timestamp <= timeRange.end
     );
 
     const userSessions = this.userSessions.filter(
-      session => session.userId === userId &&
-      session.startTime >= timeRange.start &&
-      session.startTime <= timeRange.end
+      session =>
+        session.userId === userId &&
+        session.startTime >= timeRange.start &&
+        session.startTime <= timeRange.end
     );
 
     // 활동 패턴 분석
@@ -156,12 +172,16 @@ export class AnalyticsService {
     const favoriteChannels = this.getFavoriteChannels(userEvents);
 
     // 참여도 점수 계산
-    const engagementScore = this.calculateEngagementScore(userEvents, userSessions);
+    const engagementScore = this.calculateEngagementScore(
+      userEvents,
+      userSessions
+    );
 
     return {
       userId,
       totalSessions: userSessions.length,
-      averageSessionDuration: this.calculateAverageSessionDuration(userSessions),
+      averageSessionDuration:
+        this.calculateAverageSessionDuration(userSessions),
       favoriteChannels,
       activityPattern,
       engagementScore,
@@ -253,7 +273,8 @@ export class AnalyticsService {
       riskFactors.push('적은 세션 수');
     }
 
-    if (userBehavior.averageSessionDuration < 300000) { // 5분 미만
+    if (userBehavior.averageSessionDuration < 300000) {
+      // 5분 미만
       churnProbability += 0.2;
       riskFactors.push('짧은 세션 시간');
     }
@@ -287,10 +308,14 @@ export class AnalyticsService {
    */
   exportData(format: 'json' | 'csv'): string {
     if (format === 'json') {
-      return JSON.stringify({
-        events: this.userEvents,
-        sessions: this.userSessions,
-      }, null, 2);
+      return JSON.stringify(
+        {
+          events: this.userEvents,
+          sessions: this.userSessions,
+        },
+        null,
+        2
+      );
     } else {
       // CSV 형식으로 내보내기
       const eventCsv = this.convertEventsToCsv();
@@ -299,7 +324,11 @@ export class AnalyticsService {
     }
   }
 
-  private updateSession(userId: string, event: UserEvent, sessionId?: string): void {
+  private updateSession(
+    userId: string,
+    event: UserEvent,
+    sessionId?: string
+  ): void {
     if (sessionId) {
       const session = this.userSessions.find(s => s.id === sessionId);
       if (session) {
@@ -362,12 +391,16 @@ export class AnalyticsService {
       .map(([channelId]) => channelId);
   }
 
-  private calculateEngagementScore(events: UserEvent[], sessions: UserSession[]): number {
+  private calculateEngagementScore(
+    events: UserEvent[],
+    sessions: UserSession[]
+  ): number {
     if (events.length === 0) return 0;
 
     const eventScore = events.length * 0.1;
     const sessionScore = sessions.length * 0.2;
-    const durationScore = this.calculateAverageSessionDuration(sessions) / 60000 * 0.01; // 분 단위
+    const durationScore =
+      (this.calculateAverageSessionDuration(sessions) / 60000) * 0.01; // 분 단위
 
     return Math.min(eventScore + sessionScore + durationScore, 1);
   }
@@ -376,17 +409,34 @@ export class AnalyticsService {
     const completedSessions = sessions.filter(s => s.duration !== undefined);
     if (completedSessions.length === 0) return 0;
 
-    return completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / completedSessions.length;
+    return (
+      completedSessions.reduce((sum, s) => sum + (s.duration || 0), 0) /
+      completedSessions.length
+    );
   }
 
-  private identifyConversionPath(eventSequence: UserEvent['eventType'][]): string[] {
+  private identifyConversionPath(
+    eventSequence: UserEvent['eventType'][]
+  ): string[] {
     // 전환 경로 식별 로직
-    const conversionEvents = ['login', 'page_view', 'channel_joined', 'message_sent'];
+    const conversionEvents = [
+      'login',
+      'page_view',
+      'channel_joined',
+      'message_sent',
+    ];
     return eventSequence.filter(event => conversionEvents.includes(event));
   }
 
   private convertEventsToCsv(): string {
-    const headers = ['id', 'userId', 'eventType', 'timestamp', 'properties', 'sessionId'];
+    const headers = [
+      'id',
+      'userId',
+      'eventType',
+      'timestamp',
+      'properties',
+      'sessionId',
+    ];
     const rows = this.userEvents.map(event => [
       event.id,
       event.userId,
@@ -400,7 +450,15 @@ export class AnalyticsService {
   }
 
   private convertSessionsToCsv(): string {
-    const headers = ['id', 'userId', 'startTime', 'endTime', 'duration', 'userAgent', 'ipAddress'];
+    const headers = [
+      'id',
+      'userId',
+      'startTime',
+      'endTime',
+      'duration',
+      'userAgent',
+      'ipAddress',
+    ];
     const rows = this.userSessions.map(session => [
       session.id,
       session.userId,
@@ -421,4 +479,4 @@ export class AnalyticsService {
   private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
-} 
+}

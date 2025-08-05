@@ -1,6 +1,10 @@
 export interface IIndexedDBService {
   openDatabase(): Promise<IDBDatabase>;
-  createObjectStore(storeName: string, keyPath: string, options?: IDBObjectStoreParameters): void;
+  createObjectStore(
+    storeName: string,
+    keyPath: string,
+    options?: IDBObjectStoreParameters
+  ): void;
   add<T>(storeName: string, data: T): Promise<string>;
   get<T>(storeName: string, key: string): Promise<T | null>;
   getAll<T>(storeName: string): Promise<T[]>;
@@ -8,6 +12,51 @@ export interface IIndexedDBService {
   delete(storeName: string, key: string): Promise<void>;
   clear(storeName: string): Promise<void>;
   closeDatabase(): void;
+}
+
+interface Message {
+  id: string;
+  channelId: string;
+  senderId: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface User {
+  id: string;
+  email: string;
+  username: string;
+  displayName?: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Channel {
+  id: string;
+  name: string;
+  description?: string;
+  type: 'public' | 'private' | 'direct';
+  ownerId: string;
+  members: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface File {
+  id: string;
+  messageId: string;
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+  createdAt: Date;
+}
+
+interface CacheItem<T> {
+  data: T;
+  expiresAt: number;
 }
 
 export class IndexedDBService implements IIndexedDBService {
@@ -28,12 +77,14 @@ export class IndexedDBService implements IIndexedDBService {
         resolve(this.db);
       };
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
+
         // 메시지 저장소
         if (!db.objectStoreNames.contains('messages')) {
-          const messageStore = db.createObjectStore('messages', { keyPath: 'id' });
+          const messageStore = db.createObjectStore('messages', {
+            keyPath: 'id',
+          });
           messageStore.createIndex('channelId', 'channelId', { unique: false });
           messageStore.createIndex('senderId', 'senderId', { unique: false });
           messageStore.createIndex('createdAt', 'createdAt', { unique: false });
@@ -47,7 +98,9 @@ export class IndexedDBService implements IIndexedDBService {
 
         // 채널 저장소
         if (!db.objectStoreNames.contains('channels')) {
-          const channelStore = db.createObjectStore('channels', { keyPath: 'id' });
+          const channelStore = db.createObjectStore('channels', {
+            keyPath: 'id',
+          });
           channelStore.createIndex('type', 'type', { unique: false });
           channelStore.createIndex('ownerId', 'ownerId', { unique: false });
         }
@@ -68,7 +121,11 @@ export class IndexedDBService implements IIndexedDBService {
     });
   }
 
-  createObjectStore(storeName: string, keyPath: string, options?: IDBObjectStoreParameters): void {
+  createObjectStore(
+    storeName: string,
+    keyPath: string,
+    options?: IDBObjectStoreParameters
+  ): void {
     if (!this.db) {
       throw new Error('Database not opened');
     }
@@ -206,7 +263,10 @@ export class IndexedDBService implements IIndexedDBService {
   }
 
   // 특화된 메서드들
-  async getMessagesByChannel(channelId: string, limit = 50): Promise<any[]> {
+  async getMessagesByChannel(
+    channelId: string,
+    limit = 50
+  ): Promise<Message[]> {
     if (!this.db) {
       await this.openDatabase();
     }
@@ -219,7 +279,10 @@ export class IndexedDBService implements IIndexedDBService {
 
       request.onsuccess = () => {
         const messages = request.result
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
           .slice(0, limit);
         resolve(messages);
       };
@@ -230,7 +293,7 @@ export class IndexedDBService implements IIndexedDBService {
     });
   }
 
-  async getUserByEmail(email: string): Promise<any | null> {
+  async getUserByEmail(email: string): Promise<User | null> {
     if (!this.db) {
       await this.openDatabase();
     }
@@ -252,19 +315,23 @@ export class IndexedDBService implements IIndexedDBService {
   }
 
   async getCacheItem<T>(key: string): Promise<T | null> {
-    const item = await this.get<{ data: T; expiresAt: number }>('cache', key);
-    
+    const item = await this.get<CacheItem<T>>('cache', key);
+
     if (!item) return null;
-    
+
     if (Date.now() > item.expiresAt) {
       await this.delete('cache', key);
       return null;
     }
-    
+
     return item.data;
   }
 
-  async setCacheItem<T>(key: string, data: T, ttl: number = 300000): Promise<void> {
+  async setCacheItem<T>(
+    key: string,
+    data: T,
+    ttl: number = 300000
+  ): Promise<void> {
     const expiresAt = Date.now() + ttl;
     await this.update('cache', key, { data, expiresAt });
   }
@@ -297,4 +364,4 @@ export class IndexedDBService implements IIndexedDBService {
       };
     });
   }
-} 
+}

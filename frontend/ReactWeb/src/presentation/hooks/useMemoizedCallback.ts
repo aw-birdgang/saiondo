@@ -15,7 +15,7 @@ export const useMemoizedCallback = <T extends (...args: any[]) => any>(
     equalityFn = (prev, next) => {
       if (prev.length !== next.length) return false;
       return prev.every((val, index) => val === next[index]);
-    }
+    },
   } = options;
 
   const memoizedCallback = useCallback(callback, dependencies);
@@ -25,26 +25,31 @@ export const useMemoizedCallback = <T extends (...args: any[]) => any>(
     timestamp: number;
   } | null>(null);
 
-  const memoizedFn = useCallback((...args: Parameters<T>): ReturnType<T> => {
-    const now = Date.now();
-    
-    // Check if we have a cached result that's still valid
-    if (lastCallRef.current && 
+  const memoizedFn = useCallback(
+    (...args: Parameters<T>): ReturnType<T> => {
+      const now = Date.now();
+
+      // Check if we have a cached result that's still valid
+      if (
+        lastCallRef.current &&
         now - lastCallRef.current.timestamp < maxAge &&
-        equalityFn(lastCallRef.current.args, args)) {
-      return lastCallRef.current.result;
-    }
+        equalityFn(lastCallRef.current.args, args)
+      ) {
+        return lastCallRef.current.result;
+      }
 
-    // Call the function and cache the result
-    const result = memoizedCallback(...args);
-    lastCallRef.current = {
-      args,
-      result,
-      timestamp: now
-    };
+      // Call the function and cache the result
+      const result = memoizedCallback(...args);
+      lastCallRef.current = {
+        args,
+        result,
+        timestamp: now,
+      };
 
-    return result;
-  }, [memoizedCallback, maxAge, equalityFn]);
+      return result;
+    },
+    [memoizedCallback, maxAge, equalityFn]
+  );
 
   // Clear cache when dependencies change
   useEffect(() => {
@@ -52,4 +57,4 @@ export const useMemoizedCallback = <T extends (...args: any[]) => any>(
   }, dependencies);
 
   return memoizedFn;
-}; 
+};

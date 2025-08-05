@@ -13,7 +13,7 @@ export const useAuthGuard = (options: UseAuthGuardOptions = {}) => {
   const {
     requireAuth = true,
     redirectTo = ROUTES.LOGIN,
-    onAuthChange
+    onAuthChange,
   } = options;
 
   const navigate = useNavigate();
@@ -22,13 +22,13 @@ export const useAuthGuard = (options: UseAuthGuardOptions = {}) => {
   useEffect(() => {
     if (!loading) {
       const isAuthenticated = !!user;
-      
+
       if (requireAuth && !isAuthenticated) {
         navigate(redirectTo, { replace: true });
       } else if (!requireAuth && isAuthenticated) {
         navigate(ROUTES.HOME, { replace: true });
       }
-      
+
       onAuthChange?.(isAuthenticated);
     }
   }, [user, loading, requireAuth, redirectTo, navigate, onAuthChange]);
@@ -37,8 +37,7 @@ export const useAuthGuard = (options: UseAuthGuardOptions = {}) => {
     isAuthenticated: !!user,
     isLoading: loading,
     user,
-    shouldRender: !loading && (
-      (requireAuth && !!user) || (!requireAuth && !user)
-    )
+    shouldRender:
+      !loading && ((requireAuth && !!user) || (!requireAuth && !user)),
   };
-}; 
+};

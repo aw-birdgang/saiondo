@@ -6,7 +6,14 @@
 export interface UserEvent {
   id: string;
   userId: string;
-  eventType: 'page_view' | 'message_sent' | 'channel_joined' | 'file_uploaded' | 'search_performed' | 'login' | 'logout';
+  eventType:
+    | 'page_view'
+    | 'message_sent'
+    | 'channel_joined'
+    | 'file_uploaded'
+    | 'search_performed'
+    | 'login'
+    | 'logout';
   timestamp: Date;
   properties?: Record<string, any>;
   sessionId?: string;
@@ -29,7 +36,11 @@ export interface AnalyticsReport {
   totalSessions: number;
   averageSessionDuration: number;
   eventsByType: Record<string, number>;
-  topChannels: Array<{ channelId: string; messageCount: number; userCount: number }>;
+  topChannels: Array<{
+    channelId: string;
+    messageCount: number;
+    userCount: number;
+  }>;
   userEngagement: {
     messagesPerUser: number;
     channelsPerUser: number;
@@ -149,4 +160,4 @@ export interface RealTimeActivityResponse {
   fetchedAt: Date;
   cacheKey?: string;
   ttl: number;
-} 
+}

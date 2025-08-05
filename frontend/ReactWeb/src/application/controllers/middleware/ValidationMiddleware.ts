@@ -4,7 +4,15 @@ import { Logger } from '../../../shared/utils/Logger';
 
 interface ValidationRule {
   field: string;
-  type: 'required' | 'string' | 'number' | 'email' | 'url' | 'minLength' | 'maxLength' | 'pattern';
+  type:
+    | 'required'
+    | 'string'
+    | 'number'
+    | 'email'
+    | 'url'
+    | 'minLength'
+    | 'maxLength'
+    | 'pattern';
   value?: any;
   message?: string;
 }
@@ -54,15 +62,15 @@ export class ValidationMiddleware extends BaseMiddleware {
       this.logger.warn(errorMessage, {
         flowId: context.requestId,
         params: this.sanitizeParams(params),
-        errors
+        errors,
       });
-      
+
       throw new Error(errorMessage);
     }
 
     this.logger.info(`Validation passed for ${controllerName}.${operation}`, {
       flowId: context.requestId,
-      params: this.sanitizeParams(params)
+      params: this.sanitizeParams(params),
     });
   }
 
@@ -72,49 +80,133 @@ export class ValidationMiddleware extends BaseMiddleware {
   private setupDefaultValidationSchemas(): void {
     // UserController 검증 스키마
     this.addValidationSchema('UserController', {
-      'authenticateUser': [
+      authenticateUser: [
         { field: 'email', type: 'required', message: '이메일은 필수입니다' },
-        { field: 'email', type: 'email', message: '유효한 이메일 형식이 아닙니다' },
-        { field: 'password', type: 'required', message: '비밀번호는 필수입니다' },
-        { field: 'password', type: 'minLength', value: 6, message: '비밀번호는 최소 6자 이상이어야 합니다' }
+        {
+          field: 'email',
+          type: 'email',
+          message: '유효한 이메일 형식이 아닙니다',
+        },
+        {
+          field: 'password',
+          type: 'required',
+          message: '비밀번호는 필수입니다',
+        },
+        {
+          field: 'password',
+          type: 'minLength',
+          value: 6,
+          message: '비밀번호는 최소 6자 이상이어야 합니다',
+        },
       ],
-      'registerUser': [
+      registerUser: [
         { field: 'email', type: 'required', message: '이메일은 필수입니다' },
-        { field: 'email', type: 'email', message: '유효한 이메일 형식이 아닙니다' },
-        { field: 'password', type: 'required', message: '비밀번호는 필수입니다' },
-        { field: 'password', type: 'minLength', value: 6, message: '비밀번호는 최소 6자 이상이어야 합니다' },
+        {
+          field: 'email',
+          type: 'email',
+          message: '유효한 이메일 형식이 아닙니다',
+        },
+        {
+          field: 'password',
+          type: 'required',
+          message: '비밀번호는 필수입니다',
+        },
+        {
+          field: 'password',
+          type: 'minLength',
+          value: 6,
+          message: '비밀번호는 최소 6자 이상이어야 합니다',
+        },
         { field: 'name', type: 'required', message: '이름은 필수입니다' },
-        { field: 'name', type: 'minLength', value: 2, message: '이름은 최소 2자 이상이어야 합니다' }
+        {
+          field: 'name',
+          type: 'minLength',
+          value: 2,
+          message: '이름은 최소 2자 이상이어야 합니다',
+        },
       ],
-      'updateUser': [
-        { field: 'userId', type: 'required', message: '사용자 ID는 필수입니다' },
-        { field: 'userId', type: 'string', message: '사용자 ID는 문자열이어야 합니다' }
-      ]
+      updateUser: [
+        {
+          field: 'userId',
+          type: 'required',
+          message: '사용자 ID는 필수입니다',
+        },
+        {
+          field: 'userId',
+          type: 'string',
+          message: '사용자 ID는 문자열이어야 합니다',
+        },
+      ],
     });
 
     // ChannelController 검증 스키마
     this.addValidationSchema('ChannelController', {
-      'createChannel': [
+      createChannel: [
         { field: 'name', type: 'required', message: '채널 이름은 필수입니다' },
-        { field: 'name', type: 'minLength', value: 1, message: '채널 이름은 최소 1자 이상이어야 합니다' },
-        { field: 'name', type: 'maxLength', value: 50, message: '채널 이름은 최대 50자까지 가능합니다' },
-        { field: 'description', type: 'maxLength', value: 200, message: '채널 설명은 최대 200자까지 가능합니다' }
+        {
+          field: 'name',
+          type: 'minLength',
+          value: 1,
+          message: '채널 이름은 최소 1자 이상이어야 합니다',
+        },
+        {
+          field: 'name',
+          type: 'maxLength',
+          value: 50,
+          message: '채널 이름은 최대 50자까지 가능합니다',
+        },
+        {
+          field: 'description',
+          type: 'maxLength',
+          value: 200,
+          message: '채널 설명은 최대 200자까지 가능합니다',
+        },
       ],
-      'joinChannel': [
-        { field: 'channelId', type: 'required', message: '채널 ID는 필수입니다' },
-        { field: 'userId', type: 'required', message: '사용자 ID는 필수입니다' }
-      ]
+      joinChannel: [
+        {
+          field: 'channelId',
+          type: 'required',
+          message: '채널 ID는 필수입니다',
+        },
+        {
+          field: 'userId',
+          type: 'required',
+          message: '사용자 ID는 필수입니다',
+        },
+      ],
     });
 
     // MessageController 검증 스키마
     this.addValidationSchema('MessageController', {
-      'sendMessage': [
-        { field: 'channelId', type: 'required', message: '채널 ID는 필수입니다' },
-        { field: 'senderId', type: 'required', message: '송신자 ID는 필수입니다' },
-        { field: 'content', type: 'required', message: '메시지 내용은 필수입니다' },
-        { field: 'content', type: 'minLength', value: 1, message: '메시지 내용은 최소 1자 이상이어야 합니다' },
-        { field: 'content', type: 'maxLength', value: 1000, message: '메시지 내용은 최대 1000자까지 가능합니다' }
-      ]
+      sendMessage: [
+        {
+          field: 'channelId',
+          type: 'required',
+          message: '채널 ID는 필수입니다',
+        },
+        {
+          field: 'senderId',
+          type: 'required',
+          message: '송신자 ID는 필수입니다',
+        },
+        {
+          field: 'content',
+          type: 'required',
+          message: '메시지 내용은 필수입니다',
+        },
+        {
+          field: 'content',
+          type: 'minLength',
+          value: 1,
+          message: '메시지 내용은 최소 1자 이상이어야 합니다',
+        },
+        {
+          field: 'content',
+          type: 'maxLength',
+          value: 1000,
+          message: '메시지 내용은 최대 1000자까지 가능합니다',
+        },
+      ],
     });
   }
 
@@ -123,13 +215,18 @@ export class ValidationMiddleware extends BaseMiddleware {
    */
   addValidationSchema(controllerName: string, schema: ValidationSchema): void {
     this.validationSchemas.set(controllerName, schema);
-    this.logger.info(`Validation schema added for ${controllerName}`, { operations: Object.keys(schema) });
+    this.logger.info(`Validation schema added for ${controllerName}`, {
+      operations: Object.keys(schema),
+    });
   }
 
   /**
    * 검증 스키마 조회
    */
-  getValidationSchema(controllerName: string, operation: string): ValidationRule[] | null {
+  getValidationSchema(
+    controllerName: string,
+    operation: string
+  ): ValidationRule[] | null {
     const schema = this.validationSchemas.get(controllerName);
     return schema?.[operation] || null;
   }
@@ -220,16 +317,22 @@ export class ValidationMiddleware extends BaseMiddleware {
    */
   private sanitizeParams(params: any): any {
     if (!params) return params;
-    
-    const sensitiveFields = ['password', 'token', 'secret', 'key', 'authorization'];
+
+    const sensitiveFields = [
+      'password',
+      'token',
+      'secret',
+      'key',
+      'authorization',
+    ];
     const sanitized = { ...params };
-    
+
     sensitiveFields.forEach(field => {
       if (sanitized[field]) {
         sanitized[field] = '[REDACTED]';
       }
     });
-    
+
     return sanitized;
   }
 
@@ -246,13 +349,16 @@ export class ValidationMiddleware extends BaseMiddleware {
 
     for (const [controllerName, schema] of this.validationSchemas.entries()) {
       controllers.push(controllerName);
-      totalRules += Object.values(schema).reduce((sum, rules) => sum + rules.length, 0);
+      totalRules += Object.values(schema).reduce(
+        (sum, rules) => sum + rules.length,
+        0
+      );
     }
 
     return {
       totalSchemas: this.validationSchemas.size,
       totalRules,
-      controllers
+      controllers,
     };
   }
-} 
+}

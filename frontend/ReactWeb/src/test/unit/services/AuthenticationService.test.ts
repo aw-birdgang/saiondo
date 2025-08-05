@@ -38,7 +38,10 @@ describe('AuthenticationService', () => {
   describe('login', () => {
     it('should successfully authenticate user', async () => {
       // Arrange
-      const credentials = { email: 'test@example.com', password: 'password123' };
+      const credentials = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
       const mockResponse = {
         user: { id: '1', email: 'test@example.com', username: 'testuser' },
         accessToken: 'access_token_123',
@@ -51,7 +54,9 @@ describe('AuthenticationService', () => {
       const result = await authService.login(credentials);
 
       // Assert
-      expect(mockAuthenticateUserUseCase.execute).toHaveBeenCalledWith(credentials);
+      expect(mockAuthenticateUserUseCase.execute).toHaveBeenCalledWith(
+        credentials
+      );
       expect(result).toEqual({
         user: mockResponse.user,
         accessToken: mockResponse.accessToken,
@@ -61,14 +66,21 @@ describe('AuthenticationService', () => {
 
     it('should throw error when authentication fails', async () => {
       // Arrange
-      const credentials = { email: 'test@example.com', password: 'wrongpassword' };
+      const credentials = {
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      };
       const error = new Error('Invalid credentials');
 
       mockAuthenticateUserUseCase.execute.mockRejectedValue(error);
 
       // Act & Assert
-      await expect(authService.login(credentials)).rejects.toThrow('Invalid credentials');
-      expect(mockAuthenticateUserUseCase.execute).toHaveBeenCalledWith(credentials);
+      await expect(authService.login(credentials)).rejects.toThrow(
+        'Invalid credentials'
+      );
+      expect(mockAuthenticateUserUseCase.execute).toHaveBeenCalledWith(
+        credentials
+      );
     });
   });
 
@@ -93,7 +105,9 @@ describe('AuthenticationService', () => {
       const result = await authService.register(registerData);
 
       // Assert
-      expect(mockRegisterUserUseCase.execute).toHaveBeenCalledWith(registerData);
+      expect(mockRegisterUserUseCase.execute).toHaveBeenCalledWith(
+        registerData
+      );
       expect(result).toEqual({
         user: mockResponse.user,
         accessToken: mockResponse.accessToken,
@@ -113,8 +127,12 @@ describe('AuthenticationService', () => {
       mockRegisterUserUseCase.execute.mockRejectedValue(error);
 
       // Act & Assert
-      await expect(authService.register(registerData)).rejects.toThrow('User already exists');
-      expect(mockRegisterUserUseCase.execute).toHaveBeenCalledWith(registerData);
+      await expect(authService.register(registerData)).rejects.toThrow(
+        'User already exists'
+      );
+      expect(mockRegisterUserUseCase.execute).toHaveBeenCalledWith(
+        registerData
+      );
     });
   });
 
@@ -130,7 +148,10 @@ describe('AuthenticationService', () => {
       await authService.logout(userId, accessToken);
 
       // Assert
-      expect(mockLogoutUserUseCase.execute).toHaveBeenCalledWith({ userId, accessToken });
+      expect(mockLogoutUserUseCase.execute).toHaveBeenCalledWith({
+        userId,
+        accessToken,
+      });
     });
 
     it('should throw error when logout fails', async () => {
@@ -142,8 +163,13 @@ describe('AuthenticationService', () => {
       mockLogoutUserUseCase.execute.mockRejectedValue(error);
 
       // Act & Assert
-      await expect(authService.logout(userId, accessToken)).rejects.toThrow('Logout failed');
-      expect(mockLogoutUserUseCase.execute).toHaveBeenCalledWith({ userId, accessToken });
+      await expect(authService.logout(userId, accessToken)).rejects.toThrow(
+        'Logout failed'
+      );
+      expect(mockLogoutUserUseCase.execute).toHaveBeenCalledWith({
+        userId,
+        accessToken,
+      });
     });
   });
 
@@ -151,7 +177,11 @@ describe('AuthenticationService', () => {
     it('should return user when found', async () => {
       // Arrange
       const userId = '1';
-      const mockUser = { id: '1', email: 'test@example.com', username: 'testuser' };
+      const mockUser = {
+        id: '1',
+        email: 'test@example.com',
+        username: 'testuser',
+      };
       const mockResponse = { user: mockUser };
 
       mockGetCurrentUserUseCase.execute.mockResolvedValue(mockResponse);
@@ -160,7 +190,9 @@ describe('AuthenticationService', () => {
       const result = await authService.getCurrentUser(userId);
 
       // Assert
-      expect(mockGetCurrentUserUseCase.execute).toHaveBeenCalledWith({ userId });
+      expect(mockGetCurrentUserUseCase.execute).toHaveBeenCalledWith({
+        userId,
+      });
       expect(result).toEqual(mockUser);
     });
 
@@ -175,7 +207,9 @@ describe('AuthenticationService', () => {
       const result = await authService.getCurrentUser(userId);
 
       // Assert
-      expect(mockGetCurrentUserUseCase.execute).toHaveBeenCalledWith({ userId });
+      expect(mockGetCurrentUserUseCase.execute).toHaveBeenCalledWith({
+        userId,
+      });
       expect(result).toBeNull();
     });
 
@@ -190,7 +224,9 @@ describe('AuthenticationService', () => {
       const result = await authService.getCurrentUser(userId);
 
       // Assert
-      expect(mockGetCurrentUserUseCase.execute).toHaveBeenCalledWith({ userId });
+      expect(mockGetCurrentUserUseCase.execute).toHaveBeenCalledWith({
+        userId,
+      });
       expect(result).toBeNull();
     });
   });
@@ -221,4 +257,4 @@ describe('AuthenticationService', () => {
       expect(localStorage.getItem).toHaveBeenCalledWith('auth_token');
     });
   });
-}); 
+});

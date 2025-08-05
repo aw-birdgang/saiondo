@@ -2,10 +2,38 @@ import React from 'react';
 
 interface TextProps {
   children: React.ReactNode;
-  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body' | 'caption' | 'overline';
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
+  variant?:
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'body'
+    | 'caption'
+    | 'overline';
+  size?:
+    | 'xs'
+    | 'sm'
+    | 'base'
+    | 'lg'
+    | 'xl'
+    | '2xl'
+    | '3xl'
+    | '4xl'
+    | '5xl'
+    | '6xl';
   weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'muted' | 'white' | 'black';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'muted'
+    | 'white'
+    | 'black';
   align?: 'left' | 'center' | 'right' | 'justify';
   truncate?: boolean;
   className?: string;
@@ -19,7 +47,7 @@ const Text: React.FC<TextProps> = ({
   color = 'primary',
   align = 'left',
   truncate = false,
-  className = ''
+  className = '',
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
@@ -120,4 +148,4 @@ const Text: React.FC<TextProps> = ({
   );
 };
 
-export default Text; 
+export default Text;

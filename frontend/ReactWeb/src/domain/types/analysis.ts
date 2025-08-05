@@ -22,4 +22,4 @@ export interface AnalysisState {
   isLoading: boolean;
   isCreating: boolean;
   error: string | null;
-} 
+}

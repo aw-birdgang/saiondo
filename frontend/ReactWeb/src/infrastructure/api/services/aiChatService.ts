@@ -36,7 +36,9 @@ export interface AIConversation {
 
 export const aiChatService = {
   // AI와 대화 시작
-  startConversation: async (request: AIChatRequest): Promise<AIChatResponse> => {
+  startConversation: async (
+    request: AIChatRequest
+  ): Promise<AIChatResponse> => {
     return await apiClient.post<AIChatResponse>('/ai/chat/start', request);
   },
 
@@ -46,10 +48,13 @@ export const aiChatService = {
   },
 
   // 대화 기록 조회
-  getConversationHistory: async (conversationId: string, params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<{ messages: AIChatMessage[]; hasMore: boolean }> => {
+  getConversationHistory: async (
+    conversationId: string,
+    params?: {
+      page?: number;
+      limit?: number;
+    }
+  ): Promise<{ messages: AIChatMessage[]; hasMore: boolean }> => {
     return await apiClient.get<{ messages: AIChatMessage[]; hasMore: boolean }>(
       `/ai/chat/conversation/${conversationId}`,
       { params }
@@ -62,10 +67,10 @@ export const aiChatService = {
     limit?: number;
     isActive?: boolean;
   }): Promise<{ conversations: AIConversation[]; total: number }> => {
-    return await apiClient.get<{ conversations: AIConversation[]; total: number }>(
-      '/ai/chat/conversations',
-      { params }
-    );
+    return await apiClient.get<{
+      conversations: AIConversation[];
+      total: number;
+    }>('/ai/chat/conversations', { params });
   },
 
   // 대화 삭제
@@ -74,22 +79,32 @@ export const aiChatService = {
   },
 
   // 대화 제목 업데이트
-  updateConversationTitle: async (conversationId: string, title: string): Promise<AIConversation> => {
-    return await apiClient.patch<AIConversation>(`/ai/chat/conversation/${conversationId}/title`, { title });
+  updateConversationTitle: async (
+    conversationId: string,
+    title: string
+  ): Promise<AIConversation> => {
+    return await apiClient.patch<AIConversation>(
+      `/ai/chat/conversation/${conversationId}/title`,
+      { title }
+    );
   },
 
   // AI 응답 스트리밍 (실시간 응답)
-  streamMessage: async (request: AIChatRequest, onChunk: (chunk: string) => void): Promise<void> => {
-    const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+  streamMessage: async (
+    request: AIChatRequest,
+    onChunk: (chunk: string) => void
+  ): Promise<void> => {
+    const baseURL =
+      import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
     const token = localStorage.getItem('accessToken');
-    
+
     const response = await fetch(`${baseURL}/ai/chat/stream`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : ''
+        Authorization: token ? `Bearer ${token}` : '',
       },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
 
     if (!response.ok) {
@@ -102,12 +117,12 @@ export const aiChatService = {
     }
 
     const decoder = new TextDecoder();
-    
+
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        
+
         const chunk = decoder.decode(value);
         onChunk(chunk);
       }
@@ -135,6 +150,9 @@ export const aiChatService = {
     assistantId: string,
     request: Omit<AIChatRequest, 'assistantId'>
   ): Promise<AIChatResponse> => {
-    return await apiClient.post<AIChatResponse>(`/ai/assistants/${assistantId}/chat`, request);
-  }
-}; 
+    return await apiClient.post<AIChatResponse>(
+      `/ai/assistants/${assistantId}/chat`,
+      request
+    );
+  },
+};

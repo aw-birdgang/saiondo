@@ -61,4 +61,4 @@ export interface LeaveChatRoomRequest {
 export interface LeaveChatRoomResponse {
   success: boolean;
   leftAt: Date;
-} 
+}

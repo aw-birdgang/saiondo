@@ -1,7 +1,13 @@
 import React from 'react';
-import {LoadingSpinner} from '../../components/common';
-import {CalendarContainer, CalendarHeader, CalendarSidebar, MonthView, EventFormModal} from '../../components/specific/calendar';
-import {useCalendarData} from './hooks/useCalendarData';
+import { LoadingSpinner } from '../../components/common';
+import {
+  CalendarContainer,
+  CalendarHeader,
+  CalendarSidebar,
+  MonthView,
+  EventFormModal,
+} from '../../components/specific/calendar';
+import { useCalendarData } from './hooks/useCalendarData';
 
 const CalendarPage: React.FC = () => {
   const {
@@ -46,14 +52,14 @@ const CalendarPage: React.FC = () => {
         );
       case 'week':
         return (
-          <div className="text-center py-8">
-            <p className="text-txt-secondary">주 뷰는 준비 중입니다.</p>
+          <div className='text-center py-8'>
+            <p className='text-txt-secondary'>주 뷰는 준비 중입니다.</p>
           </div>
         );
       case 'day':
         return (
-          <div className="text-center py-8">
-            <p className="text-txt-secondary">일 뷰는 준비 중입니다.</p>
+          <div className='text-center py-8'>
+            <p className='text-txt-secondary'>일 뷰는 준비 중입니다.</p>
           </div>
         );
       default:
@@ -62,9 +68,9 @@ const CalendarPage: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className='flex h-screen bg-background'>
       {/* 메인 캘린더 영역 */}
-      <div className="flex-1 flex flex-col">
+      <div className='flex-1 flex flex-col'>
         <CalendarHeader
           currentDate={currentDate}
           viewMode={viewMode}
@@ -74,13 +80,11 @@ const CalendarPage: React.FC = () => {
           onViewModeChange={handleViewModeChange}
         />
 
-        <CalendarContainer>
-          {renderCalendarView()}
-        </CalendarContainer>
+        <CalendarContainer>{renderCalendarView()}</CalendarContainer>
       </div>
 
       {/* 사이드바 */}
-      <div className="border-l border-border">
+      <div className='border-l border-border'>
         <CalendarSidebar
           events={events}
           selectedDate={selectedDate}

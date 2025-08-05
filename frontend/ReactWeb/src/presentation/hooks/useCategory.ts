@@ -2,10 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../shared/constants/app';
 import { useToastContext } from '../providers/ToastProvider';
-import type { 
-  CategoryState,
-  CategoryStats
-} from '../../domain/types/category';
+import type { CategoryState, CategoryStats } from '../../domain/types/category';
 import type { ICategoryUseCase } from '../../application/usecases/CategoryUseCase';
 
 export const useCategory = (categoryUseCase: ICategoryUseCase) => {
@@ -21,7 +18,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
     selectedCode: null,
     searchTerm: '',
     filteredCategories: [],
-    filteredCodes: []
+    filteredCodes: [],
   });
 
   // 카테고리 통계 계산
@@ -30,12 +27,13 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
       totalCategories: state.categories.length,
       totalCodes: state.categoryCodes.length,
       byCategory: {},
-      popularCategories: []
+      popularCategories: [],
     };
 
     // 카테고리별 코드 수 계산
     state.categoryCodes.forEach(code => {
-      stats.byCategory[code.category] = (stats.byCategory[code.category] || 0) + 1;
+      stats.byCategory[code.category] =
+        (stats.byCategory[code.category] || 0) + 1;
     });
 
     // 인기 카테고리 계산
@@ -54,7 +52,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
     setState(prev => ({
       ...prev,
       isLoading: true,
-      error: null
+      error: null,
     }));
 
     try {
@@ -63,14 +61,17 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
         ...prev,
         categories,
         filteredCategories: categories,
-        isLoading: false
+        isLoading: false,
       }));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '카테고리를 불러오는데 실패했습니다.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '카테고리를 불러오는데 실패했습니다.';
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        isLoading: false
+        isLoading: false,
       }));
       toast.error(errorMessage);
     }
@@ -81,7 +82,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
     setState(prev => ({
       ...prev,
       isLoading: true,
-      error: null
+      error: null,
     }));
 
     try {
@@ -90,42 +91,51 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
         ...prev,
         categoryCodes,
         filteredCodes: categoryCodes,
-        isLoading: false
+        isLoading: false,
       }));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '카테고리 코드를 불러오는데 실패했습니다.';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '카테고리 코드를 불러오는데 실패했습니다.';
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        isLoading: false
+        isLoading: false,
       }));
       toast.error(errorMessage);
     }
   }, [categoryUseCase, toast]);
 
   // 카테고리 선택
-  const selectCategory = useCallback((categoryId: string) => {
-    const category = state.categories.find(cat => cat.id === categoryId);
-    setState(prev => ({
-      ...prev,
-      selectedCategory: category || null
-    }));
-  }, [state.categories]);
+  const selectCategory = useCallback(
+    (categoryId: string) => {
+      const category = state.categories.find(cat => cat.id === categoryId);
+      setState(prev => ({
+        ...prev,
+        selectedCategory: category || null,
+      }));
+    },
+    [state.categories]
+  );
 
   // 카테고리 코드 선택
-  const selectCategoryCode = useCallback((codeId: string) => {
-    const code = state.categoryCodes.find(c => c.id === codeId);
-    setState(prev => ({
-      ...prev,
-      selectedCode: code || null
-    }));
-  }, [state.categoryCodes]);
+  const selectCategoryCode = useCallback(
+    (codeId: string) => {
+      const code = state.categoryCodes.find(c => c.id === codeId);
+      setState(prev => ({
+        ...prev,
+        selectedCode: code || null,
+      }));
+    },
+    [state.categoryCodes]
+  );
 
   // 카테고리 선택 해제
   const clearSelectedCategory = useCallback(() => {
     setState(prev => ({
       ...prev,
-      selectedCategory: null
+      selectedCategory: null,
     }));
   }, []);
 
@@ -133,7 +143,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
   const clearSelectedCode = useCallback(() => {
     setState(prev => ({
       ...prev,
-      selectedCode: null
+      selectedCode: null,
     }));
   }, []);
 
@@ -142,68 +152,80 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
     setState(prev => ({
       ...prev,
       searchTerm,
-      error: null
+      error: null,
     }));
   }, []);
 
   // 카테고리 검색
-  const searchCategories = useCallback(async (searchTerm: string) => {
-    if (!searchTerm.trim()) {
-      setState(prev => ({
-        ...prev,
-        filteredCategories: prev.categories
-      }));
-      return;
-    }
+  const searchCategories = useCallback(
+    async (searchTerm: string) => {
+      if (!searchTerm.trim()) {
+        setState(prev => ({
+          ...prev,
+          filteredCategories: prev.categories,
+        }));
+        return;
+      }
 
-    try {
-      const results = await categoryUseCase.searchCategories(searchTerm);
-      setState(prev => ({
-        ...prev,
-        filteredCategories: results
-      }));
-    } catch (error) {
-      console.error('Failed to search categories:', error);
-      setState(prev => ({
-        ...prev,
-        filteredCategories: []
-      }));
-    }
-  }, [categoryUseCase]);
+      try {
+        const results = await categoryUseCase.searchCategories(searchTerm);
+        setState(prev => ({
+          ...prev,
+          filteredCategories: results,
+        }));
+      } catch (error) {
+        console.error('Failed to search categories:', error);
+        setState(prev => ({
+          ...prev,
+          filteredCategories: [],
+        }));
+      }
+    },
+    [categoryUseCase]
+  );
 
   // 카테고리 코드 검색
-  const searchCategoryCodes = useCallback(async (searchTerm: string) => {
-    if (!searchTerm.trim()) {
-      setState(prev => ({
-        ...prev,
-        filteredCodes: prev.categoryCodes
-      }));
-      return;
-    }
+  const searchCategoryCodes = useCallback(
+    async (searchTerm: string) => {
+      if (!searchTerm.trim()) {
+        setState(prev => ({
+          ...prev,
+          filteredCodes: prev.categoryCodes,
+        }));
+        return;
+      }
 
-    try {
-      const results = await categoryUseCase.searchCategoryCodes(searchTerm);
-      setState(prev => ({
-        ...prev,
-        filteredCodes: results
-      }));
-    } catch (error) {
-      console.error('Failed to search category codes:', error);
-      setState(prev => ({
-        ...prev,
-        filteredCodes: []
-      }));
-    }
-  }, [categoryUseCase]);
+      try {
+        const results = await categoryUseCase.searchCategoryCodes(searchTerm);
+        setState(prev => ({
+          ...prev,
+          filteredCodes: results,
+        }));
+      } catch (error) {
+        console.error('Failed to search category codes:', error);
+        setState(prev => ({
+          ...prev,
+          filteredCodes: [],
+        }));
+      }
+    },
+    [categoryUseCase]
+  );
 
   // 카테고리 필터링
-  const filterCategoriesByType = useCallback((type: string) => {
-    const filtered = categoryUseCase.filterCategoriesByType(state.categories, type);
-    setState(prev => ({
-      ...prev,
-      filteredCategories: filtered
-    }));
-  }, [state.categories, categoryUseCase]);
+  const filterCategoriesByType = useCallback(
+    (type: string) => {
+      const filtered = categoryUseCase.filterCategoriesByType(
+        state.categories,
+        type
+      );
+      setState(prev => ({
+        ...prev,
+        filteredCategories: filtered,
+      }));
+    },
+    [state.categories, categoryUseCase]
+  );
 
   // 사용법 가이드 가져오기
   const getUsageGuide = useCallback(() => {
@@ -229,7 +251,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
   const clearError = useCallback(() => {
     setState(prev => ({
       ...prev,
-      error: null
+      error: null,
     }));
   }, []);
 
@@ -244,7 +266,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
       selectedCode: null,
       searchTerm: '',
       filteredCategories: [],
-      filteredCodes: []
+      filteredCodes: [],
     });
   }, []);
 
@@ -258,13 +280,19 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
         setState(prev => ({
           ...prev,
           filteredCategories: prev.categories,
-          filteredCodes: prev.categoryCodes
+          filteredCodes: prev.categoryCodes,
         }));
       }
     }, 300); // 디바운스
 
     return () => clearTimeout(timeoutId);
-  }, [state.searchTerm, state.categories, state.categoryCodes, searchCategories, searchCategoryCodes]);
+  }, [
+    state.searchTerm,
+    state.categories,
+    state.categoryCodes,
+    searchCategories,
+    searchCategoryCodes,
+  ]);
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -276,7 +304,7 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
     // State
     state,
     categoryStats,
-    
+
     // Actions
     loadCategories,
     loadCategoryCodes,
@@ -293,6 +321,6 @@ export const useCategory = (categoryUseCase: ICategoryUseCase) => {
     navigateToChat,
     navigateToHome,
     clearError,
-    reset
+    reset,
   };
-}; 
+};

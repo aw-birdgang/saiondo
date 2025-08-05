@@ -41,14 +41,7 @@ export interface StatusBadgeProps
 }
 
 export const StatusBadge = React.forwardRef<HTMLDivElement, StatusBadgeProps>(
-  ({ 
-    className, 
-    status, 
-    size, 
-    showText,
-    text,
-    ...props 
-  }, ref) => {
+  ({ className, status, size, showText, text, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -58,17 +51,15 @@ export const StatusBadge = React.forwardRef<HTMLDivElement, StatusBadgeProps>(
         )}
         {...props}
       >
-        {showText && text && (
-          <span className="ml-1">{text}</span>
-        )}
-        
+        {showText && text && <span className='ml-1'>{text}</span>}
+
         {/* Pulse animation for online status */}
         {status === 'online' && (
-          <div className="absolute inset-0 rounded-full bg-current opacity-20 animate-ping" />
+          <div className='absolute inset-0 rounded-full bg-current opacity-20 animate-ping' />
         )}
       </div>
     );
   }
 );
 
-StatusBadge.displayName = 'StatusBadge'; 
+StatusBadge.displayName = 'StatusBadge';

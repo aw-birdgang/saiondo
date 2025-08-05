@@ -31,4 +31,4 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
       <ToastContainer toasts={toast.toasts} onClose={toast.removeToast} />
     </ToastContext.Provider>
   );
-}; 
+};

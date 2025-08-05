@@ -7,14 +7,22 @@ const touchButtonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary shadow-lg hover:shadow-xl active:shadow-inner',
-        secondary: 'bg-secondary text-on-secondary hover:bg-secondary-container focus:ring-secondary border border-border hover:border-primary/50',
-        outline: 'bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-on-primary focus:ring-primary hover:shadow-md',
-        ghost: 'bg-transparent text-txt hover:bg-focus focus:ring-primary hover:text-primary',
-        destructive: 'bg-error text-on-error hover:bg-error/90 focus:ring-error shadow-lg hover:shadow-xl',
-        success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-lg hover:shadow-xl',
-        warning: 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-400 shadow-lg hover:shadow-xl',
-        gradient: 'bg-gradient-to-r from-primary to-primary-container text-on-primary hover:from-primary-container hover:to-primary focus:ring-primary shadow-lg hover:shadow-xl',
+        primary:
+          'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary shadow-lg hover:shadow-xl active:shadow-inner',
+        secondary:
+          'bg-secondary text-on-secondary hover:bg-secondary-container focus:ring-secondary border border-border hover:border-primary/50',
+        outline:
+          'bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-on-primary focus:ring-primary hover:shadow-md',
+        ghost:
+          'bg-transparent text-txt hover:bg-focus focus:ring-primary hover:text-primary',
+        destructive:
+          'bg-error text-on-error hover:bg-error/90 focus:ring-error shadow-lg hover:shadow-xl',
+        success:
+          'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-lg hover:shadow-xl',
+        warning:
+          'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-400 shadow-lg hover:shadow-xl',
+        gradient:
+          'bg-gradient-to-r from-primary to-primary-container text-on-primary hover:from-primary-container hover:to-primary focus:ring-primary shadow-lg hover:shadow-xl',
       },
       size: {
         sm: 'h-10 px-4 text-sm min-w-[44px]', // 터치 최소 크기
@@ -54,25 +62,31 @@ export interface TouchFriendlyButtonProps
   haptic?: boolean;
 }
 
-export const TouchFriendlyButton = React.forwardRef<HTMLButtonElement, TouchFriendlyButtonProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    fullWidth, 
-    rounded,
-    loading = false, 
-    leftIcon, 
-    rightIcon, 
-    children, 
-    disabled, 
-    loadingText,
-    tooltip,
-    pulse = false,
-    haptic = true,
-    onClick,
-    ...props 
-  }, ref) => {
+export const TouchFriendlyButton = React.forwardRef<
+  HTMLButtonElement,
+  TouchFriendlyButtonProps
+>(
+  (
+    {
+      className,
+      variant,
+      size,
+      fullWidth,
+      rounded,
+      loading = false,
+      leftIcon,
+      rightIcon,
+      children,
+      disabled,
+      loadingText,
+      tooltip,
+      pulse = false,
+      haptic = true,
+      onClick,
+      ...props
+    },
+    ref
+  ) => {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (loading || disabled) {
         e.preventDefault();
@@ -102,48 +116,48 @@ export const TouchFriendlyButton = React.forwardRef<HTMLButtonElement, TouchFrie
         {...props}
       >
         {/* Ripple effect */}
-        <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 group-active:opacity-0 transition-opacity duration-200 pointer-events-none" />
-        
+        <span className='absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 group-active:opacity-0 transition-opacity duration-200 pointer-events-none' />
+
         {/* Loading spinner */}
         {loading && (
           <svg
-            className="animate-spin -ml-1 mr-2 h-4 w-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
+            className='animate-spin -ml-1 mr-2 h-4 w-4'
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            aria-hidden='true'
           >
             <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
+              className='opacity-25'
+              cx='12'
+              cy='12'
+              r='10'
+              stroke='currentColor'
+              strokeWidth='4'
             />
             <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              className='opacity-75'
+              fill='currentColor'
+              d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
             />
           </svg>
         )}
-        
+
         {/* Left icon */}
         {!loading && leftIcon && (
-          <span className="transition-transform group-hover:scale-110">
+          <span className='transition-transform group-hover:scale-110'>
             {leftIcon}
           </span>
         )}
-        
+
         {/* Content */}
-        <span className="transition-all duration-200">
+        <span className='transition-all duration-200'>
           {loading && loadingText ? loadingText : children}
         </span>
-        
+
         {/* Right icon */}
         {!loading && rightIcon && (
-          <span className="transition-transform group-hover:scale-110">
+          <span className='transition-transform group-hover:scale-110'>
             {rightIcon}
           </span>
         )}
@@ -152,4 +166,4 @@ export const TouchFriendlyButton = React.forwardRef<HTMLButtonElement, TouchFrie
   }
 );
 
-TouchFriendlyButton.displayName = 'TouchFriendlyButton'; 
+TouchFriendlyButton.displayName = 'TouchFriendlyButton';

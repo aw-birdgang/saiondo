@@ -8,7 +8,7 @@ import type {
   CheckPermissionRequest,
   CheckPermissionResponse,
   AssignRoleRequest,
-  AssignRoleResponse
+  AssignRoleResponse,
 } from '../dto/UserPermissionDto';
 
 export class UserPermissionService {
@@ -17,7 +17,9 @@ export class UserPermissionService {
     private readonly channelRepository: IChannelRepository
   ) {}
 
-  async checkPermission(request: CheckPermissionRequest): Promise<CheckPermissionResponse> {
+  async checkPermission(
+    request: CheckPermissionRequest
+  ): Promise<CheckPermissionResponse> {
     // Validate request
     if (!request.userId || request.userId.trim().length === 0) {
       throw DomainErrorFactory.createUserValidation('User ID is required');
@@ -42,7 +44,11 @@ export class UserPermissionService {
     const permissions = await this.getUserPermissions(request.userId);
 
     // Check if user has the required permission
-    const hasPermission = this.hasPermission(permissions, request.resource, request.action);
+    const hasPermission = this.hasPermission(
+      permissions,
+      request.resource,
+      request.action
+    );
 
     // Check context-specific permissions
     const contextPermission = await this.checkContextPermission(
@@ -55,7 +61,10 @@ export class UserPermissionService {
     return {
       hasPermission: hasPermission && contextPermission,
       role: userRoles.length > 0 ? userRoles[0].name : undefined,
-      reason: hasPermission && contextPermission ? undefined : 'Insufficient permissions',
+      reason:
+        hasPermission && contextPermission
+          ? undefined
+          : 'Insufficient permissions',
     };
   }
 
@@ -70,7 +79,9 @@ export class UserPermissionService {
     }
 
     if (!request.assignedBy || request.assignedBy.trim().length === 0) {
-      throw DomainErrorFactory.createUserValidation('Assigned by user ID is required');
+      throw DomainErrorFactory.createUserValidation(
+        'Assigned by user ID is required'
+      );
     }
 
     // Check if user exists
@@ -87,7 +98,9 @@ export class UserPermissionService {
     });
 
     if (!assignerPermission.hasPermission) {
-      throw DomainErrorFactory.createUserValidation('Insufficient permissions to assign roles');
+      throw DomainErrorFactory.createUserValidation(
+        'Insufficient permissions to assign roles'
+      );
     }
 
     // Check if role exists
@@ -123,8 +136,9 @@ export class UserPermissionService {
     }
 
     // Remove duplicates
-    return permissions.filter((permission, index, self) =>
-      index === self.findIndex(p => p.id === permission.id)
+    return permissions.filter(
+      (permission, index, self) =>
+        index === self.findIndex(p => p.id === permission.id)
     );
   }
 
@@ -149,7 +163,11 @@ export class UserPermissionService {
     }
   }
 
-  async canDeleteMessage(userId: string, messageId: string, channelId: string): Promise<boolean> {
+  async canDeleteMessage(
+    userId: string,
+    messageId: string,
+    channelId: string
+  ): Promise<boolean> {
     try {
       // Check if user is message sender
       // In real implementation, you would get the message and check sender
@@ -187,9 +205,27 @@ export class UserPermissionService {
         name: 'user',
         description: 'Regular user',
         permissions: [
-          { id: 'perm_read_channel', name: 'read_channel', description: 'Read channel', resource: 'channel', action: 'read' },
-          { id: 'perm_send_message', name: 'send_message', description: 'Send message', resource: 'message', action: 'send' },
-          { id: 'perm_upload_file', name: 'upload_file', description: 'Upload file', resource: 'file', action: 'upload' }
+          {
+            id: 'perm_read_channel',
+            name: 'read_channel',
+            description: 'Read channel',
+            resource: 'channel',
+            action: 'read',
+          },
+          {
+            id: 'perm_send_message',
+            name: 'send_message',
+            description: 'Send message',
+            resource: 'message',
+            action: 'send',
+          },
+          {
+            id: 'perm_upload_file',
+            name: 'upload_file',
+            description: 'Upload file',
+            resource: 'file',
+            action: 'upload',
+          },
         ],
       },
       {
@@ -197,11 +233,41 @@ export class UserPermissionService {
         name: 'moderator',
         description: 'Channel moderator',
         permissions: [
-          { id: 'perm_read_channel', name: 'read_channel', description: 'Read channel', resource: 'channel', action: 'read' },
-          { id: 'perm_send_message', name: 'send_message', description: 'Send message', resource: 'message', action: 'send' },
-          { id: 'perm_upload_file', name: 'upload_file', description: 'Upload file', resource: 'file', action: 'upload' },
-          { id: 'perm_delete_message', name: 'delete_message', description: 'Delete message', resource: 'message', action: 'delete' },
-          { id: 'perm_manage_channel', name: 'manage_channel', description: 'Manage channel', resource: 'channel', action: 'manage' }
+          {
+            id: 'perm_read_channel',
+            name: 'read_channel',
+            description: 'Read channel',
+            resource: 'channel',
+            action: 'read',
+          },
+          {
+            id: 'perm_send_message',
+            name: 'send_message',
+            description: 'Send message',
+            resource: 'message',
+            action: 'send',
+          },
+          {
+            id: 'perm_upload_file',
+            name: 'upload_file',
+            description: 'Upload file',
+            resource: 'file',
+            action: 'upload',
+          },
+          {
+            id: 'perm_delete_message',
+            name: 'delete_message',
+            description: 'Delete message',
+            resource: 'message',
+            action: 'delete',
+          },
+          {
+            id: 'perm_manage_channel',
+            name: 'manage_channel',
+            description: 'Manage channel',
+            resource: 'channel',
+            action: 'manage',
+          },
         ],
       },
       {
@@ -209,14 +275,20 @@ export class UserPermissionService {
         name: 'admin',
         description: 'System administrator',
         permissions: [
-          { id: 'perm_all', name: '*', description: 'All permissions', resource: '*', action: '*' }
+          {
+            id: 'perm_all',
+            name: '*',
+            description: 'All permissions',
+            resource: '*',
+            action: '*',
+          },
         ],
       },
     ];
 
     // Mock user roles - in real implementation, this would be from database
     const userRoleIds = ['role_user']; // Default role for all users
-    
+
     return mockRoles.filter(role => userRoleIds.includes(role.id));
   }
 
@@ -240,9 +312,27 @@ export class UserPermissionService {
         name: 'user',
         description: 'Regular user',
         permissions: [
-          { id: 'perm_read_channel', name: 'read_channel', description: 'Read channel', resource: 'channel', action: 'read' },
-          { id: 'perm_send_message', name: 'send_message', description: 'Send message', resource: 'message', action: 'send' },
-          { id: 'perm_upload_file', name: 'upload_file', description: 'Upload file', resource: 'file', action: 'upload' }
+          {
+            id: 'perm_read_channel',
+            name: 'read_channel',
+            description: 'Read channel',
+            resource: 'channel',
+            action: 'read',
+          },
+          {
+            id: 'perm_send_message',
+            name: 'send_message',
+            description: 'Send message',
+            resource: 'message',
+            action: 'send',
+          },
+          {
+            id: 'perm_upload_file',
+            name: 'upload_file',
+            description: 'Upload file',
+            resource: 'file',
+            action: 'upload',
+          },
         ],
       },
       {
@@ -250,11 +340,41 @@ export class UserPermissionService {
         name: 'moderator',
         description: 'Channel moderator',
         permissions: [
-          { id: 'perm_read_channel', name: 'read_channel', description: 'Read channel', resource: 'channel', action: 'read' },
-          { id: 'perm_send_message', name: 'send_message', description: 'Send message', resource: 'message', action: 'send' },
-          { id: 'perm_upload_file', name: 'upload_file', description: 'Upload file', resource: 'file', action: 'upload' },
-          { id: 'perm_delete_message', name: 'delete_message', description: 'Delete message', resource: 'message', action: 'delete' },
-          { id: 'perm_manage_channel', name: 'manage_channel', description: 'Manage channel', resource: 'channel', action: 'manage' }
+          {
+            id: 'perm_read_channel',
+            name: 'read_channel',
+            description: 'Read channel',
+            resource: 'channel',
+            action: 'read',
+          },
+          {
+            id: 'perm_send_message',
+            name: 'send_message',
+            description: 'Send message',
+            resource: 'message',
+            action: 'send',
+          },
+          {
+            id: 'perm_upload_file',
+            name: 'upload_file',
+            description: 'Upload file',
+            resource: 'file',
+            action: 'upload',
+          },
+          {
+            id: 'perm_delete_message',
+            name: 'delete_message',
+            description: 'Delete message',
+            resource: 'message',
+            action: 'delete',
+          },
+          {
+            id: 'perm_manage_channel',
+            name: 'manage_channel',
+            description: 'Manage channel',
+            resource: 'channel',
+            action: 'manage',
+          },
         ],
       },
       {
@@ -262,23 +382,33 @@ export class UserPermissionService {
         name: 'admin',
         description: 'System administrator',
         permissions: [
-          { id: 'perm_all', name: '*', description: 'All permissions', resource: '*', action: '*' }
+          {
+            id: 'perm_all',
+            name: '*',
+            description: 'All permissions',
+            resource: '*',
+            action: '*',
+          },
         ],
       },
     ];
   }
 
-  private hasPermission(permissions: Permission[], resource: string, action: string): boolean {
+  private hasPermission(
+    permissions: Permission[],
+    resource: string,
+    action: string
+  ): boolean {
     return permissions.some(permission => {
       // Check for wildcard permission
       if (permission.name === '*') return true;
-      
+
       // Check for specific permission
       if (permission.name === `${action}_${resource}`) return true;
-      
+
       // Check for resource-level permission
       if (permission.name === `manage_${resource}`) return true;
-      
+
       return false;
     });
   }
@@ -312,4 +442,4 @@ export class UserPermissionService {
   private generateUserRoleId(): string {
     return `user_role_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
-} 
+}

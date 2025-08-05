@@ -15,4 +15,4 @@ export interface InviteToChannelResponse {
   invitedUsers: string[];
   failedUsers: string[];
   message: string;
-} 
+}

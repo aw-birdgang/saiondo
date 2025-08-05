@@ -233,4 +233,4 @@ export interface GetFollowingResponse {
   total: number;
   hasMore: boolean;
   error?: string;
-} 
+}

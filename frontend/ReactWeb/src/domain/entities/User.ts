@@ -24,7 +24,9 @@ export class UserEntity {
   }
 
   // Factory methods
-  static create(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): UserEntity {
+  static create(
+    userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>
+  ): UserEntity {
     return new UserEntity(
       crypto.randomUUID(),
       userData.email,
@@ -69,15 +71,15 @@ export class UserEntity {
     if (!this._id || this._id.trim().length === 0) {
       throw new Error('User ID is required');
     }
-    
+
     if (!this._email || !this.isValidEmail(this._email)) {
       throw new Error('Valid email is required');
     }
-    
+
     if (!this._username || this._username.trim().length < 2) {
       throw new Error('Username must be at least 2 characters long');
     }
-    
+
     if (this._username.length > 20) {
       throw new Error('Username must be less than 20 characters');
     }
@@ -151,36 +153,66 @@ export class UserEntity {
     if (this._status === UserStatus.ACTIVE) {
       return true;
     }
-    
+
     // 정지된 사용자는 활성으로만 변경 가능
     if (this._status === UserStatus.SUSPENDED) {
       return newStatus === UserStatus.ACTIVE;
     }
-    
+
     // 차단된 사용자는 상태 변경 불가
     if (this._status === UserStatus.BANNED) {
       return false;
     }
-    
+
     return true;
   }
 
   // Getters
-  get id(): string { return this._id; }
-  get email(): string { return this._email; }
-  get username(): string { return this._username; }
-  get displayName(): string | undefined { return this._displayName; }
-  get avatar(): string | undefined { return this._avatar; }
-  get isOnline(): boolean { return this._isOnline; }
-  get lastSeen(): Date | undefined { return this._lastSeen; }
-  get status(): string { return this._status; }
-  get roles(): string[] { return [...this._roles]; }
-  get permissions(): string[] { return [...this._permissions]; }
-  get friends(): string[] { return [...this._friends]; }
-  get createdChannelsCount(): number { return this._createdChannelsCount; }
-  get maxChannelsAllowed(): number { return this._maxChannelsAllowed; }
-  get createdAt(): Date { return this._createdAt; }
-  get updatedAt(): Date { return this._updatedAt; }
+  get id(): string {
+    return this._id;
+  }
+  get email(): string {
+    return this._email;
+  }
+  get username(): string {
+    return this._username;
+  }
+  get displayName(): string | undefined {
+    return this._displayName;
+  }
+  get avatar(): string | undefined {
+    return this._avatar;
+  }
+  get isOnline(): boolean {
+    return this._isOnline;
+  }
+  get lastSeen(): Date | undefined {
+    return this._lastSeen;
+  }
+  get status(): string {
+    return this._status;
+  }
+  get roles(): string[] {
+    return [...this._roles];
+  }
+  get permissions(): string[] {
+    return [...this._permissions];
+  }
+  get friends(): string[] {
+    return [...this._friends];
+  }
+  get createdChannelsCount(): number {
+    return this._createdChannelsCount;
+  }
+  get maxChannelsAllowed(): number {
+    return this._maxChannelsAllowed;
+  }
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
 
   // Data transfer
   toJSON(): User {
@@ -196,4 +228,4 @@ export class UserEntity {
       updatedAt: this._updatedAt,
     };
   }
-} 
+}

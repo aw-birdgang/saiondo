@@ -13,7 +13,9 @@ interface UseCaseProviderProps {
   children: ReactNode;
 }
 
-export const UseCaseProvider: React.FC<UseCaseProviderProps> = ({ children }) => {
+export const UseCaseProvider: React.FC<UseCaseProviderProps> = ({
+  children,
+}) => {
   const { userUseCases, channelUseCases, messageUseCases } = useUseCases();
 
   const value: UseCaseContextType = {
@@ -23,9 +25,7 @@ export const UseCaseProvider: React.FC<UseCaseProviderProps> = ({ children }) =>
   };
 
   return (
-    <UseCaseContext.Provider value={value}>
-      {children}
-    </UseCaseContext.Provider>
+    <UseCaseContext.Provider value={value}>{children}</UseCaseContext.Provider>
   );
 };
 
@@ -35,4 +35,4 @@ export const useUseCaseContext = (): UseCaseContextType => {
     throw new Error('useUseCaseContext must be used within a UseCaseProvider');
   }
   return context;
-}; 
+};

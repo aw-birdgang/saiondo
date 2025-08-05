@@ -4,4 +4,4 @@ export { SearchResults } from './SearchResults';
 export { SearchResultItem } from './SearchResultItem';
 export { SearchSuggestions } from './SearchSuggestions';
 export { SearchContainer } from './SearchContainer';
-export { SearchInput } from './SearchInput'; 
+export { SearchInput } from './SearchInput';

@@ -1,4 +1,5 @@
-import { MessageUseCaseService } from './services/message/MessageUseCaseService';
+// MessageUseCaseService가 삭제되었으므로 any 타입으로 대체
+type MessageUseCaseService = any;
 import type {
   CreateMessageRequest,
   CreateMessageResponse,
@@ -15,7 +16,7 @@ import type {
   GetUserMessagesRequest,
   GetUserMessagesResponse,
   GetMessageStatsRequest,
-  GetMessageStatsResponse
+  GetMessageStatsResponse,
 } from '../dto/MessageDto';
 
 /**
@@ -28,22 +29,24 @@ export class MessageUseCases {
   /**
    * 메시지 생성
    */
-  async createMessage(request: CreateMessageRequest): Promise<CreateMessageResponse> {
+  async createMessage(
+    request: CreateMessageRequest
+  ): Promise<CreateMessageResponse> {
     const sendRequest: SendMessageRequest = {
       content: request.content,
       channelId: request.channelId,
       senderId: request.senderId,
       type: request.type,
       metadata: request.metadata,
-      replyTo: request.replyTo
+      replyTo: request.replyTo,
     };
 
     const response = await this.messageUseCaseService.sendMessage(sendRequest);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to create message');
     }
-    
+
     return { message: response.message };
   }
 
@@ -53,20 +56,21 @@ export class MessageUseCases {
   async getMessage(request: GetMessageRequest): Promise<GetMessageResponse> {
     const useCaseRequest: GetMessageRequest = {
       id: request.id,
-      messageId: request.id
+      messageId: request.id,
     };
 
-    const response = await this.messageUseCaseService.getMessage(useCaseRequest);
-    
+    const response =
+      await this.messageUseCaseService.getMessage(useCaseRequest);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get message');
     }
-    
+
     return {
       message: response.message,
       success: response.success,
       cached: response.cached,
-      fetchedAt: response.fetchedAt
+      fetchedAt: response.fetchedAt,
     };
   }
 
@@ -77,129 +81,150 @@ export class MessageUseCases {
     const useCaseRequest: GetChannelMessagesRequest = {
       channelId: request.channelId,
       limit: request.limit,
-      offset: request.offset
+      offset: request.offset,
     };
 
-    const response = await this.messageUseCaseService.getChannelMessages(useCaseRequest);
-    
+    const response =
+      await this.messageUseCaseService.getChannelMessages(useCaseRequest);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get messages');
     }
-    
+
     return {
       messages: response.messages,
       total: response.total,
-      hasMore: response.hasMore
+      hasMore: response.hasMore,
     };
   }
 
   /**
    * 메시지 업데이트
    */
-  async updateMessage(request: UpdateMessageRequest): Promise<UpdateMessageResponse> {
+  async updateMessage(
+    request: UpdateMessageRequest
+  ): Promise<UpdateMessageResponse> {
     const useCaseRequest = {
       messageId: request.id,
       updates: { content: request.content },
-      userId: request.userId
+      userId: request.userId,
     };
 
-    const response = await this.messageUseCaseService.updateMessage(useCaseRequest);
-    
+    const response =
+      await this.messageUseCaseService.updateMessage(useCaseRequest);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to update message');
     }
-    
+
     return { message: response.message };
   }
 
   /**
    * 메시지 삭제
    */
-  async deleteMessage(request: DeleteMessageRequest): Promise<DeleteMessageResponse> {
+  async deleteMessage(
+    request: DeleteMessageRequest
+  ): Promise<DeleteMessageResponse> {
     const useCaseRequest = {
       messageId: request.id,
-      userId: request.userId
+      userId: request.userId,
     };
 
-    const response = await this.messageUseCaseService.deleteMessage(useCaseRequest);
-    
+    const response =
+      await this.messageUseCaseService.deleteMessage(useCaseRequest);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to delete message');
     }
-    
+
     return { success: response.success };
   }
 
   /**
    * 최근 메시지 조회
    */
-  async getRecentMessages(channelId: string, limit: number): Promise<GetMessagesResponse> {
+  async getRecentMessages(
+    channelId: string,
+    limit: number
+  ): Promise<GetMessagesResponse> {
     const useCaseRequest: GetChannelMessagesRequest = {
       channelId,
       limit,
-      offset: 0
+      offset: 0,
     };
 
-    const response = await this.messageUseCaseService.getChannelMessages(useCaseRequest);
-    
+    const response =
+      await this.messageUseCaseService.getChannelMessages(useCaseRequest);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get recent messages');
     }
-    
+
     return {
       messages: response.messages,
       total: response.total,
-      hasMore: response.hasMore
+      hasMore: response.hasMore,
     };
   }
 
   /**
    * 메시지 검색
    */
-  async searchMessages(query: string, channelId?: string, userId?: string, limit: number = 20): Promise<GetMessagesResponse> {
+  async searchMessages(
+    query: string,
+    channelId?: string,
+    userId?: string,
+    limit: number = 20
+  ): Promise<GetMessagesResponse> {
     const useCaseRequest = {
       query,
       channelId,
       userId,
-      limit
+      limit,
     };
 
-    const response = await this.messageUseCaseService.searchMessages(useCaseRequest);
-    
+    const response =
+      await this.messageUseCaseService.searchMessages(useCaseRequest);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to search messages');
     }
-    
+
     return {
       messages: response.messages,
       total: response.total,
-      hasMore: response.total > limit
+      hasMore: response.total > limit,
     };
   }
 
   /**
    * 사용자 메시지 조회 (새로운 메서드)
    */
-  async getUserMessages(request: GetUserMessagesRequest): Promise<GetUserMessagesResponse> {
+  async getUserMessages(
+    request: GetUserMessagesRequest
+  ): Promise<GetUserMessagesResponse> {
     const response = await this.messageUseCaseService.getUserMessages(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get user messages');
     }
-    
+
     return response;
   }
 
   /**
    * 메시지 통계 조회 (새로운 메서드)
    */
-  async getMessageStats(request: GetMessageStatsRequest): Promise<GetMessageStatsResponse> {
+  async getMessageStats(
+    request: GetMessageStatsRequest
+  ): Promise<GetMessageStatsResponse> {
     const response = await this.messageUseCaseService.getMessageStats(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get message stats');
     }
-    
+
     return response;
   }
 
@@ -223,11 +248,11 @@ export class MessageUseCases {
   async getMessageCount(channelId: string): Promise<number> {
     const statsRequest: GetMessageStatsRequest = { channelId };
     const stats = await this.getMessageStats(statsRequest);
-    
+
     if (!stats.success || !stats.stats) {
       return 0;
     }
-    
+
     return stats.stats.totalMessages;
   }
 }

@@ -17,4 +17,4 @@ export interface SearchMessagesResponse {
   messages: any[]; // Message DTO array
   total: number;
   hasMore: boolean;
-} 
+}

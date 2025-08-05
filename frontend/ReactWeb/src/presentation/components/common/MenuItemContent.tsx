@@ -13,14 +13,10 @@ const MenuItemContent: React.FC<MenuItemContentProps> = ({
 }) => {
   return (
     <div className={className}>
-      <h3 className="font-semibold text-gray-900 dark:text-white">
-        {title}
-      </h3>
-      <p className="text-sm text-gray-600 dark:text-gray-400">
-        {description}
-      </p>
+      <h3 className='font-semibold text-gray-900 dark:text-white'>{title}</h3>
+      <p className='text-sm text-gray-600 dark:text-gray-400'>{description}</p>
     </div>
   );
 };
 
-export default MenuItemContent; 
+export default MenuItemContent;

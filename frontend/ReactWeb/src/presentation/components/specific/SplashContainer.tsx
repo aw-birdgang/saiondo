@@ -1,5 +1,5 @@
-import React from "react";
-import { SplashScreen } from "./splash";
+import React from 'react';
+import { SplashScreen } from './splash';
 
 interface SplashContainerProps {
   appName: string;
@@ -8,10 +8,10 @@ interface SplashContainerProps {
   className?: string;
 }
 
-const SplashContainer: React.FC<SplashContainerProps> = ({ 
-  appName, 
-  loadingMessage, 
-  onAnimationComplete
+const SplashContainer: React.FC<SplashContainerProps> = ({
+  appName,
+  loadingMessage,
+  onAnimationComplete,
 }) => {
   return (
     <SplashScreen
@@ -22,4 +22,4 @@ const SplashContainer: React.FC<SplashContainerProps> = ({
   );
 };
 
-export default SplashContainer; 
+export default SplashContainer;

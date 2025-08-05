@@ -1,12 +1,12 @@
-import type {ControllerMetadata, IController} from './interfaces/IController';
-import {UserController} from './UserController';
-import {ChannelController} from './ChannelController';
-import {MessageController} from './MessageController';
-import {NotificationController} from './NotificationController';
-import {FileController} from './FileController';
-import {AnalyticsController} from './AnalyticsController';
-import {Logger} from '../../shared/utils/Logger';
-import {UseCaseFactory} from '../usecases/UseCaseFactory';
+import type { ControllerMetadata, IController } from './interfaces/IController';
+import { UserController } from './UserController';
+import { ChannelController } from './ChannelController';
+import { MessageController } from './MessageController';
+import { NotificationController } from './NotificationController';
+import { FileController } from './FileController';
+import { AnalyticsController } from './AnalyticsController';
+import { Logger } from '../../shared/utils/Logger';
+import { UseCaseFactory } from '../usecases/UseCaseFactory';
 
 /**
  * Controller Factory - Controller 인스턴스 생성 및 관리
@@ -139,8 +139,8 @@ export class ControllerFactory {
   async cleanupAllControllers(): Promise<void> {
     this.logger.info('Cleaning up all controllers');
 
-    const cleanupPromises = Array.from(this.controllers.values()).map(controller =>
-      controller.cleanup()
+    const cleanupPromises = Array.from(this.controllers.values()).map(
+      controller => controller.cleanup()
     );
 
     await Promise.all(cleanupPromises);
@@ -160,7 +160,7 @@ export class ControllerFactory {
       version: '1.0.0',
       description: `${controller.name} controller`,
       dependencies: [],
-      capabilities: ['execute', 'track', 'monitor']
+      capabilities: ['execute', 'track', 'monitor'],
     };
   }
 
@@ -174,7 +174,7 @@ export class ControllerFactory {
       stats[type] = {
         info: controller.getControllerInfo(),
         metrics: controller.getMetrics(),
-        isActive: controller.isActive()
+        isActive: controller.isActive(),
       };
     }
 
@@ -187,8 +187,10 @@ export class ControllerFactory {
   getFactoryInfo() {
     return {
       totalControllers: this.controllers.size,
-      activeControllers: Array.from(this.controllers.values()).filter(c => c.isActive()).length,
-      controllerTypes: Array.from(this.controllers.keys())
+      activeControllers: Array.from(this.controllers.values()).filter(c =>
+        c.isActive()
+      ).length,
+      controllerTypes: Array.from(this.controllers.keys()),
     };
   }
 }

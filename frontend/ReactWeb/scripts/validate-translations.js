@@ -8,25 +8,39 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load translation files
-const enTranslations = JSON.parse(fs.readFileSync(path.join(__dirname, '../src/app/di/translations/en.json'), 'utf8'));
-const koTranslations = JSON.parse(fs.readFileSync(path.join(__dirname, '../src/app/di/translations/ko.json'), 'utf8'));
+const enTranslations = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, '../src/app/di/translations/en.json'),
+    'utf8'
+  )
+);
+const koTranslations = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, '../src/app/di/translations/ko.json'),
+    'utf8'
+  )
+);
 
 // Function to flatten nested objects
 function flattenObject(obj, prefix = '') {
   const flattened = {};
-  
+
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       const newKey = prefix ? `${prefix}.${key}` : key;
-      
-      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
+
+      if (
+        typeof obj[key] === 'object' &&
+        obj[key] !== null &&
+        !Array.isArray(obj[key])
+      ) {
         Object.assign(flattened, flattenObject(obj[key], newKey));
       } else {
         flattened[newKey] = obj[key];
       }
     }
   }
-  
+
   return flattened;
 }
 
@@ -76,22 +90,24 @@ if (emptyKo.length > 0) {
 // Check for the specific keys that were causing issues
 const problematicKeys = [
   'channels.my_channels',
-  'channels.create_new_channel', 
+  'channels.create_new_channel',
   'channels.channel_stats',
   'channels.no_channels',
   'channels.create_first_channel',
-  'channels.channel_description'
+  'channels.channel_description',
 ];
 
 console.log('\n🔍 Checking specific problematic keys:');
 problematicKeys.forEach(key => {
   const enExists = enKeys.includes(key);
   const koExists = koKeys.includes(key);
-  
+
   if (enExists && koExists) {
     console.log(`  ✅ ${key} - Present in both languages`);
   } else {
-    console.log(`  ❌ ${key} - Missing in ${!enExists ? 'English' : ''}${!enExists && !koExists ? ' and ' : ''}${!koExists ? 'Korean' : ''}`);
+    console.log(
+      `  ❌ ${key} - Missing in ${!enExists ? 'English' : ''}${!enExists && !koExists ? ' and ' : ''}${!koExists ? 'Korean' : ''}`
+    );
   }
 });
 
@@ -101,4 +117,4 @@ console.log(`  Total Korean keys: ${koKeys.length}`);
 console.log(`  Missing in Korean: ${missingInKo.length}`);
 console.log(`  Missing in English: ${missingInEn.length}`);
 console.log(`  Empty English values: ${emptyEn.length}`);
-console.log(`  Empty Korean values: ${emptyKo.length}`); 
+console.log(`  Empty Korean values: ${emptyKo.length}`);

@@ -60,4 +60,4 @@ export interface InviteStats {
   todaySent: number;
   acceptanceRate?: number;
   averageResponseTime?: number;
-} 
+}

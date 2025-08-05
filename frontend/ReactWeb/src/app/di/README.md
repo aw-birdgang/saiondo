@@ -19,6 +19,7 @@ di/
 ### Main Configuration (`i18n.ts`)
 
 The main i18n configuration file sets up:
+
 - Language resources (English and Korean)
 - Default language (English)
 - Fallback language (English)
@@ -29,6 +30,7 @@ The main i18n configuration file sets up:
 ### Language Utilities (`languageUtils.ts`)
 
 Provides utility functions for:
+
 - Getting current language
 - Setting language
 - Getting language names
@@ -43,7 +45,7 @@ import { useTranslation } from 'react-i18next';
 
 const MyComponent = () => {
   const { t } = useTranslation();
-  
+
   return (
     <div>
       <h1>{t('common.welcome')}</h1>
@@ -61,9 +63,9 @@ import { LanguageSwitcher } from '../components/common/LanguageSwitcher';
 const MyComponent = () => {
   return (
     <div>
-      <LanguageSwitcher variant="dropdown" />
+      <LanguageSwitcher variant='dropdown' />
       {/* or */}
-      <LanguageSwitcher variant="buttons" />
+      <LanguageSwitcher variant='buttons' />
     </div>
   );
 };
@@ -86,30 +88,36 @@ const currentLang = getCurrentLanguage(); // 'ko'
 The translation files are organized into logical sections:
 
 ### Common (`common`)
+
 - Basic UI elements: loading, error, success, buttons, etc.
 - Navigation: back, next, close, etc.
 - Status: empty, noResults, etc.
 
 ### Authentication (`auth`)
+
 - Login/register forms
 - User authentication messages
 - Validation messages
 
 ### Navigation (`navigation`)
+
 - Main navigation items
 - Menu labels
 
 ### Pages (`home`, `dashboard`, `analytics`, etc.)
+
 - Page-specific content
 - Section headers
 - Feature descriptions
 
 ### Errors (`errors`)
+
 - Error messages
 - Network errors
 - Validation errors
 
 ### Validation (`validation`)
+
 - Form validation messages
 - Input requirements
 
@@ -124,18 +132,18 @@ Example for Japanese:
 ```typescript
 // languageUtils.ts
 export const availableLanguages = [
-  { code: "en", name: "English", nativeName: "English" },
-  { code: "ko", name: "Korean", nativeName: "한국어" },
-  { code: "ja", name: "Japanese", nativeName: "日本語" }
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'ko', name: 'Korean', nativeName: '한국어' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
 ];
 
 // i18n.ts
-import jaTranslations from "./translations/ja.json";
+import jaTranslations from './translations/ja.json';
 
 const resources = {
   en: { translation: enTranslations },
   ko: { translation: koTranslations },
-  ja: { translation: jaTranslations }
+  ja: { translation: jaTranslations },
 };
 ```
 
@@ -150,8 +158,9 @@ const resources = {
 ## Debugging
 
 In development mode, i18n debug information is logged to the console. You can see:
+
 - Missing translation keys
 - Language changes
 - Interpolation errors
 
-To disable debug mode, set `debug: false` in the i18n configuration. 
+To disable debug mode, set `debug: false` in the i18n configuration.

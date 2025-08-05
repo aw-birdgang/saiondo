@@ -21,19 +21,20 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
 }) => {
   return (
     <div className={`flex flex-wrap gap-3 ${className}`}>
-      {categories.map((category) => (
+      {categories.map(category => (
         <button
           key={category.id}
           onClick={() => onCategoryChange(category.id)}
           className={`
             flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105
-            ${selectedCategory === category.id
-              ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
-              : 'bg-secondary text-txt-secondary hover:bg-secondary/80 hover:text-txt border border-transparent'
+            ${
+              selectedCategory === category.id
+                ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                : 'bg-secondary text-txt-secondary hover:bg-secondary/80 hover:text-txt border border-transparent'
             }
           `}
         >
-          <span className="text-lg">{category.icon}</span>
+          <span className='text-lg'>{category.icon}</span>
           <span>{category.name}</span>
         </button>
       ))}
@@ -41,4 +42,4 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   );
 };
 
-export default CategoryFilter; 
+export default CategoryFilter;

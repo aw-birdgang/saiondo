@@ -16,7 +16,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
   children,
   className,
   ariaLabelledby,
-  icon
+  icon,
 }) => (
   <section
     id={id}
@@ -28,13 +28,17 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
     )}
   >
     {(title || icon) && (
-      <div className="flex items-center gap-2 mb-4">
-        {icon && <span className="text-xl text-blue-500">{icon}</span>}
-        {title && <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>}
+      <div className='flex items-center gap-2 mb-4'>
+        {icon && <span className='text-xl text-blue-500'>{icon}</span>}
+        {title && (
+          <h2 className='text-xl font-semibold text-gray-900 dark:text-white'>
+            {title}
+          </h2>
+        )}
       </div>
     )}
     {children}
   </section>
 );
 
-export default SectionBlock; 
+export default SectionBlock;

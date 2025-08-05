@@ -66,7 +66,7 @@ describe('BaseService', () => {
         expect.objectContaining({
           operationId: expect.any(String),
           operation: 'test_operation',
-          context: { test: true }
+          context: { test: true },
         })
       );
       expect(mockLogger.info).toHaveBeenCalledWith(
@@ -75,21 +75,18 @@ describe('BaseService', () => {
           operationId: expect.any(String),
           operation: 'test_operation',
           duration: expect.stringMatching(/\d+\.\d+ms/),
-          context: { test: true }
+          context: { test: true },
         })
       );
     });
 
     it('should handle errors during performance measurement', async () => {
       const errorService = new TestService(mockLogger);
-      
+
       await expect(
-        errorService.measurePerformance(
-          'error_operation',
-          async () => {
-            throw new Error('Test error');
-          }
-        )
+        errorService.measurePerformance('error_operation', async () => {
+          throw new Error('Test error');
+        })
       ).rejects.toThrow('Test error');
 
       expect(mockLogger.error).toHaveBeenCalledWith(
@@ -97,7 +94,7 @@ describe('BaseService', () => {
         expect.objectContaining({
           operationId: expect.any(String),
           operation: 'error_operation',
-          error: expect.any(Error)
+          error: expect.any(Error),
         })
       );
     });
@@ -107,7 +104,7 @@ describe('BaseService', () => {
     it('should validate input successfully', () => {
       const schema = {
         name: { required: true, type: 'string', minLength: 2 },
-        age: { required: true, type: 'number', min: 18 }
+        age: { required: true, type: 'number', min: 18 },
       };
 
       const data = { name: 'John', age: 25 };
@@ -120,7 +117,7 @@ describe('BaseService', () => {
     it('should return validation errors for invalid input', () => {
       const schema = {
         name: { required: true, type: 'string', minLength: 2 },
-        age: { required: true, type: 'number', min: 18 }
+        age: { required: true, type: 'number', min: 18 },
       };
 
       const data = { name: 'J', age: 15 };
@@ -131,13 +128,13 @@ describe('BaseService', () => {
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'name',
-          message: expect.stringContaining('minimum length')
+          message: expect.stringContaining('minimum length'),
         })
       );
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'age',
-          message: expect.stringContaining('minimum value')
+          message: expect.stringContaining('minimum value'),
         })
       );
     });
@@ -145,7 +142,7 @@ describe('BaseService', () => {
     it('should handle missing required fields', () => {
       const schema = {
         name: { required: true, type: 'string' },
-        email: { required: true, type: 'string' }
+        email: { required: true, type: 'string' },
       };
 
       const data = { name: 'John' };
@@ -155,7 +152,7 @@ describe('BaseService', () => {
       expect(result.errors).toContainEqual(
         expect.objectContaining({
           field: 'email',
-          message: expect.stringContaining('required')
+          message: expect.stringContaining('required'),
         })
       );
     });
@@ -174,7 +171,7 @@ describe('BaseService', () => {
         expect.objectContaining({
           error: error,
           operation: 'test_operation',
-          context: { test: true }
+          context: { test: true },
         })
       );
     });
@@ -191,7 +188,7 @@ describe('BaseService', () => {
         expect.objectContaining({
           error: error,
           operation: 'test_operation',
-          context: { test: true }
+          context: { test: true },
         })
       );
     });
@@ -203,13 +200,13 @@ describe('BaseService', () => {
         {
           name: 'user_age_check',
           validate: (data: any) => data.age >= 18,
-          message: 'User must be at least 18 years old'
+          message: 'User must be at least 18 years old',
         },
         {
           name: 'user_name_check',
           validate: (data: any) => data.name.length > 0,
-          message: 'User name cannot be empty'
-        }
+          message: 'User name cannot be empty',
+        },
       ];
 
       const data = { name: 'John', age: 25 };
@@ -224,13 +221,13 @@ describe('BaseService', () => {
         {
           name: 'user_age_check',
           validate: (data: any) => data.age >= 18,
-          message: 'User must be at least 18 years old'
+          message: 'User must be at least 18 years old',
         },
         {
           name: 'user_name_check',
           validate: (data: any) => data.name.length > 0,
-          message: 'User name cannot be empty'
-        }
+          message: 'User name cannot be empty',
+        },
       ];
 
       const data = { name: '', age: 15 };
@@ -241,15 +238,15 @@ describe('BaseService', () => {
       expect(result.violations).toContainEqual(
         expect.objectContaining({
           rule: 'user_age_check',
-          message: 'User must be at least 18 years old'
+          message: 'User must be at least 18 years old',
         })
       );
       expect(result.violations).toContainEqual(
         expect.objectContaining({
           rule: 'user_name_check',
-          message: 'User name cannot be empty'
+          message: 'User name cannot be empty',
         })
       );
     });
   });
-}); 
+});

@@ -1,10 +1,11 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
 import { useUserManager } from '../presentation/hooks/useUserManager';
+import type { User } from '../domain/dto/UserDto';
 
 interface UserContextType {
-  currentUser: any | null;
+  currentUser: User | null;
   refreshUser: () => Promise<void>;
-  updateUser: (userData: any) => Promise<void>;
+  updateUser: (userData: Partial<User>) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -17,12 +18,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   // Use custom hook for user management
   const { currentUser, refreshUser, updateUser } = useUserManager({
     autoLoad: true,
-    onUserLoad: (user) => {
-      console.log('User loaded:', user);
+    onUserLoad: _user => {
+      // User loaded callback - can be used for analytics or other side effects
     },
-    onUserUpdate: (user) => {
-      console.log('User updated:', user);
-    }
+    onUserUpdate: _user => {
+      // User updated callback - can be used for analytics or other side effects
+    },
   });
 
   const value: UserContextType = {
@@ -31,11 +32,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     updateUser,
   };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 export const useUser = (): UserContextType => {
@@ -44,4 +41,4 @@ export const useUser = (): UserContextType => {
     throw new Error('useUser must be used within a UserProvider');
   }
   return context;
-}; 
+};

@@ -9,7 +9,7 @@ interface TimeFormatterProps {
 const TimeFormatter: React.FC<TimeFormatterProps> = ({
   date,
   format = 'relative',
-  className = ''
+  className = '',
 }) => {
   const formatRelativeTime = (date: Date) => {
     const now = new Date();
@@ -31,7 +31,7 @@ const TimeFormatter: React.FC<TimeFormatterProps> = ({
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -40,7 +40,7 @@ const TimeFormatter: React.FC<TimeFormatterProps> = ({
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -56,8 +56,8 @@ const TimeFormatter: React.FC<TimeFormatterProps> = ({
   };
 
   return (
-    <time 
-      dateTime={date.toISOString()} 
+    <time
+      dateTime={date.toISOString()}
       className={`text-sm text-txt-secondary ${className}`}
     >
       {getFormattedTime()}
@@ -65,4 +65,4 @@ const TimeFormatter: React.FC<TimeFormatterProps> = ({
   );
 };
 
-export default TimeFormatter; 
+export default TimeFormatter;

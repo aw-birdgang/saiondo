@@ -5,14 +5,16 @@ import AssistantCard from './AssistantCard';
 
 const AssistantGrid: React.FC<AssistantGridProps> = ({
   assistants,
-  onAssistantSelect
+  onAssistantSelect,
 }) => {
   return (
-    <div className={cn(
-      'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6',
-      'auto-rows-fr'
-    )}>
-      {assistants.map((assistant) => (
+    <div
+      className={cn(
+        'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6',
+        'auto-rows-fr'
+      )}
+    >
+      {assistants.map(assistant => (
         <AssistantCard
           key={assistant.id}
           assistant={assistant}
@@ -23,4 +25,4 @@ const AssistantGrid: React.FC<AssistantGridProps> = ({
   );
 };
 
-export default AssistantGrid; 
+export default AssistantGrid;

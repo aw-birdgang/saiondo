@@ -3,21 +3,21 @@ export interface EnvironmentConfig {
   apiBaseUrl: string;
   apiTimeout: number;
   apiRetryAttempts: number;
-  
+
   // WebSocket Configuration
   wsUrl: string;
   wsReconnectInterval: number;
   wsMaxReconnectAttempts: number;
-  
+
   // Authentication Configuration
   authTokenKey: string;
   refreshTokenKey: string;
   tokenExpiryBuffer: number;
-  
+
   // Cache Configuration
   cacheTTL: number;
   cachePrefix: string;
-  
+
   // Feature Flags
   features: {
     realTimeChat: boolean;
@@ -25,14 +25,14 @@ export interface EnvironmentConfig {
     pushNotifications: boolean;
     analytics: boolean;
   };
-  
+
   // External Services
   externalServices: {
     fileUploadUrl: string;
     analyticsUrl: string;
     monitoringUrl: string;
   };
-  
+
   // Development Configuration
   isDevelopment: boolean;
   isProduction: boolean;
@@ -68,43 +68,73 @@ export class EnvironmentConfigManager {
 
     const baseConfig: EnvironmentConfig = {
       // API Configuration
-      apiBaseUrl: this.getEnvVar('VITE_API_BASE_URL', 'http://localhost:3000/api'),
+      apiBaseUrl: this.getEnvVar(
+        'VITE_API_BASE_URL',
+        'http://localhost:3000/api'
+      ),
       apiTimeout: parseInt(this.getEnvVar('VITE_API_TIMEOUT', '30000')),
-      apiRetryAttempts: parseInt(this.getEnvVar('VITE_API_RETRY_ATTEMPTS', '3')),
-      
+      apiRetryAttempts: parseInt(
+        this.getEnvVar('VITE_API_RETRY_ATTEMPTS', '3')
+      ),
+
       // WebSocket Configuration
       wsUrl: this.getEnvVar('VITE_WS_URL', 'ws://localhost:3000/ws'),
-      wsReconnectInterval: parseInt(this.getEnvVar('VITE_WS_RECONNECT_INTERVAL', '5000')),
-      wsMaxReconnectAttempts: parseInt(this.getEnvVar('VITE_WS_MAX_RECONNECT_ATTEMPTS', '5')),
-      
+      wsReconnectInterval: parseInt(
+        this.getEnvVar('VITE_WS_RECONNECT_INTERVAL', '5000')
+      ),
+      wsMaxReconnectAttempts: parseInt(
+        this.getEnvVar('VITE_WS_MAX_RECONNECT_ATTEMPTS', '5')
+      ),
+
       // Authentication Configuration
       authTokenKey: this.getEnvVar('VITE_AUTH_TOKEN_KEY', 'auth_token'),
-      refreshTokenKey: this.getEnvVar('VITE_REFRESH_TOKEN_KEY', 'refresh_token'),
-      tokenExpiryBuffer: parseInt(this.getEnvVar('VITE_TOKEN_EXPIRY_BUFFER', '300000')), // 5 minutes
-      
+      refreshTokenKey: this.getEnvVar(
+        'VITE_REFRESH_TOKEN_KEY',
+        'refresh_token'
+      ),
+      tokenExpiryBuffer: parseInt(
+        this.getEnvVar('VITE_TOKEN_EXPIRY_BUFFER', '300000')
+      ), // 5 minutes
+
       // Cache Configuration
       cacheTTL: parseInt(this.getEnvVar('VITE_CACHE_TTL', '3600000')), // 1 hour
       cachePrefix: this.getEnvVar('VITE_CACHE_PREFIX', 'saiondo_cache_'),
-      
+
       // Feature Flags
       features: {
-        realTimeChat: this.getEnvVar('VITE_FEATURE_REAL_TIME_CHAT', 'true') === 'true',
-        fileUpload: this.getEnvVar('VITE_FEATURE_FILE_UPLOAD', 'true') === 'true',
-        pushNotifications: this.getEnvVar('VITE_FEATURE_PUSH_NOTIFICATIONS', 'true') === 'true',
+        realTimeChat:
+          this.getEnvVar('VITE_FEATURE_REAL_TIME_CHAT', 'true') === 'true',
+        fileUpload:
+          this.getEnvVar('VITE_FEATURE_FILE_UPLOAD', 'true') === 'true',
+        pushNotifications:
+          this.getEnvVar('VITE_FEATURE_PUSH_NOTIFICATIONS', 'true') === 'true',
         analytics: this.getEnvVar('VITE_FEATURE_ANALYTICS', 'false') === 'true',
       },
-      
+
       // External Services
       externalServices: {
-        fileUploadUrl: this.getEnvVar('VITE_FILE_UPLOAD_URL', 'https://api.saiondo.com/upload'),
-        analyticsUrl: this.getEnvVar('VITE_ANALYTICS_URL', 'https://analytics.saiondo.com'),
-        monitoringUrl: this.getEnvVar('VITE_MONITORING_URL', 'https://monitoring.saiondo.com'),
+        fileUploadUrl: this.getEnvVar(
+          'VITE_FILE_UPLOAD_URL',
+          'https://api.saiondo.com/upload'
+        ),
+        analyticsUrl: this.getEnvVar(
+          'VITE_ANALYTICS_URL',
+          'https://analytics.saiondo.com'
+        ),
+        monitoringUrl: this.getEnvVar(
+          'VITE_MONITORING_URL',
+          'https://monitoring.saiondo.com'
+        ),
       },
-      
+
       // Development Configuration
       isDevelopment,
       isProduction,
-      enableDebugLogs: this.getEnvVar('VITE_ENABLE_DEBUG_LOGS', isDevelopment ? 'true' : 'false') === 'true',
+      enableDebugLogs:
+        this.getEnvVar(
+          'VITE_ENABLE_DEBUG_LOGS',
+          isDevelopment ? 'true' : 'false'
+        ) === 'true',
     };
 
     // 환경별 설정 오버라이드
@@ -199,9 +229,11 @@ export class EnvironmentConfigManager {
       this.config = this.loadConfig();
       console.log('Configuration reloaded:', this.config);
     } else {
-      console.warn('Configuration reload is only available in development mode');
+      console.warn(
+        'Configuration reload is only available in development mode'
+      );
     }
   }
 }
 
-export default EnvironmentConfigManager; 
+export default EnvironmentConfigManager;

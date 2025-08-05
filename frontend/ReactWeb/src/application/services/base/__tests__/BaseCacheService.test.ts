@@ -1,4 +1,8 @@
-import { BaseCacheService, MemoryCache, type ICache } from '../BaseCacheService';
+import {
+  BaseCacheService,
+  MemoryCache,
+  type ICache,
+} from '../BaseCacheService';
 import { ConsoleLogger } from '../../../../domain/interfaces/ILogger';
 
 // 테스트용 Cache Service 구현체
@@ -11,7 +15,11 @@ class TestCacheService extends BaseCacheService {
     return await this.getCached<T>(key, ttl);
   }
 
-  async testSetCached<T>(key: string, data: T, ttl: number = 300): Promise<void> {
+  async testSetCached<T>(
+    key: string,
+    data: T,
+    ttl: number = 300
+  ): Promise<void> {
     return await this.setCached<T>(key, data, ttl);
   }
 
@@ -96,7 +104,7 @@ describe('BaseCacheService', () => {
         expect.stringContaining('Cache get error'),
         expect.objectContaining({
           key: 'test-key',
-          error: expect.any(Error)
+          error: expect.any(Error),
         })
       );
     });
@@ -131,7 +139,7 @@ describe('BaseCacheService', () => {
         expect.stringContaining('Cache set error'),
         expect.objectContaining({
           key: 'test-key',
-          error: expect.any(Error)
+          error: expect.any(Error),
         })
       );
     });
@@ -155,7 +163,7 @@ describe('BaseCacheService', () => {
         expect.stringContaining('Cache delete error'),
         expect.objectContaining({
           key: 'test-key',
-          error: expect.any(Error)
+          error: expect.any(Error),
         })
       );
     });
@@ -183,7 +191,7 @@ describe('BaseCacheService', () => {
         expect.stringContaining('Cache pattern invalidation error'),
         expect.objectContaining({
           pattern: 'user:*',
-          error: expect.any(Error)
+          error: expect.any(Error),
         })
       );
     });
@@ -199,7 +207,7 @@ describe('BaseCacheService', () => {
         totalKeys: 3,
         hitRate: expect.any(Number),
         missRate: expect.any(Number),
-        averageTTL: expect.any(Number)
+        averageTTL: expect.any(Number),
       });
     });
   });
@@ -221,7 +229,7 @@ describe('BaseCacheService', () => {
       expect(mockLogger.error).toHaveBeenCalledWith(
         expect.stringContaining('Cache clear error'),
         expect.objectContaining({
-          error: expect.any(Error)
+          error: expect.any(Error),
         })
       );
     });
@@ -241,7 +249,12 @@ describe('BaseCacheService', () => {
     });
 
     it('should handle mixed types', () => {
-      const key = cacheService.testGenerateCacheKey('channel', '123', 456, 'messages');
+      const key = cacheService.testGenerateCacheKey(
+        'channel',
+        '123',
+        456,
+        'messages'
+      );
 
       expect(key).toBe('channel:123:456:messages');
     });
@@ -267,7 +280,7 @@ describe('MemoryCache', () => {
   describe('set and get', () => {
     it('should store and retrieve data', async () => {
       const data = { id: 1, name: 'Test' };
-      
+
       await memoryCache.set('test-key', data, 1000);
       const result = await memoryCache.get('test-key');
 
@@ -276,12 +289,12 @@ describe('MemoryCache', () => {
 
     it('should return null for expired data', async () => {
       const data = { id: 1, name: 'Test' };
-      
+
       await memoryCache.set('test-key', data, 1);
-      
+
       // Wait for expiration
       await new Promise(resolve => setTimeout(resolve, 10));
-      
+
       const result = await memoryCache.get('test-key');
       expect(result).toBeNull();
     });
@@ -296,7 +309,7 @@ describe('MemoryCache', () => {
     it('should delete existing key', async () => {
       await memoryCache.set('test-key', 'value', 1000);
       await memoryCache.delete('test-key');
-      
+
       const result = await memoryCache.get('test-key');
       expect(result).toBeNull();
     });
@@ -310,9 +323,9 @@ describe('MemoryCache', () => {
     it('should clear all cached data', async () => {
       await memoryCache.set('key1', 'value1', 1000);
       await memoryCache.set('key2', 'value2', 1000);
-      
+
       await memoryCache.clear();
-      
+
       expect(await memoryCache.get('key1')).toBeNull();
       expect(await memoryCache.get('key2')).toBeNull();
     });
@@ -321,7 +334,7 @@ describe('MemoryCache', () => {
   describe('has', () => {
     it('should return true for existing key', async () => {
       await memoryCache.set('test-key', 'value', 1000);
-      
+
       const result = await memoryCache.has('test-key');
       expect(result).toBe(true);
     });
@@ -333,10 +346,10 @@ describe('MemoryCache', () => {
 
     it('should return false for expired key', async () => {
       await memoryCache.set('test-key', 'value', 1);
-      
+
       // Wait for expiration
       await new Promise(resolve => setTimeout(resolve, 10));
-      
+
       const result = await memoryCache.has('test-key');
       expect(result).toBe(false);
     });
@@ -347,14 +360,14 @@ describe('MemoryCache', () => {
       await memoryCache.set('key1', 'value1', 1000);
       await memoryCache.set('key2', 'value2', 1000);
       await memoryCache.set('expired', 'value3', 1);
-      
+
       // Wait for one key to expire
       await new Promise(resolve => setTimeout(resolve, 10));
-      
+
       const keys = await memoryCache.keys();
       expect(keys).toContain('key1');
       expect(keys).toContain('key2');
       expect(keys).not.toContain('expired');
     });
   });
-}); 
+});

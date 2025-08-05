@@ -20,11 +20,7 @@ const MenuIcon: React.FC<MenuIconProps> = ({
     return sizeClasses[size];
   };
 
-  return (
-    <span className={`${getSizeClasses(size)} ${className}`}>
-      {icon}
-    </span>
-  );
+  return <span className={`${getSizeClasses(size)} ${className}`}>{icon}</span>;
 };
 
-export default MenuIcon; 
+export default MenuIcon;

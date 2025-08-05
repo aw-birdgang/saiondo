@@ -9,18 +9,18 @@ interface TooltipProps {
   delay?: number;
 }
 
-export const Tooltip: React.FC<TooltipProps> = ({ 
-  content, 
-  children, 
+export const Tooltip: React.FC<TooltipProps> = ({
+  content,
+  children,
   position = 'top',
   className = '',
-  delay = 0
+  delay = 0,
 }) => {
   // Use custom hook for tooltip management
   const { isVisible, triggerRef } = useTooltip({
     delay,
     showOnHover: true,
-    showOnFocus: true
+    showOnFocus: true,
   });
 
   const getPositionClasses = () => {
@@ -48,11 +48,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
           `}
         >
           {content}
-          <div className="absolute w-2 h-2 bg-gray-900 transform rotate-45"></div>
+          <div className='absolute w-2 h-2 bg-gray-900 transform rotate-45'></div>
         </div>
       )}
     </div>
   );
 };
 
-export default Tooltip; 
+export default Tooltip;

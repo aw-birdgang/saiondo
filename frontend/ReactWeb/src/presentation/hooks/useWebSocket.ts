@@ -1,6 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { initializeWebSocket, cleanupWebSocket } from '../../infrastructure/websocket/WebSocketService';
+import {
+  initializeWebSocket,
+  cleanupWebSocket,
+} from '../../infrastructure/websocket/WebSocketService';
 
 export interface UseWebSocketOptions {
   autoConnect?: boolean;
@@ -26,7 +29,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
     onReaction,
     onConnected,
     onDisconnected,
-    onError
+    onError,
   } = options;
 
   const { user, token } = useAuthStore();
@@ -44,7 +47,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
         url: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3001',
         token,
         reconnectInterval: 3000,
-        maxReconnectAttempts: 5
+        maxReconnectAttempts: 5,
       });
 
       // 이벤트 리스너 등록
@@ -63,7 +66,19 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
       console.error('Failed to initialize WebSocket service:', error);
       onError?.(error);
     }
-  }, [user, token, onMessage, onTyping, onUserJoined, onUserLeft, onChannelUpdate, onReaction, onConnected, onDisconnected, onError]);
+  }, [
+    user,
+    token,
+    onMessage,
+    onTyping,
+    onUserJoined,
+    onUserLeft,
+    onChannelUpdate,
+    onReaction,
+    onConnected,
+    onDisconnected,
+    onError,
+  ]);
 
   // WebSocket 연결
   const connect = useCallback(async () => {
@@ -95,7 +110,7 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
       wsServiceRef.current.send({
         type: 'message',
         data: message,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     } else {
       console.warn('WebSocket is not connected');
@@ -162,4 +177,4 @@ export const useWebSocket = (options: UseWebSocketOptions = {}) => {
     sendTyping,
     isConnected: isConnected(),
   };
-}; 
+};

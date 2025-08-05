@@ -28,4 +28,4 @@ export const useRouteChange = (options: UseRouteChangeOptions = {}) => {
   return {
     currentPath: pathname,
   };
-}; 
+};

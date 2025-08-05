@@ -18,16 +18,19 @@ src/di/
 ## 주요 기능
 
 ### 1. 서비스 등록 및 조회
+
 - 토큰 기반 서비스 관리
 - 팩토리 패턴 지원
 - 타입 안전성 보장
 
 ### 2. UseCase 관리
+
 - UseCase 등록 및 의존성 주입
 - 메타데이터 관리
 - Lazy loading 지원
 
 ### 3. 의존성 주입
+
 - 생성자 주입 패턴
 - 인터페이스 기반 의존성 분리
 - 싱글톤 패턴 지원
@@ -94,20 +97,24 @@ const apiClient = container.getApiClient();
 ## 등록된 서비스
 
 ### Repositories
+
 - `UserRepository`: 사용자 관련 데이터 접근
 - `ChannelRepository`: 채널 관련 데이터 접근
 - `MessageRepository`: 메시지 관련 데이터 접근
 
 ### Services
+
 - `UserService`: 사용자 관련 비즈니스 로직
 - `ChannelService`: 채널 관련 비즈니스 로직
 - `MessageService`: 메시지 관련 비즈니스 로직
 - `FileService`: 파일 관련 비즈니스 로직
 
 ### Infrastructure
+
 - `ApiClient`: API 통신을 위한 HTTP 클라이언트
 
 ### UseCases
+
 - `GetCurrentUserUseCase`: 현재 사용자 조회
 - `UpdateUserUseCase`: 사용자 정보 업데이트
 - `CreateChannelUseCase`: 채널 생성
@@ -122,18 +129,18 @@ DI Container는 토큰 기반으로 서비스를 관리합니다:
 export const DI_TOKENS = {
   // Infrastructure
   API_CLIENT: 'ApiClient',
-  
+
   // Repositories
   USER_REPOSITORY: 'UserRepository',
   CHANNEL_REPOSITORY: 'ChannelRepository',
   MESSAGE_REPOSITORY: 'MessageRepository',
-  
+
   // Services
   USER_SERVICE: 'UserService',
   CHANNEL_SERVICE: 'ChannelService',
   MESSAGE_SERVICE: 'MessageService',
   FILE_SERVICE: 'FileService',
-  
+
   // Use Cases
   GET_CURRENT_USER_USE_CASE: 'GetCurrentUserUseCase',
   // ... 기타 UseCase 토큰들
@@ -149,7 +156,7 @@ import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
 
 class UserComponent {
   private getUserUseCase = UseCaseFactory.createGetCurrentUserUseCase();
-  
+
   async getUser() {
     return await this.getUserUseCase.execute();
   }
@@ -163,7 +170,7 @@ import { container } from './di/container';
 
 class UserService {
   private userRepository = container.getUserRepository();
-  
+
   async getUser(id: string) {
     return await this.userRepository.findById(id);
   }
@@ -187,8 +194,8 @@ container.registerUseCase({
   metadata: {
     name: 'CustomUseCase',
     description: 'Custom use case',
-    version: '1.0.0'
-  }
+    version: '1.0.0',
+  },
 });
 ```
 
@@ -214,6 +221,7 @@ await UseCaseFactory.initialize();
 ## Repository Pattern 구조
 
 ### 1. 인터페이스 (Domain Layer)
+
 ```typescript
 // domain/repositories/IUserRepository.ts
 export interface IUserRepository {
@@ -224,11 +232,12 @@ export interface IUserRepository {
 ```
 
 ### 2. 구현체 (Infrastructure Layer)
+
 ```typescript
 // infrastructure/repositories/UserRepositoryImpl.ts
 export class UserRepositoryImpl implements IUserRepository {
   constructor(private readonly apiClient: ApiClient) {}
-  
+
   async findById(id: string): Promise<UserEntity | null> {
     // API 호출 및 도메인 엔티티 변환 로직
   }
@@ -238,42 +247,47 @@ export class UserRepositoryImpl implements IUserRepository {
 ## 테스트 예제
 
 ### Repository Mock 생성
+
 ```typescript
 // __mocks__/UserRepositoryMock.ts
 export class UserRepositoryMock implements IUserRepository {
   private users: UserEntity[] = [];
-  
+
   async findById(id: string): Promise<UserEntity | null> {
     return this.users.find(u => u.id === id) || null;
   }
-  
+
   async save(user: UserEntity): Promise<UserEntity> {
     this.users.push(user);
     return user;
   }
-  
+
   // ... 기타 메서드들
 }
 ```
 
 ### Use Case 테스트
+
 ```typescript
 // GetCurrentUserUseCase.test.ts
 describe('GetCurrentUserUseCase', () => {
   let useCase: GetCurrentUserUseCase;
   let mockRepository: UserRepositoryMock;
-  
+
   beforeEach(() => {
     mockRepository = new UserRepositoryMock();
     useCase = new GetCurrentUserUseCase(mockRepository);
   });
-  
+
   it('should return current user', async () => {
-    const user = UserEntity.create({ email: 'test@example.com', username: 'test' });
+    const user = UserEntity.create({
+      email: 'test@example.com',
+      username: 'test',
+    });
     mockRepository.save(user);
-    
+
     const result = await useCase.execute();
-    
+
     expect(result.user).toBeDefined();
     expect(result.user.email).toBe('test@example.com');
   });
@@ -283,13 +297,15 @@ describe('GetCurrentUserUseCase', () => {
 ## 확장 가이드
 
 ### 새로운 Repository 추가
+
 1. Domain Layer에 인터페이스 정의
 2. Infrastructure Layer에 구현체 작성
 3. DI Container에 등록
 4. Use Case에서 사용
 
 ### 새로운 Use Case 추가
+
 1. IUseCase 인터페이스 구현
 2. UseCaseRegistry에 등록
 3. DI_TOKENS에 토큰 추가
-4. UseCaseFactory에 생성 메서드 추가 
+4. UseCaseFactory에 생성 메서드 추가

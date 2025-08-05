@@ -48,4 +48,4 @@ export interface ErrorRecoveryResult {
   recoveryMethod?: string;
   message?: string;
   error?: string;
-} 
+}

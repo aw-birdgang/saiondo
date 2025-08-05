@@ -28,7 +28,7 @@ export class FlowTracker {
       controller,
       operation,
       startTime: performance.now(),
-      metadata
+      metadata,
     };
 
     this.flows.set(flowId, flowInfo);
@@ -86,7 +86,7 @@ export class FlowTracker {
    */
   getSuccessRate(): number {
     if (this.completedFlows.length === 0) return 0;
-    
+
     const successfulFlows = this.completedFlows.filter(flow => flow.success);
     return (successfulFlows.length / this.completedFlows.length) * 100;
   }
@@ -94,14 +94,20 @@ export class FlowTracker {
   /**
    * 컨트롤러별 통계
    */
-  getControllerStats(): Record<string, { total: number; success: number; avgDuration: number }> {
-    const stats: Record<string, { total: number; success: number; avgDuration: number }> = {};
-    
+  getControllerStats(): Record<
+    string,
+    { total: number; success: number; avgDuration: number }
+  > {
+    const stats: Record<
+      string,
+      { total: number; success: number; avgDuration: number }
+    > = {};
+
     this.completedFlows.forEach(flow => {
       if (!stats[flow.controller]) {
         stats[flow.controller] = { total: 0, success: 0, avgDuration: 0 };
       }
-      
+
       stats[flow.controller].total++;
       if (flow.success) {
         stats[flow.controller].success++;
@@ -125,7 +131,10 @@ export class FlowTracker {
    * 특정 흐름 조회
    */
   getFlow(flowId: string): FlowInfo | undefined {
-    return this.flows.get(flowId) || this.completedFlows.find(flow => flow.id === flowId);
+    return (
+      this.flows.get(flowId) ||
+      this.completedFlows.find(flow => flow.id === flowId)
+    );
   }
 
   /**
@@ -138,10 +147,11 @@ export class FlowTracker {
   /**
    * 오래된 흐름 정리
    */
-  cleanupOldFlows(maxAgeMs: number = 24 * 60 * 60 * 1000) { // 기본 24시간
+  cleanupOldFlows(maxAgeMs: number = 24 * 60 * 60 * 1000) {
+    // 기본 24시간
     const cutoffTime = Date.now() - maxAgeMs;
     this.completedFlows = this.completedFlows.filter(
       flow => flow.startTime > cutoffTime
     );
   }
-} 
+}

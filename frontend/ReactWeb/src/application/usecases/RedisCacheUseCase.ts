@@ -27,9 +27,17 @@ export class RedisCacheUseCase implements IUseCase<string, any> {
     }
   }
 
-  async getMessagesWithCache(channelId: string, limit?: number, offset?: number): Promise<any[]> {
+  async getMessagesWithCache(
+    channelId: string,
+    limit?: number,
+    offset?: number
+  ): Promise<any[]> {
     try {
-      return await this.cacheService.getMessagesWithCache(channelId, limit, offset);
+      return await this.cacheService.getMessagesWithCache(
+        channelId,
+        limit,
+        offset
+      );
     } catch (error) {
       console.error('Failed to get messages with cache:', error);
       return [];

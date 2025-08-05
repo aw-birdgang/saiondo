@@ -77,4 +77,4 @@ export interface ActivityExportResponse {
   data: string;
   format: 'json' | 'csv';
   recordCount: number;
-} 
+}

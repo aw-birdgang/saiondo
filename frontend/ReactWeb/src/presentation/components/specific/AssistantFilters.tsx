@@ -6,17 +6,17 @@ interface AssistantFiltersProps {
   onCategoryChange: (category: string) => void;
 }
 
-export const AssistantFilters: React.FC<AssistantFiltersProps> = ({ 
-  categories, 
-  selectedCategory, 
-  onCategoryChange 
+export const AssistantFilters: React.FC<AssistantFiltersProps> = ({
+  categories,
+  selectedCategory,
+  onCategoryChange,
 }) => {
   return (
-    <div className="mb-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+    <div className='mb-6'>
+      <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
         Filter by Category
       </h3>
-      <div className="flex flex-wrap gap-2">
+      <div className='flex flex-wrap gap-2'>
         <button
           onClick={() => onCategoryChange('all')}
           className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
@@ -27,7 +27,7 @@ export const AssistantFilters: React.FC<AssistantFiltersProps> = ({
         >
           All
         </button>
-        {categories.map((category) => (
+        {categories.map(category => (
           <button
             key={category}
             onClick={() => onCategoryChange(category)}
@@ -45,4 +45,4 @@ export const AssistantFilters: React.FC<AssistantFiltersProps> = ({
   );
 };
 
-export default AssistantFilters; 
+export default AssistantFilters;

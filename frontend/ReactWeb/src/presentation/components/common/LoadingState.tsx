@@ -13,11 +13,13 @@ const LoadingState: React.FC<LoadingStateProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`flex flex-col items-center justify-center h-64 ${className}`}>
-      <LoadingSpinner size={size} color="primary" className="mb-6" />
-      <p className="text-txt-secondary text-lg font-medium">{message}</p>
+    <div
+      className={`flex flex-col items-center justify-center h-64 ${className}`}
+    >
+      <LoadingSpinner size={size} color='primary' className='mb-6' />
+      <p className='text-txt-secondary text-lg font-medium'>{message}</p>
     </div>
   );
 };
 
-export default LoadingState; 
+export default LoadingState;

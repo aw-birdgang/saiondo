@@ -83,4 +83,4 @@ export interface SearchTrendingItem {
   query: string;
   count: number;
   trend: 'up' | 'down' | 'stable';
-} 
+}

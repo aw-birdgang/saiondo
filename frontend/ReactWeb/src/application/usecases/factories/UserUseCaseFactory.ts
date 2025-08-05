@@ -6,7 +6,7 @@ import { UserUseCases } from '../UserUseCases';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createUserUseCase = (
-  repository: IUserRepository, 
+  repository: IUserRepository,
   cache?: ICache
 ): IUserUseCase => {
   const service = new UserService(repository, cache);
@@ -16,59 +16,59 @@ export const createUserUseCase = (
 // 테스트를 위한 Mock 팩토리
 export const createMockUserUseCase = (): IUserUseCase => {
   const mockRepository: IUserRepository = {
-    createUser: async () => ({ 
-      user: { 
-        id: 'mock-user-id', 
-        username: 'mock-user', 
+    createUser: async () => ({
+      user: {
+        id: 'mock-user-id',
+        username: 'mock-user',
         email: 'mock@example.com',
         avatar: '',
-        status: 'offline'
-      } 
+        status: 'offline',
+      },
     }),
-    updateUser: async () => ({ 
-      user: { 
-        id: 'mock-user-id', 
-        username: 'mock-user', 
+    updateUser: async () => ({
+      user: {
+        id: 'mock-user-id',
+        username: 'mock-user',
         email: 'mock@example.com',
         avatar: '',
-        status: 'online'
-      } 
+        status: 'online',
+      },
     }),
-    getUser: async () => ({ 
-      user: { 
-        id: 'mock-user-id', 
-        username: 'mock-user', 
+    getUser: async () => ({
+      user: {
+        id: 'mock-user-id',
+        username: 'mock-user',
         email: 'mock@example.com',
         avatar: '',
-        status: 'online'
-      } 
+        status: 'online',
+      },
     }),
-    searchUsers: async () => ({ 
-      users: [], 
-      total: 0, 
-      hasMore: false 
+    searchUsers: async () => ({
+      users: [],
+      total: 0,
+      hasMore: false,
     }),
-    getCurrentUser: async () => ({ 
-      user: { 
-        id: 'mock-user-id', 
-        username: 'mock-user', 
+    getCurrentUser: async () => ({
+      user: {
+        id: 'mock-user-id',
+        username: 'mock-user',
         email: 'mock@example.com',
         avatar: '',
-        status: 'online'
-      } 
+        status: 'online',
+      },
     }),
     deleteUser: async () => true,
-    getUserById: async () => ({ 
-      user: { 
-        id: 'mock-user-id', 
-        username: 'mock-user', 
+    getUserById: async () => ({
+      user: {
+        id: 'mock-user-id',
+        username: 'mock-user',
         email: 'mock@example.com',
         avatar: '',
-        status: 'online'
-      } 
+        status: 'online',
+      },
     }),
     updateUserStatus: async () => true,
   };
-  
+
   return createUserUseCase(mockRepository);
-}; 
+};

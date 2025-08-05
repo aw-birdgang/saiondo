@@ -46,7 +46,7 @@ export const DI_TOKENS = {
   // Infrastructure
   API_CLIENT,
   WEBSOCKET_CLIENT,
-  
+
   // Repositories
   USER_REPOSITORY,
   CHANNEL_REPOSITORY,
@@ -55,7 +55,7 @@ export const DI_TOKENS = {
   SEARCH_REPOSITORY,
   INVITE_REPOSITORY,
   CATEGORY_REPOSITORY,
-  
+
   // Services
   AUTH_SERVICE,
   USER_SERVICE,
@@ -63,7 +63,7 @@ export const DI_TOKENS = {
   MESSAGE_SERVICE,
   FILE_SERVICE,
   NOTIFICATION_SERVICE,
-  
+
   // Use Cases
   USER_USE_CASES,
   CHANNEL_USE_CASES,
@@ -73,11 +73,11 @@ export const DI_TOKENS = {
   INVITE_USE_CASE,
   CATEGORY_USE_CASE,
   USE_CASE_FACTORY,
-  
+
   // Configuration
   API_CONFIG,
   WEBSOCKET_CONFIG,
-  
+
   // Stores
   AUTH_STORE,
   THEME_STORE,
@@ -87,4 +87,4 @@ export const DI_TOKENS = {
   UI_STORE,
 } as const;
 
-export type DIToken = typeof DI_TOKENS[keyof typeof DI_TOKENS]; 
+export type DIToken = (typeof DI_TOKENS)[keyof typeof DI_TOKENS];

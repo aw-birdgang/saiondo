@@ -9,16 +9,16 @@ interface AssistantContainerProps {
 
 const AssistantContainer: React.FC<AssistantContainerProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
-    <Container 
-      variant="page" 
-      className={cn("min-h-screen bg-background", className)}
+    <Container
+      variant='page'
+      className={cn('min-h-screen bg-background', className)}
     >
       {children}
     </Container>
   );
 };
 
-export default AssistantContainer; 
+export default AssistantContainer;

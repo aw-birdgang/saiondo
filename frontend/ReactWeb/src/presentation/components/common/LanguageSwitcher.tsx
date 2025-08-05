@@ -1,15 +1,19 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { setLanguage, getCurrentLanguage, availableLanguages } from '../../../app/di/languageUtils';
+import {
+  setLanguage,
+  getCurrentLanguage,
+  availableLanguages,
+} from '../../../app/di/languageUtils';
 
 interface LanguageSwitcherProps {
   className?: string;
   variant?: 'dropdown' | 'buttons';
 }
 
-export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ 
-  className = '', 
-  variant = 'dropdown' 
+export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
+  className = '',
+  variant = 'dropdown',
 }) => {
   const { t } = useTranslation();
   const currentLanguage = getCurrentLanguage();
@@ -21,7 +25,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   if (variant === 'buttons') {
     return (
       <div className={`flex gap-2 ${className}`}>
-        {availableLanguages.map((language) => (
+        {availableLanguages.map(language => (
           <button
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
@@ -42,10 +46,10 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     <div className={`relative ${className}`}>
       <select
         value={currentLanguage}
-        onChange={(e) => handleLanguageChange(e.target.value)}
-        className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        onChange={e => handleLanguageChange(e.target.value)}
+        className='px-3 py-2 border border-gray-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
       >
-        {availableLanguages.map((language) => (
+        {availableLanguages.map(language => (
           <option key={language.code} value={language.code}>
             {language.nativeName}
           </option>
@@ -53,4 +57,4 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       </select>
     </div>
   );
-}; 
+};

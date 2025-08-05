@@ -1,5 +1,12 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, ProgressBar } from '../../common';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  ProgressBar,
+} from '../../common';
 import { cn } from '../../../../utils/cn';
 import type { AccountProgressProps } from '../../../pages/mypage/types/mypageTypes';
 
@@ -12,37 +19,39 @@ import { getProgressColor } from './utils/progressUtils';
 const AccountProgress: React.FC<AccountProgressProps> = ({
   progress,
   items,
-  className
+  className,
 }) => {
   return (
-    <Card className={cn(
-      "transition-all duration-300 hover:shadow-lg",
-      "border-l-4 border-l-orange-500",
-      "bg-white dark:bg-gray-800",
-      className
-    )}>
-      <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+    <Card
+      className={cn(
+        'transition-all duration-300 hover:shadow-lg',
+        'border-l-4 border-l-orange-500',
+        'bg-white dark:bg-gray-800',
+        className
+      )}
+    >
+      <CardHeader className='pb-4'>
+        <CardTitle className='text-xl font-bold text-gray-900 dark:text-white'>
           계정 완성도
         </CardTitle>
-        <CardDescription className="text-gray-600 dark:text-gray-300">
+        <CardDescription className='text-gray-600 dark:text-gray-300'>
           프로필 완성도를 높여 더 나은 서비스를 이용하세요
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="space-y-6">
-          <div className="text-center">
+      <CardContent className='pt-0'>
+        <div className='space-y-6'>
+          <div className='text-center'>
             <ProgressCircle progress={progress} />
           </div>
-          
-          <ProgressBar 
-            value={progress} 
-            showLabel 
+
+          <ProgressBar
+            value={progress}
+            showLabel
             variant={getProgressColor(progress)}
-            className="h-3"
+            className='h-3'
           />
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
             {items.map((item, index) => (
               <ProgressItem
                 key={item.id}
@@ -53,7 +62,7 @@ const AccountProgress: React.FC<AccountProgressProps> = ({
               />
             ))}
           </div>
-          
+
           <ProgressCompletionMessage progress={progress} />
         </div>
       </CardContent>
@@ -61,4 +70,4 @@ const AccountProgress: React.FC<AccountProgressProps> = ({
   );
 };
 
-export default AccountProgress; 
+export default AccountProgress;

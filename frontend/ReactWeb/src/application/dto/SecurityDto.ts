@@ -21,7 +21,12 @@ export interface RateLimitConfig {
 
 export interface SecurityViolation {
   id: string;
-  type: 'rate_limit' | 'xss_attempt' | 'csrf_attempt' | 'invalid_input' | 'unauthorized_access';
+  type:
+    | 'rate_limit'
+    | 'xss_attempt'
+    | 'csrf_attempt'
+    | 'invalid_input'
+    | 'unauthorized_access';
   timestamp: Date;
   userId?: string;
   ipAddress?: string;
@@ -67,4 +72,4 @@ export interface SecurityViolationFilters {
   ipAddress?: string;
   startDate?: Date;
   endDate?: Date;
-} 
+}

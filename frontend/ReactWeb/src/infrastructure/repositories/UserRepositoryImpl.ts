@@ -16,7 +16,9 @@ export class UserRepositoryImpl implements IUserRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Failed to find user by ID');
+      throw DomainErrorFactory.createUserValidation(
+        'Failed to find user by ID'
+      );
     }
   }
 
@@ -28,7 +30,9 @@ export class UserRepositoryImpl implements IUserRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Failed to find user by email');
+      throw DomainErrorFactory.createUserValidation(
+        'Failed to find user by email'
+      );
     }
   }
 
@@ -83,7 +87,9 @@ export class UserRepositoryImpl implements IUserRepository {
 
   async search(query: string): Promise<UserEntity[]> {
     try {
-      const response = await this.apiClient.get<User[]>(`/users/search?q=${encodeURIComponent(query)}`);
+      const response = await this.apiClient.get<User[]>(
+        `/users/search?q=${encodeURIComponent(query)}`
+      );
       return response.map(user => UserEntity.fromData(user));
     } catch (error) {
       if (error instanceof Error) {
@@ -101,7 +107,9 @@ export class UserRepositoryImpl implements IUserRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Failed to get current user');
+      throw DomainErrorFactory.createUserValidation(
+        'Failed to get current user'
+      );
     }
   }
 
@@ -112,27 +120,39 @@ export class UserRepositoryImpl implements IUserRepository {
       if (!currentUser) {
         throw DomainErrorFactory.createUserNotFound(id);
       }
-      
+
       const updatedUser = currentUser.updateOnlineStatus(isOnline);
-      const response = await this.apiClient.put<User>(`/users/${id}`, updatedUser.toJSON());
+      const response = await this.apiClient.put<User>(
+        `/users/${id}`,
+        updatedUser.toJSON()
+      );
       return UserEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createUserValidation('Failed to update online status');
+      throw DomainErrorFactory.createUserValidation(
+        'Failed to update online status'
+      );
     }
   }
 
-  async updateProfile(id: string, displayName?: string, avatar?: string): Promise<UserEntity> {
+  async updateProfile(
+    id: string,
+    displayName?: string,
+    avatar?: string
+  ): Promise<UserEntity> {
     try {
       const currentUser = await this.findById(id);
       if (!currentUser) {
         throw DomainErrorFactory.createUserNotFound(id);
       }
-      
+
       const updatedUser = currentUser.updateProfile(displayName, avatar);
-      const response = await this.apiClient.put<User>(`/users/${id}`, updatedUser.toJSON());
+      const response = await this.apiClient.put<User>(
+        `/users/${id}`,
+        updatedUser.toJSON()
+      );
       return UserEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
@@ -141,4 +161,4 @@ export class UserRepositoryImpl implements IUserRepository {
       throw DomainErrorFactory.createUserValidation('Failed to update profile');
     }
   }
-} 
+}

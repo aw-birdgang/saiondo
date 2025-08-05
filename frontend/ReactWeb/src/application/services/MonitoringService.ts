@@ -1,7 +1,7 @@
 import type { IUserRepository } from '../../domain/repositories/IUserRepository';
 import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
 import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { 
+import type {
   SystemMetrics,
   ApplicationMetrics,
   HealthCheckRequest,
@@ -9,7 +9,7 @@ import type {
   PerformanceMetrics,
   GetPerformanceMetricsRequest,
   GetPerformanceMetricsResponse,
-  MonitoringConfig
+  MonitoringConfig,
 } from '../dto/MonitoringDto';
 
 export class MonitoringService {
@@ -52,8 +52,12 @@ export class MonitoringService {
 
   async healthCheck(request: HealthCheckRequest): Promise<HealthCheckResponse> {
     try {
-      const systemMetrics = request.includeMetrics ? await this.getSystemMetrics() : undefined;
-      const applicationMetrics = request.includeMetrics ? await this.getApplicationMetrics() : undefined;
+      const systemMetrics = request.includeMetrics
+        ? await this.getSystemMetrics()
+        : undefined;
+      const applicationMetrics = request.includeMetrics
+        ? await this.getApplicationMetrics()
+        : undefined;
 
       // Check if all services are healthy
       const isHealthy = await this.checkServiceHealth();
@@ -63,8 +67,13 @@ export class MonitoringService {
         timestamp: new Date(),
         uptime: process.uptime() * 1000, // Convert to milliseconds
         version: '1.0.0',
-        metrics: request.includeMetrics ? { ...systemMetrics, ...applicationMetrics } as SystemMetrics & ApplicationMetrics : undefined,
-        details: request.includeDetails ? await this.getHealthDetails() : undefined,
+        metrics: request.includeMetrics
+          ? ({ ...systemMetrics, ...applicationMetrics } as SystemMetrics &
+              ApplicationMetrics)
+          : undefined,
+        details: request.includeDetails
+          ? await this.getHealthDetails()
+          : undefined,
       };
 
       // Store health check history
@@ -77,7 +86,9 @@ export class MonitoringService {
         timestamp: new Date(),
         uptime: process.uptime() * 1000,
         version: '1.0.0',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' },
+        details: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
       };
 
       this.addToHealthCheckHistory(response);
@@ -85,26 +96,28 @@ export class MonitoringService {
     }
   }
 
-  async getPerformanceMetrics(request: GetPerformanceMetricsRequest): Promise<GetPerformanceMetricsResponse> {
+  async getPerformanceMetrics(
+    request: GetPerformanceMetricsRequest
+  ): Promise<GetPerformanceMetricsResponse> {
     const metrics: PerformanceMetrics[] = [];
     const now = Date.now();
     const granularityMs = this.getGranularityMs(request.granularity);
     const timeRangeMs = this.getTimeRangeMs(request.timeRange);
 
-          // Generate mock performance data for the time range
-      for (let time = now - timeRangeMs; time <= now; time += granularityMs) {
-        const metric: PerformanceMetrics = {
-          averageResponseTime: this.getRandomMetric(0, 1000),
-          p95ResponseTime: this.getRandomMetric(0, 2000),
-          p99ResponseTime: this.getRandomMetric(0, 5000),
-          errorRate: this.getRandomMetric(0, 10),
-          throughput: this.getRandomMetric(0, 1000),
-          activeUsers: Math.floor(this.getRandomMetric(0, 1000)),
-        };
+    // Generate mock performance data for the time range
+    for (let time = now - timeRangeMs; time <= now; time += granularityMs) {
+      const metric: PerformanceMetrics = {
+        averageResponseTime: this.getRandomMetric(0, 1000),
+        p95ResponseTime: this.getRandomMetric(0, 2000),
+        p99ResponseTime: this.getRandomMetric(0, 5000),
+        errorRate: this.getRandomMetric(0, 10),
+        throughput: this.getRandomMetric(0, 1000),
+        activeUsers: Math.floor(this.getRandomMetric(0, 1000)),
+      };
 
-        metrics.push(metric);
-        this.addToMetricsHistory(metric);
-      }
+      metrics.push(metric);
+      this.addToMetricsHistory(metric);
+    }
 
     return {
       metrics,
@@ -117,11 +130,15 @@ export class MonitoringService {
     return this.metricsHistory.slice(-limit);
   }
 
-  async getHealthCheckHistory(limit: number = 100): Promise<HealthCheckResponse[]> {
+  async getHealthCheckHistory(
+    limit: number = 100
+  ): Promise<HealthCheckResponse[]> {
     return this.healthCheckHistory.slice(-limit);
   }
 
-  async getServiceStatus(): Promise<Record<string, 'healthy' | 'degraded' | 'unhealthy'>> {
+  async getServiceStatus(): Promise<
+    Record<string, 'healthy' | 'degraded' | 'unhealthy'>
+  > {
     const status: Record<string, 'healthy' | 'degraded' | 'unhealthy'> = {};
 
     try {
@@ -151,8 +168,18 @@ export class MonitoringService {
     return status;
   }
 
-  async getSystemAlerts(): Promise<Array<{ level: 'info' | 'warning' | 'error'; message: string; timestamp: Date }>> {
-    const alerts: Array<{ level: 'info' | 'warning' | 'error'; message: string; timestamp: Date }> = [];
+  async getSystemAlerts(): Promise<
+    Array<{
+      level: 'info' | 'warning' | 'error';
+      message: string;
+      timestamp: Date;
+    }>
+  > {
+    const alerts: Array<{
+      level: 'info' | 'warning' | 'error';
+      message: string;
+      timestamp: Date;
+    }> = [];
     const now = new Date();
 
     // Check system metrics for alerts
@@ -198,7 +225,8 @@ export class MonitoringService {
 
       // Check system resources
       const systemMetrics = await this.getSystemMetrics();
-      const isSystemHealthy = systemMetrics.cpuUsage < 90 && systemMetrics.memoryUsage < 95;
+      const isSystemHealthy =
+        systemMetrics.cpuUsage < 90 && systemMetrics.memoryUsage < 95;
 
       return isSystemHealthy;
     } catch (error) {
@@ -266,4 +294,4 @@ export class MonitoringService {
       this.healthCheckHistory.shift();
     }
   }
-} 
+}

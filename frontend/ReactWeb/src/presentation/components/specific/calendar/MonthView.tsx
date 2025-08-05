@@ -1,9 +1,18 @@
 import React from 'react';
-import { eachDayOfInterval, endOfMonth, startOfMonth, isSameDay, isSameMonth } from 'date-fns';
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  startOfMonth,
+  isSameDay,
+  isSameMonth,
+} from 'date-fns';
 import { cn } from '../../../../utils/cn';
 import { DAY_LABELS } from '../../../pages/calendar/constants/calendarData';
 import CalendarDay from './CalendarDay';
-import type { MonthViewProps, Event } from '../../../pages/calendar/types/calendarTypes';
+import type {
+  MonthViewProps,
+  Event,
+} from '../../../pages/calendar/types/calendarTypes';
 
 const MonthView: React.FC<MonthViewProps> = ({
   currentDate,
@@ -11,7 +20,7 @@ const MonthView: React.FC<MonthViewProps> = ({
   events,
   onDateClick,
   onEventClick,
-  className
+  className,
 }) => {
   // 현재 월의 모든 날짜 계산
   const monthStart = startOfMonth(currentDate);
@@ -26,21 +35,24 @@ const MonthView: React.FC<MonthViewProps> = ({
   };
 
   return (
-    <div className={cn("grid grid-cols-7 gap-1", className)}>
+    <div className={cn('grid grid-cols-7 gap-1', className)}>
       {/* 요일 헤더 */}
       {DAY_LABELS.map(day => (
-        <div key={day} className="p-2 text-center font-medium text-txt-secondary bg-focus rounded">
+        <div
+          key={day}
+          className='p-2 text-center font-medium text-txt-secondary bg-focus rounded'
+        >
           {day}
         </div>
       ))}
-      
+
       {/* 날짜 그리드 */}
       {daysInMonth.map((date, index) => {
         const dayEvents = getEventsForDate(date);
         const isToday = isSameDay(date, new Date());
         const isCurrentMonth = isSameMonth(date, currentDate);
         const isSelected = selectedDate ? isSameDay(date, selectedDate) : false;
-        
+
         return (
           <CalendarDay
             key={index}
@@ -58,4 +70,4 @@ const MonthView: React.FC<MonthViewProps> = ({
   );
 };
 
-export default MonthView; 
+export default MonthView;

@@ -12,7 +12,7 @@ describe('LocalStorageCache', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock localStorage
     Object.defineProperty(window, 'localStorage', {
       value: mockLocalStorage,
@@ -86,7 +86,9 @@ describe('LocalStorageCache', () => {
       const result = cache.get(key);
 
       // Assert
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('test_cache_test_key');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith(
+        'test_cache_test_key'
+      );
       expect(result).toEqual(value);
     });
 
@@ -118,7 +120,9 @@ describe('LocalStorageCache', () => {
 
       // Assert
       expect(result).toBeNull();
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test_cache_expired_key');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'test_cache_expired_key'
+      );
     });
 
     it('should handle JSON parse errors gracefully', () => {
@@ -143,7 +147,9 @@ describe('LocalStorageCache', () => {
       cache.delete(key);
 
       // Assert
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test_cache_test_key');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'test_cache_test_key'
+      );
     });
 
     it('should handle removal errors gracefully', () => {
@@ -175,8 +181,12 @@ describe('LocalStorageCache', () => {
       cache.clear();
 
       // Assert
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test_cache_key1');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test_cache_key2');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'test_cache_key1'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'test_cache_key2'
+      );
       expect(mockLocalStorage.removeItem).not.toHaveBeenCalledWith('other_key');
     });
   });
@@ -284,8 +294,12 @@ describe('LocalStorageCache', () => {
       cache.cleanup();
 
       // Assert
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test_cache_expired');
-      expect(mockLocalStorage.removeItem).not.toHaveBeenCalledWith('test_cache_valid');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'test_cache_expired'
+      );
+      expect(mockLocalStorage.removeItem).not.toHaveBeenCalledWith(
+        'test_cache_valid'
+      );
     });
   });
 
@@ -327,4 +341,4 @@ describe('LocalStorageCache', () => {
       expect(stats.totalSize).toBeGreaterThan(0);
     });
   });
-}); 
+});

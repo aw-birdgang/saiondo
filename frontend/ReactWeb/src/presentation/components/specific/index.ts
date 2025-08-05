@@ -13,7 +13,7 @@ export { default as ChannelInfoCard } from './ChannelInfoCard';
 export { default as HomeContent } from './HomeContent';
 export { default as HomeLayout } from './HomeLayout';
 export { default as AiAdviceCard } from './AiAdviceCard';
-export { default as QuickActionButton } from './QuickActionButton';
+
 export { default as QuickActionsGrid } from './QuickActionsGrid';
 export { default as WelcomeMessage } from './WelcomeMessage';
 export { default as HomeTabLayout } from './HomeTabLayout';
@@ -25,10 +25,8 @@ export { default as ChatHeader } from './ChatHeader';
 export { default as ChatMessages } from './ChatMessages';
 export { default as ChatInput } from './ChatInput';
 export { default as ChatContent } from './ChatContent';
-export { default as MessageBubble } from './MessageBubble';
 
 // ===== CHANNEL PAGE COMPONENTS =====
-export { default as ChannelHeader } from './ChannelHeader';
 export { default as EmptyChannelState } from './EmptyChannelState';
 export { default as ChannelList } from './ChannelList';
 export { default as ChannelStats } from './ChannelStats';
@@ -100,7 +98,6 @@ export { default as SplashContainer } from './SplashContainer';
 export { default as SplashAnimation } from './SplashAnimation';
 
 // ===== UTILITY COMPONENTS =====
-export { default as LoadingState } from './LoadingState';
 export { default as ErrorState } from './ErrorState';
 
 // ===== LAYOUT COMPONENTS =====

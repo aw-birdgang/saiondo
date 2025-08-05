@@ -18,7 +18,9 @@ interface FormProps {
   fields: FormField[];
   values: { [key: string]: string };
   errors: { [key: string]: string };
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   onSubmit: (e: React.FormEvent) => void;
   submitText?: string;
   loading?: boolean;
@@ -44,7 +46,7 @@ const Form: React.FC<FormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // 폼 유효성 검사
     const hasErrors = Object.keys(errors).length > 0;
     if (hasErrors) {
@@ -78,16 +80,14 @@ const Form: React.FC<FormProps> = ({
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-6 ${className}`}>
-      <div className="space-y-4">
-        {fields.map(renderField)}
-      </div>
+      <div className='space-y-4'>{fields.map(renderField)}</div>
       <Button
-        type="submit"
-        variant="primary"
+        type='submit'
+        variant='primary'
         fullWidth
         loading={loading}
         disabled={loading}
-        className="py-3 text-base font-semibold"
+        className='py-3 text-base font-semibold'
       >
         {submitText || t('submit') || '제출'}
       </Button>
@@ -95,4 +95,4 @@ const Form: React.FC<FormProps> = ({
   );
 };
 
-export default Form; 
+export default Form;

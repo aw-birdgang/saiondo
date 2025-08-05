@@ -2,17 +2,21 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDataLoader } from '../../../hooks/useDataLoader';
 import { ROUTES } from '../../../../shared/constants/app';
-import { MOCK_CHANNELS, calculateChannelStats, INITIAL_CHANNEL_STATS } from '../constants/channelData';
+import {
+  MOCK_CHANNELS,
+  calculateChannelStats,
+  INITIAL_CHANNEL_STATS,
+} from '../constants/channelData';
 import type { ChannelPageState } from '../types/channelTypes';
 
 export const useChannelData = () => {
   const navigate = useNavigate();
-  
+
   const [state, setState] = useState<ChannelPageState>({
     channels: [],
     stats: INITIAL_CHANNEL_STATS,
     isLoading: false,
-    error: null
+    error: null,
   });
 
   // 데이터 로딩
@@ -24,27 +28,30 @@ export const useChannelData = () => {
 
       // Mock 데이터 로딩 시뮬레이션
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       const channels = MOCK_CHANNELS;
       const stats = calculateChannelStats(channels);
-      
+
       setState(prev => ({
         ...prev,
         channels,
-        stats
+        stats,
       }));
     },
     [],
-    { 
+    {
       autoLoad: true,
-      errorMessage: '채널을 불러오는데 실패했습니다.'
+      errorMessage: '채널을 불러오는데 실패했습니다.',
     }
   );
 
   // 채널 클릭 처리
-  const handleChannelClick = useCallback((channelId: string) => {
-    navigate(`${ROUTES.CHAT}/${channelId}`);
-  }, [navigate]);
+  const handleChannelClick = useCallback(
+    (channelId: string) => {
+      navigate(`${ROUTES.CHAT}/${channelId}`);
+    },
+    [navigate]
+  );
 
   // 새 채널 생성 처리
   const handleCreateChannel = useCallback(() => {
@@ -56,7 +63,9 @@ export const useChannelData = () => {
     setState(prev => ({
       ...prev,
       channels: prev.channels.filter(channel => channel.id !== channelId),
-      stats: calculateChannelStats(prev.channels.filter(channel => channel.id !== channelId))
+      stats: calculateChannelStats(
+        prev.channels.filter(channel => channel.id !== channelId)
+      ),
     }));
   }, []);
 
@@ -66,20 +75,21 @@ export const useChannelData = () => {
       setState(prev => ({
         ...prev,
         channels: MOCK_CHANNELS,
-        stats: calculateChannelStats(MOCK_CHANNELS)
+        stats: calculateChannelStats(MOCK_CHANNELS),
       }));
       return;
     }
 
-    const filteredChannels = MOCK_CHANNELS.filter(channel =>
-      channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      channel.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredChannels = MOCK_CHANNELS.filter(
+      channel =>
+        channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        channel.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setState(prev => ({
       ...prev,
       channels: filteredChannels,
-      stats: calculateChannelStats(filteredChannels)
+      stats: calculateChannelStats(filteredChannels),
     }));
   }, []);
 
@@ -101,8 +111,8 @@ export const useChannelData = () => {
       setState(prev => ({
         ...prev,
         channels: MOCK_CHANNELS,
-        stats: calculateChannelStats(MOCK_CHANNELS)
+        stats: calculateChannelStats(MOCK_CHANNELS),
       }));
-    }
+    },
   };
-}; 
+};

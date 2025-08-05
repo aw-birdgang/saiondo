@@ -25,4 +25,4 @@ export interface AsyncState<T> {
   data: T | null;
   loading: LoadingState;
   error: string | null;
-} 
+}

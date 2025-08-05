@@ -1,6 +1,6 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import InvitationCard from "./InvitationCard";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import InvitationCard from './InvitationCard';
 
 interface ChannelInvitation {
   id: string;
@@ -20,23 +20,24 @@ interface InvitationListProps {
   className?: string;
 }
 
-const InvitationList: React.FC<InvitationListProps> = ({ 
-  invitations, 
-  onAccept, 
-  onReject, 
-  className = "" 
+const InvitationList: React.FC<InvitationListProps> = ({
+  invitations,
+  onAccept,
+  onReject,
+  className = '',
 }) => {
   const { t } = useTranslation();
 
   if (invitations.length === 0) {
     return (
       <div className={`text-center py-16 ${className}`}>
-        <div className="text-6xl mb-6 animate-pulse">📨</div>
-        <h3 className="text-2xl font-bold text-txt mb-4 leading-tight">
+        <div className='text-6xl mb-6 animate-pulse'>📨</div>
+        <h3 className='text-2xl font-bold text-txt mb-4 leading-tight'>
           {t('no_invitations') || '초대장이 없습니다'}
         </h3>
-        <p className="text-txt-secondary text-lg leading-relaxed">
-          {t('no_invitations_description') || '현재 받은 채널 초대장이 없습니다.'}
+        <p className='text-txt-secondary text-lg leading-relaxed'>
+          {t('no_invitations_description') ||
+            '현재 받은 채널 초대장이 없습니다.'}
         </p>
       </div>
     );
@@ -44,7 +45,7 @@ const InvitationList: React.FC<InvitationListProps> = ({
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {invitations.map((invitation) => (
+      {invitations.map(invitation => (
         <InvitationCard
           key={invitation.id}
           invitation={invitation}
@@ -56,4 +57,4 @@ const InvitationList: React.FC<InvitationListProps> = ({
   );
 };
 
-export default InvitationList; 
+export default InvitationList;

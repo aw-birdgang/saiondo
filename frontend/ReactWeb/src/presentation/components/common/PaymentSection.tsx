@@ -9,12 +9,14 @@ interface PaymentSectionProps {
 const PaymentSection: React.FC<PaymentSectionProps> = ({
   children,
   className = '',
-  title
+  title,
 }) => {
   return (
-    <section className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 ${className}`}>
+    <section
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 ${className}`}
+    >
       {title && (
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
           {title}
         </h3>
       )}
@@ -23,4 +25,4 @@ const PaymentSection: React.FC<PaymentSectionProps> = ({
   );
 };
 
-export default PaymentSection; 
+export default PaymentSection;

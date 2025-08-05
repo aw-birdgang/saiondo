@@ -13,7 +13,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ onLogout, isLoading }) => (
   >
     {isLoading ? (
       <>
-        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
         로그아웃 중...
       </>
     ) : (
@@ -25,4 +25,4 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ onLogout, isLoading }) => (
   </button>
 );
 
-export default LogoutButton; 
+export default LogoutButton;

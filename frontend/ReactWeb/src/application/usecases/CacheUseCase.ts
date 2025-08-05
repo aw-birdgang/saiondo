@@ -17,8 +17,16 @@ export class CacheUseCase implements IUseCase<string, any> {
     return await this.cacheService.getChannelWithCache(channelId);
   }
 
-  async getMessagesWithCache(channelId: string, limit?: number, offset?: number): Promise<any[]> {
-    return await this.cacheService.getMessagesWithCache(channelId, limit, offset);
+  async getMessagesWithCache(
+    channelId: string,
+    limit?: number,
+    offset?: number
+  ): Promise<any[]> {
+    return await this.cacheService.getMessagesWithCache(
+      channelId,
+      limit,
+      offset
+    );
   }
 
   async invalidateUserCache(userId: string): Promise<void> {

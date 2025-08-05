@@ -1,4 +1,3 @@
-
 export interface FileUploadConfig {
   maxFileSize: number; // bytes
   allowedTypes: string[];
@@ -35,7 +34,7 @@ export class FileUploadService {
       const maxSizeMB = this.config.maxFileSize / (1024 * 1024);
       return {
         isValid: false,
-        error: `파일 크기는 ${maxSizeMB}MB 이하여야 합니다.`
+        error: `파일 크기는 ${maxSizeMB}MB 이하여야 합니다.`,
       };
     }
 
@@ -43,7 +42,7 @@ export class FileUploadService {
     if (!this.config.allowedTypes.includes(file.type)) {
       return {
         isValid: false,
-        error: '지원하지 않는 파일 형식입니다.'
+        error: '지원하지 않는 파일 형식입니다.',
       };
     }
 
@@ -63,7 +62,7 @@ export class FileUploadService {
       if (!validation.isValid) {
         return {
           success: false,
-          error: validation.error
+          error: validation.error,
         };
       }
 
@@ -76,12 +75,12 @@ export class FileUploadService {
         const xhr = new XMLHttpRequest();
 
         // 진행률 이벤트
-        xhr.upload.addEventListener('progress', (event) => {
+        xhr.upload.addEventListener('progress', event => {
           if (event.lengthComputable && onProgress) {
             const progress: UploadProgress = {
               loaded: event.loaded,
               total: event.total,
-              percentage: Math.round((event.loaded / event.total) * 100)
+              percentage: Math.round((event.loaded / event.total) * 100),
             };
             onProgress(progress);
           }
@@ -95,18 +94,18 @@ export class FileUploadService {
               resolve({
                 success: true,
                 fileUrl: response.fileUrl,
-                fileId: response.fileId
+                fileId: response.fileId,
               });
             } catch (error) {
               resolve({
                 success: false,
-                error: '서버 응답을 파싱할 수 없습니다.'
+                error: '서버 응답을 파싱할 수 없습니다.',
               });
             }
           } else {
             resolve({
               success: false,
-              error: `업로드 실패: ${xhr.status} ${xhr.statusText}`
+              error: `업로드 실패: ${xhr.status} ${xhr.statusText}`,
             });
           }
         });
@@ -115,7 +114,7 @@ export class FileUploadService {
         xhr.addEventListener('error', () => {
           resolve({
             success: false,
-            error: '네트워크 오류가 발생했습니다.'
+            error: '네트워크 오류가 발생했습니다.',
           });
         });
 
@@ -124,11 +123,13 @@ export class FileUploadService {
         xhr.setRequestHeader('Authorization', `Bearer ${this.config.token}`);
         xhr.send(formData);
       });
-
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.'
+        error:
+          error instanceof Error
+            ? error.message
+            : '알 수 없는 오류가 발생했습니다.',
       };
     }
   }
@@ -144,9 +145,9 @@ export class FileUploadService {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       // 파일별 진행률 콜백
-      const fileProgressCallback = onProgress 
+      const fileProgressCallback = onProgress
         ? (progress: UploadProgress) => onProgress(i, progress)
         : undefined;
 
@@ -179,12 +180,12 @@ export class FileUploadService {
       img.onload = () => {
         // 이미지 크기 계산
         let { width, height } = img;
-        
+
         if (width > maxWidth) {
           height = (height * maxWidth) / width;
           width = maxWidth;
         }
-        
+
         if (height > maxHeight) {
           width = (width * maxHeight) / height;
           height = maxHeight;
@@ -199,11 +200,11 @@ export class FileUploadService {
 
         // 압축된 이미지 생성
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               const compressedFile = new File([blob], file.name, {
                 type: file.type,
-                lastModified: Date.now()
+                lastModified: Date.now(),
               });
               resolve(compressedFile);
             } else {
@@ -249,10 +250,10 @@ const defaultConfig: FileUploadConfig = {
     'application/pdf',
     'text/plain',
     'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ],
   uploadUrl: import.meta.env.VITE_FILE_UPLOAD_URL || '/api/upload',
-  token: ''
+  token: '',
 };
 
 // 전역 인스턴스
@@ -261,7 +262,9 @@ let fileUploadService: FileUploadService | null = null;
 /**
  * 파일 업로드 서비스 초기화
  */
-export const initializeFileUploadService = (token: string): FileUploadService => {
+export const initializeFileUploadService = (
+  token: string
+): FileUploadService => {
   const config = { ...defaultConfig, token };
   fileUploadService = new FileUploadService(config);
   return fileUploadService;
@@ -286,7 +289,7 @@ export const useFileUpload = () => {
     if (!service) {
       return {
         success: false,
-        error: '파일 업로드 서비스가 초기화되지 않았습니다.'
+        error: '파일 업로드 서비스가 초기화되지 않았습니다.',
       };
     }
 
@@ -301,7 +304,7 @@ export const useFileUpload = () => {
     if (!service) {
       return files.map(() => ({
         success: false,
-        error: '파일 업로드 서비스가 초기화되지 않았습니다.'
+        error: '파일 업로드 서비스가 초기화되지 않았습니다.',
       }));
     }
 
@@ -325,6 +328,6 @@ export const useFileUpload = () => {
   return {
     uploadFile,
     uploadMultipleFiles,
-    compressImage
+    compressImage,
   };
-}; 
+};

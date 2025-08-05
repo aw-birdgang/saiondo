@@ -4,4 +4,4 @@ export { InfiniteScrollLoader } from './InfiniteScrollLoader';
 export { VirtualizedListLoader } from './VirtualizedListLoader';
 export { withLazyLoading } from './withLazyLoading';
 export { ErrorBoundary } from './ErrorBoundary';
-export { LoadingExamples } from './LoadingExamples'; 
+export { LoadingExamples } from './LoadingExamples';

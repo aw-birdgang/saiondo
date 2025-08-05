@@ -30,4 +30,4 @@ export { default as RecommendedAction } from './RecommendedAction';
 // Recent Activities Components
 export { default as ActivityItem } from './ActivityItem';
 export { default as EmptyActivities } from './EmptyActivities';
-export { default as ActivitiesSummary } from './ActivitiesSummary'; 
+export { default as ActivitiesSummary } from './ActivitiesSummary';

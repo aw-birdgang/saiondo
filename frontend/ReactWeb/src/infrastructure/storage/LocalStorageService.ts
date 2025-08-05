@@ -28,7 +28,7 @@ export class LocalStorageService {
   get<T>(key: string): T | null {
     try {
       const serializedData = localStorage.getItem(this.getFullKey(key));
-      
+
       if (serializedData === null) {
         return null;
       }
@@ -65,7 +65,7 @@ export class LocalStorageService {
     try {
       const keys = Object.keys(localStorage);
       const prefixedKeys = keys.filter(key => key.startsWith(this.prefix));
-      
+
       prefixedKeys.forEach(key => {
         localStorage.removeItem(key);
       });
@@ -96,7 +96,7 @@ export class LocalStorageService {
     try {
       let totalSize = 0;
       const keys = Object.keys(localStorage);
-      
+
       keys.forEach(key => {
         if (key.startsWith(this.prefix)) {
           const value = localStorage.getItem(key);
@@ -105,7 +105,7 @@ export class LocalStorageService {
           }
         }
       });
-      
+
       return totalSize;
     } catch (error) {
       console.error('Failed to calculate localStorage size:', error);
@@ -127,10 +127,10 @@ export class LocalStorageService {
     try {
       const testKey = this.getFullKey('test');
       const testValue = 'test';
-      
+
       localStorage.setItem(testKey, testValue);
       localStorage.removeItem(testKey);
-      
+
       return true;
     } catch (error) {
       return false;
@@ -143,4 +143,4 @@ export class LocalStorageService {
   private getFullKey(key: string): string {
     return `${this.prefix}${key}`;
   }
-} 
+}

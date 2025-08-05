@@ -117,4 +117,4 @@ export interface SearchSuggestion {
   text: string;
   type: 'history' | 'trending' | 'suggestion';
   relevance?: number;
-} 
+}

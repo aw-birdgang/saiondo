@@ -54,36 +54,37 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
   return (
     <Card className={className}>
-      <div className="flex items-center space-x-4">
-        <div className={`${currentSize.avatar} bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold`}>
+      <div className='flex items-center space-x-4'>
+        <div
+          className={`${currentSize.avatar} bg-gradient-to-br from-blue-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold`}
+        >
           {userInitial}
         </div>
-        <div className="flex-1">
-          <h3 className={`${currentSize.name} text-gray-900`}>
-            {userName}
-          </h3>
-          <p className={`${currentSize.email} text-gray-600`}>
-            {userEmail}
-          </p>
+        <div className='flex-1'>
+          <h3 className={`${currentSize.name} text-gray-900`}>{userName}</h3>
+          <p className={`${currentSize.email} text-gray-600`}>{userEmail}</p>
           {showMemberSince && displayUser?.createdAt && (
             <p className={`${currentSize.since} text-gray-500`}>
-              {t('member_since')}: {new Date(displayUser.createdAt).toLocaleDateString()}
+              {t('member_since')}:{' '}
+              {new Date(displayUser.createdAt).toLocaleDateString()}
             </p>
           )}
         </div>
         {showEditButton && (
           <Button
-            variant="primary"
-            size="sm"
+            variant='primary'
+            size='sm'
             onClick={() => navigate(ROUTES.PROFILE)}
           >
             {t('edit')}
           </Button>
         )}
         <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(`${ROUTES.PROFILE}/${displayUser?.id || 'me'}`)}
+          variant='outline'
+          size='sm'
+          onClick={() =>
+            navigate(`${ROUTES.PROFILE}/${displayUser?.id || 'me'}`)
+          }
         >
           {t('common.view_profile')}
         </Button>
@@ -92,4 +93,4 @@ const UserProfile: React.FC<UserProfileProps> = ({
   );
 };
 
-export default UserProfile; 
+export default UserProfile;

@@ -13,7 +13,7 @@ const Divider: React.FC<DividerProps> = ({
   variant = 'solid',
   color = 'default',
   spacing = 'md',
-  className = ''
+  className = '',
 }) => {
   const getOrientationClasses = () => {
     return orientation === 'vertical' ? 'h-full w-px' : 'w-full h-px';
@@ -63,4 +63,4 @@ const Divider: React.FC<DividerProps> = ({
   );
 };
 
-export default Divider; 
+export default Divider;

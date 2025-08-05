@@ -33,4 +33,4 @@ export interface AssistantFiltersProps {
 export interface AssistantGridProps {
   assistants: Assistant[];
   onAssistantSelect: (assistant: Assistant) => void;
-} 
+}

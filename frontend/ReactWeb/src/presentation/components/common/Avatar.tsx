@@ -19,7 +19,7 @@ const Avatar: React.FC<AvatarProps> = ({
   shape = 'circle',
   variant = 'default',
   color = 'primary',
-  className = ''
+  className = '',
 }) => {
   const getSizeClasses = () => {
     switch (size) {
@@ -98,4 +98,4 @@ const Avatar: React.FC<AvatarProps> = ({
   );
 };
 
-export default Avatar; 
+export default Avatar;

@@ -13,7 +13,7 @@ import type {
   JoinChatRoomRequest,
   JoinChatRoomResponse,
   LeaveChatRoomRequest,
-  LeaveChatRoomResponse
+  LeaveChatRoomResponse,
 } from '../dto/RealTimeChatDto';
 
 export class RealTimeChatService {
@@ -26,24 +26,44 @@ export class RealTimeChatService {
     private readonly userRepository: IUserRepository
   ) {}
 
-  async sendRealTimeMessage(request: SendRealTimeMessageRequest): Promise<SendRealTimeMessageResponse> {
+  async sendRealTimeMessage(
+    request: SendRealTimeMessageRequest
+  ): Promise<SendRealTimeMessageResponse> {
     // Validate request
-    if (!request.message.content || request.message.content.trim().length === 0) {
-      throw DomainErrorFactory.createMessageValidation('Message content is required');
+    if (
+      !request.message.content ||
+      request.message.content.trim().length === 0
+    ) {
+      throw DomainErrorFactory.createMessageValidation(
+        'Message content is required'
+      );
     }
 
-    if (!request.message.channelId || request.message.channelId.trim().length === 0) {
-      throw DomainErrorFactory.createMessageValidation('Channel ID is required');
+    if (
+      !request.message.channelId ||
+      request.message.channelId.trim().length === 0
+    ) {
+      throw DomainErrorFactory.createMessageValidation(
+        'Channel ID is required'
+      );
     }
 
-    if (!request.message.senderId || request.message.senderId.trim().length === 0) {
+    if (
+      !request.message.senderId ||
+      request.message.senderId.trim().length === 0
+    ) {
       throw DomainErrorFactory.createMessageValidation('Sender ID is required');
     }
 
     // Check if sender is member of the channel
-    const isMember = await this.channelRepository.isMember(request.message.channelId, request.message.senderId);
+    const isMember = await this.channelRepository.isMember(
+      request.message.channelId,
+      request.message.senderId
+    );
     if (!isMember) {
-      throw DomainErrorFactory.createMessageValidation('Sender is not a member of this channel');
+      throw DomainErrorFactory.createMessageValidation(
+        'Sender is not a member of this channel'
+      );
     }
 
     // Create message entity
@@ -62,7 +82,10 @@ export class RealTimeChatService {
     await this.channelRepository.updateLastMessage(request.message.channelId);
 
     // Clear typing indicator for sender
-    this.clearTypingIndicator(request.message.senderId, request.message.channelId);
+    this.clearTypingIndicator(
+      request.message.senderId,
+      request.message.channelId
+    );
 
     return {
       success: true,
@@ -71,20 +94,29 @@ export class RealTimeChatService {
     };
   }
 
-  async sendTypingIndicator(request: TypingIndicatorRequest): Promise<TypingIndicatorResponse> {
+  async sendTypingIndicator(
+    request: TypingIndicatorRequest
+  ): Promise<TypingIndicatorResponse> {
     // Validate request
     if (!request.userId || request.userId.trim().length === 0) {
       throw DomainErrorFactory.createUserValidation('User ID is required');
     }
 
     if (!request.channelId || request.channelId.trim().length === 0) {
-      throw DomainErrorFactory.createChannelValidation('Channel ID is required');
+      throw DomainErrorFactory.createChannelValidation(
+        'Channel ID is required'
+      );
     }
 
     // Check if user is member of the channel
-    const isMember = await this.channelRepository.isMember(request.channelId, request.userId);
+    const isMember = await this.channelRepository.isMember(
+      request.channelId,
+      request.userId
+    );
     if (!isMember) {
-      throw DomainErrorFactory.createChannelValidation('User is not a member of this channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'User is not a member of this channel'
+      );
     }
 
     // Update typing indicator
@@ -99,24 +131,35 @@ export class RealTimeChatService {
     return { success: true };
   }
 
-  async sendReadReceipt(request: ReadReceiptRequest): Promise<ReadReceiptResponse> {
+  async sendReadReceipt(
+    request: ReadReceiptRequest
+  ): Promise<ReadReceiptResponse> {
     // Validate request
     if (!request.userId || request.userId.trim().length === 0) {
       throw DomainErrorFactory.createUserValidation('User ID is required');
     }
 
     if (!request.messageId || request.messageId.trim().length === 0) {
-      throw DomainErrorFactory.createMessageValidation('Message ID is required');
+      throw DomainErrorFactory.createMessageValidation(
+        'Message ID is required'
+      );
     }
 
     if (!request.channelId || request.channelId.trim().length === 0) {
-      throw DomainErrorFactory.createChannelValidation('Channel ID is required');
+      throw DomainErrorFactory.createChannelValidation(
+        'Channel ID is required'
+      );
     }
 
     // Check if user is member of the channel
-    const isMember = await this.channelRepository.isMember(request.channelId, request.userId);
+    const isMember = await this.channelRepository.isMember(
+      request.channelId,
+      request.userId
+    );
     if (!isMember) {
-      throw DomainErrorFactory.createChannelValidation('User is not a member of this channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'User is not a member of this channel'
+      );
     }
 
     // Record read receipt
@@ -129,33 +172,46 @@ export class RealTimeChatService {
     };
   }
 
-  async joinChatRoom(request: JoinChatRoomRequest): Promise<JoinChatRoomResponse> {
+  async joinChatRoom(
+    request: JoinChatRoomRequest
+  ): Promise<JoinChatRoomResponse> {
     // Validate request
     if (!request.userId || request.userId.trim().length === 0) {
       throw DomainErrorFactory.createUserValidation('User ID is required');
     }
 
     if (!request.channelId || request.channelId.trim().length === 0) {
-      throw DomainErrorFactory.createChannelValidation('Channel ID is required');
+      throw DomainErrorFactory.createChannelValidation(
+        'Channel ID is required'
+      );
     }
 
     // Check if channel exists
-    const existingChannel = await this.channelRepository.findById(request.channelId);
+    const existingChannel = await this.channelRepository.findById(
+      request.channelId
+    );
     if (!existingChannel) {
       throw DomainErrorFactory.createChannelNotFound(request.channelId);
     }
 
     // Check if user is already a member
-    const isMember = await this.channelRepository.isMember(request.channelId, request.userId);
+    const isMember = await this.channelRepository.isMember(
+      request.channelId,
+      request.userId
+    );
     if (isMember) {
-      throw DomainErrorFactory.createChannelValidation('User is already a member of this channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'User is already a member of this channel'
+      );
     }
 
     // Add user to channel
     await this.channelRepository.addMember(request.channelId, request.userId);
 
     // Get channel participants
-    const updatedChannel = await this.channelRepository.findById(request.channelId);
+    const updatedChannel = await this.channelRepository.findById(
+      request.channelId
+    );
     const participants = updatedChannel ? updatedChannel.members : [];
 
     return {
@@ -164,24 +220,36 @@ export class RealTimeChatService {
     };
   }
 
-  async leaveChatRoom(request: LeaveChatRoomRequest): Promise<LeaveChatRoomResponse> {
+  async leaveChatRoom(
+    request: LeaveChatRoomRequest
+  ): Promise<LeaveChatRoomResponse> {
     // Validate request
     if (!request.userId || request.userId.trim().length === 0) {
       throw DomainErrorFactory.createUserValidation('User ID is required');
     }
 
     if (!request.channelId || request.channelId.trim().length === 0) {
-      throw DomainErrorFactory.createChannelValidation('Channel ID is required');
+      throw DomainErrorFactory.createChannelValidation(
+        'Channel ID is required'
+      );
     }
 
     // Check if user is a member of the channel
-    const isMember = await this.channelRepository.isMember(request.channelId, request.userId);
+    const isMember = await this.channelRepository.isMember(
+      request.channelId,
+      request.userId
+    );
     if (!isMember) {
-      throw DomainErrorFactory.createChannelValidation('User is not a member of this channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'User is not a member of this channel'
+      );
     }
 
     // Remove user from channel
-    await this.channelRepository.removeMember(request.channelId, request.userId);
+    await this.channelRepository.removeMember(
+      request.channelId,
+      request.userId
+    );
 
     // Clear typing indicator
     this.clearTypingIndicator(request.userId, request.channelId);
@@ -225,10 +293,14 @@ export class RealTimeChatService {
     }
   }
 
-  private recordReadReceipt(messageId: string, userId: string, readAt: Date): void {
+  private recordReadReceipt(
+    messageId: string,
+    userId: string,
+    readAt: Date
+  ): void {
     if (!this.readReceipts.has(messageId)) {
       this.readReceipts.set(messageId, new Map());
     }
     this.readReceipts.get(messageId)!.set(userId, readAt);
   }
-} 
+}

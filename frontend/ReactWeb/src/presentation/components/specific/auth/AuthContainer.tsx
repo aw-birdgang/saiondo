@@ -9,13 +9,17 @@ interface AuthContainerProps {
 
 const AuthContainer: React.FC<AuthContainerProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
-    <Container variant="page" maxWidth="md" className={cn("max-w-md w-full space-y-8", className)}>
+    <Container
+      variant='page'
+      maxWidth='md'
+      className={cn('max-w-md w-full space-y-8', className)}
+    >
       {children}
     </Container>
   );
 };
 
-export default AuthContainer; 
+export default AuthContainer;

@@ -16,4 +16,4 @@ const InvitationGrid: React.FC<InvitationGridProps> = ({
   );
 };
 
-export default InvitationGrid; 
+export default InvitationGrid;

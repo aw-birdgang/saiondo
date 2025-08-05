@@ -15,20 +15,30 @@ const SearchInput: React.FC<SearchInputProps> = ({
 }) => {
   return (
     <div className={`relative ${className}`}>
-      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-        <svg className="h-5 w-5 text-txt-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
+        <svg
+          className='h-5 w-5 text-txt-secondary'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+          />
         </svg>
       </div>
       <input
-        type="text"
+        type='text'
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="input pl-12 pr-4 py-3 w-full text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+        className='input pl-12 pr-4 py-3 w-full text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200'
       />
     </div>
   );
 };
 
-export default SearchInput; 
+export default SearchInput;

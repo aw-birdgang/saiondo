@@ -49,8 +49,8 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         <img
           src={profileUrl}
           alt={name}
-          className="w-full h-full rounded-full object-cover border-2 border-border shadow-md"
-          onError={(e) => {
+          className='w-full h-full rounded-full object-cover border-2 border-border shadow-md'
+          onError={e => {
             const target = e.target as HTMLImageElement;
             target.style.display = 'none';
             target.nextElementSibling?.classList.remove('hidden');
@@ -68,4 +68,4 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   );
 };
 
-export default UserAvatar; 
+export default UserAvatar;

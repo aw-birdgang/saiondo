@@ -1,19 +1,28 @@
 import type { MessageService } from '../services/MessageService';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { SearchMessagesRequest, SearchMessagesResponse } from '../dto/SearchMessagesDto';
+import type {
+  SearchMessagesRequest,
+  SearchMessagesResponse,
+} from '../dto/SearchMessagesDto';
 
 export class SearchMessagesUseCase {
   constructor(private readonly messageService: MessageService) {}
 
-  async execute(request: SearchMessagesRequest): Promise<SearchMessagesResponse> {
+  async execute(
+    request: SearchMessagesRequest
+  ): Promise<SearchMessagesResponse> {
     try {
       // Validate request
       if (!request.query || request.query.trim().length === 0) {
-        throw DomainErrorFactory.createMessageValidation('Search query is required');
+        throw DomainErrorFactory.createMessageValidation(
+          'Search query is required'
+        );
       }
 
       if (request.query.length < 2) {
-        throw DomainErrorFactory.createMessageValidation('Search query must be at least 2 characters');
+        throw DomainErrorFactory.createMessageValidation(
+          'Search query must be at least 2 characters'
+        );
       }
 
       // Search messages using MessageService
@@ -33,7 +42,9 @@ export class SearchMessagesUseCase {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createMessageValidation('Failed to search messages');
+      throw DomainErrorFactory.createMessageValidation(
+        'Failed to search messages'
+      );
     }
   }
 }

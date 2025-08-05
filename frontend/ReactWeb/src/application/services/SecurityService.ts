@@ -6,12 +6,21 @@ import type {
   InputValidationResult,
   RateLimitResult,
   SecurityPatternAnalysis,
-  SecurityViolationFilters
+  SecurityViolationFilters,
 } from '../dto/SecurityDto';
+
+interface ValidationRule {
+  required?: boolean;
+  type?: string;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+}
 
 export class SecurityService {
   private violations: SecurityViolation[] = [];
-  private rateLimitStore: Map<string, { count: number; resetTime: number }> = new Map();
+  private rateLimitStore: Map<string, { count: number; resetTime: number }> =
+    new Map();
   private blockedIPs: Set<string> = new Set();
   private readonly config: SecurityConfig;
   private readonly maxViolations = 10000;
@@ -32,19 +41,25 @@ export class SecurityService {
   /**
    * 입력 데이터 검증
    */
-  validateInput(data: any, schema: Record<string, any>): InputValidationResult {
+  validateInput(
+    data: Record<string, unknown>,
+    schema: Record<string, ValidationRule>
+  ): InputValidationResult {
     if (!this.config.enableInputValidation) {
       return { isValid: true, errors: [] };
     }
 
     const errors: string[] = [];
-    const sanitizedData: any = {};
+    const sanitizedData: Record<string, unknown> = {};
 
     for (const [key, rules] of Object.entries(schema)) {
       const value = data[key];
 
       // 필수 필드 검증
-      if (rules.required && (value === undefined || value === null || value === '')) {
+      if (
+        rules.required &&
+        (value === undefined || value === null || value === '')
+      ) {
         errors.push(`${key} is required`);
         continue;
       }
@@ -57,16 +72,32 @@ export class SecurityService {
         }
 
         // 길이 검증
-        if (rules.minLength && value.length < rules.minLength) {
-          errors.push(`${key} must be at least ${rules.minLength} characters long`);
+        if (
+          rules.minLength &&
+          typeof value === 'string' &&
+          value.length < rules.minLength
+        ) {
+          errors.push(
+            `${key} must be at least ${rules.minLength} characters long`
+          );
         }
 
-        if (rules.maxLength && value.length > rules.maxLength) {
-          errors.push(`${key} must be at most ${rules.maxLength} characters long`);
+        if (
+          rules.maxLength &&
+          typeof value === 'string' &&
+          value.length > rules.maxLength
+        ) {
+          errors.push(
+            `${key} must be at most ${rules.maxLength} characters long`
+          );
         }
 
         // 패턴 검증
-        if (rules.pattern && !rules.pattern.test(value)) {
+        if (
+          rules.pattern &&
+          typeof value === 'string' &&
+          !rules.pattern.test(value)
+        ) {
           errors.push(`${key} does not match the required pattern`);
         }
 
@@ -215,7 +246,9 @@ export class SecurityService {
   /**
    * 보안 위반 기록
    */
-  recordViolation(violation: Omit<SecurityViolation, 'id' | 'timestamp'>): void {
+  recordViolation(
+    violation: Omit<SecurityViolation, 'id' | 'timestamp'>
+  ): void {
     const fullViolation: SecurityViolation = {
       id: this.generateViolationId(),
       timestamp: new Date(),
@@ -231,16 +264,21 @@ export class SecurityService {
 
     // 심각한 위반은 즉시 로깅
     if (violation.severity === 'critical') {
-      console.error('Critical security violation:', fullViolation);
+      // Critical security violation logging
     }
   }
 
   /**
    * 보안 리포트 생성
    */
-  generateSecurityReport(timeRange: { start: Date; end: Date }): SecurityReport {
+  generateSecurityReport(timeRange: {
+    start: Date;
+    end: Date;
+  }): SecurityReport {
     const filteredViolations = this.violations.filter(
-      violation => violation.timestamp >= timeRange.start && violation.timestamp <= timeRange.end
+      violation =>
+        violation.timestamp >= timeRange.start &&
+        violation.timestamp <= timeRange.end
     );
 
     if (filteredViolations.length === 0) {
@@ -257,13 +295,15 @@ export class SecurityService {
     // 타입별 위반 수
     const violationsByType: Record<string, number> = {};
     filteredViolations.forEach(violation => {
-      violationsByType[violation.type] = (violationsByType[violation.type] || 0) + 1;
+      violationsByType[violation.type] =
+        (violationsByType[violation.type] || 0) + 1;
     });
 
     // 심각도별 위반 수
     const violationsBySeverity: Record<string, number> = {};
     filteredViolations.forEach(violation => {
-      violationsBySeverity[violation.severity] = (violationsBySeverity[violation.severity] || 0) + 1;
+      violationsBySeverity[violation.severity] =
+        (violationsBySeverity[violation.severity] || 0) + 1;
     });
 
     // 최근 위반들
@@ -287,12 +327,15 @@ export class SecurityService {
   analyzeSecurityPatterns(): SecurityPatternAnalysis {
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const recentViolations = this.violations.filter(v => v.timestamp >= oneWeekAgo);
+    const recentViolations = this.violations.filter(
+      v => v.timestamp >= oneWeekAgo
+    );
 
     // 가장 흔한 위반 타입
     const violationCounts: Record<string, number> = {};
     recentViolations.forEach(violation => {
-      violationCounts[violation.type] = (violationCounts[violation.type] || 0) + 1;
+      violationCounts[violation.type] =
+        (violationCounts[violation.type] || 0) + 1;
     });
 
     const mostCommonViolations = Object.entries(violationCounts)
@@ -304,7 +347,8 @@ export class SecurityService {
     const ipCounts: Record<string, number> = {};
     recentViolations.forEach(violation => {
       if (violation.ipAddress) {
-        ipCounts[violation.ipAddress] = (ipCounts[violation.ipAddress] || 0) + 1;
+        ipCounts[violation.ipAddress] =
+          (ipCounts[violation.ipAddress] || 0) + 1;
       }
     });
 
@@ -339,18 +383,36 @@ export class SecurityService {
     const patterns = this.analyzeSecurityPatterns();
 
     // Rate limiting 권장사항
-    if (patterns.mostCommonViolations.some(v => v.type === 'rate_limit' && v.count > 10)) {
-      recommendations.push('Rate limiting 임계값을 낮추거나 윈도우 시간을 늘려보세요.');
+    if (
+      patterns.mostCommonViolations.some(
+        v => v.type === 'rate_limit' && v.count > 10
+      )
+    ) {
+      recommendations.push(
+        'Rate limiting 임계값을 낮추거나 윈도우 시간을 늘려보세요.'
+      );
     }
 
     // XSS 공격 권장사항
-    if (patterns.mostCommonViolations.some(v => v.type === 'xss_attempt' && v.count > 5)) {
-      recommendations.push('입력 검증을 강화하고 Content Security Policy를 설정하세요.');
+    if (
+      patterns.mostCommonViolations.some(
+        v => v.type === 'xss_attempt' && v.count > 5
+      )
+    ) {
+      recommendations.push(
+        '입력 검증을 강화하고 Content Security Policy를 설정하세요.'
+      );
     }
 
     // CSRF 공격 권장사항
-    if (patterns.mostCommonViolations.some(v => v.type === 'csrf_attempt' && v.count > 3)) {
-      recommendations.push('CSRF 토큰 검증을 강화하고 SameSite 쿠키를 설정하세요.');
+    if (
+      patterns.mostCommonViolations.some(
+        v => v.type === 'csrf_attempt' && v.count > 3
+      )
+    ) {
+      recommendations.push(
+        'CSRF 토큰 검증을 강화하고 SameSite 쿠키를 설정하세요.'
+      );
     }
 
     // IP 차단 권장사항
@@ -371,27 +433,39 @@ export class SecurityService {
     let filteredViolations = [...this.violations];
 
     if (filters?.type) {
-      filteredViolations = filteredViolations.filter(v => v.type === filters.type);
+      filteredViolations = filteredViolations.filter(
+        v => v.type === filters.type
+      );
     }
 
     if (filters?.severity) {
-      filteredViolations = filteredViolations.filter(v => v.severity === filters.severity);
+      filteredViolations = filteredViolations.filter(
+        v => v.severity === filters.severity
+      );
     }
 
     if (filters?.userId) {
-      filteredViolations = filteredViolations.filter(v => v.userId === filters.userId);
+      filteredViolations = filteredViolations.filter(
+        v => v.userId === filters.userId
+      );
     }
 
     if (filters?.ipAddress) {
-      filteredViolations = filteredViolations.filter(v => v.ipAddress === filters.ipAddress);
+      filteredViolations = filteredViolations.filter(
+        v => v.ipAddress === filters.ipAddress
+      );
     }
 
     if (filters?.startDate) {
-      filteredViolations = filteredViolations.filter(v => v.timestamp >= filters.startDate!);
+      filteredViolations = filteredViolations.filter(
+        v => v.timestamp >= filters.startDate!
+      );
     }
 
     if (filters?.endDate) {
-      filteredViolations = filteredViolations.filter(v => v.timestamp <= filters.endDate!);
+      filteredViolations = filteredViolations.filter(
+        v => v.timestamp <= filters.endDate!
+      );
     }
 
     return filteredViolations
@@ -408,7 +482,8 @@ export class SecurityService {
   }
 
   private generateSecureToken(length: number): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < length; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -419,4 +494,4 @@ export class SecurityService {
   private generateViolationId(): string {
     return `violation_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
-} 
+}

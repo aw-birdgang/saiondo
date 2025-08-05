@@ -2,8 +2,8 @@
 
 ## 📋 프로젝트 개요
 
-이 프로젝트는 **Clean Architecture** 원칙을 기반으로 구축된 고성능 웹 애플리케이션입니다. 
-실시간 채팅, 파일 공유, 사용자 관리 등의 기능을 제공하며, 프로덕션 환경에서 사용할 수 있도록 
+이 프로젝트는 **Clean Architecture** 원칙을 기반으로 구축된 고성능 웹 애플리케이션입니다.
+실시간 채팅, 파일 공유, 사용자 관리 등의 기능을 제공하며, 프로덕션 환경에서 사용할 수 있도록
 고급 모니터링, 보안, 캐싱 기능이 통합되어 있습니다.
 
 ## 🏗️ 아키텍처 구조
@@ -55,33 +55,39 @@
 ## 🚀 주요 기능
 
 ### 1. **실시간 채팅**
+
 - WebSocket 기반 실시간 메시징
 - 타이핑 인디케이터
 - 읽음 확인
 - 채널 관리
 
 ### 2. **파일 관리**
+
 - 파일 업로드/다운로드
 - 파일 타입 검증
 - 용량 제한 관리
 
 ### 3. **사용자 관리**
+
 - 인증/인가
 - 권한 관리
 - 사용자 활동 추적
 
 ### 4. **고급 모니터링**
+
 - 성능 모니터링
 - 에러 추적
 - 보안 위반 감지
 - 실시간 알림
 
 ### 5. **캐싱 시스템**
+
 - 다단계 캐싱 (L1, L2, L3)
 - 압축 지원
 - 자동 만료 관리
 
 ### 6. **보안 기능**
+
 - Rate Limiting
 - XSS/CSRF 방지
 - 입력 검증
@@ -102,7 +108,7 @@ const user = await getUserUseCase.execute(userId);
 const createChannelUseCase = UseCaseFactory.createCreateChannelUseCase();
 const channel = await createChannelUseCase.execute({
   name: 'General',
-  description: 'General discussion'
+  description: 'General discussion',
 });
 ```
 
@@ -148,13 +154,17 @@ const result = await performanceService.measurePerformance(
 const securityService = new SecurityService();
 const validation = securityService.validateInput(data, {
   username: { required: true, type: 'string', minLength: 3 },
-  email: { required: true, type: 'string', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }
+  email: {
+    required: true,
+    type: 'string',
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  },
 });
 
 // Rate Limiting
 const rateLimit = securityService.checkRateLimit(userId, {
   windowMs: 60000,
-  maxRequests: 100
+  maxRequests: 100,
 });
 ```
 
@@ -196,7 +206,7 @@ const analyticsService = new AnalyticsService(
 // 사용자 행동 분석
 const behavior = analyticsService.analyzeUserBehavior(userId, {
   start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30일
-  end: new Date()
+  end: new Date(),
 });
 
 // 이탈 예측
@@ -210,8 +220,8 @@ const churnPrediction = analyticsService.predictUserChurn(userId);
 ```typescript
 const cacheConfig = {
   levels: [
-    { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 },    // 1분
-    { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 },   // 5분
+    { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 }, // 1분
+    { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 }, // 5분
     { name: 'L3', ttl: 1800000, maxSize: 10000, priority: 3 }, // 30분
   ],
   enableCompression: true,
@@ -228,7 +238,7 @@ const securityConfig = {
   enableXSSProtection: true,
   enableCSRFProtection: true,
   maxRequestSize: 10 * 1024 * 1024, // 10MB
-  sessionTimeout: 30 * 60 * 1000,   // 30분
+  sessionTimeout: 30 * 60 * 1000, // 30분
 };
 ```
 
@@ -240,10 +250,10 @@ const monitoringConfig = {
   enableMetrics: true,
   enableAlerts: true,
   alertThresholds: {
-    responseTime: 1000,    // 1초
-    errorRate: 0.05,       // 5%
-    memoryUsage: 0.85,     // 85%
-  }
+    responseTime: 1000, // 1초
+    errorRate: 0.05, // 5%
+    memoryUsage: 0.85, // 85%
+  },
 };
 ```
 
@@ -266,7 +276,7 @@ const cacheService = new MultiLevelCacheService(
   cacheConfig
 );
 
-const users = await cacheService.batchGet(userIds, async (keys) => {
+const users = await cacheService.batchGet(userIds, async keys => {
   return await userRepository.findByIds(keys);
 });
 ```
@@ -285,8 +295,12 @@ const users = await cacheService.batchGet(userIds, async (keys) => {
 ```typescript
 const schema = {
   username: { required: true, type: 'string', minLength: 3, maxLength: 20 },
-  email: { required: true, type: 'string', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-  password: { required: true, type: 'string', minLength: 8 }
+  email: {
+    required: true,
+    type: 'string',
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  },
+  password: { required: true, type: 'string', minLength: 8 },
 };
 
 const validation = securityService.validateInput(userData, schema);
@@ -299,8 +313,8 @@ if (!validation.isValid) {
 
 ```typescript
 const rateLimit = securityService.checkRateLimit(userId, {
-  windowMs: 60000,    // 1분
-  maxRequests: 100    // 최대 100개 요청
+  windowMs: 60000, // 1분
+  maxRequests: 100, // 최대 100개 요청
 });
 
 if (!rateLimit.allowed) {
@@ -363,7 +377,7 @@ export class NewFeatureService {
 // 2. Use Case 생성 (워크플로우 오케스트레이션)
 export class NewFeatureUseCase {
   constructor(private readonly newFeatureService: NewFeatureService) {}
-  
+
   async execute(request: any) {
     return await this.newFeatureService.complexBusinessLogic(request);
   }
@@ -438,7 +452,7 @@ interface ServiceConfig {
 
 class Service {
   constructor(config?: ServiceConfig) {}
-  
+
   async methodName(params: any): Promise<any> {
     // 구현
   }

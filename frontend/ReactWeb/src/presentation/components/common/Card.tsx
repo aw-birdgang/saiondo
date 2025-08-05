@@ -8,11 +8,14 @@ const cardVariants = cva(
     variants: {
       variant: {
         default: 'border-border hover:border-primary/20',
-        elevated: 'border-border shadow-lg hover:shadow-xl hover:scale-[1.02] transform-gpu',
+        elevated:
+          'border-border shadow-lg hover:shadow-xl hover:scale-[1.02] transform-gpu',
         outlined: 'border-2 border-border shadow-none hover:border-primary/50',
         ghost: 'border-transparent shadow-none hover:bg-surface/80',
-        interactive: 'border-border hover:border-primary/30 hover:shadow-xl hover:scale-[1.01] transform-gpu cursor-pointer',
-        gradient: 'border-transparent bg-gradient-to-br from-surface to-surface/80 shadow-lg hover:shadow-xl',
+        interactive:
+          'border-border hover:border-primary/30 hover:shadow-xl hover:scale-[1.01] transform-gpu cursor-pointer',
+        gradient:
+          'border-transparent bg-gradient-to-br from-surface to-surface/80 shadow-lg hover:shadow-xl',
       },
       padding: {
         none: '',
@@ -44,7 +47,19 @@ export interface CardProps
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, padding, hover, children, interactive = false, loading = false, ...props }, ref) => (
+  (
+    {
+      className,
+      variant,
+      padding,
+      hover,
+      children,
+      interactive = false,
+      loading = false,
+      ...props
+    },
+    ref
+  ) => (
     <div
       ref={ref}
       className={cn(
@@ -84,7 +99,8 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 
 CardHeader.displayName = 'CardHeader';
 
-export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface CardTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
@@ -116,26 +132,28 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
 
 CardTitle.displayName = 'CardTitle';
 
-export interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface CardDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   muted?: boolean;
 }
 
-export const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionProps>(
-  ({ className, children, muted = true, ...props }, ref) => (
-    <p
-      ref={ref}
-      className={cn(
-        'text-sm transition-colors duration-200',
-        muted ? 'text-txt-secondary' : 'text-txt',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </p>
-  )
-);
+export const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  CardDescriptionProps
+>(({ className, children, muted = true, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn(
+      'text-sm transition-colors duration-200',
+      muted ? 'text-txt-secondary' : 'text-txt',
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </p>
+));
 
 CardDescription.displayName = 'CardDescription';
 
@@ -146,12 +164,9 @@ export interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, children, withPadding = true, ...props }, ref) => (
-    <div 
-      ref={ref} 
-      className={cn(
-        withPadding ? 'pt-0' : 'p-0',
-        className
-      )} 
+    <div
+      ref={ref}
+      className={cn(withPadding ? 'pt-0' : 'p-0', className)}
       {...props}
     >
       {children}
@@ -168,7 +183,10 @@ export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
-  ({ className, children, withDivider = false, align = 'left', ...props }, ref) => {
+  (
+    { className, children, withDivider = false, align = 'left', ...props },
+    ref
+  ) => {
     const alignClasses = {
       left: 'justify-start',
       center: 'justify-center',
@@ -193,4 +211,4 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
   }
 );
 
-CardFooter.displayName = 'CardFooter'; 
+CardFooter.displayName = 'CardFooter';

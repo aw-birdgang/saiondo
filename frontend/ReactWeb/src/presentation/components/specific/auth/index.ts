@@ -1,2 +1,2 @@
 export { default as AuthHeader } from './AuthHeader';
-export { default as AuthContainer } from './AuthContainer'; 
+export { default as AuthContainer } from './AuthContainer';

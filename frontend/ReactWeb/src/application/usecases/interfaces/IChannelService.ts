@@ -10,7 +10,7 @@ import type {
   RemoveMemberRequest,
   RemoveMemberResponse,
   UpdateChannelRequest,
-  UpdateChannelResponse
+  UpdateChannelResponse,
 } from '../../dto/ChannelDto';
 
 // Channel Service 인터페이스 - 비즈니스 로직 담당
@@ -25,8 +25,14 @@ export interface IChannelService {
   getChannelMembers(channelId: string): Promise<string[]>;
   isMember(channelId: string, userId: string): Promise<boolean>;
   updateChannelStatus(channelId: string, status: string): Promise<boolean>;
-  validateChannelRequest(request: CreateChannelRequest | UpdateChannelRequest): string[];
+  validateChannelRequest(
+    request: CreateChannelRequest | UpdateChannelRequest
+  ): string[];
   validateChannelName(name: string): boolean;
-  checkChannelPermissions(userId: string, channelId: string, operation: string): Promise<boolean>;
+  checkChannelPermissions(
+    userId: string,
+    channelId: string,
+    operation: string
+  ): Promise<boolean>;
   processChannelData(channelData: any): any;
-} 
+}

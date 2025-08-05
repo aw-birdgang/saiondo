@@ -3,7 +3,10 @@
  * 인메모리 캐싱을 제공하는 서비스
  */
 export class CacheService {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<
+    string,
+    { data: any; timestamp: number; ttl: number }
+  >();
 
   /**
    * 캐시에 데이터 저장
@@ -12,7 +15,7 @@ export class CacheService {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl
+      ttl,
     });
   }
 
@@ -21,7 +24,7 @@ export class CacheService {
    */
   get<T>(key: string): T | null {
     const item = this.cache.get(key);
-    
+
     if (!item) {
       return null;
     }
@@ -54,7 +57,7 @@ export class CacheService {
    */
   has(key: string): boolean {
     const item = this.cache.get(key);
-    
+
     if (!item) {
       return false;
     }
@@ -80,7 +83,7 @@ export class CacheService {
    */
   cleanup(): void {
     const now = Date.now();
-    
+
     for (const [key, item] of this.cache.entries()) {
       if (now > item.timestamp + item.ttl) {
         this.cache.delete(key);
@@ -94,7 +97,7 @@ export class CacheService {
   getStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
+      keys: Array.from(this.cache.keys()),
     };
   }
-} 
+}

@@ -7,7 +7,7 @@ import type {
   ActivityStats,
   UserActivitySummary,
   ActivityLogRequest,
-  ActivityLogResponse
+  ActivityLogResponse,
 } from '../dto/UserActivityDto';
 
 export class UserActivityService {
@@ -99,11 +99,15 @@ export class UserActivityService {
       .slice(offset, offset + limit);
   }
 
-  async getActivityStats(timeRange: 'day' | 'week' | 'month' = 'day'): Promise<ActivityStats> {
+  async getActivityStats(
+    timeRange: 'day' | 'week' | 'month' = 'day'
+  ): Promise<ActivityStats> {
     const timeRangeMs = this.getTimeRangeMs(timeRange);
     const cutoffTime = new Date(Date.now() - timeRangeMs);
 
-    const recentLogs = this.activityLogs.filter(log => log.timestamp >= cutoffTime);
+    const recentLogs = this.activityLogs.filter(
+      log => log.timestamp >= cutoffTime
+    );
 
     const actionCounts: Record<string, number> = {};
     const userCounts: Record<string, number> = {};
@@ -126,9 +130,11 @@ export class UserActivityService {
     };
   }
 
-  async getUserActivitySummary(userId: string): Promise<UserActivitySummary | null> {
+  async getUserActivitySummary(
+    userId: string
+  ): Promise<UserActivitySummary | null> {
     const userLogs = this.activityLogs.filter(log => log.userId === userId);
-    
+
     if (userLogs.length === 0) {
       return null;
     }
@@ -142,15 +148,16 @@ export class UserActivityService {
     userLogs.forEach(log => {
       actionCounts[log.action] = (actionCounts[log.action] || 0) + 1;
       totalActions++;
-      
+
       // Count specific actions
       if (log.action === 'join_channel') channelsJoined++;
       if (log.action === 'send_message') messagesSent++;
       if (log.action === 'upload_file') filesUploaded++;
     });
 
-    const lastActivity = userLogs
-      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())[0];
+    const lastActivity = userLogs.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    )[0];
 
     return {
       userId,
@@ -187,24 +194,31 @@ export class UserActivityService {
     }
 
     if (filters?.resource) {
-      filteredLogs = filteredLogs.filter(log => log.resource === filters.resource);
+      filteredLogs = filteredLogs.filter(
+        log => log.resource === filters.resource
+      );
     }
 
     if (filters?.startDate) {
-      filteredLogs = filteredLogs.filter(log => log.timestamp >= filters.startDate!);
+      filteredLogs = filteredLogs.filter(
+        log => log.timestamp >= filters.startDate!
+      );
     }
 
     if (filters?.endDate) {
-      filteredLogs = filteredLogs.filter(log => log.timestamp <= filters.endDate!);
+      filteredLogs = filteredLogs.filter(
+        log => log.timestamp <= filters.endDate!
+      );
     }
 
     // Apply search query
     if (query) {
       const lowerQuery = query.toLowerCase();
-      filteredLogs = filteredLogs.filter(log =>
-        log.action.toLowerCase().includes(lowerQuery) ||
-        log.resource.toLowerCase().includes(lowerQuery) ||
-        log.details?.toString().toLowerCase().includes(lowerQuery)
+      filteredLogs = filteredLogs.filter(
+        log =>
+          log.action.toLowerCase().includes(lowerQuery) ||
+          log.resource.toLowerCase().includes(lowerQuery) ||
+          log.details?.toString().toLowerCase().includes(lowerQuery)
       );
     }
 
@@ -233,8 +247,10 @@ export class UserActivityService {
   }
 
   async cleanupOldLogs(daysToKeep: number = 30): Promise<void> {
-    const cutoffTime = new Date(Date.now() - (daysToKeep * 24 * 60 * 60 * 1000));
-    this.activityLogs = this.activityLogs.filter(log => log.timestamp >= cutoffTime);
+    const cutoffTime = new Date(Date.now() - daysToKeep * 24 * 60 * 60 * 1000);
+    this.activityLogs = this.activityLogs.filter(
+      log => log.timestamp >= cutoffTime
+    );
   }
 
   private generateLogId(): string {
@@ -255,7 +271,16 @@ export class UserActivityService {
   }
 
   private convertToCSV(logs: ActivityLog[]): string {
-    const headers = ['ID', 'User ID', 'Action', 'Resource', 'Resource ID', 'Timestamp', 'IP Address', 'User Agent'];
+    const headers = [
+      'ID',
+      'User ID',
+      'Action',
+      'Resource',
+      'Resource ID',
+      'Timestamp',
+      'IP Address',
+      'User Agent',
+    ];
     const rows = logs.map(log => [
       log.id,
       log.userId,
@@ -264,11 +289,11 @@ export class UserActivityService {
       log.resourceId || '',
       log.timestamp.toISOString(),
       log.ipAddress || '',
-      log.userAgent || ''
+      log.userAgent || '',
     ]);
 
     return [headers, ...rows]
       .map(row => row.map(field => `"${field}"`).join(','))
       .join('\n');
   }
-} 
+}

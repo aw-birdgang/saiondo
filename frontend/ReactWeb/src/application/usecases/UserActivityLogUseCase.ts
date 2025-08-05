@@ -4,11 +4,13 @@ import type {
   ActivityLogRequest,
   ActivityLogResponse,
   ActivityStats,
-  UserActivitySummary
+  UserActivitySummary,
 } from '../dto/UserActivityDto';
 import type { IUseCase } from './interfaces/IUseCase';
 
-export class UserActivityLogUseCase implements IUseCase<ActivityLogRequest, ActivityLogResponse> {
+export class UserActivityLogUseCase
+  implements IUseCase<ActivityLogRequest, ActivityLogResponse>
+{
   constructor(private readonly userActivityService: UserActivityService) {}
 
   async execute(request: ActivityLogRequest): Promise<ActivityLogResponse> {
@@ -25,7 +27,12 @@ export class UserActivityLogUseCase implements IUseCase<ActivityLogRequest, Acti
     offset = 0,
     action?: string
   ): Promise<ActivityLog[]> {
-    return await this.userActivityService.getUserActivityLogs(userId, limit, offset, action);
+    return await this.userActivityService.getUserActivityLogs(
+      userId,
+      limit,
+      offset,
+      action
+    );
   }
 
   async getChannelActivityLogs(
@@ -33,14 +40,22 @@ export class UserActivityLogUseCase implements IUseCase<ActivityLogRequest, Acti
     limit = 50,
     offset = 0
   ): Promise<ActivityLog[]> {
-    return await this.userActivityService.getChannelActivityLogs(channelId, limit, offset);
+    return await this.userActivityService.getChannelActivityLogs(
+      channelId,
+      limit,
+      offset
+    );
   }
 
-  async getActivityStats(timeRange: 'day' | 'week' | 'month' = 'day'): Promise<ActivityStats> {
+  async getActivityStats(
+    timeRange: 'day' | 'week' | 'month' = 'day'
+  ): Promise<ActivityStats> {
     return await this.userActivityService.getActivityStats(timeRange);
   }
 
-  async getUserActivitySummary(userId: string): Promise<UserActivitySummary | null> {
+  async getUserActivitySummary(
+    userId: string
+  ): Promise<UserActivitySummary | null> {
     return await this.userActivityService.getUserActivitySummary(userId);
   }
 
@@ -56,7 +71,12 @@ export class UserActivityLogUseCase implements IUseCase<ActivityLogRequest, Acti
     limit = 50,
     offset = 0
   ): Promise<ActivityLog[]> {
-    return await this.userActivityService.searchActivityLogs(query, filters, limit, offset);
+    return await this.userActivityService.searchActivityLogs(
+      query,
+      filters,
+      limit,
+      offset
+    );
   }
 
   async exportActivityLogs(
@@ -75,4 +95,4 @@ export class UserActivityLogUseCase implements IUseCase<ActivityLogRequest, Acti
   async cleanupOldLogs(daysToKeep: number = 30): Promise<void> {
     return await this.userActivityService.cleanupOldLogs(daysToKeep);
   }
-} 
+}

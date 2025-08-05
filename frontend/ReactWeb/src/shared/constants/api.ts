@@ -4,17 +4,17 @@ export const API_ENDPOINTS = {
   REGISTER: '/auth/register',
   LOGOUT: '/auth/logout',
   REFRESH_TOKEN: '/auth/refresh',
-  
+
   // Users
   USERS: '/users',
   USER_PROFILE: '/users/me',
   USER_SEARCH: '/users/search',
-  
+
   // Channels
   CHANNELS: '/channels',
   CHANNEL_MEMBERS: (channelId: string) => `/channels/${channelId}/members`,
   CHANNEL_MESSAGES: (channelId: string) => `/channels/${channelId}/messages`,
-  
+
   // Messages
   MESSAGES: '/messages',
   MESSAGE_REACTIONS: (messageId: string) => `/messages/${messageId}/reactions`,
@@ -37,4 +37,4 @@ export const HTTP_STATUS = {
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
-} as const; 
+} as const;

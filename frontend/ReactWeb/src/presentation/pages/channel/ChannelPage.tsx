@@ -4,7 +4,7 @@ import { PageLayout } from '../../components/specific';
 import {
   ChannelHeader,
   ChannelStats,
-  ChannelList
+  ChannelList,
 } from '../../components/specific';
 import { ChannelContainer } from '../../components/specific/channel';
 import { useChannelData } from './hooks/useChannelData';
@@ -21,7 +21,7 @@ const ChannelTab: React.FC = () => {
     handleChannelClick,
     handleCreateChannel,
     handleDeleteChannel,
-    handleSearchChannels
+    handleSearchChannels,
   } = useChannelData();
 
   if (isLoading) {
@@ -30,8 +30,8 @@ const ChannelTab: React.FC = () => {
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">오류가 발생했습니다: {error}</p>
+      <div className='text-center py-8'>
+        <p className='text-red-500'>오류가 발생했습니다: {error}</p>
       </div>
     );
   }

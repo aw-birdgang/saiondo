@@ -13,4 +13,4 @@ export interface CreateChannelRequest {
 
 export interface CreateChannelResponse {
   channel: any; // Channel DTO
-} 
+}

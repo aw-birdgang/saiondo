@@ -50,7 +50,7 @@ export const useProfileData = (userId?: string): UseProfileDataReturn => {
     unfollowUser,
     fetchFollowers,
     fetchFollowing,
-    fetchPosts
+    fetchPosts,
   } = useProfileStore();
 
   // 로컬 상태
@@ -105,7 +105,7 @@ export const useProfileData = (userId?: string): UseProfileDataReturn => {
         location: profile.location,
         website: profile.website,
         socialLinks: profile.socialLinks,
-        preferences: profile.preferences
+        preferences: profile.preferences,
       });
       setIsEditing(false);
     } catch (error) {
@@ -175,6 +175,6 @@ export const useProfileData = (userId?: string): UseProfileDataReturn => {
     handleFollow,
     handleUnfollow,
     handleTabChange,
-    handleRefresh
+    handleRefresh,
   };
-}; 
+};

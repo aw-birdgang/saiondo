@@ -55,4 +55,4 @@ export const ASSISTANT_CATEGORIES: AssistantCategory[] = [
   { id: 'communication', name: '소통', icon: '💬' },
   { id: 'conflict', name: '갈등', icon: '⚡' },
   { id: 'planning', name: '계획', icon: '🎯' },
-]; 
+];

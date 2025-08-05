@@ -17,7 +17,7 @@ const ChannelInvitationPage: React.FC = () => {
   const container = getContainer();
 
   // Invite Use Case 가져오기
-  const [inviteUseCase] = useState<IInviteUseCase>(() => 
+  const [inviteUseCase] = useState<IInviteUseCase>(() =>
     container.get<IInviteUseCase>(DI_TOKENS.INVITE_USE_CASE)
   );
 
@@ -29,7 +29,7 @@ const ChannelInvitationPage: React.FC = () => {
     respondToInvitation,
     cancelInvitation,
     clearError,
-    reset
+    reset,
   } = useInvite(inviteUseCase, user?.id);
 
   // 에러 처리
@@ -41,9 +41,9 @@ const ChannelInvitationPage: React.FC = () => {
   }, [state.error, toast, clearError]);
 
   return (
-    <Container variant="page">
+    <Container variant='page'>
       {/* Header */}
-      <Container variant="header">
+      <Container variant='header'>
         <PageHeader
           title={t('channel_invitations') || '채널 초대장'}
           showBackButton
@@ -56,11 +56,11 @@ const ChannelInvitationPage: React.FC = () => {
       </Container>
 
       {/* Content */}
-      <Container variant="content">
+      <Container variant='content'>
         {/* 통계 */}
         {state.invitations.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-txt mb-4">초대장 통계</h3>
+          <div className='mb-6'>
+            <h3 className='text-lg font-medium text-txt mb-4'>초대장 통계</h3>
             <InviteStats stats={inviteStats} />
           </div>
         )}
@@ -69,8 +69,8 @@ const ChannelInvitationPage: React.FC = () => {
         <InvitationList
           invitations={state.invitations}
           isLoading={state.isLoading}
-          onAccept={(invitationId) => respondToInvitation(invitationId, true)}
-          onReject={(invitationId) => respondToInvitation(invitationId, false)}
+          onAccept={invitationId => respondToInvitation(invitationId, true)}
+          onReject={invitationId => respondToInvitation(invitationId, false)}
           onCancel={cancelInvitation}
         />
       </Container>

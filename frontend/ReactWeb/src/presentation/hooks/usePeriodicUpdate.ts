@@ -11,10 +11,7 @@ export const usePeriodicUpdate = (
   dependencies: any[] = [],
   options: UsePeriodicUpdateOptions = {}
 ) => {
-  const {
-    enabled = true,
-    onCleanup
-  } = options;
+  const { enabled = true, onCleanup } = options;
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const callbackRef = useRef(callback);
@@ -69,4 +66,4 @@ export const usePeriodicUpdate = (
     stopInterval,
     isRunning: !!intervalRef.current,
   };
-}; 
+};

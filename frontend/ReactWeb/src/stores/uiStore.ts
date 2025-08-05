@@ -27,7 +27,9 @@ export interface UIState {
   // Actions
   setSidebarOpen: (open: boolean) => void;
   setMobileMenuOpen: (open: boolean) => void;
-  addNotification: (notification: Omit<Notification, 'id' | 'createdAt'>) => void;
+  addNotification: (
+    notification: Omit<Notification, 'id' | 'createdAt'>
+  ) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
   openModal: (type: string, data?: unknown) => void;
@@ -47,10 +49,10 @@ export const useUIStore = create<UIState>()((set, get) => ({
   errors: {},
 
   // Actions
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  setMobileMenuOpen: (open) => set({ mobileMenuOpen: open }),
+  setSidebarOpen: open => set({ sidebarOpen: open }),
+  setMobileMenuOpen: open => set({ mobileMenuOpen: open }),
 
-  addNotification: (notification) => {
+  addNotification: notification => {
     const id = Math.random().toString(36).substr(2, 9);
     const newNotification: Notification = {
       ...notification,
@@ -58,7 +60,7 @@ export const useUIStore = create<UIState>()((set, get) => ({
       createdAt: new Date(),
     };
 
-    set((state) => ({
+    set(state => ({
       notifications: [...state.notifications, newNotification],
     }));
 
@@ -70,47 +72,52 @@ export const useUIStore = create<UIState>()((set, get) => ({
     }
   },
 
-  removeNotification: (id) => set((state) => ({
-    notifications: state.notifications.filter((n) => n.id !== id),
-  })),
+  removeNotification: id =>
+    set(state => ({
+      notifications: state.notifications.filter(n => n.id !== id),
+    })),
 
   clearNotifications: () => set({ notifications: [] }),
 
-  openModal: (type, data) => set((state) => ({
-    modals: {
-      ...state.modals,
-      [type]: {
-        isOpen: true,
-        type,
-        data,
+  openModal: (type, data) =>
+    set(state => ({
+      modals: {
+        ...state.modals,
+        [type]: {
+          isOpen: true,
+          type,
+          data,
+        },
       },
-    },
-  })),
+    })),
 
-  closeModal: (type) => set((state) => ({
-    modals: {
-      ...state.modals,
-      [type]: {
-        isOpen: false,
-        type: null,
-        data: null,
+  closeModal: type =>
+    set(state => ({
+      modals: {
+        ...state.modals,
+        [type]: {
+          isOpen: false,
+          type: null,
+          data: null,
+        },
       },
-    },
-  })),
+    })),
 
-  setLoading: (key, loading) => set((state) => ({
-    loadingStates: {
-      ...state.loadingStates,
-      [key]: loading,
-    },
-  })),
+  setLoading: (key, loading) =>
+    set(state => ({
+      loadingStates: {
+        ...state.loadingStates,
+        [key]: loading,
+      },
+    })),
 
-  setError: (key, error) => set((state) => ({
-    errors: {
-      ...state.errors,
-      [key]: error,
-    },
-  })),
+  setError: (key, error) =>
+    set(state => ({
+      errors: {
+        ...state.errors,
+        [key]: error,
+      },
+    })),
 
   clearErrors: () => set({ errors: {} }),
-})); 
+}));

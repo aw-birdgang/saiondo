@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { 
-  CHART_DATA, 
-  BAR_DATA, 
-  ACTIVITIES, 
-  SYSTEM_STATUS, 
-  NOTIFICATIONS 
+import {
+  CHART_DATA,
+  BAR_DATA,
+  ACTIVITIES,
+  SYSTEM_STATUS,
+  NOTIFICATIONS,
 } from '../constants/homeData';
-import { transformStatsData, transformQuickActions } from '../utils/dataTransformer';
+import {
+  transformStatsData,
+  transformQuickActions,
+} from '../utils/dataTransformer';
 
 export const useHomeData = () => {
   const [statsData, setStatsData] = useState(transformStatsData());
@@ -22,11 +25,10 @@ export const useHomeData = () => {
     try {
       // 실제로는 API 호출을 여기서 수행
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // 데이터 업데이트 로직
       setStatsData(transformStatsData());
       setQuickActions(transformQuickActions());
-      
     } catch (error) {
       console.error('데이터 새로고침 실패:', error);
     } finally {
@@ -44,20 +46,20 @@ export const useHomeData = () => {
     // 차트 데이터
     chartData: CHART_DATA,
     barData: BAR_DATA,
-    
+
     // 동적 데이터
     statsData,
     quickActions,
     activities,
     systemStatus,
     notifications,
-    
+
     // 상태
     isLoading,
-    
+
     // 액션
     refreshData,
-    
+
     // 데이터 업데이트 함수들
     updateStatsData: setStatsData,
     updateQuickActions: setQuickActions,
@@ -65,4 +67,4 @@ export const useHomeData = () => {
     updateSystemStatus: setSystemStatus,
     updateNotifications: setNotifications,
   };
-}; 
+};

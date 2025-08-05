@@ -1,6 +1,6 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Header } from "../common";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Header } from '../common';
 
 interface ChatHeaderProps {
   channelId: string;
@@ -8,25 +8,25 @@ interface ChatHeaderProps {
   className?: string;
 }
 
-const ChatHeader: React.FC<ChatHeaderProps> = ({ 
-  channelId, 
-  backRoute, 
-  className = "" 
+const ChatHeader: React.FC<ChatHeaderProps> = ({
+  channelId,
+  backRoute,
+  className = '',
 }) => {
   const { t } = useTranslation();
 
   return (
     <Header
-      title={t("chat.title") || "채팅"}
+      title={t('chat.title') || '채팅'}
       showBackButton
       backRoute={backRoute}
       className={`max-w-6xl mx-auto ${className}`}
     >
-      <div className="text-sm text-txt-secondary font-medium">
+      <div className='text-sm text-txt-secondary font-medium'>
         Channel: {channelId}
       </div>
     </Header>
   );
 };
 
-export default ChatHeader; 
+export default ChatHeader;

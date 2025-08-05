@@ -122,4 +122,4 @@ export interface GetAlertsResponse {
   alerts: Alert[];
   total: number;
   hasMore: boolean;
-} 
+}

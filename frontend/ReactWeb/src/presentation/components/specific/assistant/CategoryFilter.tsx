@@ -21,7 +21,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
 }) => {
   return (
     <div className={`flex space-x-2 overflow-x-auto pb-2 ${className}`}>
-      {categories.map((category) => (
+      {categories.map(category => (
         <button
           key={category.id}
           onClick={() => onCategoryChange(category.id)}
@@ -39,4 +39,4 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   );
 };
 
-export default CategoryFilter; 
+export default CategoryFilter;

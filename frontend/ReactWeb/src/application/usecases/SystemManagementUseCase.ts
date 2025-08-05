@@ -1,13 +1,16 @@
-import type {SystemHealthStatus, SystemMetrics} from '../services/SystemHealthService';
-import {SystemHealthService} from '../services/SystemHealthService';
-import type {PerformanceReport} from '../services/PerformanceMonitoringService';
-import {PerformanceMonitoringService} from '../services/PerformanceMonitoringService';
-import {ErrorHandlingService} from '../services/ErrorHandlingService';
-import type {SecurityReport} from '../services/SecurityService';
-import {SecurityService} from '../services/SecurityService';
-import {MultiLevelCacheService} from '../services/MultiLevelCacheService';
-import type {AnalyticsReport} from '../services/AnalyticsService';
-import {AnalyticsService} from '../services/AnalyticsService';
+import type {
+  SystemHealthStatus,
+  SystemMetrics,
+} from '../services/SystemHealthService';
+import { SystemHealthService } from '../services/SystemHealthService';
+import type { PerformanceReport } from '../services/PerformanceMonitoringService';
+import { PerformanceMonitoringService } from '../services/PerformanceMonitoringService';
+import { ErrorHandlingService } from '../services/ErrorHandlingService';
+import type { SecurityReport } from '../services/SecurityService';
+import { SecurityService } from '../services/SecurityService';
+import { MultiLevelCacheService } from '../services/MultiLevelCacheService';
+import type { AnalyticsReport } from '../services/AnalyticsService';
+import { AnalyticsService } from '../services/AnalyticsService';
 
 export interface SystemOverview {
   health: SystemHealthStatus;
@@ -93,28 +96,23 @@ export class SystemManagementUseCase {
    */
   async getSystemOverview(): Promise<SystemOverview> {
     try {
-      const [
-        health,
-        metrics,
-        performance,
-        security,
-        analytics
-      ] = await Promise.all([
-        this.systemHealthService.getSystemHealth(),
-        this.systemHealthService.getSystemMetrics(),
-        this.performanceService.generateReport({
-          start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
-          end: new Date(),
-        }),
-        this.securityService.generateSecurityReport({
-          start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
-          end: new Date(),
-        }),
-        this.analyticsService.generateAnalyticsReport({
-          start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
-          end: new Date(),
-        }),
-      ]);
+      const [health, metrics, performance, security, analytics] =
+        await Promise.all([
+          this.systemHealthService.getSystemHealth(),
+          this.systemHealthService.getSystemMetrics(),
+          this.performanceService.generateReport({
+            start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
+            end: new Date(),
+          }),
+          this.securityService.generateSecurityReport({
+            start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
+            end: new Date(),
+          }),
+          this.analyticsService.generateAnalyticsReport({
+            start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
+            end: new Date(),
+          }),
+        ]);
 
       return {
         health,
@@ -125,7 +123,9 @@ export class SystemManagementUseCase {
         lastUpdated: new Date(),
       };
     } catch (error) {
-      this.errorService.logError(error, { context: 'SystemManagementUseCase.getSystemOverview' });
+      this.errorService.logError(error, {
+        context: 'SystemManagementUseCase.getSystemOverview',
+      });
       throw error;
     }
   }
@@ -133,7 +133,9 @@ export class SystemManagementUseCase {
   /**
    * 시스템 최적화 설정
    */
-  async optimizeSystem(request: SystemOptimizationRequest): Promise<SystemOptimizationResponse> {
+  async optimizeSystem(
+    request: SystemOptimizationRequest
+  ): Promise<SystemOptimizationResponse> {
     const changes: string[] = [];
     const warnings: string[] = [];
     const recommendations: string[] = [];
@@ -174,11 +176,15 @@ export class SystemManagementUseCase {
       // 권장사항 생성
       const healthStatus = await this.systemHealthService.getSystemHealth();
       if (healthStatus.overall === 'degraded') {
-        recommendations.push('시스템 성능이 저하되고 있습니다. 추가 최적화가 필요합니다.');
+        recommendations.push(
+          '시스템 성능이 저하되고 있습니다. 추가 최적화가 필요합니다.'
+        );
       }
 
       if (healthStatus.components.security === 'unhealthy') {
-        recommendations.push('보안 위반이 감지되었습니다. 보안 설정을 강화하세요.');
+        recommendations.push(
+          '보안 위반이 감지되었습니다. 보안 설정을 강화하세요.'
+        );
       }
 
       return {
@@ -188,13 +194,17 @@ export class SystemManagementUseCase {
         recommendations,
       };
     } catch (error) {
-      this.errorService.logError(error, { context: 'SystemManagementUseCase.optimizeSystem' });
+      this.errorService.logError(error, {
+        context: 'SystemManagementUseCase.optimizeSystem',
+      });
 
       return {
         success: false,
         changes: [],
         warnings: [error instanceof Error ? error.message : 'Unknown error'],
-        recommendations: ['시스템 최적화 중 오류가 발생했습니다. 다시 시도해주세요.'],
+        recommendations: [
+          '시스템 최적화 중 오류가 발생했습니다. 다시 시도해주세요.',
+        ],
       };
     }
   }
@@ -202,7 +212,9 @@ export class SystemManagementUseCase {
   /**
    * 시스템 유지보수 작업
    */
-  async performMaintenance(request: MaintenanceRequest): Promise<MaintenanceResponse> {
+  async performMaintenance(
+    request: MaintenanceRequest
+  ): Promise<MaintenanceResponse> {
     const startTime = Date.now();
 
     try {
@@ -223,7 +235,9 @@ export class SystemManagementUseCase {
           throw new Error(`Unknown maintenance type: ${request.type}`);
       }
     } catch (error) {
-      this.errorService.logError(error, { context: 'SystemManagementUseCase.performMaintenance' });
+      this.errorService.logError(error, {
+        context: 'SystemManagementUseCase.performMaintenance',
+      });
 
       return {
         success: false,
@@ -245,22 +259,27 @@ export class SystemManagementUseCase {
     performanceAlerts: any[];
   }> {
     try {
-      const [health, realTimeActivity, recentErrors, securityPatterns] = await Promise.all([
-        this.systemHealthService.getSystemHealth(),
-        this.analyticsService.getRealTimeActivity(),
-        this.errorService.getErrorLogs({}, 10),
-        this.securityService.analyzeSecurityPatterns(),
-      ]);
+      const [health, realTimeActivity, recentErrors, securityPatterns] =
+        await Promise.all([
+          this.systemHealthService.getSystemHealth(),
+          this.analyticsService.getRealTimeActivity(),
+          this.errorService.getErrorLogs({}, 10),
+          this.securityService.analyzeSecurityPatterns(),
+        ]);
 
       return {
         health,
         activeUsers: realTimeActivity.activeUsers,
         recentErrors: recentErrors.slice(0, 5),
         securityAlerts: securityPatterns.mostCommonViolations.slice(0, 5),
-        performanceAlerts: health.alerts.filter(alert => alert.component === 'performance'),
+        performanceAlerts: health.alerts.filter(
+          alert => alert.component === 'performance'
+        ),
       };
     } catch (error) {
-      this.errorService.logError(error, { context: 'SystemManagementUseCase.getRealTimeMonitoring' });
+      this.errorService.logError(error, {
+        context: 'SystemManagementUseCase.getRealTimeMonitoring',
+      });
       throw error;
     }
   }
@@ -279,11 +298,12 @@ export class SystemManagementUseCase {
     estimatedResolutionTime: string;
   }> {
     try {
-      const [health, performanceRecommendations, securityRecommendations] = await Promise.all([
-        this.systemHealthService.getSystemHealth(),
-        this.performanceService.generateOptimizationRecommendations(),
-        this.securityService.generateSecurityRecommendations(),
-      ]);
+      const [health, performanceRecommendations, securityRecommendations] =
+        await Promise.all([
+          this.systemHealthService.getSystemHealth(),
+          this.performanceService.generateOptimizationRecommendations(),
+          this.securityService.generateSecurityRecommendations(),
+        ]);
 
       const issues: Array<{
         severity: 'low' | 'medium' | 'high' | 'critical';
@@ -337,8 +357,12 @@ export class SystemManagementUseCase {
       ];
 
       // 해결 시간 추정
-      const criticalIssues = issues.filter(issue => issue.severity === 'critical').length;
-      const highIssues = issues.filter(issue => issue.severity === 'high').length;
+      const criticalIssues = issues.filter(
+        issue => issue.severity === 'critical'
+      ).length;
+      const highIssues = issues.filter(
+        issue => issue.severity === 'high'
+      ).length;
 
       let estimatedTime = '1-2시간';
       if (criticalIssues > 0) {
@@ -355,7 +379,9 @@ export class SystemManagementUseCase {
         estimatedResolutionTime: estimatedTime,
       };
     } catch (error) {
-      this.errorService.logError(error, { context: 'SystemManagementUseCase.diagnoseSystem' });
+      this.errorService.logError(error, {
+        context: 'SystemManagementUseCase.diagnoseSystem',
+      });
       throw error;
     }
   }
@@ -380,7 +406,9 @@ export class SystemManagementUseCase {
         duration: Date.now() - startTime,
       };
     } catch (error) {
-      throw new Error(`Backup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Backup failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -411,14 +439,18 @@ export class SystemManagementUseCase {
         duration: Date.now() - startTime,
       };
     } catch (error) {
-      throw new Error(`Cleanup failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Cleanup failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * 시스템 최적화 수행
    */
-  private async performOptimization(options?: any): Promise<MaintenanceResponse> {
+  private async performOptimization(
+    options?: any
+  ): Promise<MaintenanceResponse> {
     const startTime = Date.now();
 
     try {
@@ -430,8 +462,11 @@ export class SystemManagementUseCase {
       }
 
       // 성능 최적화 권장사항 적용
-      const recommendations = await this.systemHealthService.getOptimizationRecommendations();
-      optimizationTasks.push(`${recommendations.length} optimization recommendations applied`);
+      const recommendations =
+        await this.systemHealthService.getOptimizationRecommendations();
+      optimizationTasks.push(
+        `${recommendations.length} optimization recommendations applied`
+      );
 
       return {
         success: true,
@@ -443,7 +478,9 @@ export class SystemManagementUseCase {
         duration: Date.now() - startTime,
       };
     } catch (error) {
-      throw new Error(`Optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Optimization failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -479,7 +516,9 @@ export class SystemManagementUseCase {
         duration: Date.now() - startTime,
       };
     } catch (error) {
-      throw new Error(`Restart preparation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Restart preparation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 }

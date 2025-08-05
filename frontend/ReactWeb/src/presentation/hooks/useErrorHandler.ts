@@ -11,21 +11,17 @@ export const useErrorHandler = (
   error: string | null,
   options: UseErrorHandlerOptions = {}
 ) => {
-  const {
-    showToast = true,
-    toastDuration = 4000,
-    onError
-  } = options;
+  const { showToast = true, toastDuration = 4000, onError } = options;
 
   useEffect(() => {
     if (error) {
       if (showToast) {
         toast.error(error, { duration: toastDuration });
       }
-      
+
       if (onError) {
         onError(error);
       }
     }
   }, [error, showToast, toastDuration, onError]);
-}; 
+};

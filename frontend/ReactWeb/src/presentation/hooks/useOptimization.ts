@@ -39,12 +39,15 @@ export const useThrottle = <T>(value: T, delay: number): T => {
   const lastRun = useRef<number>(Date.now());
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (Date.now() - lastRun.current >= delay) {
-        setThrottledValue(value);
-        lastRun.current = Date.now();
-      }
-    }, delay - (Date.now() - lastRun.current));
+    const handler = setTimeout(
+      () => {
+        if (Date.now() - lastRun.current >= delay) {
+          setThrottledValue(value);
+          lastRun.current = Date.now();
+        }
+      },
+      delay - (Date.now() - lastRun.current)
+    );
 
     return () => {
       clearTimeout(handler);
@@ -57,11 +60,11 @@ export const useThrottle = <T>(value: T, delay: number): T => {
 // 이전 값 추적 훅
 export const usePrevious = <T>(value: T): T | undefined => {
   const ref = useRef<T | undefined>(undefined);
-  
+
   useEffect(() => {
     ref.current = value;
   }, [value]);
-  
+
   return ref.current;
 };
 
@@ -82,7 +85,8 @@ export const useLocalStorage = <T>(
 
   const setValue = (value: T | ((val: T) => T)) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
@@ -110,7 +114,8 @@ export const useSessionStorage = <T>(
 
   const setValue = (value: T | ((val: T) => T)) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
@@ -254,7 +259,7 @@ export const usePerformanceMeasure = (name: string) => {
   const end = useCallback(() => {
     if (startTime.current) {
       const duration = performance.now() - startTime.current;
-      console.log(`${name} took ${duration.toFixed(2)}ms`);
+      // console.log(`${name} took ${duration.toFixed(2)}ms`);
       startTime.current = 0;
     }
   }, [name]);
@@ -270,10 +275,7 @@ export const useCleanup = (cleanup: () => void) => {
 };
 
 // 조건부 렌더링 최적화 훅
-export const useConditionalRender = (
-  condition: boolean,
-  delay: number = 0
-) => {
+export const useConditionalRender = (condition: boolean, delay: number = 0) => {
   const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
@@ -290,4 +292,4 @@ export const useConditionalRender = (
   }, [condition, delay]);
 
   return shouldRender;
-}; 
+};

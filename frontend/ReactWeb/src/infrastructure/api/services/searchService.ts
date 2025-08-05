@@ -23,7 +23,9 @@ export interface SearchRequest {
 
 export const searchService = {
   // 통합 검색
-  search: async (request: SearchRequest): Promise<{
+  search: async (
+    request: SearchRequest
+  ): Promise<{
     results: SearchResult[];
     total: number;
     page: number;
@@ -38,40 +40,58 @@ export const searchService = {
   },
 
   // 메시지 검색
-  searchMessages: async (query: string, params?: {
-    channelId?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ results: SearchResult[]; total: number }> => {
-    return await apiClient.get<{ results: SearchResult[]; total: number }>('/search/messages', {
-      params: { query, ...params }
-    });
+  searchMessages: async (
+    query: string,
+    params?: {
+      channelId?: string;
+      page?: number;
+      limit?: number;
+    }
+  ): Promise<{ results: SearchResult[]; total: number }> => {
+    return await apiClient.get<{ results: SearchResult[]; total: number }>(
+      '/search/messages',
+      {
+        params: { query, ...params },
+      }
+    );
   },
 
   // 채널 검색
-  searchChannels: async (query: string, params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<{ results: SearchResult[]; total: number }> => {
-    return await apiClient.get<{ results: SearchResult[]; total: number }>('/search/channels', {
-      params: { query, ...params }
-    });
+  searchChannels: async (
+    query: string,
+    params?: {
+      page?: number;
+      limit?: number;
+    }
+  ): Promise<{ results: SearchResult[]; total: number }> => {
+    return await apiClient.get<{ results: SearchResult[]; total: number }>(
+      '/search/channels',
+      {
+        params: { query, ...params },
+      }
+    );
   },
 
   // 사용자 검색
-  searchUsers: async (query: string, params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<{ results: SearchResult[]; total: number }> => {
-    return await apiClient.get<{ results: SearchResult[]; total: number }>('/search/users', {
-      params: { query, ...params }
-    });
+  searchUsers: async (
+    query: string,
+    params?: {
+      page?: number;
+      limit?: number;
+    }
+  ): Promise<{ results: SearchResult[]; total: number }> => {
+    return await apiClient.get<{ results: SearchResult[]; total: number }>(
+      '/search/users',
+      {
+        params: { query, ...params },
+      }
+    );
   },
 
   // 검색 제안
   getSuggestions: async (query: string): Promise<string[]> => {
     return await apiClient.get<string[]>('/search/suggestions', {
-      params: { query }
+      params: { query },
     });
   },
 
@@ -88,5 +108,5 @@ export const searchService = {
   // 검색 기록 삭제
   clearSearchHistory: async (): Promise<{ success: boolean }> => {
     return await apiClient.delete<{ success: boolean }>('/search/history');
-  }
-}; 
+  },
+};

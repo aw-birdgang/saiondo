@@ -58,4 +58,4 @@ export interface ChannelListResponse {
   page: number;
   limit: number;
   success: boolean;
-} 
+}

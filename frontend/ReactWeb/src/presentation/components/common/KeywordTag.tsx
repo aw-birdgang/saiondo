@@ -17,13 +17,18 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
   onRemove,
   className = '',
 }) => {
-  const getVariantClasses = (variant: 'default' | 'primary' | 'success' | 'warning' | 'error') => {
+  const getVariantClasses = (
+    variant: 'default' | 'primary' | 'success' | 'warning' | 'error'
+  ) => {
     const variantClasses = {
       default: 'bg-secondary text-txt-secondary border border-border',
       primary: 'bg-primary/10 text-primary border border-primary/20',
-      success: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800',
-      warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800',
-      error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-200 dark:border-red-800',
+      success:
+        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border border-green-200 dark:border-green-800',
+      warning:
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-800',
+      error:
+        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border border-red-200 dark:border-red-800',
     };
     return variantClasses[variant];
   };
@@ -50,11 +55,21 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
       {removable && (
         <button
           onClick={onRemove}
-          className="ml-2 hover:bg-black/10 rounded-full p-1 transition-colors duration-200"
-          type="button"
+          className='ml-2 hover:bg-black/10 rounded-full p-1 transition-colors duration-200'
+          type='button'
         >
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className='w-3 h-3'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M6 18L18 6M6 6l12 12'
+            />
           </svg>
         </button>
       )}
@@ -62,4 +77,4 @@ const KeywordTag: React.FC<KeywordTagProps> = ({
   );
 };
 
-export default KeywordTag; 
+export default KeywordTag;

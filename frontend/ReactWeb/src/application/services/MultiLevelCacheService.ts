@@ -6,7 +6,7 @@ import type {
   MultiLevelCacheEntry,
   CacheStats,
   CacheConfig,
-  CacheLifecycle
+  CacheLifecycle,
 } from '../dto/MultiLevelCacheDto';
 
 export class MultiLevelCacheService {
@@ -75,7 +75,7 @@ export class MultiLevelCacheService {
 
     // 캐시 미스
     this.updateMissStats();
-    
+
     // 데이터 페처가 있으면 새로 가져와서 캐시에 저장
     if (fetcher) {
       try {
@@ -96,14 +96,14 @@ export class MultiLevelCacheService {
    */
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     const compressedValue = this.compress(value);
-          const entry: MultiLevelCacheEntry<T> = {
-        key,
-        value: await compressedValue,
-        timestamp: Date.now(),
-        ttl: ttl || this.config.defaultTTL || 300000, // 5분 기본
-        accessCount: 0,
-        lastAccessed: Date.now(),
-      };
+    const entry: MultiLevelCacheEntry<T> = {
+      key,
+      value: await compressedValue,
+      timestamp: Date.now(),
+      ttl: ttl || this.config.defaultTTL || 300000, // 5분 기본
+      accessCount: 0,
+      lastAccessed: Date.now(),
+    };
 
     // 모든 레벨에 저장 (계층화)
     for (const level of this.getSortedLevels()) {
@@ -114,7 +114,12 @@ export class MultiLevelCacheService {
   /**
    * 특정 레벨에만 데이터 저장
    */
-  async setInLevel<T>(levelName: string, key: string, value: T, ttl?: number): Promise<void> {
+  async setInLevel<T>(
+    levelName: string,
+    key: string,
+    value: T,
+    ttl?: number
+  ): Promise<void> {
     const cache = this.caches.get(levelName);
     if (!cache) return;
 
@@ -177,14 +182,23 @@ export class MultiLevelCacheService {
    */
   getStats(): CacheStats {
     // 전체 통계 계산
-    const totalHits = Object.values(this.stats.levels).reduce((sum, level) => sum + level.hits, 0);
-    const totalMisses = Object.values(this.stats.levels).reduce((sum, level) => sum + level.misses, 0);
+    const totalHits = Object.values(this.stats.levels).reduce(
+      (sum, level) => sum + level.hits,
+      0
+    );
+    const totalMisses = Object.values(this.stats.levels).reduce(
+      (sum, level) => sum + level.misses,
+      0
+    );
     const total = totalHits + totalMisses;
 
     this.stats.totalHits = totalHits;
     this.stats.totalMisses = totalMisses;
     this.stats.hitRate = total > 0 ? totalHits / total : 0;
-    this.stats.totalSize = Object.values(this.stats.levels).reduce((sum, level) => sum + level.size, 0);
+    this.stats.totalSize = Object.values(this.stats.levels).reduce(
+      (sum, level) => sum + level.size,
+      0
+    );
 
     // 레벨별 히트율 계산
     Object.keys(this.stats.levels).forEach(levelName => {
@@ -199,8 +213,11 @@ export class MultiLevelCacheService {
   /**
    * 캐시 워밍업
    */
-  async warmup(keys: string[], fetcher: (key: string) => Promise<any>): Promise<void> {
-    const promises = keys.map(async (key) => {
+  async warmup(
+    keys: string[],
+    fetcher: (key: string) => Promise<any>
+  ): Promise<void> {
+    const promises = keys.map(async key => {
       try {
         const value = await fetcher(key);
         await this.set(key, value);
@@ -240,7 +257,10 @@ export class MultiLevelCacheService {
   /**
    * 배치 작업
    */
-  async batchGet<T>(keys: string[], fetcher?: (keys: string[]) => Promise<Map<string, T>>): Promise<Map<string, T>> {
+  async batchGet<T>(
+    keys: string[],
+    fetcher?: (keys: string[]) => Promise<Map<string, T>>
+  ): Promise<Map<string, T>> {
     const result = new Map<string, T>();
     const missingKeys: string[] = [];
 
@@ -273,8 +293,12 @@ export class MultiLevelCacheService {
   /**
    * 배치 저장
    */
-  async batchSet<T>(entries: Array<{ key: string; value: T; ttl?: number }>): Promise<void> {
-    const promises = entries.map(({ key, value, ttl }) => this.set(key, value, ttl));
+  async batchSet<T>(
+    entries: Array<{ key: string; value: T; ttl?: number }>
+  ): Promise<void> {
+    const promises = entries.map(({ key, value, ttl }) =>
+      this.set(key, value, ttl)
+    );
     await Promise.all(promises);
   }
 
@@ -282,9 +306,18 @@ export class MultiLevelCacheService {
    * 캐시 수명 주기 관리
    */
   async getCacheLifecycle(): Promise<CacheLifecycle> {
-    const oldestEntries: Array<{ key: string; age: number; level: string }> = [];
-    const mostAccessed: Array<{ key: string; accessCount: number; level: string }> = [];
-    const expiringSoon: Array<{ key: string; expiresIn: number; level: string }> = [];
+    const oldestEntries: Array<{ key: string; age: number; level: string }> =
+      [];
+    const mostAccessed: Array<{
+      key: string;
+      accessCount: number;
+      level: string;
+    }> = [];
+    const expiringSoon: Array<{
+      key: string;
+      expiresIn: number;
+      level: string;
+    }> = [];
 
     const now = Date.now();
 
@@ -294,9 +327,14 @@ export class MultiLevelCacheService {
         const expiresIn = entry.timestamp + entry.ttl - now;
 
         oldestEntries.push({ key, age, level: levelName });
-        mostAccessed.push({ key, accessCount: entry.accessCount, level: levelName });
-        
-        if (expiresIn > 0 && expiresIn < 60000) { // 1분 이내 만료
+        mostAccessed.push({
+          key,
+          accessCount: entry.accessCount,
+          level: levelName,
+        });
+
+        if (expiresIn > 0 && expiresIn < 60000) {
+          // 1분 이내 만료
           expiringSoon.push({ key, expiresIn, level: levelName });
         }
       }
@@ -322,7 +360,11 @@ export class MultiLevelCacheService {
     return Date.now() > entry.timestamp + entry.ttl;
   }
 
-  private updateAccessStats(entry: MultiLevelCacheEntry, levelName: string, isHit: boolean): void {
+  private updateAccessStats(
+    entry: MultiLevelCacheEntry,
+    levelName: string,
+    isHit: boolean
+  ): void {
     entry.accessCount++;
     entry.lastAccessed = Date.now();
 
@@ -337,16 +379,26 @@ export class MultiLevelCacheService {
     this.stats.totalMisses++;
   }
 
-  private updateLevelStats(levelName: string, stat: string, value: number): void {
+  private updateLevelStats(
+    levelName: string,
+    stat: string,
+    value: number
+  ): void {
     if (this.stats.levels[levelName]) {
       (this.stats.levels[levelName] as any)[stat] = value;
     }
   }
 
-  private promoteToHigherLevels(key: string, entry: MultiLevelCacheEntry, currentPriority: number): void {
+  private promoteToHigherLevels(
+    key: string,
+    entry: MultiLevelCacheEntry,
+    currentPriority: number
+  ): void {
     // 더 높은 우선순위 레벨로 승격
-    const higherLevels = this.config.levels.filter(level => level.priority < currentPriority);
-    
+    const higherLevels = this.config.levels.filter(
+      level => level.priority < currentPriority
+    );
+
     higherLevels.forEach(level => {
       this.setInLevel(level.name, key, entry.value, entry.ttl);
     });
@@ -392,7 +444,7 @@ export class MultiLevelCacheService {
   private cleanupExpiredEntries(): void {
     for (const [levelName, cache] of this.caches) {
       const expiredKeys: string[] = [];
-      
+
       for (const [key, entry] of cache) {
         if (this.isExpired(entry)) {
           expiredKeys.push(key);
@@ -403,4 +455,4 @@ export class MultiLevelCacheService {
       this.updateLevelStats(levelName, 'size', cache.size);
     }
   }
-} 
+}

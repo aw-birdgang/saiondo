@@ -8,32 +8,28 @@ interface IconWrapperProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
-const IconWrapper: React.FC<IconWrapperProps> = ({ 
-  icon, 
-  label, 
+const IconWrapper: React.FC<IconWrapperProps> = ({
+  icon,
+  label,
   className,
-  size = 'md' 
+  size = 'md',
 }) => {
   const sizeClasses = {
     sm: 'text-sm',
     md: 'text-lg',
     lg: 'text-xl',
-    xl: 'text-2xl'
+    xl: 'text-2xl',
   };
 
   return (
-    <span 
-      role="img" 
+    <span
+      role='img'
       aria-label={label}
-      className={cn(
-        sizeClasses[size],
-        "inline-block",
-        className
-      )}
+      className={cn(sizeClasses[size], 'inline-block', className)}
     >
       {icon}
     </span>
   );
 };
 
-export default IconWrapper; 
+export default IconWrapper;

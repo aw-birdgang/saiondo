@@ -72,10 +72,15 @@ export class ErrorTracker {
     const errorEvent: ErrorEvent = {
       id: this.generateErrorId(),
       message: typeof error === 'string' ? error : error.message,
-      stack: this.config.captureStackTraces && error instanceof Error ? error.stack : undefined,
+      stack:
+        this.config.captureStackTraces && error instanceof Error
+          ? error.stack
+          : undefined,
       type,
       timestamp: new Date(),
-      context: this.config.captureUserContext ? this.getUserContext() : undefined,
+      context: this.config.captureUserContext
+        ? this.getUserContext()
+        : undefined,
       ...context,
       sessionId: this.sessionId,
       url: window.location.href,
@@ -114,7 +119,10 @@ export class ErrorTracker {
     try {
       return await asyncFn();
     } catch (error) {
-      this.track(error instanceof Error ? error : new Error(String(error)), context);
+      this.track(
+        error instanceof Error ? error : new Error(String(error)),
+        context
+      );
       throw error;
     }
   }
@@ -122,14 +130,14 @@ export class ErrorTracker {
   /**
    * 동기 에러 추적
    */
-  trackSync<T>(
-    syncFn: () => T,
-    context?: Record<string, any>
-  ): T {
+  trackSync<T>(syncFn: () => T, context?: Record<string, any>): T {
     try {
       return syncFn();
     } catch (error) {
-      this.track(error instanceof Error ? error : new Error(String(error)), context);
+      this.track(
+        error instanceof Error ? error : new Error(String(error)),
+        context
+      );
       throw error;
     }
   }
@@ -161,14 +169,17 @@ export class ErrorTracker {
 
     // 가장 빈번한 에러 찾기
     const mostFrequentError = Object.entries(errorMessages).reduce(
-      (most, [message, count]) => count > (most ? errorMessages[most] : 0) ? message : most,
+      (most, [message, count]) =>
+        count > (most ? errorMessages[most] : 0) ? message : most,
       null as string | null
     );
 
     // 시간당 평균 에러 수 계산
     const now = new Date();
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-    const recentErrors = this.errors.filter(error => error.timestamp > oneHourAgo);
+    const recentErrors = this.errors.filter(
+      error => error.timestamp > oneHourAgo
+    );
     const averageErrorsPerHour = recentErrors.length;
 
     return {
@@ -224,7 +235,7 @@ export class ErrorTracker {
   private setupGlobalErrorHandlers(): void {
     if (typeof window !== 'undefined') {
       // JavaScript 에러
-      window.addEventListener('error', (event) => {
+      window.addEventListener('error', event => {
         this.track(event.error || new Error(event.message), {
           filename: event.filename,
           lineno: event.lineno,
@@ -233,9 +244,11 @@ export class ErrorTracker {
       });
 
       // Promise 에러
-      window.addEventListener('unhandledrejection', (event) => {
+      window.addEventListener('unhandledrejection', event => {
         this.track(
-          event.reason instanceof Error ? event.reason : new Error(String(event.reason)),
+          event.reason instanceof Error
+            ? event.reason
+            : new Error(String(event.reason)),
           { type: 'unhandledrejection' }
         );
       });
@@ -329,14 +342,20 @@ export class ErrorTracker {
 // 편의 함수들
 export const errorTracker = ErrorTracker.getInstance();
 
-export const trackError = (error: Error | string, context?: Record<string, any>) => 
-  errorTracker.track(error, context, 'error');
+export const trackError = (
+  error: Error | string,
+  context?: Record<string, any>
+) => errorTracker.track(error, context, 'error');
 
-export const trackWarning = (warning: Error | string, context?: Record<string, any>) => 
-  errorTracker.track(warning, context, 'warning');
+export const trackWarning = (
+  warning: Error | string,
+  context?: Record<string, any>
+) => errorTracker.track(warning, context, 'warning');
 
-export const trackInfo = (info: Error | string, context?: Record<string, any>) => 
-  errorTracker.track(info, context, 'info');
+export const trackInfo = (
+  info: Error | string,
+  context?: Record<string, any>
+) => errorTracker.track(info, context, 'info');
 
 export const trackAsyncError = <T>(
   asyncFn: () => Promise<T>,
@@ -348,4 +367,4 @@ export const trackSyncError = <T>(
   context?: Record<string, any>
 ) => errorTracker.trackSync(syncFn, context);
 
-export default ErrorTracker; 
+export default ErrorTracker;

@@ -64,17 +64,16 @@ export class PerformanceMonitor {
 
     this.activeMetrics.set(metricId, metric);
 
-    if (this.config.enableConsoleLogging) {
-      console.log(`🚀 Performance: Started measuring "${name}"`, metadata);
-    }
-
     return metricId;
   }
 
   /**
    * 성능 측정 종료
    */
-  end(metricId: string, additionalMetadata?: Record<string, any>): PerformanceMetric | null {
+  end(
+    metricId: string,
+    additionalMetadata?: Record<string, any>
+  ): PerformanceMetric | null {
     if (!this.config.enabled || !metricId) return null;
 
     const metric = this.activeMetrics.get(metricId);
@@ -113,10 +112,6 @@ export class PerformanceMonitor {
       this.logSlowMetric(completedMetric);
     }
 
-    if (this.config.enableConsoleLogging) {
-      console.log(`✅ Performance: "${metric.name}" completed in ${duration.toFixed(2)}ms`);
-    }
-
     return completedMetric;
   }
 
@@ -135,7 +130,10 @@ export class PerformanceMonitor {
       this.end(metricId, { success: true });
       return result;
     } catch (error) {
-      this.end(metricId, { success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+      this.end(metricId, {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
       throw error;
     }
   }
@@ -155,7 +153,10 @@ export class PerformanceMonitor {
       this.end(metricId, { success: true });
       return result;
     } catch (error) {
-      this.end(metricId, { success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+      this.end(metricId, {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
       throw error;
     }
   }
@@ -165,7 +166,7 @@ export class PerformanceMonitor {
    */
   getReport(): PerformanceReport {
     const metrics = Array.from(this.metrics.values());
-    
+
     if (metrics.length === 0) {
       return {
         metrics: [],
@@ -179,14 +180,17 @@ export class PerformanceMonitor {
     }
 
     const durations = metrics.map(m => m.duration || 0).filter(d => d > 0);
-    const averageDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
-    
-    const slowestMetric = metrics.reduce((slowest, current) => 
+    const averageDuration =
+      durations.reduce((sum, d) => sum + d, 0) / durations.length;
+
+    const slowestMetric = metrics.reduce((slowest, current) =>
       (current.duration || 0) > (slowest.duration || 0) ? current : slowest
     );
-    
-    const fastestMetric = metrics.reduce((fastest, current) => 
-      (current.duration || Infinity) < (fastest.duration || Infinity) ? current : fastest
+
+    const fastestMetric = metrics.reduce((fastest, current) =>
+      (current.duration || Infinity) < (fastest.duration || Infinity)
+        ? current
+        : fastest
     );
 
     return {
@@ -211,7 +215,9 @@ export class PerformanceMonitor {
    * 메트릭 필터링
    */
   getMetricsByName(name: string): PerformanceMetric[] {
-    return Array.from(this.metrics.values()).filter(metric => metric.name === name);
+    return Array.from(this.metrics.values()).filter(
+      metric => metric.name === name
+    );
   }
 
   /**
@@ -252,10 +258,10 @@ export class PerformanceMonitor {
   private logSlowMetric(metric: PerformanceMetric): void {
     const duration = metric.duration || 0;
     const threshold = this.config.slowThreshold;
-    
+
     console.warn(
       `🐌 Slow Performance: "${metric.name}" took ${duration.toFixed(2)}ms ` +
-      `(threshold: ${threshold}ms)`,
+        `(threshold: ${threshold}ms)`,
       metric.metadata
     );
 
@@ -294,11 +300,15 @@ export class PerformanceMonitor {
 // 편의 함수들
 export const performanceMonitor = PerformanceMonitor.getInstance();
 
-export const startPerformanceMeasurement = (name: string, metadata?: Record<string, any>) => 
-  performanceMonitor.start(name, metadata);
+export const startPerformanceMeasurement = (
+  name: string,
+  metadata?: Record<string, any>
+) => performanceMonitor.start(name, metadata);
 
-export const endPerformanceMeasurement = (metricId: string, additionalMetadata?: Record<string, any>) => 
-  performanceMonitor.end(metricId, additionalMetadata);
+export const endPerformanceMeasurement = (
+  metricId: string,
+  additionalMetadata?: Record<string, any>
+) => performanceMonitor.end(metricId, additionalMetadata);
 
 export const measurePerformance = <T>(
   name: string,
@@ -312,4 +322,4 @@ export const measurePerformanceSync = <T>(
   metadata?: Record<string, any>
 ) => performanceMonitor.measureSync(name, syncFn, metadata);
 
-export default PerformanceMonitor; 
+export default PerformanceMonitor;

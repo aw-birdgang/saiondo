@@ -46,4 +46,4 @@ export const isYesterday = (date: Date | string): boolean => {
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   return dateObj.toDateString() === yesterday.toDateString();
-}; 
+};

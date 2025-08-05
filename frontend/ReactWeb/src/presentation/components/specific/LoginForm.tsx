@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Form } from "../common";
-import AuthHeader from "./auth/AuthHeader";
-import type { LoginFormProps, LoginFormData } from "../../pages/auth/types/authTypes";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Form } from '../common';
+import AuthHeader from './auth/AuthHeader';
+import type {
+  LoginFormProps,
+  LoginFormData,
+} from '../../pages/auth/types/authTypes';
 
-const LoginForm: React.FC<LoginFormProps> = ({ 
-  onSubmit, 
-  loading, 
-  registerRoute, 
-  className = "" 
+const LoginForm: React.FC<LoginFormProps> = ({
+  onSubmit,
+  loading,
+  registerRoute,
+  className = '',
 }) => {
   const { t } = useTranslation();
-  
+
   const [formData, setFormData] = useState<LoginFormData>({
     email: 'kim@example.com', // 테스트용 기본값
     password: 'password123', // 테스트용 기본값
@@ -25,24 +28,30 @@ const LoginForm: React.FC<LoginFormProps> = ({
     if (!formData.email) {
       newErrors.email = t('auth.enter_email') || '이메일을 입력해주세요';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('auth.invalid_email_format') || '올바른 이메일 형식이 아닙니다';
+      newErrors.email =
+        t('auth.invalid_email_format') || '올바른 이메일 형식이 아닙니다';
     }
 
     // 비밀번호 검증
     if (!formData.password) {
-      newErrors.password = t('auth.enter_password') || '비밀번호를 입력해주세요';
+      newErrors.password =
+        t('auth.enter_password') || '비밀번호를 입력해주세요';
     } else if (formData.password.length < 6) {
-      newErrors.password = t('auth.password_min_length') || '비밀번호는 최소 6자 이상이어야 합니다';
+      newErrors.password =
+        t('auth.password_min_length') ||
+        '비밀번호는 최소 6자 이상이어야 합니다';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // 실시간 에러 제거
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -51,9 +60,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     try {
       await onSubmit(formData);
     } catch (error) {
@@ -69,8 +78,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
         linkText={t('auth.create_new_account') || '새 계정 만들기'}
         linkTo={registerRoute}
       />
-      
-      <div className="space-y-6">
+
+      <div className='space-y-6'>
         <Form
           fields={[
             {
@@ -94,7 +103,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
           errors={errors}
           onChange={handleInputChange}
           onSubmit={handleSubmit}
-          submitText={loading ? t('auth.signing_in') || '로그인 중...' : t('auth.sign_in') || '로그인'}
+          submitText={
+            loading
+              ? t('auth.signing_in') || '로그인 중...'
+              : t('auth.sign_in') || '로그인'
+          }
           loading={loading}
         />
       </div>
@@ -102,4 +115,4 @@ const LoginForm: React.FC<LoginFormProps> = ({
   );
 };
 
-export default LoginForm; 
+export default LoginForm;

@@ -10,7 +10,7 @@ import type {
   RemoveMemberRequest,
   RemoveMemberResponse,
   UpdateChannelRequest,
-  UpdateChannelResponse
+  UpdateChannelResponse,
 } from '../../dto/ChannelDto';
 
 // Channel UseCase 인터페이스 - 애플리케이션 로직 조율
@@ -25,6 +25,8 @@ export interface IChannelUseCase {
   getChannelMembers(channelId: string): Promise<string[]>;
   isMember(channelId: string, userId: string): Promise<boolean>;
   updateChannelStatus(channelId: string, status: string): Promise<boolean>;
-  validateChannelRequest(request: CreateChannelRequest | UpdateChannelRequest): string[];
+  validateChannelRequest(
+    request: CreateChannelRequest | UpdateChannelRequest
+  ): string[];
   validateChannelName(name: string): boolean;
-} 
+}

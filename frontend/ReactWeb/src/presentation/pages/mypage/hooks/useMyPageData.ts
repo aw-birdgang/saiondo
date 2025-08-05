@@ -8,7 +8,7 @@ import {
   RECENT_ACTIVITIES,
   QUICK_ACTIONS,
   ACCOUNT_PROGRESS_ITEMS,
-  PROFILE_COMPLETION_PERCENTAGE
+  PROFILE_COMPLETION_PERCENTAGE,
 } from '../constants/mypageData';
 import type { MyPageState } from '../types/mypageTypes';
 
@@ -20,7 +20,7 @@ export const useMyPageData = () => {
   const [state, setState] = useState<MyPageState>({
     isLoading: false,
     isEditing: false,
-    profileCompletion: PROFILE_COMPLETION_PERCENTAGE
+    profileCompletion: PROFILE_COMPLETION_PERCENTAGE,
   });
 
   // 로그아웃 처리
@@ -62,10 +62,13 @@ export const useMyPageData = () => {
   }, [navigate]);
 
   // 빠른 액션 클릭 처리
-  const handleQuickActionClick = useCallback((action: { path: string; title: string }) => {
-    navigate(action.path);
-    toast.success(`${action.title}으로 이동합니다.`);
-  }, [navigate, toast]);
+  const handleQuickActionClick = useCallback(
+    (action: { path: string; title: string }) => {
+      navigate(action.path);
+      toast.success(`${action.title}으로 이동합니다.`);
+    },
+    [navigate, toast]
+  );
 
   return {
     // 상태
@@ -85,6 +88,6 @@ export const useMyPageData = () => {
     handleSaveProfile,
     handleCancelEdit,
     handleSettings,
-    handleQuickActionClick
+    handleQuickActionClick,
   };
-}; 
+};

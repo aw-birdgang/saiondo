@@ -3,6 +3,7 @@
 ## 📋 **수정 사항 요약**
 
 ### ✅ **완료된 작업**
+
 1. **Use Case 위치 이동**: `domain/usecases/` → `application/usecases/`
 2. **Import 경로 수정**: 모든 관련 파일의 import 경로 업데이트
 3. **DI Container 통합**: 기존 DI Container와 새로운 Use Case Factory 통합
@@ -11,6 +12,7 @@
 ## 🏗️ **클린 아키텍처 구조**
 
 ### **올바른 레이어 구조**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                       │
@@ -30,18 +32,21 @@
 ### **각 레이어의 책임**
 
 #### **1. Presentation Layer**
+
 - React 컴포넌트
 - Hooks (useProductionFeatures 등)
 - Zustand Stores
 - UI 로직
 
 #### **2. Application Layer** ✅
+
 - **Use Cases** (21개)
 - Application Services
 - Use Case Factory
 - 비즈니스 워크플로우 조정
 
 #### **3. Domain Layer**
+
 - Entities (UserEntity, ChannelEntity, MessageEntity)
 - Repository Interfaces
 - Value Objects
@@ -49,6 +54,7 @@
 - Domain Types
 
 #### **4. Infrastructure Layer**
+
 - Repository Implementations
 - API Client
 - WebSocket Client
@@ -116,6 +122,7 @@ frontend/ReactWeb/src/
 ## 🔧 **Use Case 사용 방법**
 
 ### **1. UseCaseFactory 사용**
+
 ```typescript
 import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
 
@@ -129,6 +136,7 @@ const user = await useCases.auth.authenticate.execute({ email, password });
 ```
 
 ### **2. DI Container 사용**
+
 ```typescript
 import { container } from '../di/container';
 
@@ -142,6 +150,7 @@ const authUseCase = useCaseFactory.createAuthenticateUserUseCase();
 ```
 
 ### **3. React Hook 사용**
+
 ```typescript
 import { useProductionFeatures } from '../hooks/useProductionFeatures';
 
@@ -151,11 +160,11 @@ const ProductionComponent = () => {
     sendRealTimeMessage,
     getUserWithCache,
     startTrace,
-    endTrace
+    endTrace,
   } = useProductionFeatures({
     websocket: { url: 'wss://example.com' },
     redis: { host: 'redis.example.com' },
-    apm: { enabled: true }
+    apm: { enabled: true },
   });
 
   // 사용...
@@ -165,6 +174,7 @@ const ProductionComponent = () => {
 ## 🎯 **클린 아키텍처 원칙 준수**
 
 ### **1. 의존성 방향**
+
 ```
 Presentation → Application → Domain ← Infrastructure
 ```
@@ -175,11 +185,13 @@ Presentation → Application → Domain ← Infrastructure
 - ✅ Domain Layer는 다른 레이어에 의존하지 않음
 
 ### **2. Use Case의 올바른 위치**
+
 - ✅ **Application Layer**: 비즈니스 워크플로우 조정
 - ✅ **Domain Layer**: 순수한 비즈니스 로직 (Entities, Value Objects)
 - ✅ **Infrastructure Layer**: 외부 시스템 연동 (API, Database)
 
 ### **3. 의존성 역전 원칙**
+
 - ✅ Repository Interface는 Domain Layer에 정의
 - ✅ Repository Implementation은 Infrastructure Layer에 구현
 - ✅ Application Layer는 Interface에만 의존
@@ -187,12 +199,14 @@ Presentation → Application → Domain ← Infrastructure
 ## 📊 **수정 결과**
 
 ### **이동된 파일들**
+
 - **총 21개 Use Case 파일**이 `domain/usecases/`에서 `application/usecases/`로 이동
 - **기존 3개 Use Case 파일**과 통합
 - **1개 Hook 파일**이 `hooks/`에서 `presentation/hooks/`로 이동
 - **모든 import 경로** 업데이트 완료
 
 ### **업데이트된 파일들**
+
 - `presentation/hooks/useProductionFeatures.ts` - 위치 이동 및 import 경로 수정
 - `presentation/hooks/index.ts` - 새로운 Hook export 추가
 - `presentation/hooks/README.md` - Hook 구조 및 사용법 문서 생성
@@ -201,6 +215,7 @@ Presentation → Application → Domain ← Infrastructure
 - `di/container.ts` - UseCaseFactory 접근 메서드 추가
 
 ### **클린 아키텍처 준수도**
+
 - ✅ **의존성 방향**: 100% 준수
 - ✅ **레이어 분리**: 100% 준수
 - ✅ **Use Case 위치**: 100% 올바름
@@ -210,4 +225,4 @@ Presentation → Application → Domain ← Infrastructure
 
 **클린 아키텍처 구조로 Use Case 위치 수정이 완료되었습니다!**
 
-이제 프로젝트는 클린 아키텍처의 원칙을 완벽하게 준수하며, Use Case들이 올바른 위치(Application Layer)에 배치되어 있습니다. 이는 코드의 유지보수성, 테스트 가능성, 그리고 확장성을 크게 향상시킵니다. 🚀 
+이제 프로젝트는 클린 아키텍처의 원칙을 완벽하게 준수하며, Use Case들이 올바른 위치(Application Layer)에 배치되어 있습니다. 이는 코드의 유지보수성, 테스트 가능성, 그리고 확장성을 크게 향상시킵니다. 🚀

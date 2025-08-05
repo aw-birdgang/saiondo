@@ -5,15 +5,7 @@ import { CreateChannelUseCase } from './CreateChannelUseCase';
 import { UserUseCases } from './UserUseCases';
 import { MessageUseCases } from './MessageUseCases';
 import { FileUseCases } from './FileUseCases';
-import { NotificationUseCases } from './NotificationUseCases';
-import { AnalyticsUseCaseService } from './services/analytics/AnalyticsUseCaseService';
-import { ChannelUseCaseService } from './services/channel/ChannelUseCaseService';
-import { UserUseCaseService } from './services/user/UserUseCaseService';
-import { MessageUseCaseService } from './services/message/MessageUseCaseService';
-import { FileUseCaseService } from './services/file/FileUseCaseService';
-import { NotificationUseCaseService } from './services/notification/NotificationUseCaseService';
 import { ProfileUseCases } from './ProfileUseCases';
-import { ProfileUseCaseService } from './services/profile/ProfileUseCaseService';
 
 /**
  * Use Case Factory
@@ -57,42 +49,41 @@ export class UseCaseFactory {
   /**
    * 새로운 UseCase Service를 사용하는 CreateChannelUseCase 생성
    */
-  static createCreateChannelUseCaseWithService(channelUseCaseService: ChannelUseCaseService): CreateChannelUseCase {
+  static createCreateChannelUseCaseWithService(
+    channelUseCaseService: any
+  ): CreateChannelUseCase {
     return new CreateChannelUseCase(channelUseCaseService);
   }
 
   /**
    * 새로운 UseCase Service를 사용하는 UserUseCases 생성
    */
-  static createUserUseCasesWithService(userUseCaseService: UserUseCaseService): UserUseCases {
+  static createUserUseCasesWithService(userUseCaseService: any): UserUseCases {
     return new UserUseCases(userUseCaseService);
   }
 
   /**
    * 새로운 UseCase Service를 사용하는 MessageUseCases 생성
    */
-  static createMessageUseCasesWithService(messageUseCaseService: MessageUseCaseService): MessageUseCases {
+  static createMessageUseCasesWithService(
+    messageUseCaseService: any
+  ): MessageUseCases {
     return new MessageUseCases(messageUseCaseService);
   }
 
   /**
    * 새로운 UseCase Service를 사용하는 FileUseCases 생성
    */
-  static createFileUseCasesWithService(fileUseCaseService: FileUseCaseService): FileUseCases {
+  static createFileUseCasesWithService(fileUseCaseService: any): FileUseCases {
     return new FileUseCases(fileUseCaseService);
-  }
-
-  /**
-   * 새로운 UseCase Service를 사용하는 NotificationUseCases 생성
-   */
-  static createNotificationUseCasesWithService(notificationUseCaseService: NotificationUseCaseService): NotificationUseCases {
-    return new NotificationUseCases(notificationUseCaseService);
   }
 
   /**
    * 새로운 UseCase Service를 사용하는 ProfileUseCases 생성
    */
-  static createProfileUseCasesWithService(profileUseCaseService: ProfileUseCaseService): ProfileUseCases {
+  static createProfileUseCasesWithService(
+    profileUseCaseService: any
+  ): ProfileUseCases {
     return new ProfileUseCases(profileUseCaseService);
   }
 
@@ -123,9 +114,10 @@ export class UseCaseFactory {
   }
 
   // System related use cases
-  static createNotificationUseCase() {
-    return container.createUseCase(DI_TOKENS.NOTIFICATION_USE_CASE);
-  }
+  // NotificationUseCase가 삭제되었으므로 주석 처리
+  // static createNotificationUseCase() {
+  //   return container.createUseCase(DI_TOKENS.NOTIFICATION_USE_CASE);
+  // }
 
   static createUserPermissionUseCase() {
     return container.createUseCase(DI_TOKENS.USER_PERMISSION_USE_CASE);
@@ -163,7 +155,9 @@ export class UseCaseFactory {
   /**
    * 새로운 UseCase Service를 사용하는 AnalyticsUseCase 생성
    */
-  static createAnalyticsUseCaseWithService(analyticsUseCaseService: AnalyticsUseCaseService): AnalyticsUseCase {
+  static createAnalyticsUseCaseWithService(
+    analyticsUseCaseService: any
+  ): AnalyticsUseCase {
     return new AnalyticsUseCase(analyticsUseCaseService);
   }
 
@@ -191,7 +185,7 @@ export class UseCaseFactory {
   /**
    * 새로운 UseCase Service를 사용하는 ChannelUseCases 그룹 생성
    */
-  static createChannelUseCasesWithService(channelUseCaseService: ChannelUseCaseService) {
+  static createChannelUseCasesWithService(channelUseCaseService: any) {
     return {
       create: this.createCreateChannelUseCaseWithService(channelUseCaseService),
       // 다른 채널 UseCase들도 필요시 추가
@@ -221,7 +215,7 @@ export class UseCaseFactory {
 
   static createSystemUseCases() {
     return {
-      notification: this.createNotificationUseCase(),
+      // notification: this.createNotificationUseCase(), // NotificationUseCase가 삭제됨
       permission: this.createUserPermissionUseCase(),
       cache: this.createCacheUseCase(),
       realTimeChat: this.createRealTimeChatUseCase(),
@@ -237,10 +231,12 @@ export class UseCaseFactory {
   /**
    * 새로운 UseCase Service를 사용하는 SystemUseCases 그룹 생성
    */
-  static createSystemUseCasesWithService(analyticsUseCaseService: AnalyticsUseCaseService) {
+  static createSystemUseCasesWithService(analyticsUseCaseService: any) {
     return {
       ...this.createSystemUseCases(),
-      analytics: this.createAnalyticsUseCaseWithService(analyticsUseCaseService),
+      analytics: this.createAnalyticsUseCaseWithService(
+        analyticsUseCaseService
+      ),
     };
   }
 
@@ -259,8 +255,8 @@ export class UseCaseFactory {
    * 새로운 UseCase Service를 사용하는 모든 UseCases 그룹 생성
    */
   static createAllUseCasesWithService(
-    analyticsUseCaseService: AnalyticsUseCaseService,
-    channelUseCaseService: ChannelUseCaseService
+    analyticsUseCaseService: any,
+    channelUseCaseService: any
   ) {
     return {
       auth: this.createAuthUseCases(),
@@ -279,4 +275,4 @@ export class UseCaseFactory {
   static getUseCaseMetadata(token: string) {
     return useCaseRegistry.getUseCaseMetadata(token);
   }
-} 
+}

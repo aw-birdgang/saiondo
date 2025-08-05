@@ -1,6 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { aiChatService, type AIChatMessage, type AIChatRequest } from '../../infrastructure/api/services/aiChatService';
+import {
+  aiChatService,
+  type AIChatMessage,
+  type AIChatRequest,
+} from '../../infrastructure/api/services/aiChatService';
 import { toast } from 'react-hot-toast';
 
 export interface UseAIChatReturn {
@@ -30,75 +34,78 @@ export const useAIChat = (): UseAIChatReturn => {
   }, []);
 
   // 메시지 전송
-  const sendMessage = useCallback(async (message: string) => {
-    if (!user?.id || !message.trim()) return;
+  const sendMessage = useCallback(
+    async (message: string) => {
+      if (!user?.id || !message.trim()) return;
 
-    const userMessage: AIChatMessage = {
-      id: Date.now().toString(),
-      content: message.trim(),
-      sender: 'user',
-      timestamp: new Date().toISOString(),
-      messageType: 'text'
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setIsTyping(true);
-
-    try {
-      const request: AIChatRequest = {
-        message: message.trim(),
-        conversationId: conversationId || undefined,
-        userId: user.id
-      };
-
-      // 이전 요청이 있다면 취소
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      abortControllerRef.current = new AbortController();
-
-      let response;
-      if (conversationId) {
-        // 기존 대화에 메시지 추가
-        response = await aiChatService.sendMessage(request);
-      } else {
-        // 새 대화 시작
-        response = await aiChatService.startConversation(request);
-        setConversationId(response.conversationId);
-      }
-
-      // AI 응답 추가
-      setMessages(prev => [...prev, response.message]);
-      
-      // 제안사항이 있다면 처리
-      if (response.suggestions && response.suggestions.length > 0) {
-        console.log('AI 제안사항:', response.suggestions);
-      }
-
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        // 요청이 취소된 경우
-        return;
-      }
-      
-      console.error('AI 채팅 오류:', error);
-      toast.error('메시지 전송에 실패했습니다.');
-      
-      // 에러 메시지 추가
-      const errorMessage: AIChatMessage = {
+      const userMessage: AIChatMessage = {
         id: Date.now().toString(),
-        content: '죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.',
-        sender: 'ai',
+        content: message.trim(),
+        sender: 'user',
         timestamp: new Date().toISOString(),
-        messageType: 'text'
+        messageType: 'text',
       };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsTyping(false);
-      abortControllerRef.current = null;
-    }
-  }, [user?.id, conversationId]);
+
+      setMessages(prev => [...prev, userMessage]);
+      setIsTyping(true);
+
+      try {
+        const request: AIChatRequest = {
+          message: message.trim(),
+          conversationId: conversationId || undefined,
+          userId: user.id,
+        };
+
+        // 이전 요청이 있다면 취소
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+
+        abortControllerRef.current = new AbortController();
+
+        let response;
+        if (conversationId) {
+          // 기존 대화에 메시지 추가
+          response = await aiChatService.sendMessage(request);
+        } else {
+          // 새 대화 시작
+          response = await aiChatService.startConversation(request);
+          setConversationId(response.conversationId);
+        }
+
+        // AI 응답 추가
+        setMessages(prev => [...prev, response.message]);
+
+        // 제안사항이 있다면 처리
+        if (response.suggestions && response.suggestions.length > 0) {
+          // TODO: 제안사항 처리 로직 구현
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          // 요청이 취소된 경우
+          return;
+        }
+
+        console.error('AI 채팅 오류:', error);
+        toast.error('메시지 전송에 실패했습니다.');
+
+        // 에러 메시지 추가
+        const errorMessage: AIChatMessage = {
+          id: Date.now().toString(),
+          content:
+            '죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.',
+          sender: 'ai',
+          timestamp: new Date().toISOString(),
+          messageType: 'text',
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      } finally {
+        setIsTyping(false);
+        abortControllerRef.current = null;
+      }
+    },
+    [user?.id, conversationId]
+  );
 
   // 대화 기록 로드
   const loadConversationHistory = useCallback(async (convId: string) => {
@@ -108,7 +115,7 @@ export const useAIChat = (): UseAIChatReturn => {
     try {
       const response = await aiChatService.getConversationHistory(convId, {
         page: 1,
-        limit: 50
+        limit: 50,
       });
 
       setMessages(response.messages);
@@ -135,6 +142,6 @@ export const useAIChat = (): UseAIChatReturn => {
     sendMessage,
     startNewConversation,
     loadConversationHistory,
-    clearMessages
+    clearMessages,
   };
-}; 
+};

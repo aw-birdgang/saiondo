@@ -14,8 +14,7 @@ const alertVariants = cva(
           'border-green-500/50 text-green-700 dark:text-green-400 [&>svg]:text-green-600',
         warning:
           'border-yellow-500/50 text-yellow-700 dark:text-yellow-400 [&>svg]:text-yellow-600',
-        info:
-          'border-blue-500/50 text-blue-700 dark:text-blue-400 [&>svg]:text-blue-600',
+        info: 'border-blue-500/50 text-blue-700 dark:text-blue-400 [&>svg]:text-blue-600',
       },
     },
     defaultVariants: {
@@ -52,19 +51,19 @@ export const Alert: React.FC<AlertProps> = ({
   return (
     <div
       className={cn(alertVariants({ variant }), className)}
-      role="alert"
+      role='alert'
       {...props}
     >
-      <span className="text-lg">{icon}</span>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">{children}</div>
+      <span className='text-lg'>{icon}</span>
+      <div className='flex items-start justify-between'>
+        <div className='flex-1'>{children}</div>
         {showCloseButton && onClose && (
           <button
             onClick={onClose}
-            className="ml-2 rounded-md p-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            aria-label="Close alert"
+            className='ml-2 rounded-md p-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'
+            aria-label='Close alert'
           >
-            <span className="text-lg">✕</span>
+            <span className='text-lg'>✕</span>
           </button>
         )}
       </div>
@@ -73,7 +72,9 @@ export const Alert: React.FC<AlertProps> = ({
 };
 
 export interface AlertDescriptionProps
-  extends React.HTMLAttributes<HTMLParagraphElement> {}
+  extends React.HTMLAttributes<HTMLParagraphElement> {
+  // Additional props can be added here if needed
+}
 
 export const AlertDescription: React.FC<AlertDescriptionProps> = ({
   className,
@@ -83,7 +84,9 @@ export const AlertDescription: React.FC<AlertDescriptionProps> = ({
 );
 
 export interface AlertTitleProps
-  extends React.HTMLAttributes<HTMLHeadingElement> {}
+  extends React.HTMLAttributes<HTMLHeadingElement> {
+  // Additional props can be added here if needed
+}
 
 export const AlertTitle: React.FC<AlertTitleProps> = ({
   className,
@@ -93,4 +96,4 @@ export const AlertTitle: React.FC<AlertTitleProps> = ({
     className={cn('mb-1 font-medium leading-none tracking-tight', className)}
     {...props}
   />
-); 
+);

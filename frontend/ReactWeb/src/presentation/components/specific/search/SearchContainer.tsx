@@ -4,13 +4,13 @@ import type { SearchContainerProps } from '../../../pages/search/types/searchTyp
 
 const SearchContainer: React.FC<SearchContainerProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("min-h-screen bg-background", className)}>
+    <div className={cn('min-h-screen bg-background', className)}>
       {children}
     </div>
   );
 };
 
-export default SearchContainer; 
+export default SearchContainer;

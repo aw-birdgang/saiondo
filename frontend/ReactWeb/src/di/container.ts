@@ -8,7 +8,10 @@ import { ChannelRepositoryImpl } from '../infrastructure/repositories/ChannelRep
 import { MessageRepositoryImpl } from '../infrastructure/repositories/MessageRepositoryImpl';
 import { ProfileRepository } from '../infrastructure/repositories/ProfileRepository';
 import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
-import type { IUseCase, UseCaseRegistration } from '../application/usecases/interfaces/IUseCase';
+import type {
+  IUseCase,
+  UseCaseRegistration,
+} from '../application/usecases/interfaces/IUseCase';
 import { UserService } from '../application/services/UserService';
 import { ChannelService } from '../application/services/ChannelService';
 import { MessageService } from '../application/services/MessageService';
@@ -24,23 +27,23 @@ import { MemoryCache } from '../application/services/base/BaseCacheService';
 export const DI_TOKENS = {
   // Infrastructure
   API_CLIENT: 'ApiClient',
-  
+
   // Repositories
   USER_REPOSITORY: 'UserRepository',
   CHANNEL_REPOSITORY: 'ChannelRepository',
   MESSAGE_REPOSITORY: 'MessageRepository',
   PROFILE_REPOSITORY: 'ProfileRepository',
-  
+
   // Base Services
   LOGGER: 'Logger',
   CACHE: 'Cache',
-  
+
   // Services (Legacy)
   USER_SERVICE: 'UserService',
   CHANNEL_SERVICE: 'ChannelService',
   MESSAGE_SERVICE: 'MessageService',
   FILE_SERVICE: 'FileService',
-  
+
   // Use Cases
   GET_CURRENT_USER_USE_CASE: 'GetCurrentUserUseCase',
   UPDATE_USER_USE_CASE: 'UpdateUserUseCase',
@@ -104,18 +107,21 @@ export class DIContainer {
     this.services.set(DI_TOKENS.CACHE, new MemoryCache());
 
     // Repository implementations
-    this.services.set(DI_TOKENS.USER_REPOSITORY, new UserRepositoryImpl(
-      this.get<ApiClient>(DI_TOKENS.API_CLIENT)
-    ));
-    
-    this.services.set(DI_TOKENS.CHANNEL_REPOSITORY, new ChannelRepositoryImpl(
-      this.get<ApiClient>(DI_TOKENS.API_CLIENT)
-    ));
-    
-    this.services.set(DI_TOKENS.MESSAGE_REPOSITORY, new MessageRepositoryImpl(
-      this.get<ApiClient>(DI_TOKENS.API_CLIENT)
-    ));
-    
+    this.services.set(
+      DI_TOKENS.USER_REPOSITORY,
+      new UserRepositoryImpl(this.get<ApiClient>(DI_TOKENS.API_CLIENT))
+    );
+
+    this.services.set(
+      DI_TOKENS.CHANNEL_REPOSITORY,
+      new ChannelRepositoryImpl(this.get<ApiClient>(DI_TOKENS.API_CLIENT))
+    );
+
+    this.services.set(
+      DI_TOKENS.MESSAGE_REPOSITORY,
+      new MessageRepositoryImpl(this.get<ApiClient>(DI_TOKENS.API_CLIENT))
+    );
+
     this.services.set(DI_TOKENS.PROFILE_REPOSITORY, new ProfileRepository());
 
     // Application services
@@ -124,29 +130,41 @@ export class DIContainer {
 
   private initializeApplicationServices(): void {
     // Legacy services (기존 구조 유지)
-    this.services.set(DI_TOKENS.USER_SERVICE, new UserService(
-      this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
-      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY),
-      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
-      {} // config 매개변수 추가
-    ));
-    
-    this.services.set(DI_TOKENS.CHANNEL_SERVICE, new ChannelService(
-      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY),
-      this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
-      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY)
-    ));
-    
-    this.services.set(DI_TOKENS.MESSAGE_SERVICE, new MessageService(
-      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
-      this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
-      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY)
-    ));
-    
-    this.services.set(DI_TOKENS.FILE_SERVICE, new FileService(
-      this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
-      this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY)
-    ));
+    this.services.set(
+      DI_TOKENS.USER_SERVICE,
+      new UserService(
+        this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
+        this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY),
+        this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
+        {} // config 매개변수 추가
+      )
+    );
+
+    this.services.set(
+      DI_TOKENS.CHANNEL_SERVICE,
+      new ChannelService(
+        this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY),
+        this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
+        this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY)
+      )
+    );
+
+    this.services.set(
+      DI_TOKENS.MESSAGE_SERVICE,
+      new MessageService(
+        this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
+        this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY),
+        this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY)
+      )
+    );
+
+    this.services.set(
+      DI_TOKENS.FILE_SERVICE,
+      new FileService(
+        this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY),
+        this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY)
+      )
+    );
   }
 
   private initializeUseCases(): void {
@@ -188,7 +206,8 @@ export class DIContainer {
 
   // Repository getters
   public getRepository<T>(repositoryType: 'User' | 'Channel' | 'Message'): T {
-    const token = `${repositoryType.toUpperCase()}_REPOSITORY` as keyof typeof DI_TOKENS;
+    const token =
+      `${repositoryType.toUpperCase()}_REPOSITORY` as keyof typeof DI_TOKENS;
     return this.get<T>(DI_TOKENS[token]);
   }
 
@@ -251,4 +270,4 @@ export class DIContainer {
   }
 }
 
-export const container = DIContainer.getInstance(); 
+export const container = DIContainer.getInstance();

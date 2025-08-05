@@ -29,24 +29,30 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
   const [currentY, setCurrentY] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (disabled) return;
-    
-    const touch = e.touches[0];
-    setStartX(touch.clientX);
-    setStartY(touch.clientY);
-    setCurrentX(touch.clientX);
-    setCurrentY(touch.clientY);
-    setIsDragging(true);
-  }, [disabled]);
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (disabled) return;
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (disabled || !isDragging) return;
-    
-    const touch = e.touches[0];
-    setCurrentX(touch.clientX);
-    setCurrentY(touch.clientY);
-  }, [disabled, isDragging]);
+      const touch = e.touches[0];
+      setStartX(touch.clientX);
+      setStartY(touch.clientY);
+      setCurrentX(touch.clientX);
+      setCurrentY(touch.clientY);
+      setIsDragging(true);
+    },
+    [disabled]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (disabled || !isDragging) return;
+
+      const touch = e.touches[0];
+      setCurrentX(touch.clientX);
+      setCurrentY(touch.clientY);
+    },
+    [disabled, isDragging]
+  );
 
   const handleTouchEnd = useCallback(() => {
     if (disabled || !isDragging) return;
@@ -74,25 +80,43 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
     setIsDragging(false);
     setCurrentX(0);
     setCurrentY(0);
-  }, [disabled, isDragging, currentX, currentY, startX, startY, threshold, onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown]);
+  }, [
+    disabled,
+    isDragging,
+    currentX,
+    currentY,
+    startX,
+    startY,
+    threshold,
+    onSwipeLeft,
+    onSwipeRight,
+    onSwipeUp,
+    onSwipeDown,
+  ]);
 
   // Mouse events for desktop
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    if (disabled) return;
-    
-    setStartX(e.clientX);
-    setStartY(e.clientY);
-    setCurrentX(e.clientX);
-    setCurrentY(e.clientY);
-    setIsDragging(true);
-  }, [disabled]);
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (disabled) return;
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (disabled || !isDragging) return;
-    
-    setCurrentX(e.clientX);
-    setCurrentY(e.clientY);
-  }, [disabled, isDragging]);
+      setStartX(e.clientX);
+      setStartY(e.clientY);
+      setCurrentX(e.clientX);
+      setCurrentY(e.clientY);
+      setIsDragging(true);
+    },
+    [disabled]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (disabled || !isDragging) return;
+
+      setCurrentX(e.clientX);
+      setCurrentY(e.clientY);
+    },
+    [disabled, isDragging]
+  );
 
   const handleMouseUp = useCallback(() => {
     if (disabled || !isDragging) return;
@@ -119,13 +143,25 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
     setIsDragging(false);
     setCurrentX(0);
     setCurrentY(0);
-  }, [disabled, isDragging, currentX, currentY, startX, startY, threshold, onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown]);
+  }, [
+    disabled,
+    isDragging,
+    currentX,
+    currentY,
+    startX,
+    startY,
+    threshold,
+    onSwipeLeft,
+    onSwipeRight,
+    onSwipeUp,
+    onSwipeDown,
+  ]);
 
   useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      
+
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
@@ -145,7 +181,9 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
         className
       )}
       style={{
-        transform: isDragging ? `translate(${deltaX}px, ${deltaY}px)` : 'translate(0, 0)',
+        transform: isDragging
+          ? `translate(${deltaX}px, ${deltaY}px)`
+          : 'translate(0, 0)',
         zIndex: isDragging ? 10 : 1,
       }}
       onTouchStart={handleTouchStart}
@@ -154,22 +192,26 @@ export const SwipeableCard: React.FC<SwipeableCardProps> = ({
       onMouseDown={handleMouseDown}
     >
       {children}
-      
+
       {/* Swipe indicator */}
       {isDragging && (
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-primary/5 rounded-lg" />
+        <div className='absolute inset-0 pointer-events-none'>
+          <div className='absolute inset-0 bg-primary/5 rounded-lg' />
           {Math.abs(deltaX) > Math.abs(deltaY) && (
-            <div className={cn(
-              'absolute top-1/2 -translate-y-1/2 w-1 h-8 rounded-full transition-all duration-200',
-              deltaX > 0 ? 'right-2 bg-green-500' : 'left-2 bg-red-500'
-            )} />
+            <div
+              className={cn(
+                'absolute top-1/2 -translate-y-1/2 w-1 h-8 rounded-full transition-all duration-200',
+                deltaX > 0 ? 'right-2 bg-green-500' : 'left-2 bg-red-500'
+              )}
+            />
           )}
           {Math.abs(deltaY) > Math.abs(deltaX) && (
-            <div className={cn(
-              'absolute left-1/2 -translate-x-1/2 w-8 h-1 rounded-full transition-all duration-200',
-              deltaY > 0 ? 'bottom-2 bg-blue-500' : 'top-2 bg-yellow-500'
-            )} />
+            <div
+              className={cn(
+                'absolute left-1/2 -translate-x-1/2 w-8 h-1 rounded-full transition-all duration-200',
+                deltaY > 0 ? 'bottom-2 bg-blue-500' : 'top-2 bg-yellow-500'
+              )}
+            />
           )}
         </div>
       )}
@@ -188,11 +230,14 @@ export const SwipeableListItem: React.FC<{
     <SwipeableCard
       onSwipeLeft={onDelete}
       onSwipeRight={onEdit}
-      className={cn('bg-surface border border-border rounded-lg p-4', className)}
+      className={cn(
+        'bg-surface border border-border rounded-lg p-4',
+        className
+      )}
     >
       {children}
     </SwipeableCard>
   );
 };
 
-SwipeableCard.displayName = 'SwipeableCard'; 
+SwipeableCard.displayName = 'SwipeableCard';

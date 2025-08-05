@@ -17,7 +17,7 @@ export { FileController } from './FileController';
 export { AnalyticsController } from './AnalyticsController';
 
 // Controller 타입 정의
-export type ControllerType = 
+export type ControllerType =
   | 'user'
   | 'channel'
   | 'message'
@@ -53,4 +53,4 @@ export const getControllerStats = () => {
 export const getFactoryInfo = () => {
   const factory = ControllerFactory.getInstance();
   return factory.getFactoryInfo();
-}; 
+};

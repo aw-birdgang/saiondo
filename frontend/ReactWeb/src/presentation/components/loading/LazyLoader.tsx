@@ -8,10 +8,10 @@ interface LazyLoaderProps {
   props?: Record<string, any>;
 }
 
-export const LazyLoader: React.FC<LazyLoaderProps> = ({ 
-  component, 
-  fallback = <LoadingSpinner size="md" />,
-  props = {}
+export const LazyLoader: React.FC<LazyLoaderProps> = ({
+  component,
+  fallback = <LoadingSpinner size='md' />,
+  props = {},
 }) => {
   const LazyComponent = React.lazy(component);
 
@@ -20,4 +20,4 @@ export const LazyLoader: React.FC<LazyLoaderProps> = ({
       <LazyComponent {...props} />
     </Suspense>
   );
-}; 
+};

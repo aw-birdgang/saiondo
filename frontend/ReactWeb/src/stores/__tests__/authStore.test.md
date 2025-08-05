@@ -1,10 +1,13 @@
 # AuthStore Test Cases
 
 ## Overview
+
 This document outlines the test cases for the `authStore.ts` file. The tests cover authentication functionality including login, register, logout, and error handling.
 
 ## Test Setup Requirements
+
 To run these tests, you'll need:
+
 - Jest testing framework
 - `@types/jest` for TypeScript support
 - `@testing-library/react` for React component testing
@@ -14,6 +17,7 @@ To run these tests, you'll need:
 ### Login Function Tests
 
 #### ✅ Success Cases
+
 1. **Valid Login Credentials**
    - Input: `email: 'test@example.com', password: 'password123'`
    - Expected: User authenticated, token stored, success toast shown
@@ -26,6 +30,7 @@ To run these tests, you'll need:
      - `localStorage.setItem` should be called with 'accessToken'
 
 #### ❌ Error Cases
+
 2. **Empty Email**
    - Input: `email: '', password: 'password123'`
    - Expected: Error thrown with message '유효한 이메일을 입력해주세요.'
@@ -61,6 +66,7 @@ To run these tests, you'll need:
 ### Register Function Tests
 
 #### ✅ Success Cases
+
 9. **Valid Registration Data**
    - Input: `email: 'newuser@example.com', password: 'password123', username: 'newuser'`
    - Expected: User registered and authenticated
@@ -72,6 +78,7 @@ To run these tests, you'll need:
      - `error` should be `null`
 
 #### ❌ Error Cases
+
 10. **Empty Username**
     - Input: `email: 'test@example.com', password: 'password123', username: ''`
     - Expected: Error thrown with message '유효한 사용자명을 입력해주세요.'
@@ -135,6 +142,7 @@ To run these tests, you'll need:
 ## Mock Requirements
 
 ### localStorage Mock
+
 ```javascript
 const localStorageMock = {
   getItem: jest.fn(),
@@ -148,6 +156,7 @@ Object.defineProperty(window, 'localStorage', {
 ```
 
 ### Toast Mock
+
 ```javascript
 jest.mock('react-hot-toast', () => ({
   toast: {
@@ -158,6 +167,7 @@ jest.mock('react-hot-toast', () => ({
 ```
 
 ## Test Environment Setup
+
 ```javascript
 beforeEach(() => {
   // Clear store state before each test
@@ -168,7 +178,7 @@ beforeEach(() => {
     loading: false,
     error: null,
   });
-  
+
   // Clear all mocks
   jest.clearAllMocks();
 });
@@ -180,7 +190,9 @@ afterEach(() => {
 ```
 
 ## Running Tests
+
 To run these tests, add the following to your `package.json`:
+
 ```json
 {
   "scripts": {
@@ -196,8 +208,9 @@ To run these tests, add the following to your `package.json`:
 ```
 
 ## Notes
+
 - All tests should be isolated and not depend on each other
 - Mock all external dependencies (localStorage, toast, API calls)
 - Test both success and failure scenarios
 - Include edge cases and null safety checks
-- Verify state changes and side effects 
+- Verify state changes and side effects

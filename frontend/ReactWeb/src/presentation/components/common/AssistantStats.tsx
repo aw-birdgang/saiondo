@@ -35,7 +35,7 @@ export const AssistantStats: React.FC<AssistantStatsProps> = ({
         {messageCount} {t('messages') || '메시지'}
       </Caption>
       {lastUsed && (
-        <Caption size="xs" color="muted">
+        <Caption size='xs' color='muted'>
           {formatTime(lastUsed)}
         </Caption>
       )}
@@ -43,4 +43,4 @@ export const AssistantStats: React.FC<AssistantStatsProps> = ({
   );
 };
 
-AssistantStats.displayName = 'AssistantStats'; 
+AssistantStats.displayName = 'AssistantStats';

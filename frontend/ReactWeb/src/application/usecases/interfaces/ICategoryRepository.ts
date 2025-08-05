@@ -1,7 +1,7 @@
-import type { 
-  Category, 
+import type {
+  Category,
   CategoryCode,
-  CategoryStats
+  CategoryStats,
 } from '../../../domain/types/category';
 
 // Category Repository 인터페이스 - 데이터 접근만 담당
@@ -16,4 +16,4 @@ export interface ICategoryRepository {
   createCategory(category: Category): Promise<Category>;
   updateCategory(id: string, category: Partial<Category>): Promise<Category>;
   deleteCategory(id: string): Promise<boolean>;
-} 
+}

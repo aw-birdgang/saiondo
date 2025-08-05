@@ -7,10 +7,6 @@ export const withLazyLoading = <P extends object>(
   fallback?: ReactNode
 ) => {
   return (props: P) => (
-    <LazyLoader
-      component={component}
-      fallback={fallback}
-      props={props}
-    />
+    <LazyLoader component={component} fallback={fallback} props={props} />
   );
-}; 
+};

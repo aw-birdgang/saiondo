@@ -37,17 +37,23 @@ export const MOCK_CHANNELS: ChannelListItem[] = [
     lastMessage: '회의 일정 확인해주세요',
     lastMessageTime: '30분 전',
     unreadCount: 5,
-  }
+  },
 ];
 
 // 통계 데이터 계산 함수
-export const calculateChannelStats = (channels: ChannelListItem[]): ChannelStats => {
+export const calculateChannelStats = (
+  channels: ChannelListItem[]
+): ChannelStats => {
   const totalChannels = channels.length;
-  const activeChannels = channels.filter(c => 
-    c.lastMessageTime && c.lastMessageTime.includes('시간')
+  const activeChannels = channels.filter(
+    c => c.lastMessageTime && c.lastMessageTime.includes('시간')
   ).length;
-  const totalMessages = channels.reduce((sum, c) => sum + (c.unreadCount || 0), 0) + 45;
-  const unreadMessages = channels.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+  const totalMessages =
+    channels.reduce((sum, c) => sum + (c.unreadCount || 0), 0) + 45;
+  const unreadMessages = channels.reduce(
+    (sum, c) => sum + (c.unreadCount || 0),
+    0
+  );
   const memberCount = channels.reduce((sum, c) => sum + c.memberCount, 0);
 
   return {
@@ -56,7 +62,7 @@ export const calculateChannelStats = (channels: ChannelListItem[]): ChannelStats
     totalMessages,
     unreadMessages,
     averageResponseTime: '2분',
-    memberCount
+    memberCount,
   };
 };
 
@@ -67,5 +73,5 @@ export const INITIAL_CHANNEL_STATS: ChannelStats = {
   totalMessages: 0,
   unreadMessages: 0,
   averageResponseTime: '2분',
-  memberCount: 0
-}; 
+  memberCount: 0,
+};

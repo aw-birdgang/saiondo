@@ -1,5 +1,5 @@
-import React from "react";
-import { ProductCard } from "./payment";
+import React from 'react';
+import { ProductCard } from './payment';
 
 interface SubscriptionProduct {
   id: string;
@@ -19,15 +19,17 @@ interface ProductGridProps {
   className?: string;
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({ 
-  products, 
-  onPurchase, 
-  purchasePending, 
-  className = "" 
+const ProductGrid: React.FC<ProductGridProps> = ({
+  products,
+  onPurchase,
+  purchasePending,
+  className = '',
 }) => {
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${className}`}>
-      {products.map((product) => (
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${className}`}
+    >
+      {products.map(product => (
         <ProductCard
           key={product.id}
           product={product}
@@ -39,4 +41,4 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   );
 };
 
-export default ProductGrid; 
+export default ProductGrid;

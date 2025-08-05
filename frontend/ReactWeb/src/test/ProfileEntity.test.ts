@@ -2,7 +2,10 @@ import { ProfileEntity } from '../domain/entities/Profile';
 import type { Profile } from '../domain/dto/ProfileDto';
 
 describe('ProfileEntity', () => {
-  const mockProfileData: Omit<Profile, 'id' | 'userId' | 'createdAt' | 'updatedAt'> = {
+  const mockProfileData: Omit<
+    Profile,
+    'id' | 'userId' | 'createdAt' | 'updatedAt'
+  > = {
     displayName: 'Test User',
     bio: 'This is a test bio',
     avatar: 'https://example.com/avatar.jpg',
@@ -13,7 +16,7 @@ describe('ProfileEntity', () => {
       twitter: 'https://twitter.com/testuser',
       instagram: 'https://instagram.com/testuser',
       linkedin: 'https://linkedin.com/in/testuser',
-      github: 'https://github.com/testuser'
+      github: 'https://github.com/testuser',
     },
     preferences: {
       theme: 'auto',
@@ -21,20 +24,20 @@ describe('ProfileEntity', () => {
       notifications: {
         email: true,
         push: true,
-        sms: false
+        sms: false,
       },
       privacy: {
         profileVisibility: 'public',
         showOnlineStatus: true,
-        showLastSeen: true
-      }
+        showLastSeen: true,
+      },
     },
     stats: {
       followersCount: 100,
       followingCount: 50,
       postsCount: 25,
-      viewsCount: 1000
-    }
+      viewsCount: 1000,
+    },
   };
 
   describe('create', () => {
@@ -63,7 +66,7 @@ describe('ProfileEntity', () => {
 
     it('should set default values for optional fields', () => {
       const minimalData = {
-        displayName: 'Test User'
+        displayName: 'Test User',
       };
       const profile = ProfileEntity.create('user123', minimalData);
 
@@ -86,7 +89,7 @@ describe('ProfileEntity', () => {
         userId: 'user123',
         createdAt: new Date('2023-01-01'),
         updatedAt: new Date('2023-01-02'),
-        ...mockProfileData
+        ...mockProfileData,
       };
 
       const profile = ProfileEntity.fromData(existingData);
@@ -116,27 +119,27 @@ describe('ProfileEntity', () => {
     it('should throw error for bio longer than 500 characters', () => {
       const longBio = 'a'.repeat(501);
       expect(() => {
-        ProfileEntity.create('user123', { 
+        ProfileEntity.create('user123', {
           displayName: 'Test User',
-          bio: longBio 
+          bio: longBio,
         });
       }).toThrow('Bio must be less than 500 characters');
     });
 
     it('should throw error for invalid website URL', () => {
       expect(() => {
-        ProfileEntity.create('user123', { 
+        ProfileEntity.create('user123', {
           displayName: 'Test User',
-          website: 'invalid-url' 
+          website: 'invalid-url',
         });
       }).toThrow('Invalid website URL');
     });
 
     it('should accept valid website URL', () => {
       expect(() => {
-        ProfileEntity.create('user123', { 
+        ProfileEntity.create('user123', {
           displayName: 'Test User',
-          website: 'https://example.com' 
+          website: 'https://example.com',
         });
       }).not.toThrow();
     });
@@ -148,20 +151,22 @@ describe('ProfileEntity', () => {
       const updatedProfile = profile.updateProfile({
         displayName: 'Updated User',
         bio: 'Updated bio',
-        location: 'Busan, Korea'
+        location: 'Busan, Korea',
       });
 
       expect(updatedProfile.displayName).toBe('Updated User');
       expect(updatedProfile.bio).toBe('Updated bio');
       expect(updatedProfile.location).toBe('Busan, Korea');
       expect(updatedProfile.avatar).toBe('https://example.com/avatar.jpg'); // unchanged
-      expect(updatedProfile.updatedAt.getTime()).toBeGreaterThan(profile.updatedAt.getTime());
+      expect(updatedProfile.updatedAt.getTime()).toBeGreaterThan(
+        profile.updatedAt.getTime()
+      );
     });
 
     it('should preserve existing data when updating with partial data', () => {
       const profile = ProfileEntity.create('user123', mockProfileData);
       const updatedProfile = profile.updateProfile({
-        displayName: 'Updated User'
+        displayName: 'Updated User',
       });
 
       expect(updatedProfile.displayName).toBe('Updated User');
@@ -175,7 +180,7 @@ describe('ProfileEntity', () => {
       const profile = ProfileEntity.create('user123', mockProfileData);
       const updatedProfile = profile.updateStats({
         followersCount: 200,
-        postsCount: 30
+        postsCount: 30,
       });
 
       expect(updatedProfile.stats.followersCount).toBe(200);
@@ -202,9 +207,9 @@ describe('ProfileEntity', () => {
           ...profile.preferences,
           privacy: {
             ...profile.preferences.privacy,
-            profileVisibility: 'private'
-          }
-        }
+            profileVisibility: 'private',
+          },
+        },
       });
       expect(privateProfile.isPrivate()).toBe(true);
     });
@@ -215,9 +220,9 @@ describe('ProfileEntity', () => {
           ...profile.preferences,
           privacy: {
             ...profile.preferences.privacy,
-            profileVisibility: 'friends'
-          }
-        }
+            profileVisibility: 'friends',
+          },
+        },
       });
       expect(friendsProfile.isFriendsOnly()).toBe(true);
     });
@@ -240,7 +245,7 @@ describe('ProfileEntity', () => {
 
     it('should return 0 for social links count when no links', () => {
       const profileWithoutLinks = profile.updateProfile({
-        socialLinks: {}
+        socialLinks: {},
       });
       expect(profileWithoutLinks.getSocialLinksCount()).toBe(0);
     });
@@ -265,4 +270,4 @@ describe('ProfileEntity', () => {
       expect(json).toHaveProperty('updatedAt');
     });
   });
-}); 
+});

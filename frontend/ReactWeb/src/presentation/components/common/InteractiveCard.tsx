@@ -15,7 +15,7 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
   variant = 'default',
   hover = 'shadow',
   padding = 'md',
-  className = ''
+  className = '',
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
@@ -32,7 +32,7 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
 
   const getHoverClasses = () => {
     if (!onClick) return '';
-    
+
     switch (hover) {
       case 'scale':
         return 'hover:scale-[1.02] transition-transform duration-200 cursor-pointer';
@@ -70,4 +70,4 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
   );
 };
 
-InteractiveCard.displayName = 'InteractiveCard'; 
+InteractiveCard.displayName = 'InteractiveCard';

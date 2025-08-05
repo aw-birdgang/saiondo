@@ -6,7 +6,7 @@ import { AnalyticsUseCase } from '../AnalyticsUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createAnalyticsUseCase = (
-  repository: IAnalyticsRepository, 
+  repository: IAnalyticsRepository,
   cache?: ICache
 ): IAnalyticsUseCase => {
   const service = new AnalyticsService(repository, cache);
@@ -26,7 +26,7 @@ export const createMockAnalyticsUseCase = (): IAnalyticsUseCase => {
       topPages: [],
       topEvents: [],
       userRetention: 0,
-      conversionRate: 0
+      conversionRate: 0,
     }),
     analyzeUserBehavior: async () => ({
       userId: 'mock-user',
@@ -34,29 +34,29 @@ export const createMockAnalyticsUseCase = (): IAnalyticsUseCase => {
       averageSessionDuration: 0,
       mostUsedFeatures: [],
       lastActivity: new Date(),
-      engagementScore: 0
+      engagementScore: 0,
     }),
     getRealTimeActivity: async () => ({
       activeUsers: 0,
       recentEvents: [],
-      topEvents: []
+      topEvents: [],
     }),
     analyzeUserJourney: async () => ({
       firstEvent: null,
       lastEvent: null,
       totalEvents: 0,
       eventSequence: [],
-      conversionPath: []
+      conversionPath: [],
     }),
     predictUserChurn: async () => ({
       churnProbability: 0,
       riskFactors: [],
-      recommendations: []
+      recommendations: [],
     }),
     exportData: async () => '',
     getEventHistory: async () => [],
     getSessionData: async () => null,
   };
-  
+
   return createAnalyticsUseCase(mockRepository);
-}; 
+};

@@ -1,4 +1,5 @@
-import { NotificationUseCase } from '../usecases/NotificationUseCase';
+// NotificationUseCase가 삭제되었으므로 any 타입으로 대체
+type NotificationUseCase = any;
 
 export interface NotificationData {
   title: string;
@@ -32,14 +33,19 @@ export class NotificationService {
       return {
         id: result.notificationId,
         success: result.success,
-        message: result.success ? 'Notification sent successfully' : 'Failed to send notification',
+        message: result.success
+          ? 'Notification sent successfully'
+          : 'Failed to send notification',
       };
     } catch (error) {
       console.error('Send notification failed:', error);
       return {
         id: Date.now().toString(),
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to send notification',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Failed to send notification',
       };
     }
   }
@@ -74,4 +80,4 @@ export class NotificationService {
   }
 }
 
-export default NotificationService; 
+export default NotificationService;

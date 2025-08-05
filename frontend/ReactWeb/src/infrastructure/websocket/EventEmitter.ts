@@ -17,16 +17,16 @@ export class EventEmitter {
    */
   off(event: string, listener: Function): this {
     if (!this.events[event]) return this;
-    
+
     const index = this.events[event].indexOf(listener);
     if (index > -1) {
       this.events[event].splice(index, 1);
     }
-    
+
     if (this.events[event].length === 0) {
       delete this.events[event];
     }
-    
+
     return this;
   }
 
@@ -35,7 +35,7 @@ export class EventEmitter {
    */
   emit(event: string, ...args: any[]): boolean {
     if (!this.events[event]) return false;
-    
+
     this.events[event].forEach(listener => {
       try {
         listener(...args);
@@ -43,7 +43,7 @@ export class EventEmitter {
         console.error(`Error in event listener for ${event}:`, error);
       }
     });
-    
+
     return true;
   }
 
@@ -76,4 +76,4 @@ export class EventEmitter {
     }
     return this;
   }
-} 
+}

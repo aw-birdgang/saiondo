@@ -8,13 +8,9 @@ interface ChannelContainerProps {
 
 const ChannelContainer: React.FC<ChannelContainerProps> = ({
   children,
-  className
+  className,
 }) => {
-  return (
-    <div className={cn("space-y-6", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn('space-y-6', className)}>{children}</div>;
 };
 
-export default ChannelContainer; 
+export default ChannelContainer;

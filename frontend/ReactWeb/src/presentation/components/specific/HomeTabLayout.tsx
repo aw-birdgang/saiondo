@@ -1,19 +1,15 @@
-import React from "react";
+import React from 'react';
 
 interface HomeTabLayoutProps {
   children: React.ReactNode;
   className?: string;
 }
 
-const HomeTabLayout: React.FC<HomeTabLayoutProps> = ({ 
-  children, 
-  className = "" 
+const HomeTabLayout: React.FC<HomeTabLayoutProps> = ({
+  children,
+  className = '',
 }) => {
-  return (
-    <div className={`min-h-screen bg-bg ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`min-h-screen bg-bg ${className}`}>{children}</div>;
 };
 
-export default HomeTabLayout; 
+export default HomeTabLayout;

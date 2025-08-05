@@ -27,7 +27,7 @@ export abstract class BaseController implements IController {
     successfulOperations: 0,
     failedOperations: 0,
     totalExecutionTime: 0,
-    lastOperationTime: new Date()
+    lastOperationTime: new Date(),
   };
 
   constructor(controllerName: string) {
@@ -89,7 +89,7 @@ export abstract class BaseController implements IController {
     const context: ControllerContext = {
       requestId: flowId,
       timestamp: new Date(),
-      metadata: { params }
+      metadata: { params },
     };
 
     try {
@@ -121,7 +121,6 @@ export abstract class BaseController implements IController {
         this.flowTracker.completeFlow(flowId, false, result.error);
         throw result.error;
       }
-
     } catch (error) {
       this.metrics.failedOperations++;
       this.flowTracker.completeFlow(flowId, false, error);
@@ -139,7 +138,7 @@ export abstract class BaseController implements IController {
       totalFlows: this.flowTracker.getTotalFlows(),
       successRate: this.flowTracker.getSuccessRate(),
       isInitialized: this.isInitialized,
-      lastActivity: this.lastActivity
+      lastActivity: this.lastActivity,
     };
   }
 
@@ -151,10 +150,11 @@ export abstract class BaseController implements IController {
       totalOperations: this.metrics.totalOperations,
       successfulOperations: this.metrics.successfulOperations,
       failedOperations: this.metrics.failedOperations,
-      averageExecutionTime: this.metrics.totalOperations > 0
-        ? this.metrics.totalExecutionTime / this.metrics.totalOperations
-        : 0,
-      lastOperationTime: this.metrics.lastOperationTime
+      averageExecutionTime:
+        this.metrics.totalOperations > 0
+          ? this.metrics.totalExecutionTime / this.metrics.totalOperations
+          : 0,
+      lastOperationTime: this.metrics.lastOperationTime,
     };
   }
 }

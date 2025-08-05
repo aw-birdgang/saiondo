@@ -2,7 +2,12 @@ import { useState, useCallback, useMemo } from 'react';
 import { addDays } from 'date-fns';
 import { toast } from 'react-hot-toast';
 import { MOCK_EVENTS } from '../constants/calendarData';
-import type { Event, CalendarState, ViewMode, EventStats } from '../types/calendarTypes';
+import type {
+  Event,
+  CalendarState,
+  ViewMode,
+  EventStats,
+} from '../types/calendarTypes';
 
 export const useCalendarData = () => {
   const [state, setState] = useState<CalendarState>({
@@ -13,7 +18,7 @@ export const useCalendarData = () => {
     isEventFormOpen: false,
     editingEvent: null,
     selectedEventType: 'all',
-    isLoading: false
+    isLoading: false,
   });
 
   // 필터링된 이벤트
@@ -27,7 +32,7 @@ export const useCalendarData = () => {
     const stats: EventStats = {
       total: state.events.length,
       byType: {},
-      byPriority: { low: 0, medium: 0, high: 0 }
+      byPriority: { low: 0, medium: 0, high: 0 },
     };
 
     state.events.forEach(event => {
@@ -44,15 +49,19 @@ export const useCalendarData = () => {
   const goToPrevious = useCallback(() => {
     setState(prev => {
       let newDate: Date;
-      
+
       if (prev.viewMode === 'month') {
-        newDate = new Date(prev.currentDate.getFullYear(), prev.currentDate.getMonth() - 1, 1);
+        newDate = new Date(
+          prev.currentDate.getFullYear(),
+          prev.currentDate.getMonth() - 1,
+          1
+        );
       } else if (prev.viewMode === 'week') {
         newDate = addDays(prev.currentDate, -7);
       } else {
         newDate = addDays(prev.currentDate, -1);
       }
-      
+
       return { ...prev, currentDate: newDate };
     });
   }, []);
@@ -60,15 +69,19 @@ export const useCalendarData = () => {
   const goToNext = useCallback(() => {
     setState(prev => {
       let newDate: Date;
-      
+
       if (prev.viewMode === 'month') {
-        newDate = new Date(prev.currentDate.getFullYear(), prev.currentDate.getMonth() + 1, 1);
+        newDate = new Date(
+          prev.currentDate.getFullYear(),
+          prev.currentDate.getMonth() + 1,
+          1
+        );
       } else if (prev.viewMode === 'week') {
         newDate = addDays(prev.currentDate, 7);
       } else {
         newDate = addDays(prev.currentDate, 1);
       }
-      
+
       return { ...prev, currentDate: newDate };
     });
   }, []);
@@ -78,7 +91,7 @@ export const useCalendarData = () => {
     setState(prev => ({
       ...prev,
       currentDate: today,
-      selectedDate: today
+      selectedDate: today,
     }));
   }, []);
 
@@ -93,7 +106,7 @@ export const useCalendarData = () => {
       ...prev,
       selectedDate: date,
       isEventFormOpen: true,
-      editingEvent: null
+      editingEvent: null,
     }));
   }, []);
 
@@ -102,15 +115,17 @@ export const useCalendarData = () => {
     setState(prev => {
       if (prev.editingEvent) {
         // 이벤트 수정
-        const updatedEvents = prev.events.map(e => 
-          e.id === prev.editingEvent?.id ? { ...eventData, id: prev.editingEvent!.id } : e
+        const updatedEvents = prev.events.map(e =>
+          e.id === prev.editingEvent?.id
+            ? { ...eventData, id: prev.editingEvent!.id }
+            : e
         );
         toast.success('이벤트가 수정되었습니다.');
         return {
           ...prev,
           events: updatedEvents,
           isEventFormOpen: false,
-          editingEvent: null
+          editingEvent: null,
         };
       } else {
         // 새 이벤트 추가
@@ -119,7 +134,7 @@ export const useCalendarData = () => {
         return {
           ...prev,
           events: [...prev.events, newEvent],
-          isEventFormOpen: false
+          isEventFormOpen: false,
         };
       }
     });
@@ -130,7 +145,7 @@ export const useCalendarData = () => {
     setState(prev => ({
       ...prev,
       editingEvent: event,
-      isEventFormOpen: true
+      isEventFormOpen: true,
     }));
   }, []);
 
@@ -138,7 +153,7 @@ export const useCalendarData = () => {
   const handleEventDelete = useCallback((eventId: string) => {
     setState(prev => ({
       ...prev,
-      events: prev.events.filter(e => e.id !== eventId)
+      events: prev.events.filter(e => e.id !== eventId),
     }));
     toast.success('이벤트가 삭제되었습니다.');
   }, []);
@@ -148,7 +163,7 @@ export const useCalendarData = () => {
     setState(prev => ({
       ...prev,
       isEventFormOpen: false,
-      editingEvent: null
+      editingEvent: null,
     }));
   }, []);
 
@@ -158,18 +173,24 @@ export const useCalendarData = () => {
   }, []);
 
   // 이벤트 클릭
-  const handleEventClick = useCallback((event: Event) => {
-    // 이벤트 상세 보기 또는 편집 모드로 전환
-    handleEventEdit(event);
-  }, [handleEventEdit]);
+  const handleEventClick = useCallback(
+    (event: Event) => {
+      // 이벤트 상세 보기 또는 편집 모드로 전환
+      handleEventEdit(event);
+    },
+    [handleEventEdit]
+  );
 
   // 특정 날짜의 이벤트 가져오기
-  const getEventsForDate = useCallback((date: Date) => {
-    return filteredEvents.filter(event => {
-      const eventDate = new Date(event.date);
-      return eventDate.toDateString() === date.toDateString();
-    });
-  }, [filteredEvents]);
+  const getEventsForDate = useCallback(
+    (date: Date) => {
+      return filteredEvents.filter(event => {
+        const eventDate = new Date(event.date);
+        return eventDate.toDateString() === date.toDateString();
+      });
+    },
+    [filteredEvents]
+  );
 
   return {
     // 상태
@@ -196,6 +217,6 @@ export const useCalendarData = () => {
     handleEventFormClose,
     handleEventTypeChange,
     handleEventClick,
-    getEventsForDate
+    getEventsForDate,
   };
-}; 
+};

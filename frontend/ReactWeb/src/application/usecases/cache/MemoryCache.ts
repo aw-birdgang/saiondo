@@ -16,7 +16,7 @@ export class MemoryCache implements ICache {
   set<T>(key: string, value: T, ttl: number = 5 * 60 * 1000): void {
     this.cache.set(key, {
       value,
-      expires: Date.now() + ttl
+      expires: Date.now() + ttl,
     });
   }
 
@@ -42,4 +42,4 @@ export class MemoryCache implements ICache {
       }
     }
   }
-} 
+}

@@ -1,5 +1,5 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ErrorStateProps {
   title?: string;
@@ -8,33 +8,37 @@ interface ErrorStateProps {
   className?: string;
 }
 
-const ErrorState: React.FC<ErrorStateProps> = ({ 
-  title, 
-  message, 
-  onRetry, 
-  className = "" 
+const ErrorState: React.FC<ErrorStateProps> = ({
+  title,
+  message,
+  onRetry,
+  className = '',
 }) => {
   const { t } = useTranslation();
 
   return (
-    <div className={`min-h-screen bg-bg flex items-center justify-center ${className}`}>
-      <div className="max-w-md mx-auto px-6">
-        <div className="card p-8 text-center">
-          <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-3xl">⚠️</span>
+    <div
+      className={`min-h-screen bg-bg flex items-center justify-center ${className}`}
+    >
+      <div className='max-w-md mx-auto px-6'>
+        <div className='card p-8 text-center'>
+          <div className='w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6'>
+            <span className='text-3xl'>⚠️</span>
           </div>
-          <h3 className="text-xl font-bold text-txt mb-4 leading-tight">
-            {title || t("error_occurred") || "오류가 발생했습니다"}
+          <h3 className='text-xl font-bold text-txt mb-4 leading-tight'>
+            {title || t('error_occurred') || '오류가 발생했습니다'}
           </h3>
-          <p className="text-txt-secondary mb-8 leading-relaxed">
-            {message || t("error_message") || "문제가 발생했습니다. 다시 시도해주세요."}
+          <p className='text-txt-secondary mb-8 leading-relaxed'>
+            {message ||
+              t('error_message') ||
+              '문제가 발생했습니다. 다시 시도해주세요.'}
           </p>
           {onRetry && (
             <button
               onClick={onRetry}
-              className="btn btn-primary px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
+              className='btn btn-primary px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105'
             >
-              {t("retry") || "다시 시도"}
+              {t('retry') || '다시 시도'}
             </button>
           )}
         </div>
@@ -43,4 +47,4 @@ const ErrorState: React.FC<ErrorStateProps> = ({
   );
 };
 
-export default ErrorState; 
+export default ErrorState;

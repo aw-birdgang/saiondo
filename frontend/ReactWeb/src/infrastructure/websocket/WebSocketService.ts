@@ -2,7 +2,17 @@ import { EventEmitter } from './EventEmitter';
 import { toast } from 'react-hot-toast';
 
 export interface WebSocketMessage {
-  type: 'message' | 'typing' | 'user_joined' | 'user_left' | 'channel_update' | 'reaction' | 'subscribe' | 'unsubscribe' | 'ping' | 'pong';
+  type:
+    | 'message'
+    | 'typing'
+    | 'user_joined'
+    | 'user_left'
+    | 'channel_update'
+    | 'reaction'
+    | 'subscribe'
+    | 'unsubscribe'
+    | 'ping'
+    | 'pong';
   data: any;
   timestamp: number;
   senderId?: string;
@@ -43,16 +53,15 @@ export class WebSocketService extends EventEmitter {
 
     try {
       this.isConnecting = true;
-      
+
       // WebSocket 연결 생성
       this.ws = new WebSocket(`${this.config.url}?token=${this.config.token}`);
-      
+
       // 이벤트 리스너 설정
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
       this.ws.onclose = this.handleClose.bind(this);
       this.ws.onerror = this.handleError.bind(this);
-      
     } catch (error) {
       console.error('WebSocket connection failed:', error);
       this.isConnecting = false;
@@ -69,12 +78,12 @@ export class WebSocketService extends EventEmitter {
       this.ws.close();
       this.ws = null;
     }
-    
+
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
     }
-    
+
     this.isConnected = false;
     this.isConnecting = false;
     this.reconnectAttempts = 0;
@@ -103,7 +112,7 @@ export class WebSocketService extends EventEmitter {
     this.send({
       type: 'subscribe',
       data: { channelId },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -114,7 +123,7 @@ export class WebSocketService extends EventEmitter {
     this.send({
       type: 'unsubscribe',
       data: { channelId },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -125,7 +134,7 @@ export class WebSocketService extends EventEmitter {
     this.send({
       type: 'typing',
       data: { channelId, isTyping },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -139,19 +148,11 @@ export class WebSocketService extends EventEmitter {
   /**
    * 연결 열림 핸들러
    */
-  private handleOpen(): void {
-    console.log('WebSocket connected');
+  private handleOpen = (event: Event): void => {
     this.isConnected = true;
-    this.isConnecting = false;
     this.reconnectAttempts = 0;
-    
-    // 하트비트 시작
-    this.startHeartbeat();
-    
-    // 연결 성공 이벤트 발생
-    this.emit('connected');
-    toast.success('실시간 연결이 설정되었습니다.');
-  }
+    this.emit('connected', event);
+  };
 
   /**
    * 메시지 수신 핸들러
@@ -159,39 +160,39 @@ export class WebSocketService extends EventEmitter {
   private handleMessage(event: MessageEvent): void {
     try {
       const message: WebSocketMessage = JSON.parse(event.data);
-      
+
       // 메시지 타입별 처리
       switch (message.type) {
         case 'message':
           this.emit('message', message.data);
           break;
-          
+
         case 'typing':
           this.emit('typing', message.data);
           break;
-          
+
         case 'user_joined':
           this.emit('user_joined', message.data);
           toast.success(`${message.data.userName}님이 참여했습니다.`);
           break;
-          
+
         case 'user_left':
           this.emit('user_left', message.data);
           toast(`${message.data.userName}님이 나갔습니다.`);
           break;
-          
+
         case 'channel_update':
           this.emit('channel_update', message.data);
           break;
-          
+
         case 'reaction':
           this.emit('reaction', message.data);
           break;
-          
+
         case 'pong':
           // 하트비트 응답
           break;
-          
+
         default:
           console.warn('Unknown message type:', message.type);
       }
@@ -203,27 +204,25 @@ export class WebSocketService extends EventEmitter {
   /**
    * 연결 종료 핸들러
    */
-  private handleClose(event: CloseEvent): void {
-    console.log('WebSocket disconnected:', event.code, event.reason);
+  private handleClose = (event: CloseEvent): void => {
     this.isConnected = false;
-    this.isConnecting = false;
-    
-    // 하트비트 중지
+    this.emit('disconnected', event);
+
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
       this.heartbeatInterval = null;
     }
-    
-    // 연결 종료 이벤트 발생
-    this.emit('disconnected', event);
-    
+
     // 자동 재연결 시도
-    if (event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
+    if (
+      event.code !== 1000 &&
+      this.reconnectAttempts < this.maxReconnectAttempts
+    ) {
       this.scheduleReconnect();
     } else {
       toast.error('실시간 연결이 끊어졌습니다.');
     }
-  }
+  };
 
   /**
    * 에러 핸들러
@@ -238,10 +237,9 @@ export class WebSocketService extends EventEmitter {
    */
   private scheduleReconnect(): void {
     this.reconnectAttempts++;
-    const delay = this.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1);
-    
-    console.log(`Scheduling reconnect attempt ${this.reconnectAttempts} in ${delay}ms`);
-    
+    const delay =
+      this.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1);
+
     setTimeout(() => {
       if (!this.isConnected && !this.isConnecting) {
         this.connect().catch(error => {
@@ -260,7 +258,7 @@ export class WebSocketService extends EventEmitter {
         this.send({
           type: 'ping',
           data: {},
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
     }, 30000); // 30초마다 ping
@@ -273,11 +271,13 @@ let wsService: WebSocketService | null = null;
 /**
  * WebSocket 서비스 초기화
  */
-export const initializeWebSocket = (config: WebSocketConfig): WebSocketService => {
+export const initializeWebSocket = (
+  config: WebSocketConfig
+): WebSocketService => {
   if (wsService) {
     wsService.disconnect();
   }
-  
+
   wsService = new WebSocketService(config);
   return wsService;
 };
@@ -297,4 +297,4 @@ export const cleanupWebSocket = (): void => {
     wsService.disconnect();
     wsService = null;
   }
-}; 
+};

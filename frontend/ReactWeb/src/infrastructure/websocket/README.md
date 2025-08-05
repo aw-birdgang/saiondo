@@ -42,11 +42,11 @@ const wsService = initializeWebSocket({
   url: 'wss://your-websocket-server.com',
   token: 'your-auth-token',
   reconnectInterval: 3000,
-  maxReconnectAttempts: 5
+  maxReconnectAttempts: 5,
 });
 
 // Listen to events
-wsService.on('message', (data) => {
+wsService.on('message', data => {
   console.log('Received message:', data);
 });
 
@@ -58,6 +58,6 @@ wsService.on('connected', () => {
 wsService.send({
   type: 'message',
   data: { text: 'Hello world' },
-  timestamp: Date.now()
+  timestamp: Date.now(),
 });
-``` 
+```

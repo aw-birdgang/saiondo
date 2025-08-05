@@ -1,6 +1,9 @@
 import type { UserService } from '../services/UserService';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { LogoutUserRequest, LogoutUserResponse } from '../dto/LogoutUserDto';
+import type {
+  LogoutUserRequest,
+  LogoutUserResponse,
+} from '../dto/LogoutUserDto';
 
 export class LogoutUserUseCase {
   constructor(private readonly userService: UserService) {}
@@ -13,7 +16,9 @@ export class LogoutUserUseCase {
       }
 
       if (!request.accessToken || request.accessToken.trim().length === 0) {
-        throw DomainErrorFactory.createUserValidation('Access token is required');
+        throw DomainErrorFactory.createUserValidation(
+          'Access token is required'
+        );
       }
 
       // Update user's online status using UserService
@@ -32,4 +37,4 @@ export class LogoutUserUseCase {
       throw DomainErrorFactory.createUserValidation('Failed to logout user');
     }
   }
-} 
+}

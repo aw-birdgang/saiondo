@@ -101,4 +101,4 @@ export abstract class BaseMiddleware implements IControllerMiddleware {
     error: Error,
     context: ControllerContext
   ): Promise<void> | void {}
-} 
+}

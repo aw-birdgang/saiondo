@@ -20,13 +20,13 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   methods,
   selectedMethod,
   onMethodSelect,
-  className = ''
+  className = '',
 }) => {
   const [expandedMethod, setExpandedMethod] = useState<string | null>(null);
 
   const handleMethodClick = (method: PaymentMethod) => {
     if (!method.isAvailable) return;
-    
+
     if (expandedMethod === method.id) {
       setExpandedMethod(null);
     } else {
@@ -38,9 +38,9 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   if (methods.every(method => !method.isAvailable)) {
     return (
       <EmptyState
-        icon="💳"
-        title="결제 방법 없음"
-        description="현재 사용 가능한 결제 방법이 없습니다."
+        icon='💳'
+        title='결제 방법 없음'
+        description='현재 사용 가능한 결제 방법이 없습니다.'
         className={className}
       />
     );
@@ -48,11 +48,11 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      <h3 className="text-xl font-bold text-txt mb-6 leading-tight">
+      <h3 className='text-xl font-bold text-txt mb-6 leading-tight'>
         결제 방법 선택
       </h3>
-      
-      {methods.map((method) => (
+
+      {methods.map(method => (
         <PaymentMethodCard
           key={method.id}
           method={method}
@@ -65,4 +65,4 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   );
 };
 
-export default PaymentMethodSelector; 
+export default PaymentMethodSelector;

@@ -7,7 +7,7 @@ import {
   AccountHeader,
   SettingsGrid,
   AccountStatus,
-  LogoutSection
+  LogoutSection,
 } from './components';
 import { SETTINGS_OPTIONS } from './data/settingsOptions';
 
@@ -15,10 +15,10 @@ const AccountManagement: React.FC<AccountManagementProps> = ({
   onLogout,
   onSettings,
   isLoading,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       <AccountHeader />
       <SettingsGrid options={SETTINGS_OPTIONS} onSettings={onSettings} />
       <AccountStatus />
@@ -27,4 +27,4 @@ const AccountManagement: React.FC<AccountManagementProps> = ({
   );
 };
 
-export default AccountManagement; 
+export default AccountManagement;

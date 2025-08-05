@@ -9,12 +9,16 @@ interface AccessibilityContextType {
   toggleHighContrast: () => void;
 }
 
-const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
+const AccessibilityContext = createContext<
+  AccessibilityContextType | undefined
+>(undefined);
 
 export const useAccessibility = () => {
   const context = useContext(AccessibilityContext);
   if (!context) {
-    throw new Error('useAccessibility must be used within an AccessibilityProvider');
+    throw new Error(
+      'useAccessibility must be used within an AccessibilityProvider'
+    );
   }
   return context;
 };
@@ -23,10 +27,14 @@ interface AccessibilityProviderProps {
   children: React.ReactNode;
 }
 
-export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ children }) => {
+export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
+  children,
+}) => {
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [isHighContrast, setIsHighContrast] = useState(false);
-  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
+  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>(
+    'medium'
+  );
 
   // Check for user's motion preferences
   useEffect(() => {
@@ -44,7 +52,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
   // Apply accessibility settings to document
   useEffect(() => {
     const root = document.documentElement;
-    
+
     // Apply reduced motion
     if (isReducedMotion) {
       root.style.setProperty('--animation-duration', '0s');
@@ -62,9 +70,9 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
     }
 
     // Apply font size
-    root.style.setProperty('--font-size-multiplier', 
-      fontSize === 'small' ? '0.875' : 
-      fontSize === 'large' ? '1.125' : '1'
+    root.style.setProperty(
+      '--font-size-multiplier',
+      fontSize === 'small' ? '0.875' : fontSize === 'large' ? '1.125' : '1'
     );
   }, [isReducedMotion, isHighContrast, fontSize]);
 
@@ -89,33 +97,34 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
 
 // Accessibility controls component
 export const AccessibilityControls: React.FC = () => {
-  const { 
-    isReducedMotion, 
-    isHighContrast, 
-    fontSize, 
-    setFontSize, 
-    toggleReducedMotion, 
-    toggleHighContrast 
+  const {
+    isReducedMotion,
+    isHighContrast,
+    fontSize,
+    setFontSize,
+    toggleReducedMotion,
+    toggleHighContrast,
   } = useAccessibility();
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
-      <div className="bg-surface border border-border rounded-lg shadow-lg p-4 space-y-3 min-w-64">
-        <h3 className="text-sm font-semibold text-txt">접근성 설정</h3>
-        
+    <div className='fixed bottom-4 right-4 z-50'>
+      <div className='bg-surface border border-border rounded-lg shadow-lg p-4 space-y-3 min-w-64'>
+        <h3 className='text-sm font-semibold text-txt'>접근성 설정</h3>
+
         {/* Font Size */}
-        <div className="space-y-2">
-          <label className="text-xs text-txt-secondary">글자 크기</label>
-          <div className="flex space-x-2">
-            {(['small', 'medium', 'large'] as const).map((size) => (
+        <div className='space-y-2'>
+          <label className='text-xs text-txt-secondary'>글자 크기</label>
+          <div className='flex space-x-2'>
+            {(['small', 'medium', 'large'] as const).map(size => (
               <button
                 key={size}
                 onClick={() => setFontSize(size)}
                 className={`
                   px-3 py-1 text-xs rounded border transition-colors
-                  ${fontSize === size 
-                    ? 'bg-primary text-on-primary border-primary' 
-                    : 'bg-surface text-txt border-border hover:bg-focus'
+                  ${
+                    fontSize === size
+                      ? 'bg-primary text-on-primary border-primary'
+                      : 'bg-surface text-txt border-border hover:bg-focus'
                   }
                 `}
               >
@@ -128,15 +137,17 @@ export const AccessibilityControls: React.FC = () => {
         </div>
 
         {/* High Contrast */}
-        <div className="flex items-center justify-between">
-          <label className="text-xs text-txt-secondary">고대비 모드</label>
+        <div className='flex items-center justify-between'>
+          <label className='text-xs text-txt-secondary'>고대비 모드</label>
           <button
             onClick={toggleHighContrast}
             className={`
               w-10 h-6 rounded-full transition-colors relative
               ${isHighContrast ? 'bg-primary' : 'bg-border'}
             `}
-            aria-label={isHighContrast ? '고대비 모드 비활성화' : '고대비 모드 활성화'}
+            aria-label={
+              isHighContrast ? '고대비 모드 비활성화' : '고대비 모드 활성화'
+            }
           >
             <div
               className={`
@@ -148,15 +159,17 @@ export const AccessibilityControls: React.FC = () => {
         </div>
 
         {/* Reduced Motion */}
-        <div className="flex items-center justify-between">
-          <label className="text-xs text-txt-secondary">모션 줄이기</label>
+        <div className='flex items-center justify-between'>
+          <label className='text-xs text-txt-secondary'>모션 줄이기</label>
           <button
             onClick={toggleReducedMotion}
             className={`
               w-10 h-6 rounded-full transition-colors relative
               ${isReducedMotion ? 'bg-primary' : 'bg-border'}
             `}
-            aria-label={isReducedMotion ? '모션 줄이기 비활성화' : '모션 줄이기 활성화'}
+            aria-label={
+              isReducedMotion ? '모션 줄이기 비활성화' : '모션 줄이기 활성화'
+            }
           >
             <div
               className={`
@@ -171,4 +184,4 @@ export const AccessibilityControls: React.FC = () => {
   );
 };
 
-AccessibilityProvider.displayName = 'AccessibilityProvider'; 
+AccessibilityProvider.displayName = 'AccessibilityProvider';

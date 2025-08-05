@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {useNavigate} from "react-router-dom";
-import {useAuthStore} from '../../../stores/authStore';
-import {useUserStore} from '../../../stores/userStore';
-import {useChannelStore} from '../../../stores/channelStore';
-import {useDataLoader} from "../../hooks/useDataLoader";
-import {useToastContext} from "../../providers/ToastProvider";
-import {AIChatWidget} from "../../components/chat/AIChatWidget";
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../../stores/authStore';
+import { useUserStore } from '../../../stores/userStore';
+import { useChannelStore } from '../../../stores/channelStore';
+import { useDataLoader } from '../../hooks/useDataLoader';
+import { useToastContext } from '../../providers/ToastProvider';
+import { AIChatWidget } from '../../components/chat/AIChatWidget';
 import {
   ActivityListSection,
   AIInfoWidget,
@@ -17,10 +17,9 @@ import {
   QuickActionsSection,
   SearchSection,
   StatsGrid,
-  SystemStatusSection
-} from "../../components/specific/home";
-import {useHomeData} from "./hooks/useHomeData";
-
+  SystemStatusSection,
+} from '../../components/specific/home';
+import { useHomeData } from './hooks/useHomeData';
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -42,7 +41,7 @@ const HomePage: React.FC = () => {
     systemStatus,
     notifications,
     isLoading: dataLoading,
-    refreshData
+    refreshData,
   } = useHomeData();
 
   // Animation trigger
@@ -73,7 +72,7 @@ const HomePage: React.FC = () => {
           '취미 활동',
           '건강 관리',
           '재정 관리',
-          '시간 관리'
+          '시간 관리',
         ];
         setSearchSuggestions(suggestions);
       } catch (error) {

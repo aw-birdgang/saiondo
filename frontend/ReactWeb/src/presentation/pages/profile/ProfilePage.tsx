@@ -9,7 +9,7 @@ import {
   ProfileActions,
   ProfilePosts,
   ProfileFollowers,
-  ProfileFollowing
+  ProfileFollowing,
 } from '../../components/specific/profile';
 import { LoadingState } from '../../components/common';
 import { ErrorState } from '../../components/specific';
@@ -40,7 +40,7 @@ const ProfilePage: React.FC = () => {
     handleFollow,
     handleUnfollow,
     handleTabChange,
-    handleRefresh
+    handleRefresh,
   } = useProfileData(userId);
 
   if (isLoading) {
@@ -49,15 +49,12 @@ const ProfilePage: React.FC = () => {
 
   if (isError || !profile) {
     return (
-      <ErrorState
-        message={t('profile_not_found')}
-        onRetry={handleRefresh}
-      />
+      <ErrorState message={t('profile_not_found')} onRetry={handleRefresh} />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className='min-h-screen bg-gray-50'>
       {/* Profile Header */}
       <ProfileHeader
         profile={profile}
@@ -67,10 +64,10 @@ const ProfilePage: React.FC = () => {
         onUnfollow={handleUnfollow}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Left Column - Profile Info & Actions */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className='lg:col-span-1 space-y-6'>
             <ProfileInfo
               profile={profile}
               isEditing={isEditing}
@@ -84,25 +81,39 @@ const ProfilePage: React.FC = () => {
             {isOwnProfile && (
               <ProfileActions
                 onEdit={handleEditProfile}
-                onSettings={() => {/* TODO: Navigate to settings */}}
+                onSettings={() => {
+                  /* TODO: Navigate to settings */
+                }}
               />
             )}
           </div>
 
           {/* Right Column - Content Tabs */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow">
+          <div className='lg:col-span-2'>
+            <div className='bg-white rounded-lg shadow'>
               {/* Tab Navigation */}
-              <div className="border-b border-gray-200">
-                <nav className="-mb-px flex space-x-8 px-6">
+              <div className='border-b border-gray-200'>
+                <nav className='-mb-px flex space-x-8 px-6'>
                   {[
                     { key: 'posts', label: t('posts'), count: posts.length },
-                    { key: 'followers', label: t('followers'), count: followers.length },
-                    { key: 'following', label: t('following'), count: following.length }
-                  ].map((tab) => (
+                    {
+                      key: 'followers',
+                      label: t('followers'),
+                      count: followers.length,
+                    },
+                    {
+                      key: 'following',
+                      label: t('following'),
+                      count: following.length,
+                    },
+                  ].map(tab => (
                     <button
                       key={tab.key}
-                      onClick={() => handleTabChange(tab.key as 'posts' | 'followers' | 'following')}
+                      onClick={() =>
+                        handleTabChange(
+                          tab.key as 'posts' | 'followers' | 'following'
+                        )
+                      }
                       className={`py-4 px-1 border-b-2 font-medium text-sm ${
                         activeTab === tab.key
                           ? 'border-blue-500 text-blue-600'
@@ -111,7 +122,7 @@ const ProfilePage: React.FC = () => {
                     >
                       {tab.label}
                       {tab.count > 0 && (
-                        <span className="ml-2 bg-gray-100 text-gray-900 py-0.5 px-2.5 rounded-full text-xs">
+                        <span className='ml-2 bg-gray-100 text-gray-900 py-0.5 px-2.5 rounded-full text-xs'>
                           {tab.count}
                         </span>
                       )}
@@ -121,10 +132,8 @@ const ProfilePage: React.FC = () => {
               </div>
 
               {/* Tab Content */}
-              <div className="p-6">
-                {activeTab === 'posts' && (
-                  <ProfilePosts posts={posts} />
-                )}
+              <div className='p-6'>
+                {activeTab === 'posts' && <ProfilePosts posts={posts} />}
                 {activeTab === 'followers' && (
                   <ProfileFollowers followers={followers} />
                 )}
@@ -140,4 +149,4 @@ const ProfilePage: React.FC = () => {
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

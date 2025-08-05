@@ -28,11 +28,26 @@ export interface UserEvent {
 
 // Analytics Repository 인터페이스 - 데이터 접근만 담당
 export interface IAnalyticsRepository {
-  trackEvent(userId: string, eventType: string, properties?: Record<string, any>, sessionId?: string): Promise<void>;
-  startSession(userId: string, userAgent?: string, ipAddress?: string): Promise<string>;
+  trackEvent(
+    userId: string,
+    eventType: string,
+    properties?: Record<string, any>,
+    sessionId?: string
+  ): Promise<void>;
+  startSession(
+    userId: string,
+    userAgent?: string,
+    ipAddress?: string
+  ): Promise<string>;
   endSession(sessionId: string): Promise<void>;
-  generateAnalyticsReport(timeRange: { start: Date; end: Date }): Promise<AnalyticsReport>;
-  analyzeUserBehavior(userId: string, timeRange: { start: Date; end: Date }): Promise<UserBehavior>;
+  generateAnalyticsReport(timeRange: {
+    start: Date;
+    end: Date;
+  }): Promise<AnalyticsReport>;
+  analyzeUserBehavior(
+    userId: string,
+    timeRange: { start: Date; end: Date }
+  ): Promise<UserBehavior>;
   getRealTimeActivity(): Promise<{
     activeUsers: number;
     recentEvents: UserEvent[];
@@ -53,4 +68,4 @@ export interface IAnalyticsRepository {
   exportData(format: 'json' | 'csv'): Promise<string>;
   getEventHistory(userId: string, limit?: number): Promise<UserEvent[]>;
   getSessionData(sessionId: string): Promise<any>;
-} 
+}

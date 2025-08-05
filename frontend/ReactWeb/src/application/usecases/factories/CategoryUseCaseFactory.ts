@@ -6,7 +6,7 @@ import { CategoryUseCase } from '../CategoryUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createCategoryUseCase = (
-  repository: ICategoryRepository, 
+  repository: ICategoryRepository,
   cache?: ICache
 ): ICategoryUseCase => {
   const service = new CategoryService(repository, cache);
@@ -22,32 +22,32 @@ export const createMockCategoryUseCase = (): ICategoryUseCase => {
     getCategoryCodeById: async () => null,
     searchCategories: async () => [],
     searchCategoryCodes: async () => [],
-    getCategoryStats: async () => ({ 
-      totalCategories: 0, 
+    getCategoryStats: async () => ({
+      totalCategories: 0,
       totalCodes: 0,
       byCategory: {},
-      popularCategories: []
+      popularCategories: [],
     }),
-    createCategory: async () => ({ 
-      id: 'mock-id', 
-      name: 'Mock Category', 
+    createCategory: async () => ({
+      id: 'mock-id',
+      name: 'Mock Category',
       description: '',
       icon: '📋',
       color: '#000000',
       examples: [],
-      tips: []
+      tips: [],
     }),
-    updateCategory: async () => ({ 
-      id: 'mock-id', 
-      name: 'Updated Mock Category', 
+    updateCategory: async () => ({
+      id: 'mock-id',
+      name: 'Updated Mock Category',
       description: '',
       icon: '📋',
       color: '#000000',
       examples: [],
-      tips: []
+      tips: [],
     }),
     deleteCategory: async () => true,
   };
-  
+
   return createCategoryUseCase(mockRepository);
-}; 
+};

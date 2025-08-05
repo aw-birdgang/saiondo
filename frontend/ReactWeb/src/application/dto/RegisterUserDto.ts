@@ -15,4 +15,4 @@ export interface RegisterUserResponse {
   user: any; // User DTO
   accessToken: string;
   refreshToken: string;
-} 
+}

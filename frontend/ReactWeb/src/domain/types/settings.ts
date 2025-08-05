@@ -61,4 +61,4 @@ export interface SettingsUpdateRequest {
   privacy?: Partial<PrivacySettings>;
   accessibility?: Partial<AccessibilitySettings>;
   display?: Partial<DisplaySettings>;
-} 
+}

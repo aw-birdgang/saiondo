@@ -32,4 +32,4 @@ export class ChannelId {
   equals(other: ChannelId): boolean {
     return this.value === other.value;
   }
-} 
+}

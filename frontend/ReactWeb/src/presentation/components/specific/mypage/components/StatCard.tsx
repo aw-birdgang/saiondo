@@ -20,7 +20,7 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, onClick }) => {
       '총 메시지': '💬',
       '분석 횟수': '📊',
       '참여 채널': '🏠',
-      '평균 점수': '📈'
+      '평균 점수': '📈',
     };
     return iconMap[label] || '📊';
   };
@@ -34,16 +34,18 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, onClick }) => {
       'from-pink-500 to-pink-600',
       'from-indigo-500 to-indigo-600',
       'from-teal-500 to-teal-600',
-      'from-red-500 to-red-600'
+      'from-red-500 to-red-600',
     ];
     return colors[index % colors.length];
   };
 
   const getTrendColor = (trend?: string) => {
-    if (!trend) return "text-blue-600 bg-blue-100 dark:bg-blue-900/20";
-    if (trend.startsWith('+')) return "text-green-600 bg-green-100 dark:bg-green-900/20";
-    if (trend.startsWith('-')) return "text-red-600 bg-red-100 dark:bg-red-900/20";
-    return "text-blue-600 bg-blue-100 dark:bg-blue-900/20";
+    if (!trend) return 'text-blue-600 bg-blue-100 dark:bg-blue-900/20';
+    if (trend.startsWith('+'))
+      return 'text-green-600 bg-green-100 dark:bg-green-900/20';
+    if (trend.startsWith('-'))
+      return 'text-red-600 bg-red-100 dark:bg-red-900/20';
+    return 'text-blue-600 bg-blue-100 dark:bg-blue-900/20';
   };
 
   const getTrendIcon = (trend?: string) => {
@@ -56,10 +58,10 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, onClick }) => {
   return (
     <div
       className={`group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 cursor-pointer`}
-      role="button"
+      role='button'
       tabIndex={0}
       aria-label={`${stat.label}: ${stat.value}`}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           onClick?.();
@@ -68,36 +70,40 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, onClick }) => {
       onClick={onClick}
     >
       {/* 배경 그라데이션 */}
-      <div className={`absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity duration-300 ${getStatColor(index)}`} />
-      
-      <div className="relative p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className={`w-12 h-12 rounded-lg bg-gradient-to-br flex items-center justify-center text-white text-xl ${getStatColor(index)}`}>
+      <div
+        className={`absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity duration-300 ${getStatColor(index)}`}
+      />
+
+      <div className='relative p-6'>
+        <div className='flex items-center justify-between mb-4'>
+          <div
+            className={`w-12 h-12 rounded-lg bg-gradient-to-br flex items-center justify-center text-white text-xl ${getStatColor(index)}`}
+          >
             {getStatIcon(stat.label)}
           </div>
-          
+
           {stat.trend && (
-            <div className={`flex items-center text-xs font-medium px-2 py-1 rounded-full transition-all duration-200 ${getTrendColor(stat.trend)}`}>
-              <span className="mr-1">
-                {getTrendIcon(stat.trend)}
-              </span>
+            <div
+              className={`flex items-center text-xs font-medium px-2 py-1 rounded-full transition-all duration-200 ${getTrendColor(stat.trend)}`}
+            >
+              <span className='mr-1'>{getTrendIcon(stat.trend)}</span>
               {stat.trend}
             </div>
           )}
         </div>
-        
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+
+        <div className='space-y-2'>
+          <p className='text-sm font-medium text-gray-600 dark:text-gray-300'>
             {stat.label}
           </p>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white">
+          <p className='text-3xl font-bold text-gray-900 dark:text-white'>
             {stat.value}
           </p>
         </div>
-        
+
         {/* 호버 시 표시될 추가 정보 */}
-        <div className="absolute inset-0 bg-black/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl flex items-center justify-center">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full">
+        <div className='absolute inset-0 bg-black/5 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl flex items-center justify-center'>
+          <span className='text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/90 dark:bg-gray-800/90 px-3 py-1 rounded-full'>
             자세히 보기
           </span>
         </div>
@@ -106,4 +112,4 @@ const StatCard: React.FC<StatCardProps> = ({ stat, index, onClick }) => {
   );
 };
 
-export default StatCard; 
+export default StatCard;

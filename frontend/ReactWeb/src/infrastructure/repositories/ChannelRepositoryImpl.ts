@@ -16,32 +16,44 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to find channel by ID');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to find channel by ID'
+      );
     }
   }
 
   async save(channel: ChannelEntity): Promise<ChannelEntity> {
     try {
       const channelData = channel.toJSON();
-      const response = await this.apiClient.post<Channel>('/channels', channelData);
+      const response = await this.apiClient.post<Channel>(
+        '/channels',
+        channelData
+      );
       return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to save channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to save channel'
+      );
     }
   }
 
   async update(id: string, channel: Partial<Channel>): Promise<ChannelEntity> {
     try {
-      const response = await this.apiClient.put<Channel>(`/channels/${id}`, channel);
+      const response = await this.apiClient.put<Channel>(
+        `/channels/${id}`,
+        channel
+      );
       return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to update channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to update channel'
+      );
     }
   }
 
@@ -52,7 +64,9 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to delete channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to delete channel'
+      );
     }
   }
 
@@ -65,31 +79,43 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to get all channels');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to get all channels'
+      );
     }
   }
 
   async findByUserId(userId: string): Promise<ChannelEntity[]> {
     try {
-      const response = await this.apiClient.get<Channel[]>(`/channels/user/${userId}`);
+      const response = await this.apiClient.get<Channel[]>(
+        `/channels/user/${userId}`
+      );
       return response.map(channel => ChannelEntity.fromData(channel));
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to get channels by user ID');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to get channels by user ID'
+      );
     }
   }
 
-  async findByType(type: 'public' | 'private' | 'direct'): Promise<ChannelEntity[]> {
+  async findByType(
+    type: 'public' | 'private' | 'direct'
+  ): Promise<ChannelEntity[]> {
     try {
-      const response = await this.apiClient.get<Channel[]>(`/channels/type/${type}`);
+      const response = await this.apiClient.get<Channel[]>(
+        `/channels/type/${type}`
+      );
       return response.map(channel => ChannelEntity.fromData(channel));
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to get channels by type');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to get channels by type'
+      );
     }
   }
 
@@ -102,17 +128,25 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       }
 
       const updatedChannel = currentChannel.addMember(userId);
-      const response = await this.apiClient.post<Channel>(`/channels/${channelId}/members`, { userId });
+      const response = await this.apiClient.post<Channel>(
+        `/channels/${channelId}/members`,
+        { userId }
+      );
       return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to add member to channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to add member to channel'
+      );
     }
   }
 
-  async removeMember(channelId: string, userId: string): Promise<ChannelEntity> {
+  async removeMember(
+    channelId: string,
+    userId: string
+  ): Promise<ChannelEntity> {
     try {
       const currentChannel = await this.findById(channelId);
       if (!currentChannel) {
@@ -120,13 +154,17 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       }
 
       const updatedChannel = currentChannel.removeMember(userId);
-      const response = await this.apiClient.delete<Channel>(`/channels/${channelId}/members/${userId}`);
+      const response = await this.apiClient.delete<Channel>(
+        `/channels/${channelId}/members/${userId}`
+      );
       return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to remove member from channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to remove member from channel'
+      );
     }
   }
 
@@ -142,7 +180,9 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to check channel membership');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to check channel membership'
+      );
     }
   }
 
@@ -154,13 +194,18 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       }
 
       const updatedChannel = currentChannel.updateLastMessage();
-      const response = await this.apiClient.put<Channel>(`/channels/${channelId}/last-message`, {});
+      const response = await this.apiClient.put<Channel>(
+        `/channels/${channelId}/last-message`,
+        {}
+      );
       return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to update last message');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to update last message'
+      );
     }
   }
 
@@ -172,13 +217,18 @@ export class ChannelRepositoryImpl implements IChannelRepository {
       }
 
       const updatedChannel = currentChannel.markAsRead();
-      const response = await this.apiClient.put<Channel>(`/channels/${channelId}/mark-read`, {});
+      const response = await this.apiClient.put<Channel>(
+        `/channels/${channelId}/mark-read`,
+        {}
+      );
       return ChannelEntity.fromData(response);
     } catch (error) {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to mark channel as read');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to mark channel as read'
+      );
     }
   }
-} 
+}

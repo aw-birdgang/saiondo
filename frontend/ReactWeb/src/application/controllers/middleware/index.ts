@@ -10,20 +10,26 @@ export { ValidationMiddleware } from './ValidationMiddleware';
 
 // 미들웨어 팩토리 함수
 export const createDefaultMiddlewareChain = () => {
-  const { MiddlewareChain, ValidationMiddleware, LoggingMiddleware, PerformanceMiddleware, CachingMiddleware } = require('./');
+  const {
+    MiddlewareChain,
+    ValidationMiddleware,
+    LoggingMiddleware,
+    PerformanceMiddleware,
+    CachingMiddleware,
+  } = require('./');
   const chain = new MiddlewareChain();
-  
+
   // 우선순위 순서대로 미들웨어 추가
-  chain.addMiddleware(new ValidationMiddleware());    // 우선순위: 5
-  chain.addMiddleware(new LoggingMiddleware());       // 우선순위: 10
-  chain.addMiddleware(new PerformanceMiddleware());   // 우선순위: 20
-  chain.addMiddleware(new CachingMiddleware());       // 우선순위: 30
-  
+  chain.addMiddleware(new ValidationMiddleware()); // 우선순위: 5
+  chain.addMiddleware(new LoggingMiddleware()); // 우선순위: 10
+  chain.addMiddleware(new PerformanceMiddleware()); // 우선순위: 20
+  chain.addMiddleware(new CachingMiddleware()); // 우선순위: 30
+
   return chain;
 };
 
 // 미들웨어 타입 정의
-export type MiddlewareType = 
+export type MiddlewareType =
   | 'validation'
   | 'logging'
   | 'performance'
@@ -31,8 +37,13 @@ export type MiddlewareType =
 
 // 미들웨어 생성 함수
 export const createMiddleware = (type: MiddlewareType) => {
-  const { ValidationMiddleware, LoggingMiddleware, PerformanceMiddleware, CachingMiddleware } = require('./');
-  
+  const {
+    ValidationMiddleware,
+    LoggingMiddleware,
+    PerformanceMiddleware,
+    CachingMiddleware,
+  } = require('./');
+
   switch (type) {
     case 'validation':
       return new ValidationMiddleware();
@@ -45,4 +56,4 @@ export const createMiddleware = (type: MiddlewareType) => {
     default:
       throw new Error(`Unknown middleware type: ${type}`);
   }
-}; 
+};

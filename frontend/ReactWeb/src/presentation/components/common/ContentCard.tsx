@@ -11,7 +11,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   children,
   variant = 'default',
   padding = 'md',
-  className = ''
+  className = '',
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
@@ -42,10 +42,12 @@ const ContentCard: React.FC<ContentCardProps> = ({
   };
 
   return (
-    <div className={`rounded-xl transition-all duration-200 hover:shadow-md ${getVariantClasses()} ${getPaddingClasses()} ${className}`}>
+    <div
+      className={`rounded-xl transition-all duration-200 hover:shadow-md ${getVariantClasses()} ${getPaddingClasses()} ${className}`}
+    >
       {children}
     </div>
   );
 };
 
-export default ContentCard; 
+export default ContentCard;

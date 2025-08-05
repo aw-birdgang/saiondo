@@ -31,7 +31,9 @@ interface ControllerProviderProps {
 /**
  * Controller Provider - 모든 Controller 인스턴스를 제공
  */
-export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children }) => {
+export const ControllerProvider: React.FC<ControllerProviderProps> = ({
+  children,
+}) => {
   const [controllers, setControllers] = useState<Controllers | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const logger = new Logger('ControllerProvider');
@@ -40,9 +42,9 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
     const initializeControllers = async () => {
       try {
         logger.info('Initializing controllers');
-        
+
         const factory = ControllerFactory.getInstance();
-        
+
         // 이미 초기화된 컨트롤러가 있는지 확인
         const existingControllers = factory.getAllControllers();
         if (Object.keys(existingControllers).length > 0) {
@@ -59,7 +61,7 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
           setIsInitialized(true);
           return;
         }
-        
+
         // Controller 인스턴스들을 생성
         const controllerInstances: Controllers = {
           userController: factory.createController('user'),
@@ -72,10 +74,10 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
 
         // 모든 Controller 초기화
         await factory.initializeAllControllers();
-        
+
         setControllers(controllerInstances);
         setIsInitialized(true);
-        
+
         logger.info('Controllers initialized successfully');
       } catch (error) {
         logger.error('Failed to initialize controllers:', error);
@@ -96,10 +98,10 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
 
   if (!isInitialized || !controllers) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Initializing Controllers...</p>
+      <div className='flex items-center justify-center min-h-screen'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto'></div>
+          <p className='mt-4 text-gray-600'>Initializing Controllers...</p>
         </div>
       </div>
     );
@@ -117,11 +119,11 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({ children
  */
 export const useControllers = (): Controllers => {
   const context = useContext(ControllerContext);
-  
+
   if (!context) {
     throw new Error('useControllers must be used within a ControllerProvider');
   }
-  
+
   return context;
 };
 
@@ -163,15 +165,16 @@ export const useAnalyticsController = (): IController => {
  */
 export const useControllerStats = () => {
   const controllers = useControllers();
-  
+
   const stats = {
     userController: controllers.userController.getControllerInfo(),
     channelController: controllers.channelController.getControllerInfo(),
     messageController: controllers.messageController.getControllerInfo(),
-    notificationController: controllers.notificationController.getControllerInfo(),
+    notificationController:
+      controllers.notificationController.getControllerInfo(),
     fileController: controllers.fileController.getControllerInfo(),
     analyticsController: controllers.analyticsController.getControllerInfo(),
   };
-  
+
   return stats;
-}; 
+};

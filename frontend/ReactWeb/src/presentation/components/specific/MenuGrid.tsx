@@ -1,5 +1,5 @@
-import React from "react";
-import MenuCard from "./MenuCard";
+import React from 'react';
+import MenuCard from './MenuCard';
 
 interface MenuItem {
   id: string;
@@ -14,14 +14,14 @@ interface MenuGridProps {
   className?: string;
 }
 
-const MenuGrid: React.FC<MenuGridProps> = ({ items, className = "" }) => {
+const MenuGrid: React.FC<MenuGridProps> = ({ items, className = '' }) => {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 ${className}`}>
-      {items.map((item) => (
+      {items.map(item => (
         <MenuCard key={item.id} item={item} />
       ))}
     </div>
   );
 };
 
-export default MenuGrid; 
+export default MenuGrid;

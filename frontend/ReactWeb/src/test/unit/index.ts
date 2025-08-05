@@ -12,4 +12,4 @@ export const createMockRepository = <T>(returnValue: T) => ({
   save: () => Promise.resolve(returnValue),
   update: () => Promise.resolve(returnValue),
   delete: () => Promise.resolve(true),
-}); 
+});

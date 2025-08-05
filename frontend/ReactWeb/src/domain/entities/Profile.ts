@@ -44,7 +44,10 @@ export class ProfileEntity {
   }
 
   // Factory methods
-  static create(userId: string, profileData: Omit<Profile, 'id' | 'userId' | 'createdAt' | 'updatedAt'>): ProfileEntity {
+  static create(
+    userId: string,
+    profileData: Omit<Profile, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
+  ): ProfileEntity {
     return new ProfileEntity(
       crypto.randomUUID(),
       userId,
@@ -64,10 +67,12 @@ export class ProfileEntity {
           sms: profileData.preferences?.notifications?.sms ?? false,
         },
         privacy: {
-          profileVisibility: profileData.preferences?.privacy?.profileVisibility || 'public',
-          showOnlineStatus: profileData.preferences?.privacy?.showOnlineStatus ?? true,
+          profileVisibility:
+            profileData.preferences?.privacy?.profileVisibility || 'public',
+          showOnlineStatus:
+            profileData.preferences?.privacy?.showOnlineStatus ?? true,
           showLastSeen: profileData.preferences?.privacy?.showLastSeen ?? true,
-        }
+        },
       },
       {
         followersCount: profileData.stats?.followersCount || 0,
@@ -100,10 +105,12 @@ export class ProfileEntity {
           sms: profileData.preferences?.notifications?.sms ?? false,
         },
         privacy: {
-          profileVisibility: profileData.preferences?.privacy?.profileVisibility || 'public',
-          showOnlineStatus: profileData.preferences?.privacy?.showOnlineStatus ?? true,
+          profileVisibility:
+            profileData.preferences?.privacy?.profileVisibility || 'public',
+          showOnlineStatus:
+            profileData.preferences?.privacy?.showOnlineStatus ?? true,
           showLastSeen: profileData.preferences?.privacy?.showLastSeen ?? true,
-        }
+        },
       },
       {
         followersCount: profileData.stats?.followersCount || 0,
@@ -121,23 +128,23 @@ export class ProfileEntity {
     if (!this._id || this._id.trim().length === 0) {
       throw new Error('Profile ID is required');
     }
-    
+
     if (!this._userId || this._userId.trim().length === 0) {
       throw new Error('User ID is required');
     }
-    
+
     if (!this._displayName || this._displayName.trim().length < 1) {
       throw new Error('Display name is required');
     }
-    
+
     if (this._displayName.length > 50) {
       throw new Error('Display name must be less than 50 characters');
     }
-    
+
     if (this._bio && this._bio.length > 500) {
       throw new Error('Bio must be less than 500 characters');
     }
-    
+
     if (this._website && !this.isValidUrl(this._website)) {
       throw new Error('Invalid website URL');
     }
@@ -153,7 +160,9 @@ export class ProfileEntity {
   }
 
   // Business methods
-  updateProfile(updates: Partial<Omit<Profile, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>): ProfileEntity {
+  updateProfile(
+    updates: Partial<Omit<Profile, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>
+  ): ProfileEntity {
     return new ProfileEntity(
       this._id,
       this._userId,
@@ -168,19 +177,33 @@ export class ProfileEntity {
         theme: updates.preferences?.theme ?? this._preferences.theme,
         language: updates.preferences?.language ?? this._preferences.language,
         notifications: {
-          email: updates.preferences?.notifications?.email ?? this._preferences.notifications.email,
-          push: updates.preferences?.notifications?.push ?? this._preferences.notifications.push,
-          sms: updates.preferences?.notifications?.sms ?? this._preferences.notifications.sms,
+          email:
+            updates.preferences?.notifications?.email ??
+            this._preferences.notifications.email,
+          push:
+            updates.preferences?.notifications?.push ??
+            this._preferences.notifications.push,
+          sms:
+            updates.preferences?.notifications?.sms ??
+            this._preferences.notifications.sms,
         },
         privacy: {
-          profileVisibility: updates.preferences?.privacy?.profileVisibility ?? this._preferences.privacy.profileVisibility,
-          showOnlineStatus: updates.preferences?.privacy?.showOnlineStatus ?? this._preferences.privacy.showOnlineStatus,
-          showLastSeen: updates.preferences?.privacy?.showLastSeen ?? this._preferences.privacy.showLastSeen,
-        }
+          profileVisibility:
+            updates.preferences?.privacy?.profileVisibility ??
+            this._preferences.privacy.profileVisibility,
+          showOnlineStatus:
+            updates.preferences?.privacy?.showOnlineStatus ??
+            this._preferences.privacy.showOnlineStatus,
+          showLastSeen:
+            updates.preferences?.privacy?.showLastSeen ??
+            this._preferences.privacy.showLastSeen,
+        },
       },
       {
-        followersCount: updates.stats?.followersCount ?? this._stats.followersCount,
-        followingCount: updates.stats?.followingCount ?? this._stats.followingCount,
+        followersCount:
+          updates.stats?.followersCount ?? this._stats.followersCount,
+        followingCount:
+          updates.stats?.followingCount ?? this._stats.followingCount,
         postsCount: updates.stats?.postsCount ?? this._stats.postsCount,
         viewsCount: updates.stats?.viewsCount ?? this._stats.viewsCount,
       },
@@ -234,27 +257,57 @@ export class ProfileEntity {
   }
 
   hasSocialLinks(): boolean {
-    return Object.values(this._socialLinks).some(link => link && link.length > 0);
+    return Object.values(this._socialLinks).some(
+      link => link && link.length > 0
+    );
   }
 
   getSocialLinksCount(): number {
-    return Object.values(this._socialLinks).filter(link => link && link.length > 0).length;
+    return Object.values(this._socialLinks).filter(
+      link => link && link.length > 0
+    ).length;
   }
 
   // Getters
-  get id(): string { return this._id; }
-  get userId(): string { return this._userId; }
-  get displayName(): string { return this._displayName; }
-  get bio(): string | undefined { return this._bio; }
-  get avatar(): string | undefined { return this._avatar; }
-  get coverImage(): string | undefined { return this._coverImage; }
-  get location(): string | undefined { return this._location; }
-  get website(): string | undefined { return this._website; }
-  get socialLinks(): Profile['socialLinks'] { return { ...this._socialLinks }; }
-  get preferences(): Profile['preferences'] { return { ...this._preferences }; }
-  get stats(): Profile['stats'] { return { ...this._stats }; }
-  get createdAt(): Date { return this._createdAt; }
-  get updatedAt(): Date { return this._updatedAt; }
+  get id(): string {
+    return this._id;
+  }
+  get userId(): string {
+    return this._userId;
+  }
+  get displayName(): string {
+    return this._displayName;
+  }
+  get bio(): string | undefined {
+    return this._bio;
+  }
+  get avatar(): string | undefined {
+    return this._avatar;
+  }
+  get coverImage(): string | undefined {
+    return this._coverImage;
+  }
+  get location(): string | undefined {
+    return this._location;
+  }
+  get website(): string | undefined {
+    return this._website;
+  }
+  get socialLinks(): Profile['socialLinks'] {
+    return { ...this._socialLinks };
+  }
+  get preferences(): Profile['preferences'] {
+    return { ...this._preferences };
+  }
+  get stats(): Profile['stats'] {
+    return { ...this._stats };
+  }
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
 
   // Data transfer
   toJSON(): Profile {
@@ -274,4 +327,4 @@ export class ProfileEntity {
       updatedAt: this._updatedAt,
     };
   }
-} 
+}

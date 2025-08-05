@@ -1,6 +1,6 @@
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
-import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
 import type {
   BroadcastToChannelRequest,
   BroadcastToChannelResponse,
@@ -18,7 +18,7 @@ import type {
   WebSocketConnection,
   WebSocketEvent,
   WebSocketMessage,
-  WebSocketStats
+  WebSocketStats,
 } from '../dto/WebSocketDto';
 
 export class WebSocketService {
@@ -28,8 +28,14 @@ export class WebSocketService {
   private reconnectAttempts = 0;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private reconnectTimer: NodeJS.Timeout | null = null;
-  private eventHandlers = new Map<string, ((event: WebSocketEvent) => void)[]>();
-  private messageHandlers = new Map<string, ((message: WebSocketMessage) => void)[]>();
+  private eventHandlers = new Map<
+    string,
+    ((event: WebSocketEvent) => void)[]
+  >();
+  private messageHandlers = new Map<
+    string,
+    ((message: WebSocketMessage) => void)[]
+  >();
   private connections = new Map<string, WebSocketConnection>();
   private stats: WebSocketStats = {
     totalConnections: 0,
@@ -54,7 +60,9 @@ export class WebSocketService {
     };
   }
 
-  async connect(request: ConnectWebSocketRequest): Promise<ConnectWebSocketResponse> {
+  async connect(
+    request: ConnectWebSocketRequest
+  ): Promise<ConnectWebSocketResponse> {
     try {
       if (this._isConnected) {
         console.log('WebSocket already connected');
@@ -70,7 +78,7 @@ export class WebSocketService {
       this.setupEventHandlers(request.userId);
 
       // Wait for connection to establish
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const timeout = setTimeout(() => {
           resolve({ success: false, error: 'Connection timeout' });
         }, 10000); // 10 second timeout
@@ -93,7 +101,7 @@ export class WebSocketService {
           resolve({ success: true });
         };
 
-        this.ws!.onerror = (error) => {
+        this.ws!.onerror = error => {
           clearTimeout(timeout);
           this.stats.errors++;
           resolve({ success: false, error: 'Connection failed' });
@@ -101,11 +109,16 @@ export class WebSocketService {
       });
     } catch (error) {
       this.stats.errors++;
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
-  async disconnect(request: DisconnectWebSocketRequest): Promise<DisconnectWebSocketResponse> {
+  async disconnect(
+    request: DisconnectWebSocketRequest
+  ): Promise<DisconnectWebSocketResponse> {
     try {
       if (!this._isConnected || !this.ws) {
         return { success: true };
@@ -130,7 +143,9 @@ export class WebSocketService {
     }
   }
 
-  async sendWebSocketMessage(request: SendWebSocketMessageRequest): Promise<SendWebSocketMessageResponse> {
+  async sendWebSocketMessage(
+    request: SendWebSocketMessageRequest
+  ): Promise<SendWebSocketMessageResponse> {
     try {
       if (!this._isConnected || !this.ws) {
         return { success: false, error: 'WebSocket not connected' };
@@ -151,16 +166,27 @@ export class WebSocketService {
       return { success: true, messageId: message.id };
     } catch (error) {
       this.stats.errors++;
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
-  async joinWebSocketChannel(request: JoinWebSocketChannelRequest): Promise<JoinWebSocketChannelResponse> {
+  async joinWebSocketChannel(
+    request: JoinWebSocketChannelRequest
+  ): Promise<JoinWebSocketChannelResponse> {
     try {
       // Validate user is member of channel
-      const isMember = await this.channelRepository.isMember(request.channelId, request.userId);
+      const isMember = await this.channelRepository.isMember(
+        request.channelId,
+        request.userId
+      );
       if (!isMember) {
-        return { success: false, error: 'User is not a member of this channel' };
+        return {
+          success: false,
+          error: 'User is not a member of this channel',
+        };
       }
 
       // Add user to channel connections
@@ -173,7 +199,10 @@ export class WebSocketService {
         isActive: true,
       };
 
-      this.connections.set(`${request.userId}_${request.channelId}`, connection);
+      this.connections.set(
+        `${request.userId}_${request.channelId}`,
+        connection
+      );
 
       // Send join message to WebSocket server
       if (this._isConnected && this.ws) {
@@ -192,11 +221,16 @@ export class WebSocketService {
       return { success: true };
     } catch (error) {
       this.stats.errors++;
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   }
 
-  async leaveWebSocketChannel(request: LeaveWebSocketChannelRequest): Promise<LeaveWebSocketChannelResponse> {
+  async leaveWebSocketChannel(
+    request: LeaveWebSocketChannelRequest
+  ): Promise<LeaveWebSocketChannelResponse> {
     try {
       // Remove user from channel connections
       this.connections.delete(`${request.userId}_${request.channelId}`);
@@ -222,11 +256,15 @@ export class WebSocketService {
     }
   }
 
-  async broadcastToChannel(request: BroadcastToChannelRequest): Promise<BroadcastToChannelResponse> {
+  async broadcastToChannel(
+    request: BroadcastToChannelRequest
+  ): Promise<BroadcastToChannelResponse> {
     try {
       // Get all active connections for this channel
       const channelConnections = Array.from(this.connections.values())
-        .filter(conn => conn.channels.includes(request.channelId) && conn.isActive)
+        .filter(
+          conn => conn.channels.includes(request.channelId) && conn.isActive
+        )
         .filter(conn => conn.userId !== request.excludeUserId);
 
       const recipientsCount = channelConnections.length;
@@ -297,12 +335,12 @@ export class WebSocketService {
       }
     };
 
-    this.ws.onerror = (error) => {
+    this.ws.onerror = error => {
       this.stats.errors++;
       this.emitEvent('error', { userId, error });
     };
 
-    this.ws.onmessage = (event) => {
+    this.ws.onmessage = event => {
       try {
         const message: WebSocketMessage = JSON.parse(event.data);
         this.stats.messagesReceived++;

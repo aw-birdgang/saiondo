@@ -4,18 +4,24 @@ import type {
   CheckPermissionRequest,
   CheckPermissionResponse,
   AssignRoleRequest,
-  AssignRoleResponse
+  AssignRoleResponse,
 } from '../dto/UserPermissionDto';
 import type { IUseCase } from './interfaces/IUseCase';
 
-export class UserPermissionUseCase implements IUseCase<CheckPermissionRequest, CheckPermissionResponse> {
+export class UserPermissionUseCase
+  implements IUseCase<CheckPermissionRequest, CheckPermissionResponse>
+{
   constructor(private readonly userPermissionService: UserPermissionService) {}
 
-  async execute(request: CheckPermissionRequest): Promise<CheckPermissionResponse> {
+  async execute(
+    request: CheckPermissionRequest
+  ): Promise<CheckPermissionResponse> {
     return this.checkPermission(request);
   }
 
-  async checkPermission(request: CheckPermissionRequest): Promise<CheckPermissionResponse> {
+  async checkPermission(
+    request: CheckPermissionRequest
+  ): Promise<CheckPermissionResponse> {
     return await this.userPermissionService.checkPermission(request);
   }
 
@@ -31,7 +37,15 @@ export class UserPermissionUseCase implements IUseCase<CheckPermissionRequest, C
     return await this.userPermissionService.canManageChannel(userId, channelId);
   }
 
-  async canDeleteMessage(userId: string, messageId: string, channelId: string): Promise<boolean> {
-    return await this.userPermissionService.canDeleteMessage(userId, messageId, channelId);
+  async canDeleteMessage(
+    userId: string,
+    messageId: string,
+    channelId: string
+  ): Promise<boolean> {
+    return await this.userPermissionService.canDeleteMessage(
+      userId,
+      messageId,
+      channelId
+    );
   }
 }

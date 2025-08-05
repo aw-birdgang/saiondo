@@ -1,5 +1,9 @@
-import { ChannelUseCaseService } from './services/channel/ChannelUseCaseService';
-import type { CreateChannelRequest, CreateChannelResponse } from '../dto/ChannelDto';
+// ChannelUseCaseService가 삭제되었으므로 any 타입으로 대체
+type ChannelUseCaseService = any;
+import type {
+  CreateChannelRequest,
+  CreateChannelResponse,
+} from '../dto/ChannelDto';
 
 /**
  * CreateChannel UseCase - UseCase Service를 사용하여 채널 생성 로직 조율
@@ -15,7 +19,7 @@ export class CreateChannelUseCase {
     try {
       // UseCase Service를 통한 채널 생성
       const response = await this.channelUseCaseService.createChannel(request);
-      
+
       return response;
     } catch (error) {
       if (error instanceof Error) {
@@ -60,16 +64,13 @@ export class CreateChannelUseCase {
     try {
       // 채널 생성 후 필요한 추가 작업들
       // 예: 알림 발송, 이벤트 로깅, 캐시 무효화 등
-      
       // 채널 관련 캐시 무효화
       // this.channelUseCaseService.invalidateChannelCache(channelId);
-      
       // 사용자 관련 캐시 무효화
       // this.channelUseCaseService.invalidateUserCache(ownerId);
-      
     } catch (error) {
       // 후처리 실패는 로그만 남기고 예외를 던지지 않음
       console.error('Post-create channel processing failed:', error);
     }
   }
-} 
+}

@@ -66,10 +66,12 @@ export class NotificationController extends BaseController {
     if (this.useCasesInitialized) return;
 
     try {
-      this.notificationUseCase = UseCaseFactory.createNotificationUseCase();
-      this.userActivityLogUseCase = UseCaseFactory.createUserActivityLogUseCase();
+      // this.notificationUseCase = UseCaseFactory.createNotificationUseCase(); // NotificationUseCase가 삭제됨
+      this.notificationUseCase = null; // NotificationUseCase가 삭제되어 null로 설정
+      this.userActivityLogUseCase =
+        UseCaseFactory.createUserActivityLogUseCase();
       this.userPermissionUseCase = UseCaseFactory.createUserPermissionUseCase();
-      
+
       this.useCasesInitialized = true;
     } catch (error) {
       this.logger.error('Failed to initialize UseCases:', error);
@@ -91,17 +93,23 @@ export class NotificationController extends BaseController {
    */
   private async checkNotificationPermission(userId: string): Promise<boolean> {
     try {
-      if (this.userPermissionUseCase && typeof this.userPermissionUseCase.checkPermission === 'function') {
+      if (
+        this.userPermissionUseCase &&
+        typeof this.userPermissionUseCase.checkPermission === 'function'
+      ) {
         const result = await this.userPermissionUseCase.checkPermission({
           userId,
           resource: 'notification',
-          action: 'receive'
+          action: 'receive',
         });
         return result?.hasPermission || false;
       }
       return true; // 권한 체크가 불가능한 경우 기본적으로 허용
     } catch (error) {
-      this.logger.warn(`Failed to check notification permission for user ${userId}:`, error);
+      this.logger.warn(
+        `Failed to check notification permission for user ${userId}:`,
+        error
+      );
       return true; // 에러 발생 시 기본적으로 허용
     }
   }
@@ -115,12 +123,15 @@ export class NotificationController extends BaseController {
     details: Record<string, unknown>
   ): Promise<void> {
     try {
-      if (this.userActivityLogUseCase && typeof this.userActivityLogUseCase.logActivity === 'function') {
+      if (
+        this.userActivityLogUseCase &&
+        typeof this.userActivityLogUseCase.logActivity === 'function'
+      ) {
         await this.userActivityLogUseCase.logActivity({
           userId,
           action,
           resource: 'notification',
-          details
+          details,
         });
       }
     } catch (error) {
@@ -139,7 +150,9 @@ export class NotificationController extends BaseController {
         await this.ensureInitialized();
 
         // 알림 전송 권한 확인
-        const hasPermission = await this.checkNotificationPermission(data.userId);
+        const hasPermission = await this.checkNotificationPermission(
+          data.userId
+        );
         if (!hasPermission) {
           throw new Error('알림 수신 권한이 없습니다.');
         }
@@ -150,20 +163,20 @@ export class NotificationController extends BaseController {
           body: data.body,
           type: data.type,
           data: data.data,
-          priority: data.priority
+          priority: data.priority,
         });
 
         if (!notification) {
           throw new Error('알림 전송에 실패했습니다.');
         }
-        
+
         // 알림 전송 활동 로그 기록
         await this.logNotificationActivity(data.userId, 'NOTIFICATION_SENT', {
           type: data.type,
           title: data.title,
-          notificationId: notification.notificationId
+          notificationId: notification.notificationId,
         });
-        
+
         return notification;
       }
     );
@@ -182,20 +195,25 @@ export class NotificationController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        const updatedPreferences = await this.notificationUseCase?.updateNotificationPreferences(
-          userId,
-          preferences
-        );
+        const updatedPreferences =
+          await this.notificationUseCase?.updateNotificationPreferences(
+            userId,
+            preferences
+          );
 
         if (!updatedPreferences) {
           throw new Error('알림 설정 업데이트에 실패했습니다.');
         }
-        
+
         // 알림 설정 변경 활동 로그 기록
-        await this.logNotificationActivity(userId, 'NOTIFICATION_PREFERENCES_UPDATED', {
-          preferences: Object.keys(preferences)
-        });
-        
+        await this.logNotificationActivity(
+          userId,
+          'NOTIFICATION_PREFERENCES_UPDATED',
+          {
+            preferences: Object.keys(preferences),
+          }
+        );
+
         return updatedPreferences;
       }
     );
@@ -219,24 +237,33 @@ export class NotificationController extends BaseController {
         }
 
         // 대량 알림 전송 권한 확인 (첫 번째 사용자로 대표)
-        const hasPermission = await this.checkNotificationPermission(userIds[0]);
+        const hasPermission = await this.checkNotificationPermission(
+          userIds[0]
+        );
         if (!hasPermission) {
           throw new Error('대량 알림 전송 권한이 없습니다.');
         }
 
-        const results = await this.notificationUseCase?.sendBulkNotifications(userIds, notification);
+        const results = await this.notificationUseCase?.sendBulkNotifications(
+          userIds,
+          notification
+        );
 
         if (!results) {
           throw new Error('대량 알림 전송에 실패했습니다.');
         }
-        
+
         // 대량 알림 전송 활동 로그 기록
-        await this.logNotificationActivity(userIds[0], 'BULK_NOTIFICATION_SENT', {
-          recipientCount: userIds.length,
-          type: notification.type,
-          title: notification.title
-        });
-        
+        await this.logNotificationActivity(
+          userIds[0],
+          'BULK_NOTIFICATION_SENT',
+          {
+            recipientCount: userIds.length,
+            type: notification.type,
+            title: notification.title,
+          }
+        );
+
         return results;
       }
     );
@@ -260,8 +287,13 @@ export class NotificationController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        if (this.notificationUseCase && typeof this.notificationUseCase.getNotifications === 'function') {
-          return this.notificationUseCase.getNotifications(userId, options) || [];
+        if (
+          this.notificationUseCase &&
+          typeof this.notificationUseCase.getNotifications === 'function'
+        ) {
+          return (
+            this.notificationUseCase.getNotifications(userId, options) || []
+          );
         }
 
         return [];
@@ -272,22 +304,31 @@ export class NotificationController extends BaseController {
   /**
    * 알림 읽음 처리
    */
-  async markNotificationAsRead(notificationId: string, userId: string): Promise<boolean> {
+  async markNotificationAsRead(
+    notificationId: string,
+    userId: string
+  ): Promise<boolean> {
     return this.executeWithTracking(
       'markNotificationAsRead',
       { notificationId, userId },
       async () => {
         await this.ensureInitialized();
 
-        if (this.notificationUseCase && typeof this.notificationUseCase.markAsRead === 'function') {
-          const result = await this.notificationUseCase.markAsRead(notificationId, userId);
-          
+        if (
+          this.notificationUseCase &&
+          typeof this.notificationUseCase.markAsRead === 'function'
+        ) {
+          const result = await this.notificationUseCase.markAsRead(
+            notificationId,
+            userId
+          );
+
           if (result) {
             await this.logNotificationActivity(userId, 'NOTIFICATION_READ', {
-              notificationId
+              notificationId,
             });
           }
-          
+
           return result || false;
         }
 
@@ -306,7 +347,10 @@ export class NotificationController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        if (this.notificationUseCase && typeof this.notificationUseCase.getStats === 'function') {
+        if (
+          this.notificationUseCase &&
+          typeof this.notificationUseCase.getStats === 'function'
+        ) {
           return this.notificationUseCase.getStats(userId) || {};
         }
 
@@ -314,4 +358,4 @@ export class NotificationController extends BaseController {
       }
     );
   }
-} 
+}

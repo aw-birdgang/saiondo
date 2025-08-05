@@ -14,7 +14,7 @@ export const useModal = (
   const {
     closeOnEscape = true,
     closeOnOverlayClick = true,
-    preventScroll = true
+    preventScroll = true,
   } = options;
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const useModal = (
       if (closeOnEscape) {
         document.addEventListener('keydown', handleEscape);
       }
-      
+
       if (preventScroll) {
         document.body.style.overflow = 'hidden';
       }
@@ -38,7 +38,7 @@ export const useModal = (
       if (closeOnEscape) {
         document.removeEventListener('keydown', handleEscape);
       }
-      
+
       if (preventScroll) {
         document.body.style.overflow = 'unset';
       }
@@ -48,4 +48,4 @@ export const useModal = (
   return {
     closeOnOverlayClick,
   };
-}; 
+};

@@ -17,7 +17,7 @@ const InvitePartnerPage: React.FC = () => {
   const container = getContainer();
 
   // Invite Use Case 가져오기
-  const [inviteUseCase] = useState<IInviteUseCase>(() => 
+  const [inviteUseCase] = useState<IInviteUseCase>(() =>
     container.get<IInviteUseCase>(DI_TOKENS.INVITE_USE_CASE)
   );
 
@@ -28,7 +28,7 @@ const InvitePartnerPage: React.FC = () => {
     updatePartnerEmail,
     sendInvitation,
     clearError,
-    reset
+    reset,
   } = useInvite(inviteUseCase, user?.id);
 
   // 에러 처리
@@ -45,12 +45,12 @@ const InvitePartnerPage: React.FC = () => {
       <Header
         title={t('invite_partner') || '파트너 초대'}
         showBackButton
-        className="max-w-4xl mx-auto"
+        className='max-w-4xl mx-auto'
       />
 
       {/* Content */}
-      <PageContainer maxWidth="2xl" padding="lg">
-        <ContentCard variant="elevated" padding="xl" className="rounded-3xl">
+      <PageContainer maxWidth='2xl' padding='lg'>
+        <ContentCard variant='elevated' padding='xl' className='rounded-3xl'>
           <InviteForm
             partnerEmail={state.partnerEmail}
             onEmailChange={updatePartnerEmail}

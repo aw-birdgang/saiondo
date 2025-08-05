@@ -101,4 +101,4 @@ export interface FileServiceConfig {
   allowedTypes?: string[];
   enableVirusScan?: boolean;
   enableCompression?: boolean;
-} 
+}

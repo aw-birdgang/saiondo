@@ -8,13 +8,17 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-on-primary hover:bg-primary-container',
-        secondary: 'bg-secondary text-on-secondary hover:bg-secondary-container',
+        secondary:
+          'bg-secondary text-on-secondary hover:bg-secondary-container',
         destructive: 'bg-error text-on-error hover:bg-error/90',
         outline: 'text-txt border border-border hover:bg-focus',
-        success: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
-        warning: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
+        success:
+          'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
+        warning:
+          'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
         info: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
-        purple: 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400',
+        purple:
+          'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400',
         gray: 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400',
       },
       size: {
@@ -40,35 +44,46 @@ export interface BadgeProps
 }
 
 export const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    children, 
-    dot = false,
-    removable = false,
-    onRemove,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      children,
+      dot = false,
+      removable = false,
+      onRemove,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <div
         ref={ref}
         className={cn(badgeVariants({ variant, size, className }))}
         {...props}
       >
-        {dot && (
-          <div className="w-1.5 h-1.5 rounded-full bg-current mr-1.5" />
-        )}
+        {dot && <div className='w-1.5 h-1.5 rounded-full bg-current mr-1.5' />}
         {children}
         {removable && (
           <button
-            type="button"
+            type='button'
             onClick={onRemove}
-            className="ml-1.5 h-3 w-3 rounded-full inline-flex items-center justify-center hover:bg-current hover:bg-opacity-20 transition-colors"
-            aria-label="Remove badge"
+            className='ml-1.5 h-3 w-3 rounded-full inline-flex items-center justify-center hover:bg-current hover:bg-opacity-20 transition-colors'
+            aria-label='Remove badge'
           >
-            <svg className="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className='w-2 h-2'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M6 18L18 6M6 6l12 12'
+              />
             </svg>
           </button>
         )}
@@ -81,17 +96,25 @@ Badge.displayName = 'Badge';
 
 // Status Badge Component
 export interface StatusBadgeProps {
-  status: 'online' | 'offline' | 'away' | 'busy' | 'pending' | 'success' | 'error' | 'warning';
+  status:
+    | 'online'
+    | 'offline'
+    | 'away'
+    | 'busy'
+    | 'pending'
+    | 'success'
+    | 'error'
+    | 'warning';
   children?: React.ReactNode;
   showText?: boolean;
   size?: 'sm' | 'md' | 'lg';
 }
 
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ 
-  status, 
-  children, 
+export const StatusBadge: React.FC<StatusBadgeProps> = ({
+  status,
+  children,
   showText = true,
-  size = 'md'
+  size = 'md',
 }) => {
   const getStatusConfig = () => {
     switch (status) {
@@ -149,13 +172,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   const config = getStatusConfig();
 
   return (
-    <Badge
-      variant={config.variant}
-      size={size}
-      dot
-      className="items-center"
-    >
-      {showText ? (children || config.text) : null}
+    <Badge variant={config.variant} size={size} dot className='items-center'>
+      {showText ? children || config.text : null}
     </Badge>
   );
 };
@@ -169,12 +187,12 @@ export interface CounterBadgeProps {
   className?: string;
 }
 
-export const CounterBadge: React.FC<CounterBadgeProps> = ({ 
-  count, 
-  max = 99, 
+export const CounterBadge: React.FC<CounterBadgeProps> = ({
+  count,
+  max = 99,
   variant = 'destructive',
   size = 'sm',
-  className 
+  className,
 }) => {
   const displayCount = count > max ? `${max}+` : count.toString();
 
@@ -189,4 +207,4 @@ export const CounterBadge: React.FC<CounterBadgeProps> = ({
       {displayCount}
     </Badge>
   );
-}; 
+};

@@ -15,7 +15,7 @@ export const useAutoScroll = <T extends HTMLElement>(
     behavior = 'smooth',
     block = 'end',
     inline = 'nearest',
-    enabled = true
+    enabled = true,
   } = options;
 
   const targetRef = useRef<T>(null);
@@ -38,4 +38,4 @@ export const useAutoScroll = <T extends HTMLElement>(
     targetRef,
     scrollToTarget,
   };
-}; 
+};

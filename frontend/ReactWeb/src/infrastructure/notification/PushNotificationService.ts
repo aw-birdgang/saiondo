@@ -47,19 +47,18 @@ export class PushNotificationService {
   /**
    * 서비스 워커 등록
    */
-  async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
-    if (!this.isSupported) {
-      console.warn('Push notifications are not supported in this browser');
-      return null;
-    }
-
+  async registerServiceWorker(): Promise<boolean> {
     try {
-      this.registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      console.log('Service Worker registered successfully');
-      return this.registration;
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register(
+          '/firebase-messaging-sw.js'
+        );
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.error('Service Worker registration failed:', error);
-      return null;
+      this.handleError(error);
+      return false;
     }
   }
 
@@ -67,16 +66,15 @@ export class PushNotificationService {
    * 푸시 알림 권한 요청
    */
   async requestPermission(): Promise<NotificationPermission> {
-    if (!this.isSupported) {
-      return 'denied';
-    }
-
     try {
+      if (!('Notification' in window)) {
+        throw new Error('This browser does not support notifications');
+      }
+
       const permission = await Notification.requestPermission();
-      console.log('Notification permission:', permission);
       return permission;
     } catch (error) {
-      console.error('Failed to request notification permission:', error);
+      this.handleError(error);
       return 'denied';
     }
   }
@@ -85,27 +83,19 @@ export class PushNotificationService {
    * 푸시 구독 생성
    */
   async subscribeToPush(): Promise<PushSubscription | null> {
-    if (!this.isSupported || !this.registration) {
-      console.warn('Push notifications not supported or service worker not registered');
-      return null;
-    }
-
     try {
-      const permission = await this.requestPermission();
-      if (permission !== 'granted') {
-        console.warn('Notification permission denied');
-        return null;
+      if (!this.registration) {
+        throw new Error('Service worker not registered');
       }
 
       const subscription = await this.registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(this.config.vapidPublicKey)
+        applicationServerKey: this.vapidPublicKey,
       });
 
-      console.log('Push subscription created:', subscription);
       return subscription;
     } catch (error) {
-      console.error('Failed to subscribe to push notifications:', error);
+      this.handleError(error);
       return null;
     }
   }
@@ -114,20 +104,20 @@ export class PushNotificationService {
    * 푸시 구독 해제
    */
   async unsubscribeFromPush(): Promise<boolean> {
-    if (!this.registration) {
-      return false;
-    }
-
     try {
-      const subscription = await this.registration.pushManager.getSubscription();
+      if (!this.registration) {
+        return false;
+      }
+
+      const subscription =
+        await this.registration.pushManager.getSubscription();
       if (subscription) {
         await subscription.unsubscribe();
-        console.log('Push subscription unsubscribed');
         return true;
       }
       return false;
     } catch (error) {
-      console.error('Failed to unsubscribe from push notifications:', error);
+      this.handleError(error);
       return false;
     }
   }
@@ -135,29 +125,25 @@ export class PushNotificationService {
   /**
    * 서버에 구독 정보 전송
    */
-  async sendSubscriptionToServer(subscription: PushSubscription): Promise<boolean> {
+  async sendSubscriptionToServer(
+    subscription: PushSubscription
+  ): Promise<boolean> {
     try {
-      // TODO: 실제 서버 API 호출로 대체
-      // const response = await fetch(`${this.config.baseUrl}/notifications/subscribe`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Authorization': `Bearer ${this.config.token}`,
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({
-      //     subscription,
-      //     apiKey: this.config.apiKey
-      //   })
-      // });
-      // return response.ok;
+      // 서버에 구독 정보 전송
+      const response = await fetch('/api/notifications/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subscription: subscription.toJSON(),
+          userId: this.getCurrentUserId(),
+        }),
+      });
 
-      // 임시 지연 시뮬레이션
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      console.log('Subscription sent to server');
-      return true;
+      return response.ok;
     } catch (error) {
-      console.error('Failed to send subscription to server:', error);
+      this.handleError(error);
       return false;
     }
   }
@@ -165,7 +151,9 @@ export class PushNotificationService {
   /**
    * 로컬 알림 표시
    */
-  async showLocalNotification(message: NotificationMessage): Promise<Notification | null> {
+  async showLocalNotification(
+    message: NotificationMessage
+  ): Promise<Notification | null> {
     if (!this.isSupported) {
       // 브라우저 알림을 지원하지 않는 경우 토스트로 대체
       toast(message.body, {
@@ -195,14 +183,14 @@ export class PushNotificationService {
         data: message.data,
         actions: message.actions,
         requireInteraction: message.requireInteraction,
-        silent: message.silent
+        silent: message.silent,
       });
 
       // 알림 클릭 이벤트 처리
       notification.onclick = () => {
         window.focus();
         notification.close();
-        
+
         // 알림 데이터가 있으면 해당 페이지로 이동
         if (message.data?.url) {
           window.location.href = message.data.url;
@@ -211,7 +199,7 @@ export class PushNotificationService {
 
       return notification;
     } catch (error) {
-      console.error('Failed to show local notification:', error);
+      this.handleError(error);
       // 실패 시 토스트로 대체
       toast(message.body, {
         duration: 4000,
@@ -232,8 +220,8 @@ export class PushNotificationService {
       tag: 'test-notification',
       data: {
         url: window.location.href,
-        timestamp: Date.now()
-      }
+        timestamp: Date.now(),
+      },
     };
 
     const notification = await this.showLocalNotification(message);
@@ -249,14 +237,15 @@ export class PushNotificationService {
     supported: boolean;
   }> {
     const permission = this.isSupported ? Notification.permission : 'denied';
-    const subscribed = this.isSupported && this.registration 
-      ? !!(await this.registration.pushManager.getSubscription())
-      : false;
+    const subscribed =
+      this.isSupported && this.registration
+        ? !!(await this.registration.pushManager.getSubscription())
+        : false;
 
     return {
       permission,
       subscribed,
-      supported: this.isSupported
+      supported: this.isSupported,
     };
   }
 
@@ -264,7 +253,7 @@ export class PushNotificationService {
    * VAPID 공개키를 Uint8Array로 변환
    */
   private urlBase64ToUint8Array(base64String: string): Uint8Array {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding)
       .replace(/-/g, '+')
       .replace(/_/g, '/');
@@ -312,8 +301,10 @@ export class PushNotificationService {
 const defaultConfig: NotificationConfig = {
   vapidPublicKey: import.meta.env.VITE_VAPID_PUBLIC_KEY || '',
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-  baseUrl: import.meta.env.VITE_NOTIFICATION_BASE_URL || 'https://api.notification.com',
-  token: ''
+  baseUrl:
+    import.meta.env.VITE_NOTIFICATION_BASE_URL ||
+    'https://api.notification.com',
+  token: '',
 };
 
 // 전역 인스턴스
@@ -322,7 +313,9 @@ let pushNotificationService: PushNotificationService | null = null;
 /**
  * 푸시 알림 서비스 초기화
  */
-export const initializePushNotificationService = (token: string): PushNotificationService => {
+export const initializePushNotificationService = (
+  token: string
+): PushNotificationService => {
   const config = { ...defaultConfig, token };
   pushNotificationService = new PushNotificationService(config);
   return pushNotificationService;
@@ -331,9 +324,10 @@ export const initializePushNotificationService = (token: string): PushNotificati
 /**
  * 푸시 알림 서비스 가져오기
  */
-export const getPushNotificationService = (): PushNotificationService | null => {
-  return pushNotificationService;
-};
+export const getPushNotificationService =
+  (): PushNotificationService | null => {
+    return pushNotificationService;
+  };
 
 /**
  * 푸시 알림 훅
@@ -355,15 +349,15 @@ export const usePushNotification = () => {
 
     // 서비스 워커 등록
     await service.registerServiceWorker();
-    
+
     // 푸시 구독
     const subscription = await service.subscribeToPush();
-    
+
     if (subscription) {
       // 서버에 구독 정보 전송
       await service.sendSubscriptionToServer(subscription);
     }
-    
+
     return subscription;
   };
 
@@ -375,7 +369,9 @@ export const usePushNotification = () => {
     return service.unsubscribeFromPush();
   };
 
-  const showNotification = async (message: NotificationMessage): Promise<Notification | null> => {
+  const showNotification = async (
+    message: NotificationMessage
+  ): Promise<Notification | null> => {
     const service = getPushNotificationService();
     if (!service) {
       return null;
@@ -397,7 +393,7 @@ export const usePushNotification = () => {
       return {
         permission: 'denied' as NotificationPermission,
         subscribed: false,
-        supported: false
+        supported: false,
       };
     }
     return service.getNotificationSettings();
@@ -409,6 +405,6 @@ export const usePushNotification = () => {
     unsubscribeFromPush,
     showNotification,
     sendTestNotification,
-    getSettings
+    getSettings,
   };
-}; 
+};

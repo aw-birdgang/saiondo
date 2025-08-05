@@ -42,7 +42,8 @@ export const defaultWebSocketConfig: WebSocketConfig = {
 export const defaultAppConfig: AppConfig = {
   api: defaultApiConfig,
   websocket: defaultWebSocketConfig,
-  environment: (import.meta.env.MODE as AppConfig['environment']) || 'development',
+  environment:
+    (import.meta.env.MODE as AppConfig['environment']) || 'development',
   debug: import.meta.env.DEV,
 };
 
@@ -51,7 +52,9 @@ export const createApiConfig = (overrides?: Partial<ApiConfig>): ApiConfig => ({
   ...overrides,
 });
 
-export const createWebSocketConfig = (overrides?: Partial<WebSocketConfig>): WebSocketConfig => ({
+export const createWebSocketConfig = (
+  overrides?: Partial<WebSocketConfig>
+): WebSocketConfig => ({
   ...defaultWebSocketConfig,
   ...overrides,
 });
@@ -59,4 +62,4 @@ export const createWebSocketConfig = (overrides?: Partial<WebSocketConfig>): Web
 export const createAppConfig = (overrides?: Partial<AppConfig>): AppConfig => ({
   ...defaultAppConfig,
   ...overrides,
-}); 
+});

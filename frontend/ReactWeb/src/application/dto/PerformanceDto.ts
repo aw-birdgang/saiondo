@@ -40,4 +40,4 @@ export interface PerformanceConfig {
   maxAlerts?: number;
   slowThreshold?: number;
   errorRateThreshold?: number;
-} 
+}

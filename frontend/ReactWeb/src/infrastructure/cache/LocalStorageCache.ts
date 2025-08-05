@@ -164,7 +164,7 @@ export class LocalStorageCache {
     try {
       const keys = Object.keys(localStorage);
       const cacheKeys = keys.filter(key => key.startsWith(this.prefix));
-      
+
       let expiredCount = 0;
       let validCount = 0;
       let totalSize = 0;
@@ -175,7 +175,7 @@ export class LocalStorageCache {
           if (itemStr) {
             totalSize += itemStr.length;
             const item: CacheItem<any> = JSON.parse(itemStr);
-            
+
             if (this.isExpired(item)) {
               expiredCount++;
             } else {
@@ -213,4 +213,4 @@ export class LocalStorageCache {
   }
 }
 
-export default LocalStorageCache; 
+export default LocalStorageCache;

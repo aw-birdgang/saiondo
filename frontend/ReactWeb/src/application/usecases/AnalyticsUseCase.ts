@@ -1,5 +1,6 @@
 import type { IAnalyticsUseCase } from './interfaces/IAnalyticsUseCase';
-import { AnalyticsUseCaseService } from './services/analytics/AnalyticsUseCaseService';
+// AnalyticsUseCaseService가 삭제되었으므로 any 타입으로 대체
+type AnalyticsUseCaseService = any;
 import type {
   TrackEventRequest,
   TrackEventResponse,
@@ -8,7 +9,7 @@ import type {
   UserBehaviorRequest,
   UserBehaviorResponse,
   RealTimeActivityRequest,
-  RealTimeActivityResponse
+  RealTimeActivityResponse,
 } from '../dto/AnalyticsDto';
 
 /**
@@ -22,20 +23,21 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
    * 이벤트 추적 - UseCase Service 사용
    */
   async trackEvent(
-    userId: string, 
-    eventType: string, 
-    properties?: Record<string, any>, 
+    userId: string,
+    eventType: string,
+    properties?: Record<string, any>,
     sessionId?: string
   ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: eventType as any,
       properties,
-      sessionId
+      sessionId,
     };
 
-    const response: TrackEventResponse = await this.analyticsUseCaseService.trackEvent(request);
-    
+    const response: TrackEventResponse =
+      await this.analyticsUseCaseService.trackEvent(request);
+
     if (!response.success) {
       throw new Error('Failed to track event');
     }
@@ -44,17 +46,21 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 세션 시작 - UseCase Service 사용
    */
-  async startSession(userId: string, userAgent?: string, ipAddress?: string): Promise<string> {
+  async startSession(
+    userId: string,
+    userAgent?: string,
+    ipAddress?: string
+  ): Promise<string> {
     // UseCase Service를 통해 세션 시작
     const request: TrackEventRequest = {
       userId,
       eventType: 'login',
       properties: { userAgent, ipAddress },
-      sessionId: this.generateSessionId()
+      sessionId: this.generateSessionId(),
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
-    
+
     return request.sessionId!;
   }
 
@@ -67,7 +73,7 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
       userId: 'system', // 세션 종료는 시스템 이벤트
       eventType: 'logout',
       properties: { sessionId },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -76,27 +82,35 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 분석 리포트 생성 - UseCase Service 사용
    */
-  async generateAnalyticsReport(timeRange: { start: Date; end: Date }): Promise<any> {
+  async generateAnalyticsReport(timeRange: {
+    start: Date;
+    end: Date;
+  }): Promise<any> {
     const request: AnalyticsReportRequest = {
-      timeRange
+      timeRange,
     };
 
-    const response: AnalyticsReportResponse = await this.analyticsUseCaseService.generateAnalyticsReport(request);
-    
+    const response: AnalyticsReportResponse =
+      await this.analyticsUseCaseService.generateAnalyticsReport(request);
+
     return response.report;
   }
 
   /**
    * 사용자 행동 분석 - UseCase Service 사용
    */
-  async analyzeUserBehavior(userId: string, timeRange: { start: Date; end: Date }): Promise<any> {
+  async analyzeUserBehavior(
+    userId: string,
+    timeRange: { start: Date; end: Date }
+  ): Promise<any> {
     const request: UserBehaviorRequest = {
       userId,
-      timeRange
+      timeRange,
     };
 
-    const response: UserBehaviorResponse = await this.analyticsUseCaseService.analyzeUserBehavior(request);
-    
+    const response: UserBehaviorResponse =
+      await this.analyticsUseCaseService.analyzeUserBehavior(request);
+
     return response.behavior;
   }
 
@@ -110,8 +124,9 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   }> {
     const request: RealTimeActivityRequest = {};
 
-    const response: RealTimeActivityResponse = await this.analyticsUseCaseService.getRealTimeActivity(request);
-    
+    const response: RealTimeActivityResponse =
+      await this.analyticsUseCaseService.getRealTimeActivity(request);
+
     return response.activity;
   }
 
@@ -125,8 +140,9 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
     eventSequence: string[];
     conversionPath: string[];
   }> {
-    const journey = await this.analyticsUseCaseService.analyzeUserJourney(userId);
-    
+    const journey =
+      await this.analyticsUseCaseService.analyzeUserJourney(userId);
+
     return journey.journey;
   }
 
@@ -138,8 +154,9 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
     riskFactors: string[];
     recommendations: string[];
   }> {
-    const prediction = await this.analyticsUseCaseService.predictUserChurn(userId);
-    
+    const prediction =
+      await this.analyticsUseCaseService.predictUserChurn(userId);
+
     return prediction.prediction;
   }
 
@@ -155,12 +172,16 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 페이지 뷰 추적
    */
-  async trackPageView(userId: string, page: string, sessionId?: string): Promise<void> {
+  async trackPageView(
+    userId: string,
+    page: string,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'page_view',
       properties: { page },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -169,12 +190,17 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 메시지 전송 추적
    */
-  async trackMessageSent(userId: string, channelId: string, messageLength: number, sessionId?: string): Promise<void> {
+  async trackMessageSent(
+    userId: string,
+    channelId: string,
+    messageLength: number,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'message_sent',
       properties: { channelId, messageLength },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -183,12 +209,16 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 채널 참여 추적
    */
-  async trackChannelJoined(userId: string, channelId: string, sessionId?: string): Promise<void> {
+  async trackChannelJoined(
+    userId: string,
+    channelId: string,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'channel_joined',
       properties: { channelId },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -197,12 +227,17 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 파일 업로드 추적
    */
-  async trackFileUploaded(userId: string, fileType: string, fileSize: number, sessionId?: string): Promise<void> {
+  async trackFileUploaded(
+    userId: string,
+    fileType: string,
+    fileSize: number,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'file_uploaded',
       properties: { fileType, fileSize },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -211,12 +246,17 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 검색 수행 추적
    */
-  async trackSearchPerformed(userId: string, searchTerm: string, resultCount: number, sessionId?: string): Promise<void> {
+  async trackSearchPerformed(
+    userId: string,
+    searchTerm: string,
+    resultCount: number,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'search_performed',
       properties: { searchTerm, resultCount },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -225,12 +265,16 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 로그인 추적
    */
-  async trackLogin(userId: string, loginMethod: string, sessionId?: string): Promise<void> {
+  async trackLogin(
+    userId: string,
+    loginMethod: string,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'login',
       properties: { loginMethod },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);
@@ -239,12 +283,16 @@ export class AnalyticsUseCase implements IAnalyticsUseCase {
   /**
    * 로그아웃 추적
    */
-  async trackLogout(userId: string, sessionDuration: number, sessionId?: string): Promise<void> {
+  async trackLogout(
+    userId: string,
+    sessionDuration: number,
+    sessionId?: string
+  ): Promise<void> {
     const request: TrackEventRequest = {
       userId,
       eventType: 'logout',
       properties: { sessionDuration },
-      sessionId
+      sessionId,
     };
 
     await this.analyticsUseCaseService.trackEvent(request);

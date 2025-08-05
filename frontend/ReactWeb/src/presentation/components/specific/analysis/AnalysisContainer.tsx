@@ -8,13 +8,13 @@ interface AnalysisContainerProps {
 
 const AnalysisContainer: React.FC<AnalysisContainerProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("max-w-6xl mx-auto px-6 py-8", className)}>
+    <div className={cn('max-w-6xl mx-auto px-6 py-8', className)}>
       {children}
     </div>
   );
 };
 
-export default AnalysisContainer; 
+export default AnalysisContainer;

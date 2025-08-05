@@ -26,13 +26,16 @@ export interface CacheStats {
   hitRate: number;
   totalSize: number;
   evictions: number;
-  levels: Record<string, {
-    hits: number;
-    misses: number;
-    hitRate: number;
-    size: number;
-    evictions: number;
-  }>;
+  levels: Record<
+    string,
+    {
+      hits: number;
+      misses: number;
+      hitRate: number;
+      size: number;
+      evictions: number;
+    }
+  >;
 }
 
 export interface CacheConfig {
@@ -55,4 +58,4 @@ export interface CacheWarmupRequest {
 
 export interface CacheBatchRequest<T> {
   entries: Array<{ key: string; value: T; ttl?: number }>;
-} 
+}

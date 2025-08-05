@@ -1,12 +1,12 @@
-import React from "react";
-import type { AuthLayoutProps } from "../../pages/auth/types/authTypes";
+import React from 'react';
+import type { AuthLayoutProps } from '../../pages/auth/types/authTypes';
 
-const AuthLayout: React.FC<AuthLayoutProps> = ({ 
-  children, 
-  className = "" 
+const AuthLayout: React.FC<AuthLayoutProps> = ({
+  children,
+  className = '',
 }) => {
   return (
-    <div 
+    <div
       className={`min-h-screen flex items-center justify-center py-12 px-6 sm:px-8 lg:px-10 transition-colors duration-300 ${className}`}
       style={{ backgroundColor: 'var(--color-bg)' }}
     >
@@ -15,4 +15,4 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   );
 };
 
-export default AuthLayout; 
+export default AuthLayout;

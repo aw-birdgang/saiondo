@@ -15,7 +15,7 @@ const RegisterPage: React.FC = () => {
 
     // 액션
     handleRegister,
-    checkAuthAndRedirect
+    checkAuthAndRedirect,
   } = useAuthData();
 
   // 이미 인증된 경우 홈으로 리다이렉트
@@ -23,7 +23,13 @@ const RegisterPage: React.FC = () => {
     checkAuthAndRedirect();
   }, [checkAuthAndRedirect]);
 
-  const handleSubmit = async (formData: { email: string; password: string; name: string; confirmPassword: string; gender: string }) => {
+  const handleSubmit = async (formData: {
+    email: string;
+    password: string;
+    name: string;
+    confirmPassword: string;
+    gender: string;
+  }) => {
     try {
       await handleRegister(formData);
       toast.success(t('register_success'));
@@ -36,10 +42,7 @@ const RegisterPage: React.FC = () => {
     <AuthGuard requireAuth={false}>
       <AuthLayout>
         <AuthContainer>
-          <RegisterForm
-            onSubmit={handleSubmit}
-            loading={isLoading}
-          />
+          <RegisterForm onSubmit={handleSubmit} loading={isLoading} />
         </AuthContainer>
       </AuthLayout>
     </AuthGuard>

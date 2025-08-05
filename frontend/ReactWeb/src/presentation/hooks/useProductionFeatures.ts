@@ -1,13 +1,13 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { usePeriodicUpdate } from './usePeriodicUpdate';
 import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
-import type { 
-  WebSocketConfig, 
-  RedisConfig, 
+import type {
+  WebSocketConfig,
+  RedisConfig,
   APMConfig,
   WSMessage as WebSocketMessage,
   Trace,
-  Alert
+  Alert,
 } from '../../application/usecases';
 
 export interface ProductionConfig {
@@ -18,16 +18,24 @@ export interface ProductionConfig {
 
 export const useProductionFeatures = (config: ProductionConfig = {}) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected' | 'error'>('disconnected');
+  const [connectionStatus, setConnectionStatus] = useState<
+    'connecting' | 'connected' | 'disconnected' | 'error'
+  >('disconnected');
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
   const [activeTraces, setActiveTraces] = useState<Trace[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [cacheStats, setCacheStats] = useState<any>(null);
   const [apmStats, setApmStats] = useState<any>(null);
 
-  const wsUseCase = useRef(UseCaseFactory.createWebSocketUseCase(config.websocket));
-  const redisUseCase = useRef(UseCaseFactory.createRedisCacheUseCase(config.redis));
-  const apmUseCase = useRef(UseCaseFactory.createAPMMonitoringUseCase(config.apm));
+  const wsUseCase = useRef(
+    UseCaseFactory.createWebSocketUseCase(config.websocket)
+  );
+  const redisUseCase = useRef(
+    UseCaseFactory.createRedisCacheUseCase(config.redis)
+  );
+  const apmUseCase = useRef(
+    UseCaseFactory.createAPMMonitoringUseCase(config.apm)
+  );
   const realTimeUseCase = useRef(UseCaseFactory.createRealTimeChatUseCase());
 
   // WebSocket connection management
@@ -35,25 +43,24 @@ export const useProductionFeatures = (config: ProductionConfig = {}) => {
     try {
       setConnectionStatus('connecting');
       const success = await wsUseCase.current.connect(userId);
-      
+
       if (success) {
         setIsConnected(true);
         setConnectionStatus('connected');
-        
+
         // Set up message handlers
-        wsUseCase.current.onMessage('message', (message) => {
+        wsUseCase.current.onMessage('message', message => {
           setLastMessage(message);
           // Handle real-time messages
           handleRealTimeMessage(message);
         });
-        
-        wsUseCase.current.onEvent('error', (event) => {
+
+        wsUseCase.current.onEvent('error', event => {
           console.error('WebSocket error:', event);
           setConnectionStatus('error');
         });
-        
-        wsUseCase.current.onEvent('reconnect', (event) => {
-          console.log('WebSocket reconnected:', event);
+
+        wsUseCase.current.onEvent('reconnect', event => {
           setConnectionStatus('connected');
         });
       } else {
@@ -95,7 +102,8 @@ export const useProductionFeatures = (config: ProductionConfig = {}) => {
         // Handle user left
         break;
       default:
-        console.log('Unknown message type:', message.type);
+        // 알 수 없는 메시지 타입은 무시
+        break;
     }
   }, []);
 
@@ -138,45 +146,60 @@ export const useProductionFeatures = (config: ProductionConfig = {}) => {
   }, []);
 
   // APM monitoring operations
-  const startTrace = useCallback(async (
-    name: string,
-    type: Trace['type'],
-    userId?: string,
-    channelId?: string,
-    metadata?: Record<string, any>
-  ) => {
-    try {
-      return await apmUseCase.current.startTrace(name, type, userId, channelId, metadata);
-    } catch (error) {
-      console.error('Failed to start trace:', error);
-      return '';
-    }
-  }, []);
+  const startTrace = useCallback(
+    async (
+      name: string,
+      type: Trace['type'],
+      userId?: string,
+      channelId?: string,
+      metadata?: Record<string, any>
+    ) => {
+      try {
+        return await apmUseCase.current.startTrace(
+          name,
+          type,
+          userId,
+          channelId,
+          metadata
+        );
+      } catch (error) {
+        console.error('Failed to start trace:', error);
+        return '';
+      }
+    },
+    []
+  );
 
-  const endTrace = useCallback(async (
-    traceId: string,
-    status: Trace['status'] = 'success',
-    errorMessage?: string
-  ) => {
-    try {
-      await apmUseCase.current.endTrace(traceId, status, errorMessage);
-    } catch (error) {
-      console.error('Failed to end trace:', error);
-    }
-  }, []);
+  const endTrace = useCallback(
+    async (
+      traceId: string,
+      status: Trace['status'] = 'success',
+      errorMessage?: string
+    ) => {
+      try {
+        await apmUseCase.current.endTrace(traceId, status, errorMessage);
+      } catch (error) {
+        console.error('Failed to end trace:', error);
+      }
+    },
+    []
+  );
 
-  const recordMetric = useCallback(async (
-    name: string,
-    value: number,
-    unit: string,
-    tags: Record<string, string> = {}
-  ) => {
-    try {
-      await apmUseCase.current.recordMetric(name, value, unit, tags);
-    } catch (error) {
-      console.error('Failed to record metric:', error);
-    }
-  }, []);
+  const recordMetric = useCallback(
+    async (
+      name: string,
+      value: number,
+      unit: string,
+      tags: Record<string, string> = {}
+    ) => {
+      try {
+        await apmUseCase.current.recordMetric(name, value, unit, tags);
+      } catch (error) {
+        console.error('Failed to record metric:', error);
+      }
+    },
+    []
+  );
 
   const getAPMStats = useCallback(async () => {
     try {
@@ -189,103 +212,116 @@ export const useProductionFeatures = (config: ProductionConfig = {}) => {
     }
   }, []);
 
-  const getAlerts = useCallback(async (
-    severity?: Alert['severity'],
-    resolved?: boolean
-  ) => {
-    try {
-      const alertList = await apmUseCase.current.getAlerts(severity, resolved);
-      setAlerts(alertList);
-      return alertList;
-    } catch (error) {
-      console.error('Failed to get alerts:', error);
-      return [];
-    }
-  }, []);
+  const getAlerts = useCallback(
+    async (severity?: Alert['severity'], resolved?: boolean) => {
+      try {
+        const alertList = await apmUseCase.current.getAlerts(
+          severity,
+          resolved
+        );
+        setAlerts(alertList);
+        return alertList;
+      } catch (error) {
+        console.error('Failed to get alerts:', error);
+        return [];
+      }
+    },
+    []
+  );
 
   // Real-time chat operations
-  const sendRealTimeMessage = useCallback(async (
-    content: string,
-    channelId: string,
-    senderId: string
-  ) => {
-    try {
-      const result = await realTimeUseCase.current.sendRealTimeMessage({
-        content,
-        channelId,
-        senderId,
-      });
-      
-      // Broadcast via WebSocket if connected
-      if (isConnected) {
-        await wsUseCase.current.broadcastToChannel(channelId, result.broadcastData);
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Failed to send real-time message:', error);
-      throw error;
-    }
-  }, [isConnected]);
+  const sendRealTimeMessage = useCallback(
+    async (content: string, channelId: string, senderId: string) => {
+      try {
+        const result = await realTimeUseCase.current.sendRealTimeMessage({
+          content,
+          channelId,
+          senderId,
+        });
 
-  const joinChannel = useCallback(async (userId: string, channelId: string) => {
-    try {
-      const result = await realTimeUseCase.current.joinChannel({ userId, channelId });
-      
-      // Join WebSocket channel if connected
-      if (isConnected) {
-        await wsUseCase.current.joinChannel(userId, channelId);
-      }
-      
-      return result;
-    } catch (error) {
-      console.error('Failed to join channel:', error);
-      throw error;
-    }
-  }, [isConnected]);
+        // Broadcast via WebSocket if connected
+        if (isConnected) {
+          await wsUseCase.current.broadcastToChannel(
+            channelId,
+            result.broadcastData
+          );
+        }
 
-  const startTyping = useCallback(async (userId: string, channelId: string) => {
-    try {
-      await realTimeUseCase.current.startTyping(userId, channelId);
-      
-      // Send typing indicator via WebSocket if connected
-      if (isConnected) {
-        await wsUseCase.current.sendTypingIndicator(userId, channelId, true);
+        return result;
+      } catch (error) {
+        console.error('Failed to send real-time message:', error);
+        throw error;
       }
-    } catch (error) {
-      console.error('Failed to start typing:', error);
-    }
-  }, [isConnected]);
+    },
+    [isConnected]
+  );
 
-  const stopTyping = useCallback(async (userId: string, channelId: string) => {
-    try {
-      await realTimeUseCase.current.stopTyping(userId, channelId);
-      
-      // Send typing indicator via WebSocket if connected
-      if (isConnected) {
-        await wsUseCase.current.sendTypingIndicator(userId, channelId, false);
+  const joinChannel = useCallback(
+    async (userId: string, channelId: string) => {
+      try {
+        const result = await realTimeUseCase.current.joinChannel({
+          userId,
+          channelId,
+        });
+
+        // Join WebSocket channel if connected
+        if (isConnected) {
+          await wsUseCase.current.joinChannel(userId, channelId);
+        }
+
+        return result;
+      } catch (error) {
+        console.error('Failed to join channel:', error);
+        throw error;
       }
-    } catch (error) {
-      console.error('Failed to stop typing:', error);
-    }
-  }, [isConnected]);
+    },
+    [isConnected]
+  );
+
+  const startTyping = useCallback(
+    async (userId: string, channelId: string) => {
+      try {
+        await realTimeUseCase.current.startTyping(userId, channelId);
+
+        // Send typing indicator via WebSocket if connected
+        if (isConnected) {
+          await wsUseCase.current.sendTypingIndicator(userId, channelId, true);
+        }
+      } catch (error) {
+        console.error('Failed to start typing:', error);
+      }
+    },
+    [isConnected]
+  );
+
+  const stopTyping = useCallback(
+    async (userId: string, channelId: string) => {
+      try {
+        await realTimeUseCase.current.stopTyping(userId, channelId);
+
+        // Send typing indicator via WebSocket if connected
+        if (isConnected) {
+          await wsUseCase.current.sendTypingIndicator(userId, channelId, false);
+        }
+      } catch (error) {
+        console.error('Failed to stop typing:', error);
+      }
+    },
+    [isConnected]
+  );
 
   // Use custom hook for periodic stats updates
   usePeriodicUpdate(
     async () => {
-      await Promise.all([
-        getCacheStats(),
-        getAPMStats(),
-        getAlerts(),
-      ]);
+      await Promise.all([getCacheStats(), getAPMStats(), getAlerts()]);
     },
     30000, // Update every 30 seconds
     [getCacheStats, getAPMStats, getAlerts],
     {
       enabled: isConnected,
       onCleanup: () => {
-        console.log('Periodic stats update stopped');
-      }
+        // console.log('Periodic stats update stopped');
+      },
     }
   );
 
@@ -301,28 +337,28 @@ export const useProductionFeatures = (config: ProductionConfig = {}) => {
     isConnected,
     connectionStatus,
     lastMessage,
-    
+
     // WebSocket operations
     connectWebSocket,
     disconnectWebSocket,
-    
+
     // Redis cache operations
     getUserWithCache,
     getChannelWithCache,
     invalidateUserCache,
     cacheStats,
-    
+
     // APM monitoring operations
     startTrace,
     endTrace,
     recordMetric,
     apmStats,
     alerts,
-    
+
     // Real-time chat operations
     sendRealTimeMessage,
     joinChannel,
     startTyping,
     stopTyping,
   };
-}; 
+};

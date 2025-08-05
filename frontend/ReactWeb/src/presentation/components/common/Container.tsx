@@ -3,7 +3,16 @@ import React from 'react';
 export interface ContainerProps {
   children: React.ReactNode;
   className?: string;
-  variant?: 'page' | 'content' | 'header' | 'chat' | 'centered' | 'error' | 'button' | 'messages' | 'input';
+  variant?:
+    | 'page'
+    | 'content'
+    | 'header'
+    | 'chat'
+    | 'centered'
+    | 'error'
+    | 'button'
+    | 'messages'
+    | 'input';
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '6xl' | '7xl' | 'full';
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
   fullHeight?: boolean;
@@ -66,29 +75,29 @@ const Container: React.FC<ContainerProps> = ({
       case 'page':
         return {
           backgroundColor: 'var(--color-bg)',
-          minHeight: '100vh'
+          minHeight: '100vh',
         };
       case 'header':
         return {
           backgroundColor: 'var(--color-surface)',
           borderBottom: '1px solid var(--color-border)',
-          boxShadow: '0 1px 3px 0 var(--color-shadow)'
+          boxShadow: '0 1px 3px 0 var(--color-shadow)',
         };
       case 'chat':
         return {
           backgroundColor: 'var(--color-bg)',
-          minHeight: '100vh'
+          minHeight: '100vh',
         };
       case 'error':
         return {
           backgroundColor: 'var(--color-bg)',
-          minHeight: '100vh'
+          minHeight: '100vh',
         };
       case 'messages':
         return {
           backgroundColor: 'var(--color-surface)',
           border: '1px solid var(--color-border)',
-          boxShadow: '0 1px 3px 0 var(--color-shadow)'
+          boxShadow: '0 1px 3px 0 var(--color-shadow)',
         };
       default:
         return {};
@@ -125,7 +134,7 @@ const Container: React.FC<ContainerProps> = ({
   const centerClass = centered ? 'flex items-center justify-center' : '';
 
   return (
-    <div 
+    <div
       className={`${baseClasses} ${heightClass} ${centerClass} transition-colors duration-300 ${className}`}
       style={getVariantStyle()}
     >
@@ -134,4 +143,4 @@ const Container: React.FC<ContainerProps> = ({
   );
 };
 
-export default Container; 
+export default Container;

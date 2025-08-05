@@ -18,7 +18,9 @@ interface FormFieldProps {
   options?: FormFieldOption[];
   value: string;
   error?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   className?: string;
   helperText?: string;
 }
@@ -41,9 +43,9 @@ const FormField: React.FC<FormFieldProps> = ({
 
   const renderSelectField = () => (
     <div className={`space-y-2 ${className}`}>
-      <label htmlFor={name} className="block text-sm font-medium text-txt">
+      <label htmlFor={name} className='block text-sm font-medium text-txt'>
         {label}
-        {required && <span className="text-error ml-1">*</span>}
+        {required && <span className='text-error ml-1'>*</span>}
       </label>
       <select
         id={name}
@@ -56,18 +58,19 @@ const FormField: React.FC<FormFieldProps> = ({
           error ? 'border-error focus-visible:ring-error' : 'border-border'
         )}
       >
-        <option value="">{placeholder || t('select_option') || '옵션을 선택하세요'}</option>
-        {options?.map((option) => (
+        <option value=''>
+          {placeholder || t('select_option') || '옵션을 선택하세요'}
+        </option>
+        {options?.map(option => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
       {(error || helperText) && (
-        <p className={cn(
-          'text-sm',
-          error ? 'text-error' : 'text-txt-secondary'
-        )}>
+        <p
+          className={cn('text-sm', error ? 'text-error' : 'text-txt-secondary')}
+        >
           {error || helperText}
         </p>
       )}
@@ -93,4 +96,4 @@ const FormField: React.FC<FormFieldProps> = ({
   return type === 'select' ? renderSelectField() : renderInputField();
 };
 
-export default FormField; 
+export default FormField;

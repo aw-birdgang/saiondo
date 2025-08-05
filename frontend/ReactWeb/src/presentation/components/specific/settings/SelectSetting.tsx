@@ -9,7 +9,7 @@ const SelectSetting: React.FC<SelectSettingProps> = ({
   options,
   onChange,
   disabled = false,
-  className
+  className,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (!disabled) {
@@ -18,14 +18,14 @@ const SelectSetting: React.FC<SelectSettingProps> = ({
   };
 
   return (
-    <div className={cn("p-4 border border-border rounded-lg", className)}>
-      <div className="mb-3">
-        <h3 className="font-medium text-txt">{title}</h3>
+    <div className={cn('p-4 border border-border rounded-lg', className)}>
+      <div className='mb-3'>
+        <h3 className='font-medium text-txt'>{title}</h3>
         {description && (
-          <p className="text-sm text-txt-secondary mt-1">{description}</p>
+          <p className='text-sm text-txt-secondary mt-1'>{description}</p>
         )}
       </div>
-      
+
       <select
         value={value}
         onChange={handleChange}
@@ -37,7 +37,7 @@ const SelectSetting: React.FC<SelectSettingProps> = ({
           disabled && 'opacity-50 cursor-not-allowed'
         )}
       >
-        {options.map((option) => (
+        {options.map(option => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
@@ -47,4 +47,4 @@ const SelectSetting: React.FC<SelectSettingProps> = ({
   );
 };
 
-export default SelectSetting; 
+export default SelectSetting;

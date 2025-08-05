@@ -12,13 +12,13 @@ const PageContainer: React.FC<PageContainerProps> = ({
   children,
   maxWidth = '4xl',
   padding = 'md',
-  className = ''
+  className = '',
 }) => {
   return (
-    <Container 
-      variant="content" 
-      maxWidth={maxWidth} 
-      padding={padding} 
+    <Container
+      variant='content'
+      maxWidth={maxWidth}
+      padding={padding}
       className={className}
     >
       {children}
@@ -26,4 +26,4 @@ const PageContainer: React.FC<PageContainerProps> = ({
   );
 };
 
-export default PageContainer; 
+export default PageContainer;

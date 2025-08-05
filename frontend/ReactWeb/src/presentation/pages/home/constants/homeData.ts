@@ -18,33 +18,33 @@ export const BAR_DATA = [
 // Stats data
 export const STATS_DATA = [
   {
-    title: "총 채팅",
+    title: '총 채팅',
     value: 1234,
-    description: "이번 달 총 채팅 수",
-    icon: "chat",
-    trend: { value: 12, isPositive: true }
+    description: '이번 달 총 채팅 수',
+    icon: 'chat',
+    trend: { value: 12, isPositive: true },
   },
   {
-    title: "활성 채널",
+    title: '활성 채널',
     value: 56,
-    description: "현재 활성 채널 수",
-    icon: "channel",
-    trend: { value: 8, isPositive: true }
+    description: '현재 활성 채널 수',
+    icon: 'channel',
+    trend: { value: 8, isPositive: true },
   },
   {
-    title: "AI 상호작용",
+    title: 'AI 상호작용',
     value: 89,
-    description: "AI와의 상호작용 수",
-    icon: "ai",
-    trend: { value: 23, isPositive: true }
+    description: 'AI와의 상호작용 수',
+    icon: 'ai',
+    trend: { value: 23, isPositive: true },
   },
   {
-    title: "만족도",
+    title: '만족도',
     value: 4.8,
-    description: "평균 만족도 점수",
-    icon: "star",
-    trend: { value: 5, isPositive: true }
-  }
+    description: '평균 만족도 점수',
+    icon: 'star',
+    trend: { value: 5, isPositive: true },
+  },
 ];
 
 // Quick actions data
@@ -56,7 +56,7 @@ export const QUICK_ACTIONS = [
     href: '/chat',
     color: 'bg-blue-500',
     badge: '3',
-    gradient: true
+    gradient: true,
   },
   {
     title: '채널 생성',
@@ -64,7 +64,7 @@ export const QUICK_ACTIONS = [
     icon: 'channel',
     href: '/channels',
     color: 'bg-green-500',
-    gradient: true
+    gradient: true,
   },
   {
     title: 'AI 어시스턴트 선택',
@@ -73,7 +73,7 @@ export const QUICK_ACTIONS = [
     href: '/assistant',
     color: 'bg-purple-500',
     badge: '5',
-    gradient: true
+    gradient: true,
   },
   {
     title: '데이터 분석',
@@ -81,7 +81,7 @@ export const QUICK_ACTIONS = [
     icon: 'chart',
     href: '/analysis',
     color: 'bg-orange-500',
-    gradient: true
+    gradient: true,
   },
   {
     title: '프로필 관리',
@@ -89,28 +89,84 @@ export const QUICK_ACTIONS = [
     icon: 'user',
     href: '/profile',
     color: 'bg-pink-500',
-    gradient: true
-  }
+    gradient: true,
+  },
 ];
 
 // Activity data
 export const ACTIVITIES = [
-  { id: 1, title: '새 채팅방 생성', user: '김철수', time: '2시간 전', status: 'online' as const },
-  { id: 2, title: 'AI 어시스턴트 사용', user: '이영희', time: '4시간 전', status: 'online' as const },
-  { id: 3, title: '채널 참여', user: '박민수', time: '6시간 전', status: 'away' as const },
-  { id: 4, title: '데이터 분석 실행', user: '최지영', time: '1일 전', status: 'offline' as const },
+  {
+    id: 1,
+    title: '새 채팅방 생성',
+    user: '김철수',
+    time: '2시간 전',
+    status: 'online' as const,
+  },
+  {
+    id: 2,
+    title: 'AI 어시스턴트 사용',
+    user: '이영희',
+    time: '4시간 전',
+    status: 'online' as const,
+  },
+  {
+    id: 3,
+    title: '채널 참여',
+    user: '박민수',
+    time: '6시간 전',
+    status: 'away' as const,
+  },
+  {
+    id: 4,
+    title: '데이터 분석 실행',
+    user: '최지영',
+    time: '1일 전',
+    status: 'offline' as const,
+  },
 ];
 
 // System status data
 export const SYSTEM_STATUS = [
-  { service: '채팅 서버', status: '정상', color: 'text-green-600', badge: 'success' as const },
-  { service: 'AI 서비스', status: '정상', color: 'text-green-600', badge: 'success' as const },
-  { service: '데이터베이스', status: '정상', color: 'text-green-600', badge: 'success' as const },
-  { service: '파일 스토리지', status: '점검 중', color: 'text-yellow-600', badge: 'warning' as const },
+  {
+    service: '채팅 서버',
+    status: '정상',
+    color: 'text-green-600',
+    badge: 'success' as const,
+  },
+  {
+    service: 'AI 서비스',
+    status: '정상',
+    color: 'text-green-600',
+    badge: 'success' as const,
+  },
+  {
+    service: '데이터베이스',
+    status: '정상',
+    color: 'text-green-600',
+    badge: 'success' as const,
+  },
+  {
+    service: '파일 스토리지',
+    status: '점검 중',
+    color: 'text-yellow-600',
+    badge: 'warning' as const,
+  },
 ];
 
 export const NOTIFICATIONS = [
-  { message: '새로운 채팅 메시지가 도착했습니다', time: '1분 전', type: 'info' as const },
-  { message: 'AI 분석이 완료되었습니다', time: '5분 전', type: 'success' as const },
-  { message: '시스템 업데이트가 필요합니다', time: '10분 전', type: 'warning' as const },
-]; 
+  {
+    message: '새로운 채팅 메시지가 도착했습니다',
+    time: '1분 전',
+    type: 'info' as const,
+  },
+  {
+    message: 'AI 분석이 완료되었습니다',
+    time: '5분 전',
+    type: 'success' as const,
+  },
+  {
+    message: '시스템 업데이트가 필요합니다',
+    time: '10분 전',
+    type: 'warning' as const,
+  },
+];

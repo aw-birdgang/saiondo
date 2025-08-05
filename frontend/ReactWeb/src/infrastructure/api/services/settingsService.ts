@@ -19,8 +19,8 @@ const DEFAULT_SETTINGS: UserSettings = {
     quietHours: {
       enabled: false,
       start: '22:00',
-      end: '08:00'
-    }
+      end: '08:00',
+    },
   },
   privacy: {
     profileVisibility: 'public',
@@ -28,23 +28,23 @@ const DEFAULT_SETTINGS: UserSettings = {
     allowFriendRequests: true,
     allowMessages: true,
     dataSharing: true,
-    analyticsEnabled: true
+    analyticsEnabled: true,
   },
   accessibility: {
     fontSize: 'medium',
     highContrast: false,
     reduceMotion: false,
     screenReader: false,
-    colorBlindness: 'none'
+    colorBlindness: 'none',
   },
   display: {
     compactMode: false,
     showAvatars: true,
     showTimestamps: true,
     autoPlayVideos: true,
-    showReadReceipts: true
+    showReadReceipts: true,
   },
-  updatedAt: new Date().toISOString()
+  updatedAt: new Date().toISOString(),
 };
 
 // 설정 변경 이벤트 리스너들
@@ -69,7 +69,7 @@ const loadSettingsFromStorage = (): UserSettings => {
 const saveSettingsToStorage = (settings: UserSettings): void => {
   try {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-    
+
     // 설정 변경 이벤트 발생
     settingsChangeListeners.forEach(listener => listener(settings));
   } catch (error) {
@@ -102,14 +102,16 @@ export const settingsService = {
   },
 
   // 사용자 설정 업데이트 (로컬 캐시에)
-  updateUserSettings: async (settings: Partial<UserSettings>): Promise<UserSettings> => {
+  updateUserSettings: async (
+    settings: Partial<UserSettings>
+  ): Promise<UserSettings> => {
     const currentSettings = loadSettingsFromStorage();
     const updatedSettings: UserSettings = {
       ...currentSettings,
       ...settings,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
-    
+
     saveSettingsToStorage(updatedSettings);
     return Promise.resolve(updatedSettings);
   },
@@ -121,28 +123,31 @@ export const settingsService = {
   },
 
   // 특정 설정 섹션 업데이트
-  updateSettingsSection: async (section: keyof UserSettings, settings: Record<string, any>): Promise<UserSettings> => {
+  updateSettingsSection: async (
+    section: keyof UserSettings,
+    settings: Record<string, any>
+  ): Promise<UserSettings> => {
     const currentSettings = loadSettingsFromStorage();
     const sectionValue = currentSettings[section];
-    
+
     if (typeof sectionValue === 'object' && sectionValue !== null) {
       const updatedSettings: UserSettings = {
         ...currentSettings,
         [section]: { ...sectionValue, ...settings },
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
-      
+
       saveSettingsToStorage(updatedSettings);
       return Promise.resolve(updatedSettings);
     }
-    
+
     // 섹션이 객체가 아닌 경우 전체 설정을 업데이트
     const updatedSettings: UserSettings = {
       ...currentSettings,
       [section]: settings,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
-    
+
     saveSettingsToStorage(updatedSettings);
     return Promise.resolve(updatedSettings);
   },
@@ -158,9 +163,11 @@ export const settingsService = {
   },
 
   // 설정 변경 리스너 등록
-  onSettingsChange: (listener: (settings: UserSettings) => void): (() => void) => {
+  onSettingsChange: (
+    listener: (settings: UserSettings) => void
+  ): (() => void) => {
     settingsChangeListeners.push(listener);
-    
+
     // 리스너 제거 함수 반환
     return () => {
       const index = settingsChangeListeners.indexOf(listener);
@@ -180,10 +187,13 @@ export const settingsService = {
   importSettings: (jsonString: string): UserSettings => {
     try {
       const importedSettings = JSON.parse(jsonString);
-      
+
       // 기본값과 병합하여 유효성 검증
-      const validatedSettings: UserSettings = { ...DEFAULT_SETTINGS, ...importedSettings };
-      
+      const validatedSettings: UserSettings = {
+        ...DEFAULT_SETTINGS,
+        ...importedSettings,
+      };
+
       saveSettingsToStorage(validatedSettings);
       return validatedSettings;
     } catch (error) {
@@ -200,5 +210,5 @@ export const settingsService = {
     } catch (error) {
       console.error('Failed to clear settings:', error);
     }
-  }
-}; 
+  },
+};

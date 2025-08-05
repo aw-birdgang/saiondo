@@ -20,4 +20,4 @@ export type { Message, MessageReaction, MessageState } from './messageStore';
 
 // UI Store
 export { useUIStore } from './uiStore';
-export type { Notification, ModalState, UIState } from './uiStore'; 
+export type { Notification, ModalState, UIState } from './uiStore';

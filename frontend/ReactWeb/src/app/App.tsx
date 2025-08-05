@@ -1,7 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { QueryProvider, ControllerProvider, UseCaseProvider, AuthProvider, ThemeProvider, UserProvider } from '../contexts';
+import {
+  QueryProvider,
+  ControllerProvider,
+  UseCaseProvider,
+  AuthProvider,
+  ThemeProvider,
+  UserProvider,
+} from '../contexts';
 import { ToastProvider } from '../presentation/providers/ToastProvider';
 import { AccessibilityProvider } from '../presentation/components/common/AccessibilityProvider';
 import { initializeServices } from './di/index';
@@ -31,9 +38,7 @@ const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
               <ThemeProvider>
                 <UserProvider>
                   <AccessibilityProvider>
-                    <ToastProvider>
-                      {children}
-                    </ToastProvider>
+                    <ToastProvider>{children}</ToastProvider>
                   </AccessibilityProvider>
                 </UserProvider>
               </ThemeProvider>
@@ -52,20 +57,36 @@ const AppContent: React.FC<AppContentProps> = ({ onError }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // 서비스 초기화 함수
-  const initializeAppServices = useCallback(async (authToken: string | null) => {
-    try {
-      setIsLoading(true);
-      console.log(`Initializing services ${authToken ? 'with' : 'without'} token`);
-      
-      await initializeServices(authToken || '');
-      setIsServicesInitialized(true);
-    } catch (error) {
-      console.error('Failed to initialize services:', error);
-      onError(error instanceof Error ? error : new Error('Service initialization failed'));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [onError]);
+  const initializeAppServices = useCallback(
+    async (authToken: string | null) => {
+      try {
+        setIsLoading(true);
+        console.log(
+          `Initializing services ${authToken ? 'with' : 'without'} token`
+        );
+
+        // UseCaseFactory와 ControllerFactory 초기화
+        const { UseCaseFactory } = await import('../application/usecases/UseCaseFactory');
+        const { ControllerFactory } = await import('../application/controllers/ControllerFactory');
+        
+        await UseCaseFactory.initialize();
+        await ControllerFactory.getInstance().initialize();
+        
+        await initializeServices(authToken || '');
+        setIsServicesInitialized(true);
+      } catch (error) {
+        console.error('Failed to initialize services:', error);
+        onError(
+          error instanceof Error
+            ? error
+            : new Error('Service initialization failed')
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [onError]
+  );
 
   // 테마 초기화 함수
   const initializeAppTheme = useCallback(async () => {
@@ -76,7 +97,11 @@ const AppContent: React.FC<AppContentProps> = ({ onError }) => {
       }
     } catch (error) {
       console.error('Failed to initialize theme:', error);
-      onError(error instanceof Error ? error : new Error('Theme initialization failed'));
+      onError(
+        error instanceof Error
+          ? error
+          : new Error('Theme initialization failed')
+      );
     }
   }, [initializeTheme, isInitialized, onError]);
 
@@ -120,7 +145,7 @@ const App: React.FC = () => {
   if (error) {
     return (
       <ErrorState
-        title="Something went wrong"
+        title='Something went wrong'
         message={error.message}
         onRetry={handleRetry}
       />

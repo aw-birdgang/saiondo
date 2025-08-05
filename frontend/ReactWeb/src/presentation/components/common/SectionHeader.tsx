@@ -15,25 +15,27 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   description,
   action,
   centered = false,
-  className = ''
+  className = '',
 }) => {
   return (
     <div className={`mb-8 ${centered ? 'text-center' : ''} ${className}`}>
       {/* Title */}
-      <h2 className="text-3xl font-bold text-txt mb-4 leading-tight">
+      <h2 className='text-3xl font-bold text-txt mb-4 leading-tight'>
         {title}
       </h2>
 
       {/* Subtitle */}
       {subtitle && (
-        <p className="text-lg text-txt-secondary mb-3 font-medium">
+        <p className='text-lg text-txt-secondary mb-3 font-medium'>
           {subtitle}
         </p>
       )}
 
       {/* Description */}
       {description && (
-        <p className={`text-txt-secondary leading-relaxed ${centered ? 'max-w-2xl mx-auto' : ''}`}>
+        <p
+          className={`text-txt-secondary leading-relaxed ${centered ? 'max-w-2xl mx-auto' : ''}`}
+        >
           {description}
         </p>
       )}
@@ -48,4 +50,4 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   );
 };
 
-export default SectionHeader; 
+export default SectionHeader;

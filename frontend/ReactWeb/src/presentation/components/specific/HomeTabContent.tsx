@@ -1,12 +1,8 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { 
-  AiAdviceCard, 
-  QuickActionsGrid, 
-  WelcomeMessage
-} from "./";
-import { CenteredContainer } from "../common";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { AiAdviceCard, QuickActionsGrid, WelcomeMessage } from './';
+import { CenteredContainer } from '../common';
 
 interface QuickAction {
   icon: string;
@@ -19,9 +15,9 @@ interface HomeTabContentProps {
   className?: string;
 }
 
-const HomeTabContent: React.FC<HomeTabContentProps> = ({ 
-  onStartChat, 
-  className = "" 
+const HomeTabContent: React.FC<HomeTabContentProps> = ({
+  onStartChat,
+  className = '',
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -41,20 +37,20 @@ const HomeTabContent: React.FC<HomeTabContentProps> = ({
 
   return (
     <CenteredContainer className={className}>
-      <div className="flex justify-center">
-        <div className="max-w-md w-full">
+      <div className='flex justify-center'>
+        <div className='max-w-md w-full'>
           {/* Main Card */}
           <AiAdviceCard onStartChat={onStartChat} />
 
           {/* Quick Actions */}
-          <QuickActionsGrid actions={quickActions} className="mt-8" />
+          <QuickActionsGrid actions={quickActions} className='mt-8' />
 
           {/* Welcome Message */}
-          <WelcomeMessage className="mt-8" />
+          <WelcomeMessage className='mt-8' />
         </div>
       </div>
     </CenteredContainer>
   );
 };
 
-export default HomeTabContent; 
+export default HomeTabContent;

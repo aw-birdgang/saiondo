@@ -1,9 +1,9 @@
-import type { 
-  Category, 
+import type {
+  Category,
   CategoryCode,
   CategoryStats,
   CategoryUsageGuide,
-  CategoryFilter
+  CategoryFilter,
 } from '../../../domain/types/category';
 
 // Category UseCase 인터페이스 - 애플리케이션 로직 조율
@@ -23,4 +23,4 @@ export interface ICategoryUseCase {
   filterCategoriesByType(categories: Category[], type: string): Category[];
   getUsageGuide(): CategoryUsageGuide;
   getCategoryFilters(): CategoryFilter[];
-} 
+}

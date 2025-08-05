@@ -9,11 +9,7 @@ const PaymentMethodSection: React.FC<PaymentMethodSectionProps> = ({
   children,
   className = '',
 }) => {
-  return (
-    <div className={`mt-8 ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`mt-8 ${className}`}>{children}</div>;
 };
 
-export default PaymentMethodSection; 
+export default PaymentMethodSection;

@@ -10,7 +10,7 @@ import type {
   UserProfile,
   UserStats,
   UserValidationSchema,
-  UserServiceConfig
+  UserServiceConfig,
 } from '../dto/UserDto';
 
 export class UserService {
@@ -29,12 +29,12 @@ export class UserService {
       channelRepository,
       messageRepository
     );
-    
+
     this.errorService = new ErrorHandlingService({
       enableConsoleLogging: true,
       enableRemoteLogging: false,
     });
-    
+
     this.securityService = new SecurityService({
       enableInputValidation: config.enableValidation ?? true,
       enableXSSProtection: true,
@@ -67,9 +67,9 @@ export class UserService {
 
           return this.mapToUserProfile(user);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.getCurrentUser',
-            userId: userId || 'current'
+            userId: userId || 'current',
           });
           throw error;
         }
@@ -81,7 +81,10 @@ export class UserService {
   /**
    * 사용자 프로필 업데이트
    */
-  async updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile> {
+  async updateUserProfile(
+    userId: string,
+    updates: Partial<UserProfile>
+  ): Promise<UserProfile> {
     return await this.performanceService.measurePerformance(
       'update_user_profile',
       async () => {
@@ -89,42 +92,52 @@ export class UserService {
           // 입력 검증
           if (this.config.enableValidation) {
             const validationSchema: UserValidationSchema = {
-              username: { 
-                required: false, 
-                type: 'string', 
-                minLength: this.config.minUsernameLength || 3, 
+              username: {
+                required: false,
+                type: 'string',
+                minLength: this.config.minUsernameLength || 3,
                 maxLength: this.config.maxUsernameLength || 20,
-                pattern: /^[a-zA-Z0-9_]+$/
+                pattern: /^[a-zA-Z0-9_]+$/,
               },
-              email: { 
-                required: false, 
-                type: 'string', 
-                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-              }
+              email: {
+                required: false,
+                type: 'string',
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              },
             };
 
-            const validation = this.securityService.validateInput(updates, validationSchema);
+            const validation = this.securityService.validateInput(
+              updates,
+              validationSchema
+            );
             if (!validation.isValid) {
-              throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
+              throw new Error(
+                `Validation failed: ${validation.errors.join(', ')}`
+              );
             }
           }
 
           const userIdObj = UserId.create(userId);
-          const existingUser = await this.userRepository.findById(userIdObj.getValue());
+          const existingUser = await this.userRepository.findById(
+            userIdObj.getValue()
+          );
 
           if (!existingUser) {
             throw DomainErrorFactory.createUserNotFound(userId);
           }
 
           // 업데이트 적용
-          const updatedUser = await this.userRepository.update(userIdObj.getValue(), updates);
+          const updatedUser = await this.userRepository.update(
+            userIdObj.getValue(),
+            updates
+          );
 
           return this.mapToUserProfile(updatedUser);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.updateUserProfile',
             userId,
-            updates
+            updates,
           });
           throw error;
         }
@@ -142,7 +155,7 @@ export class UserService {
       async () => {
         try {
           const userIdObj = UserId.create(userId);
-          
+
           // 사용자 존재 확인
           const user = await this.userRepository.findById(userIdObj.getValue());
           if (!user) {
@@ -150,11 +163,13 @@ export class UserService {
           }
 
           // 사용자가 속한 채널 수 조회
-          const userChannels = await this.channelRepository.findByUserId(userId);
+          const userChannels =
+            await this.channelRepository.findByUserId(userId);
           const totalChannels = userChannels.length;
 
           // 사용자가 보낸 메시지 수 조회
-          const userMessages = await this.messageRepository.findByUserId(userId);
+          const userMessages =
+            await this.messageRepository.findByUserId(userId);
           const totalMessages = userMessages.length;
 
           // 마지막 활동 시간 계산
@@ -164,12 +179,12 @@ export class UserService {
             totalChannels,
             totalMessages,
             lastActivity,
-            joinDate: user.createdAt
+            joinDate: user.createdAt,
           };
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.getUserStats',
-            userId
+            userId,
           });
           throw error;
         }
@@ -190,17 +205,19 @@ export class UserService {
           if (this.config.enableValidation) {
             const sanitizedQuery = this.securityService.sanitizeInput(query);
             if (sanitizedQuery.length < 2) {
-              throw new Error('Search query must be at least 2 characters long');
+              throw new Error(
+                'Search query must be at least 2 characters long'
+              );
             }
           }
 
           const users = await this.userRepository.search(query, limit);
           return users.map(user => this.mapToUserProfile(user));
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.searchUsers',
             query,
-            limit
+            limit,
           });
           throw error;
         }
@@ -212,13 +229,18 @@ export class UserService {
   /**
    * 사용자 상태 업데이트
    */
-  async updateUserStatus(userId: string, status: UserProfile['status']): Promise<UserProfile> {
+  async updateUserStatus(
+    userId: string,
+    status: UserProfile['status']
+  ): Promise<UserProfile> {
     return await this.performanceService.measurePerformance(
       'update_user_status',
       async () => {
         try {
           const userIdObj = UserId.create(userId);
-          const existingUser = await this.userRepository.findById(userIdObj.getValue());
+          const existingUser = await this.userRepository.findById(
+            userIdObj.getValue()
+          );
 
           if (!existingUser) {
             throw DomainErrorFactory.createUserNotFound(userId);
@@ -226,16 +248,19 @@ export class UserService {
 
           const updates = {
             status,
-            lastSeen: new Date()
+            lastSeen: new Date(),
           };
 
-          const updatedUser = await this.userRepository.update(userIdObj.getValue(), updates);
+          const updatedUser = await this.userRepository.update(
+            userIdObj.getValue(),
+            updates
+          );
           return this.mapToUserProfile(updatedUser);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.updateUserStatus',
             userId,
-            status
+            status,
           });
           throw error;
         }
@@ -253,7 +278,9 @@ export class UserService {
       async () => {
         try {
           const userIdObj = UserId.create(userId);
-          const existingUser = await this.userRepository.findById(userIdObj.getValue());
+          const existingUser = await this.userRepository.findById(
+            userIdObj.getValue()
+          );
 
           if (!existingUser) {
             throw DomainErrorFactory.createUserNotFound(userId);
@@ -263,15 +290,15 @@ export class UserService {
           const updates = {
             status: 'offline' as const,
             deletedAt: new Date(),
-            isActive: false
+            isActive: false,
           };
 
           await this.userRepository.update(userIdObj.getValue(), updates);
           return true;
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.deleteUser',
-            userId
+            userId,
           });
           throw error;
         }
@@ -283,10 +310,14 @@ export class UserService {
   /**
    * 사용자 목록 조회 (페이지네이션)
    */
-  async getUsers(page: number = 1, limit: number = 20, filters?: {
-    status?: UserProfile['status'];
-    isActive?: boolean;
-  }): Promise<{
+  async getUsers(
+    page: number = 1,
+    limit: number = 20,
+    filters?: {
+      status?: UserProfile['status'];
+      isActive?: boolean;
+    }
+  ): Promise<{
     users: UserProfile[];
     total: number;
     page: number;
@@ -297,21 +328,25 @@ export class UserService {
       async () => {
         try {
           const offset = (page - 1) * limit;
-          const users = await this.userRepository.findAll(limit, offset, filters);
+          const users = await this.userRepository.findAll(
+            limit,
+            offset,
+            filters
+          );
           const total = await this.userRepository.count(filters);
 
           return {
             users: users.map(user => this.mapToUserProfile(user)),
             total,
             page,
-            totalPages: Math.ceil(total / limit)
+            totalPages: Math.ceil(total / limit),
           };
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.getUsers',
             page,
             limit,
-            filters
+            filters,
           });
           throw error;
         }
@@ -329,9 +364,9 @@ export class UserService {
       const user = await this.userRepository.findById(userIdObj.getValue());
       return !!user && user.isActive !== false;
     } catch (error) {
-      this.errorService.logError(error, { 
+      this.errorService.logError(error, {
         context: 'UserService.userExists',
-        userId
+        userId,
       });
       return false;
     }
@@ -354,12 +389,16 @@ export class UserService {
 
           // 사용자 권한 확인 로직
           // 실제 구현에서는 권한 시스템과 연동
-          return user.role === 'admin' || user.permissions?.includes(permission) || false;
+          return (
+            user.role === 'admin' ||
+            user.permissions?.includes(permission) ||
+            false
+          );
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'UserService.hasPermission',
             userId,
-            permission
+            permission,
           });
           return false;
         }
@@ -380,7 +419,7 @@ export class UserService {
       status: user.status || 'offline',
       lastSeen: user.lastSeen || user.updatedAt,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      updatedAt: user.updatedAt,
     };
   }
-} 
+}

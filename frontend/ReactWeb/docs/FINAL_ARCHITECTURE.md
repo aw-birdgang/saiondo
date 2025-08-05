@@ -2,7 +2,7 @@
 
 ## 📋 개요
 
-ReactWeb 프로젝트가 **완전한 Service 기반 아키텍처**로 전환되었습니다. 
+ReactWeb 프로젝트가 **완전한 Service 기반 아키텍처**로 전환되었습니다.
 이제 모든 Use Case는 Repository를 직접 사용하지 않고, Service Layer를 통해 비즈니스 로직을 처리합니다.
 
 ## 🏗️ 최종 아키텍처 구조
@@ -61,24 +61,25 @@ ReactWeb 프로젝트가 **완전한 Service 기반 아키텍처**로 전환되�
 
 ### **변경된 Use Cases**
 
-| Use Case | 이전 구조 | 새로운 구조 |
-|----------|-----------|-------------|
-| `GetCurrentUserUseCase` | Repository 직접 사용 | `UserService` 사용 |
-| `CreateChannelUseCase` | Repository 직접 사용 | `ChannelService` 사용 |
-| `UserActivityLogUseCase` | 복잡한 비즈니스 로직 | `UserActivityService` 사용 |
-| `UserPermissionUseCase` | 복잡한 비즈니스 로직 | `UserPermissionService` 사용 |
-| `RealTimeChatUseCase` | 복잡한 비즈니스 로직 | `RealTimeChatService` 사용 |
-| `NotificationUseCase` | 복잡한 비즈니스 로직 | `NotificationService` 사용 |
-| `UploadFileUseCase` | 복잡한 비즈니스 로직 | `FileService` 사용 |
-| `CacheUseCase` | 복잡한 비즈니스 로직 | `CacheService` 사용 |
-| `MonitoringUseCase` | 복잡한 비즈니스 로직 | `MonitoringService` 사용 |
-| `WebSocketUseCase` | 복잡한 비즈니스 로직 | `WebSocketService` 사용 |
-| `AnalyticsUseCase` | 복잡한 비즈니스 로직 | `AnalyticsService` 사용 |
-| `SystemManagementUseCase` | 복잡한 비즈니스 로직 | `SystemHealthService` 사용 |
+| Use Case                  | 이전 구조            | 새로운 구조                  |
+| ------------------------- | -------------------- | ---------------------------- |
+| `GetCurrentUserUseCase`   | Repository 직접 사용 | `UserService` 사용           |
+| `CreateChannelUseCase`    | Repository 직접 사용 | `ChannelService` 사용        |
+| `UserActivityLogUseCase`  | 복잡한 비즈니스 로직 | `UserActivityService` 사용   |
+| `UserPermissionUseCase`   | 복잡한 비즈니스 로직 | `UserPermissionService` 사용 |
+| `RealTimeChatUseCase`     | 복잡한 비즈니스 로직 | `RealTimeChatService` 사용   |
+| `NotificationUseCase`     | 복잡한 비즈니스 로직 | `NotificationService` 사용   |
+| `UploadFileUseCase`       | 복잡한 비즈니스 로직 | `FileService` 사용           |
+| `CacheUseCase`            | 복잡한 비즈니스 로직 | `CacheService` 사용          |
+| `MonitoringUseCase`       | 복잡한 비즈니스 로직 | `MonitoringService` 사용     |
+| `WebSocketUseCase`        | 복잡한 비즈니스 로직 | `WebSocketService` 사용      |
+| `AnalyticsUseCase`        | 복잡한 비즈니스 로직 | `AnalyticsService` 사용      |
+| `SystemManagementUseCase` | 복잡한 비즈니스 로직 | `SystemHealthService` 사용   |
 
 ### **새로 추가된 Services**
 
 #### **1. UserService**
+
 ```typescript
 export class UserService {
   constructor(
@@ -91,19 +92,30 @@ export class UserService {
   }
 
   // 주요 메서드들
-  async getCurrentUser(userId?: string): Promise<UserProfile>
-  async updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile>
-  async getUserStats(userId: string): Promise<UserStats>
-  async searchUsers(query: string, limit: number = 10): Promise<UserProfile[]>
-  async updateUserStatus(userId: string, status: UserProfile['status']): Promise<UserProfile>
-  async deleteUser(userId: string): Promise<boolean>
-  async getUsers(page: number = 1, limit: number = 20, filters?: any): Promise<any>
-  async userExists(userId: string): Promise<boolean>
-  async hasPermission(userId: string, permission: string): Promise<boolean>
+  async getCurrentUser(userId?: string): Promise<UserProfile>;
+  async updateUserProfile(
+    userId: string,
+    updates: Partial<UserProfile>
+  ): Promise<UserProfile>;
+  async getUserStats(userId: string): Promise<UserStats>;
+  async searchUsers(query: string, limit: number = 10): Promise<UserProfile[]>;
+  async updateUserStatus(
+    userId: string,
+    status: UserProfile['status']
+  ): Promise<UserProfile>;
+  async deleteUser(userId: string): Promise<boolean>;
+  async getUsers(
+    page: number = 1,
+    limit: number = 20,
+    filters?: any
+  ): Promise<any>;
+  async userExists(userId: string): Promise<boolean>;
+  async hasPermission(userId: string, permission: string): Promise<boolean>;
 }
 ```
 
 #### **2. ChannelService**
+
 ```typescript
 export class ChannelService {
   constructor(
@@ -116,23 +128,34 @@ export class ChannelService {
   }
 
   // 주요 메서드들
-  async createChannel(channelData: any): Promise<ChannelProfile>
-  async getChannel(channelId: string): Promise<ChannelProfile>
-  async getUserChannels(userId: string): Promise<ChannelProfile[]>
-  async updateChannel(channelId: string, updates: Partial<ChannelProfile>): Promise<ChannelProfile>
-  async addMember(channelId: string, userId: string): Promise<ChannelProfile>
-  async removeMember(channelId: string, userId: string): Promise<ChannelProfile>
-  async getChannelStats(channelId: string): Promise<ChannelStats>
-  async searchChannels(query: string, userId?: string, limit: number = 10): Promise<ChannelProfile[]>
-  async deleteChannel(channelId: string, userId: string): Promise<boolean>
-  async channelExists(channelId: string): Promise<boolean>
-  async isMember(channelId: string, userId: string): Promise<boolean>
+  async createChannel(channelData: any): Promise<ChannelProfile>;
+  async getChannel(channelId: string): Promise<ChannelProfile>;
+  async getUserChannels(userId: string): Promise<ChannelProfile[]>;
+  async updateChannel(
+    channelId: string,
+    updates: Partial<ChannelProfile>
+  ): Promise<ChannelProfile>;
+  async addMember(channelId: string, userId: string): Promise<ChannelProfile>;
+  async removeMember(
+    channelId: string,
+    userId: string
+  ): Promise<ChannelProfile>;
+  async getChannelStats(channelId: string): Promise<ChannelStats>;
+  async searchChannels(
+    query: string,
+    userId?: string,
+    limit: number = 10
+  ): Promise<ChannelProfile[]>;
+  async deleteChannel(channelId: string, userId: string): Promise<boolean>;
+  async channelExists(channelId: string): Promise<boolean>;
+  async isMember(channelId: string, userId: string): Promise<boolean>;
 }
 ```
 
 ## 🚀 Service 기반 아키텍처의 장점
 
 ### **1. 일관된 패턴**
+
 ```typescript
 // 모든 Use Case가 동일한 패턴을 따름
 export class SomeUseCase {
@@ -150,6 +173,7 @@ export class SomeUseCase {
 ```
 
 ### **2. 통합된 기능**
+
 ```typescript
 // 모든 Service가 다음 기능을 포함
 export class BaseService {
@@ -184,6 +208,7 @@ export class BaseService {
 ```
 
 ### **3. 재사용성**
+
 ```typescript
 // 여러 Use Case에서 동일한 Service 사용 가능
 const userService = new UserService(repositories);
@@ -193,6 +218,7 @@ const deleteUserUseCase = new DeleteUserUseCase(userService);
 ```
 
 ### **4. 테스트 용이성**
+
 ```typescript
 // Service 단위 테스트
 describe('UserService', () => {
@@ -219,34 +245,35 @@ describe('UserService', () => {
 
 ### **아키텍처 개선**
 
-| 항목 | 이전 | 현재 | 개선율 |
-|------|------|------|--------|
-| Service 개수 | 15개 | 17개 | +13.3% |
-| Repository 직접 사용 Use Case | 2개 | 0개 | -100% |
-| 일관된 패턴 적용 | 부분적 | 완전 | +100% |
-| 통합 기능 적용 | 부분적 | 완전 | +100% |
+| 항목                          | 이전   | 현재 | 개선율 |
+| ----------------------------- | ------ | ---- | ------ |
+| Service 개수                  | 15개   | 17개 | +13.3% |
+| Repository 직접 사용 Use Case | 2개    | 0개  | -100%  |
+| 일관된 패턴 적용              | 부분적 | 완전 | +100%  |
+| 통합 기능 적용                | 부분적 | 완전 | +100%  |
 
 ### **코드 품질**
 
-| 항목 | 이전 | 현재 | 개선율 |
-|------|------|------|--------|
-| 코드 재사용성 | 높음 | 매우 높음 | +50% |
-| 테스트 용이성 | 높음 | 매우 높음 | +50% |
-| 유지보수성 | 높음 | 매우 높음 | +50% |
-| 확장성 | 높음 | 매우 높음 | +50% |
+| 항목          | 이전 | 현재      | 개선율 |
+| ------------- | ---- | --------- | ------ |
+| 코드 재사용성 | 높음 | 매우 높음 | +50%   |
+| 테스트 용이성 | 높음 | 매우 높음 | +50%   |
+| 유지보수성    | 높음 | 매우 높음 | +50%   |
+| 확장성        | 높음 | 매우 높음 | +50%   |
 
 ### **성능 및 보안**
 
-| 항목 | 이전 | 현재 | 개선율 |
-|------|------|------|--------|
-| 성능 모니터링 | 모든 Service | 모든 Service | +100% |
-| 에러 처리 | 모든 Service | 모든 Service | +100% |
-| 보안 검증 | 모든 Service | 모든 Service | +100% |
-| 입력 검증 | 모든 Service | 모든 Service | +100% |
+| 항목          | 이전         | 현재         | 개선율 |
+| ------------- | ------------ | ------------ | ------ |
+| 성능 모니터링 | 모든 Service | 모든 Service | +100%  |
+| 에러 처리     | 모든 Service | 모든 Service | +100%  |
+| 보안 검증     | 모든 Service | 모든 Service | +100%  |
+| 입력 검증     | 모든 Service | 모든 Service | +100%  |
 
 ## 🔧 사용 패턴
 
 ### **1. Use Case 생성**
+
 ```typescript
 // UseCaseFactory에서 Service 기반으로 생성
 const getUserUseCase = UseCaseFactory.createGetCurrentUserUseCase();
@@ -254,6 +281,7 @@ const createChannelUseCase = UseCaseFactory.createCreateChannelUseCase();
 ```
 
 ### **2. Service 직접 사용**
+
 ```typescript
 // 필요한 경우 Service를 직접 사용
 const userService = new UserService(
@@ -267,6 +295,7 @@ const userStats = await userService.getUserStats(userId);
 ```
 
 ### **3. 새로운 기능 추가**
+
 ```typescript
 // 1. Service에 메서드 추가
 export class UserService {
@@ -284,7 +313,7 @@ export class UserService {
 // 2. Use Case 생성
 export class NewFeatureUseCase {
   constructor(private readonly userService: UserService) {}
-  
+
   async execute(request: any): Promise<any> {
     return await this.userService.newFeature(request);
   }
@@ -304,21 +333,25 @@ static createNewFeatureUseCase(): NewFeatureUseCase {
 ## 🎯 핵심 원칙
 
 ### **1. Service First**
+
 - 모든 비즈니스 로직은 Service에 구현
 - Use Case는 Service 호출만 담당
 - Repository는 Service 내부에서만 사용
 
 ### **2. 통합된 기능**
+
 - 모든 Service가 성능 모니터링 포함
 - 모든 Service가 에러 처리 포함
 - 모든 Service가 보안 검증 포함
 
 ### **3. 일관된 패턴**
+
 - 모든 Use Case가 동일한 구조
 - 모든 Service가 동일한 초기화 패턴
 - 모든 메서드가 동일한 에러 처리
 
 ### **4. 확장성**
+
 - 새로운 기능은 Service에 추가
 - 기존 Service 확장 가능
 - 마이크로서비스 전환 준비 완료
@@ -348,4 +381,4 @@ ReactWeb 프로젝트가 **완전한 Service 기반 아키텍처**로 전환되�
 
 ---
 
-**🎉 완전한 Service 기반 아키텍처 전환 완료! 🎉** 
+**🎉 완전한 Service 기반 아키텍처 전환 완료! 🎉**

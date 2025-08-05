@@ -9,11 +9,13 @@ export const usePerformanceMonitor = (componentName: string) => {
     renderCount.current += 1;
     const endTime = performance.now();
     const renderTime = endTime - startTime.current;
-    
+
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[${componentName}] Render #${renderCount.current}: ${renderTime.toFixed(2)}ms`);
+      console.log(
+        `[${componentName}] Render #${renderCount.current}: ${renderTime.toFixed(2)}ms`
+      );
     }
-    
+
     startTime.current = performance.now();
   });
 };
@@ -30,7 +32,7 @@ export const useDebouncedCallback = <T extends (...args: any[]) => any>(
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      
+
       timeoutRef.current = setTimeout(() => {
         callback(...args);
       }, delay);
@@ -50,7 +52,7 @@ export const useThrottledCallback = <T extends (...args: any[]) => any>(
   return useCallback(
     ((...args: Parameters<T>) => {
       const now = Date.now();
-      
+
       if (now - lastCall.current >= delay) {
         callback(...args);
         lastCall.current = now;
@@ -58,11 +60,14 @@ export const useThrottledCallback = <T extends (...args: any[]) => any>(
         if (lastCallTimer.current) {
           clearTimeout(lastCallTimer.current);
         }
-        
-        lastCallTimer.current = setTimeout(() => {
-          callback(...args);
-          lastCall.current = Date.now();
-        }, delay - (now - lastCall.current));
+
+        lastCallTimer.current = setTimeout(
+          () => {
+            callback(...args);
+            lastCall.current = Date.now();
+          },
+          delay - (now - lastCall.current)
+        );
       }
     }) as T,
     [callback, delay]
@@ -119,14 +124,14 @@ export const useVirtualScrolling = <T>(
   overscan: number = 5
 ) => {
   const [scrollTop, setScrollTop] = useState(0);
-  
+
   const visibleRange = useMemo(() => {
     const start = Math.floor(scrollTop / itemHeight);
     const end = Math.min(
       start + Math.ceil(containerHeight / itemHeight) + overscan,
       items.length
     );
-    
+
     return {
       start: Math.max(0, start - overscan),
       end,
@@ -154,7 +159,7 @@ export const useResourcePreloader = () => {
 
   const preloadImage = useCallback((src: string) => {
     if (preloadedResources.current.has(src)) return;
-    
+
     const img = new Image();
     img.src = src;
     preloadedResources.current.add(src);
@@ -162,7 +167,7 @@ export const useResourcePreloader = () => {
 
   const preloadScript = useCallback((src: string) => {
     if (preloadedResources.current.has(src)) return;
-    
+
     const script = document.createElement('script');
     script.src = src;
     script.async = true;
@@ -172,7 +177,7 @@ export const useResourcePreloader = () => {
 
   const preloadStylesheet = useCallback((href: string) => {
     if (preloadedResources.current.has(href)) return;
-    
+
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = href;
@@ -203,4 +208,4 @@ export const useMemoryOptimization = () => {
   }, []);
 
   return { addCleanup };
-}; 
+};

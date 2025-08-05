@@ -37,8 +37,14 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
 
   if (!data || data.length === 0) {
     return (
-      <div className={cn('flex items-center justify-center bg-surface border border-border rounded-lg', className)} style={{ width, height }}>
-        <p className="text-txt-secondary">데이터가 없습니다</p>
+      <div
+        className={cn(
+          'flex items-center justify-center bg-surface border border-border rounded-lg',
+          className
+        )}
+        style={{ width, height }}
+      >
+        <p className='text-txt-secondary'>데이터가 없습니다</p>
       </div>
     );
   }
@@ -51,8 +57,10 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
   const minY = Math.min(...data.map(d => d.y));
   const yRange = maxY - minY;
 
-  const getX = (index: number) => (index / (data.length - 1)) * chartWidth + padding;
-  const getY = (value: number) => height - padding - ((value - minY) / yRange) * chartHeight;
+  const getX = (index: number) =>
+    (index / (data.length - 1)) * chartWidth + padding;
+  const getY = (value: number) =>
+    height - padding - ((value - minY) / yRange) * chartHeight;
 
   const points = data.map((point, index) => ({
     ...point,
@@ -76,9 +84,9 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
     return (
       <path
         d={pathData}
-        fill="none"
-        stroke="var(--color-primary)"
-        strokeWidth="2"
+        fill='none'
+        stroke='var(--color-primary)'
+        strokeWidth='2'
         className={cn(animate && 'animate-dash')}
         style={{
           strokeDasharray: animate ? '5,5' : 'none',
@@ -91,24 +99,28 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
   const renderArea = () => {
     if (points.length < 2) return null;
 
-    const pathData = points
-      .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-      .join(' ') + ` L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`;
+    const pathData =
+      points
+        .map(
+          (point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+        )
+        .join(' ') +
+      ` L ${points[points.length - 1].x} ${height - padding} L ${points[0].x} ${height - padding} Z`;
 
     return (
       <path
         d={pathData}
-        fill="var(--color-primary)"
-        fillOpacity="0.1"
-        stroke="var(--color-primary)"
-        strokeWidth="2"
+        fill='var(--color-primary)'
+        fillOpacity='0.1'
+        stroke='var(--color-primary)'
+        strokeWidth='2'
       />
     );
   };
 
   const renderBars = () => {
-    const barWidth = chartWidth / data.length * 0.8;
-    const barSpacing = chartWidth / data.length * 0.2;
+    const barWidth = (chartWidth / data.length) * 0.8;
+    const barSpacing = (chartWidth / data.length) * 0.2;
 
     return points.map((point, index) => (
       <rect
@@ -138,8 +150,8 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
         cy={point.y}
         r={hoveredPoint === index || selectedPoint === index ? 6 : 4}
         fill={point.color || 'var(--color-primary)'}
-        stroke="var(--color-surface)"
-        strokeWidth="2"
+        stroke='var(--color-surface)'
+        strokeWidth='2'
         className={cn(
           'transition-all duration-200 cursor-pointer',
           hoveredPoint === index && 'scale-125',
@@ -167,9 +179,9 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
           y1={y}
           x2={width - padding}
           y2={y}
-          stroke="var(--color-border)"
-          strokeWidth="1"
-          opacity="0.3"
+          stroke='var(--color-border)'
+          strokeWidth='1'
+          opacity='0.3'
         />
       );
     }
@@ -191,26 +203,28 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
               key={`y-label-${i}`}
               x={padding - 10}
               y={y + 4}
-              textAnchor="end"
-              fontSize="12"
-              fill="var(--color-txt-secondary)"
+              textAnchor='end'
+              fontSize='12'
+              fill='var(--color-txt-secondary)'
             >
               {value.toFixed(1)}
             </text>
           );
         })}
-        
+
         {/* X-axis labels */}
         {points.map((point, index) => (
           <text
             key={`x-label-${index}`}
             x={point.x}
             y={height - 10}
-            textAnchor="middle"
-            fontSize="12"
-            fill="var(--color-txt-secondary)"
+            textAnchor='middle'
+            fontSize='12'
+            fill='var(--color-txt-secondary)'
           >
-            {typeof data[index].x === 'string' ? data[index].x : data[index].x.toString()}
+            {typeof data[index].x === 'string'
+              ? data[index].x
+              : data[index].x.toString()}
           </text>
         ))}
       </>
@@ -227,17 +241,15 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
       <foreignObject
         x={point.x + 10}
         y={point.y - 40}
-        width="120"
-        height="60"
-        className="pointer-events-none"
+        width='120'
+        height='60'
+        className='pointer-events-none'
       >
-        <div className="bg-surface border border-border rounded-lg p-2 shadow-lg">
-          <div className="text-xs font-medium text-txt">
+        <div className='bg-surface border border-border rounded-lg p-2 shadow-lg'>
+          <div className='text-xs font-medium text-txt'>
             {dataPoint.label || `Point ${hoveredPoint + 1}`}
           </div>
-          <div className="text-xs text-txt-secondary">
-            {dataPoint.y}
-          </div>
+          <div className='text-xs text-txt-secondary'>{dataPoint.y}</div>
         </div>
       </foreignObject>
     );
@@ -249,22 +261,22 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
         ref={svgRef}
         width={width}
         height={height}
-        className="overflow-visible"
+        className='overflow-visible'
       >
         {/* Grid */}
         {renderGrid()}
-        
+
         {/* Chart content */}
         {type === 'area' && renderArea()}
         {type === 'line' && renderLine()}
         {type === 'bar' && renderBars()}
-        
+
         {/* Points */}
         {(type === 'line' || type === 'area') && renderPoints()}
-        
+
         {/* Labels */}
         {renderLabels()}
-        
+
         {/* Tooltip */}
         {renderTooltip()}
       </svg>
@@ -273,16 +285,16 @@ export const InteractiveChart: React.FC<InteractiveChartProps> = ({
 };
 
 // Convenience components for different chart types
-export const LineChart: React.FC<Omit<InteractiveChartProps, 'type'>> = (props) => (
-  <InteractiveChart {...props} type="line" />
-);
+export const LineChart: React.FC<
+  Omit<InteractiveChartProps, 'type'>
+> = props => <InteractiveChart {...props} type='line' />;
 
-export const BarChart: React.FC<Omit<InteractiveChartProps, 'type'>> = (props) => (
-  <InteractiveChart {...props} type="bar" />
-);
+export const BarChart: React.FC<
+  Omit<InteractiveChartProps, 'type'>
+> = props => <InteractiveChart {...props} type='bar' />;
 
-export const AreaChart: React.FC<Omit<InteractiveChartProps, 'type'>> = (props) => (
-  <InteractiveChart {...props} type="area" />
-);
+export const AreaChart: React.FC<
+  Omit<InteractiveChartProps, 'type'>
+> = props => <InteractiveChart {...props} type='area' />;
 
-InteractiveChart.displayName = 'InteractiveChart'; 
+InteractiveChart.displayName = 'InteractiveChart';

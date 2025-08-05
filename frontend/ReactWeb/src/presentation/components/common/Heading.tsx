@@ -3,9 +3,28 @@ import React from 'react';
 interface HeadingProps {
   children: React.ReactNode;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
+  size?:
+    | 'xs'
+    | 'sm'
+    | 'base'
+    | 'lg'
+    | 'xl'
+    | '2xl'
+    | '3xl'
+    | '4xl'
+    | '5xl'
+    | '6xl';
   weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'muted' | 'white' | 'black';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'muted'
+    | 'white'
+    | 'black';
   align?: 'left' | 'center' | 'right' | 'justify';
   className?: string;
 }
@@ -17,7 +36,7 @@ const Heading: React.FC<HeadingProps> = ({
   weight,
   color = 'primary',
   align = 'left',
-  className = ''
+  className = '',
 }) => {
   const getDefaultSize = () => {
     switch (level) {
@@ -123,4 +142,4 @@ const Heading: React.FC<HeadingProps> = ({
   );
 };
 
-export default Heading; 
+export default Heading;

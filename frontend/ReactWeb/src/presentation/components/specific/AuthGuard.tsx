@@ -15,27 +15,29 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   children,
   redirectTo = ROUTES.LOGIN,
   requireAuth = true,
-  fallback
+  fallback,
 }) => {
   const { t } = useTranslation();
-  
+
   // Use custom hook for auth guard
   const { isLoading, shouldRender } = useAuthGuard({
     requireAuth,
-    redirectTo
+    redirectTo,
   });
 
   // 로딩 중일 때
   if (isLoading) {
-    return fallback || (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-center">
-          <LoadingSpinner size="lg" color="primary" />
-          <p className="mt-6 text-txt-secondary text-lg font-medium">
-            {t('common.loading') || 'Loading...'}
-          </p>
+    return (
+      fallback || (
+        <div className='min-h-screen bg-bg flex items-center justify-center'>
+          <div className='text-center'>
+            <LoadingSpinner size='lg' color='primary' />
+            <p className='mt-6 text-txt-secondary text-lg font-medium'>
+              {t('common.loading') || 'Loading...'}
+            </p>
+          </div>
         </div>
-      </div>
+      )
     );
   }
 
@@ -48,4 +50,4 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   return <>{children}</>;
 };
 
-export default AuthGuard; 
+export default AuthGuard;

@@ -63,4 +63,4 @@ export interface CategoryFilter {
   name: string;
   isActive: boolean;
   count: number;
-} 
+}

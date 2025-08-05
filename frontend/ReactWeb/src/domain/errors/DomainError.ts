@@ -30,14 +30,18 @@ export class UserValidationError extends DomainError {
 
 export class UserAlreadyExistsError extends DomainError {
   constructor(email: string) {
-    super(`User with email ${email} already exists`, 'USER_ALREADY_EXISTS', { email });
+    super(`User with email ${email} already exists`, 'USER_ALREADY_EXISTS', {
+      email,
+    });
   }
 }
 
 // Channel domain errors
 export class ChannelNotFoundError extends DomainError {
   constructor(channelId: string) {
-    super(`Channel with ID ${channelId} not found`, 'CHANNEL_NOT_FOUND', { channelId });
+    super(`Channel with ID ${channelId} not found`, 'CHANNEL_NOT_FOUND', {
+      channelId,
+    });
   }
 }
 
@@ -49,7 +53,11 @@ export class ChannelValidationError extends DomainError {
 
 export class ChannelAccessDeniedError extends DomainError {
   constructor(channelId: string, userId: string) {
-    super(`User ${userId} does not have access to channel ${channelId}`, 'CHANNEL_ACCESS_DENIED', { channelId, userId });
+    super(
+      `User ${userId} does not have access to channel ${channelId}`,
+      'CHANNEL_ACCESS_DENIED',
+      { channelId, userId }
+    );
   }
 }
 
@@ -62,7 +70,9 @@ export class ChannelMemberError extends DomainError {
 // Message domain errors
 export class MessageNotFoundError extends DomainError {
   constructor(messageId: string) {
-    super(`Message with ID ${messageId} not found`, 'MESSAGE_NOT_FOUND', { messageId });
+    super(`Message with ID ${messageId} not found`, 'MESSAGE_NOT_FOUND', {
+      messageId,
+    });
   }
 }
 
@@ -74,7 +84,11 @@ export class MessageValidationError extends DomainError {
 
 export class MessageEditNotAllowedError extends DomainError {
   constructor(messageId: string, userId: string) {
-    super(`User ${userId} cannot edit message ${messageId}`, 'MESSAGE_EDIT_NOT_ALLOWED', { messageId, userId });
+    super(
+      `User ${userId} cannot edit message ${messageId}`,
+      'MESSAGE_EDIT_NOT_ALLOWED',
+      { messageId, userId }
+    );
   }
 }
 
@@ -110,7 +124,10 @@ export class DomainErrorFactory {
     return new UserNotFoundError(userId);
   }
 
-  static createUserValidation(message: string, details?: Record<string, unknown>): UserValidationError {
+  static createUserValidation(
+    message: string,
+    details?: Record<string, unknown>
+  ): UserValidationError {
     return new UserValidationError(message, details);
   }
 
@@ -118,7 +135,10 @@ export class DomainErrorFactory {
     return new ChannelNotFoundError(channelId);
   }
 
-  static createChannelValidation(message: string, details?: Record<string, unknown>): ChannelValidationError {
+  static createChannelValidation(
+    message: string,
+    details?: Record<string, unknown>
+  ): ChannelValidationError {
     return new ChannelValidationError(message, details);
   }
 
@@ -126,19 +146,31 @@ export class DomainErrorFactory {
     return new MessageNotFoundError(messageId);
   }
 
-  static createMessageValidation(message: string, details?: Record<string, unknown>): MessageValidationError {
+  static createMessageValidation(
+    message: string,
+    details?: Record<string, unknown>
+  ): MessageValidationError {
     return new MessageValidationError(message, details);
   }
 
-  static createMessageEditNotAllowed(messageId: string, userId: string): MessageEditNotAllowedError {
+  static createMessageEditNotAllowed(
+    messageId: string,
+    userId: string
+  ): MessageEditNotAllowedError {
     return new MessageEditNotAllowedError(messageId, userId);
   }
 
-  static createAuthentication(message: string, details?: Record<string, unknown>): AuthenticationError {
+  static createAuthentication(
+    message: string,
+    details?: Record<string, unknown>
+  ): AuthenticationError {
     return new AuthenticationError(message, details);
   }
 
-  static createNetwork(message: string, details?: Record<string, unknown>): NetworkError {
+  static createNetwork(
+    message: string,
+    details?: Record<string, unknown>
+  ): NetworkError {
     return new NetworkError(message, details);
   }
-} 
+}

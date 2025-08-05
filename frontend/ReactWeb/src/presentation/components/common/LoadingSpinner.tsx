@@ -2,84 +2,76 @@ import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../../../utils/cn';
 
-const spinnerVariants = cva(
-  'animate-spin',
-  {
-    variants: {
-      variant: {
-        default: 'border-2 border-border border-t-primary',
-        primary: 'border-2 border-primary/20 border-t-primary',
-        secondary: 'border-2 border-secondary/20 border-t-secondary',
-        white: 'border-2 border-white/20 border-t-white',
-        gradient: 'border-2 border-transparent bg-gradient-to-r from-primary to-primary-container bg-clip-border',
-      },
-      size: {
-        xs: 'w-3 h-3',
-        sm: 'w-4 h-4',
-        md: 'w-6 h-6',
-        lg: 'w-8 h-8',
-        xl: 'w-12 h-12',
-        '2xl': 'w-16 h-16',
-      },
-      speed: {
-        slow: 'animate-spin',
-        normal: 'animate-spin',
-        fast: 'animate-spin',
-      },
+const spinnerVariants = cva('animate-spin', {
+  variants: {
+    variant: {
+      default: 'border-2 border-border border-t-primary',
+      primary: 'border-2 border-primary/20 border-t-primary',
+      secondary: 'border-2 border-secondary/20 border-t-secondary',
+      white: 'border-2 border-white/20 border-t-white',
+      gradient:
+        'border-2 border-transparent bg-gradient-to-r from-primary to-primary-container bg-clip-border',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'md',
-      speed: 'normal',
+    size: {
+      xs: 'w-3 h-3',
+      sm: 'w-4 h-4',
+      md: 'w-6 h-6',
+      lg: 'w-8 h-8',
+      xl: 'w-12 h-12',
+      '2xl': 'w-16 h-16',
     },
-  }
-);
+    speed: {
+      slow: 'animate-spin',
+      normal: 'animate-spin',
+      fast: 'animate-spin',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+    speed: 'normal',
+  },
+});
 
-const pulseVariants = cva(
-  'animate-pulse',
-  {
-    variants: {
-      variant: {
-        default: 'bg-txt-secondary',
-        primary: 'bg-primary',
-        secondary: 'bg-secondary',
-        white: 'bg-white',
-        gradient: 'bg-gradient-to-r from-primary to-primary-container',
-      },
-      size: {
-        xs: 'w-2 h-2',
-        sm: 'w-3 h-3',
-        md: 'w-4 h-4',
-        lg: 'w-6 h-6',
-        xl: 'w-8 h-8',
-        '2xl': 'w-12 h-12',
-      },
+const pulseVariants = cva('animate-pulse', {
+  variants: {
+    variant: {
+      default: 'bg-txt-secondary',
+      primary: 'bg-primary',
+      secondary: 'bg-secondary',
+      white: 'bg-white',
+      gradient: 'bg-gradient-to-r from-primary to-primary-container',
     },
-    defaultVariants: {
-      variant: 'default',
-      size: 'md',
+    size: {
+      xs: 'w-2 h-2',
+      sm: 'w-3 h-3',
+      md: 'w-4 h-4',
+      lg: 'w-6 h-6',
+      xl: 'w-8 h-8',
+      '2xl': 'w-12 h-12',
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+  },
+});
 
-const dotsVariants = cva(
-  'flex space-x-1',
-  {
-    variants: {
-      size: {
-        xs: 'space-x-0.5',
-        sm: 'space-x-1',
-        md: 'space-x-2',
-        lg: 'space-x-3',
-        xl: 'space-x-4',
-        '2xl': 'space-x-5',
-      },
+const dotsVariants = cva('flex space-x-1', {
+  variants: {
+    size: {
+      xs: 'space-x-0.5',
+      sm: 'space-x-1',
+      md: 'space-x-2',
+      lg: 'space-x-3',
+      xl: 'space-x-4',
+      '2xl': 'space-x-5',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
 export interface LoadingSpinnerProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -128,7 +120,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       case 'dots':
         return (
           <div className={cn(dotsVariants({ size, className }))} {...props}>
-            {[0, 1, 2].map((i) => (
+            {[0, 1, 2].map(i => (
               <div
                 key={i}
                 className={cn(
@@ -149,7 +141,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       case 'bars':
         return (
           <div className={cn('flex space-x-1', className)} {...props}>
-            {[0, 1, 2, 3].map((i) => (
+            {[0, 1, 2, 3].map(i => (
               <div
                 key={i}
                 className={cn(
@@ -195,17 +187,17 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   };
 
   const content = (
-    <div className="flex flex-col items-center justify-center space-y-3">
+    <div className='flex flex-col items-center justify-center space-y-3'>
       {renderSpinner()}
       {text && (
-        <p className="text-sm text-txt-secondary animate-pulse">{text}</p>
+        <p className='text-sm text-txt-secondary animate-pulse'>{text}</p>
       )}
     </div>
   );
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+      <div className='fixed inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm'>
         {content}
       </div>
     );
@@ -213,7 +205,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (overlay) {
     return (
-      <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface/80 backdrop-blur-sm rounded-lg">
+      <div className='absolute inset-0 z-10 flex items-center justify-center bg-surface/80 backdrop-blur-sm rounded-lg'>
         {content}
       </div>
     );
@@ -223,39 +215,34 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 };
 
 // Convenience components for common use cases
-export const PageLoader: React.FC<{ text?: string }> = ({ text = '페이지를 로딩 중입니다...' }) => (
+export const PageLoader: React.FC<{ text?: string }> = ({
+  text = '페이지를 로딩 중입니다...',
+}) => (
   <LoadingSpinner
-    type="spinner"
-    size="lg"
-    variant="primary"
+    type='spinner'
+    size='lg'
+    variant='primary'
     text={text}
     fullScreen
   />
 );
 
 export const ButtonLoader: React.FC = () => (
-  <LoadingSpinner
-    type="spinner"
-    size="sm"
-    variant="white"
-  />
+  <LoadingSpinner type='spinner' size='sm' variant='white' />
 );
 
 export const CardLoader: React.FC<{ text?: string }> = ({ text }) => (
   <LoadingSpinner
-    type="spinner"
-    size="md"
-    variant="primary"
+    type='spinner'
+    size='md'
+    variant='primary'
     text={text}
     overlay
   />
 );
 
 export const InlineLoader: React.FC = () => (
-  <LoadingSpinner
-    type="dots"
-    size="sm"
-  />
+  <LoadingSpinner type='dots' size='sm' />
 );
 
 LoadingSpinner.displayName = 'LoadingSpinner';
@@ -273,18 +260,26 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
       return (
         <div
           ref={ref}
-          className={cn('animate-pulse rounded-md bg-border', height, className)}
+          className={cn(
+            'animate-pulse rounded-md bg-border',
+            height,
+            className
+          )}
           {...props}
         />
       );
     }
 
     return (
-      <div className="space-y-2">
+      <div className='space-y-2'>
         {Array.from({ length: lines }).map((_, i) => (
           <div
             key={i}
-            className={cn('animate-pulse rounded-md bg-border', height, className)}
+            className={cn(
+              'animate-pulse rounded-md bg-border',
+              height,
+              className
+            )}
             {...props}
           />
         ))}
@@ -296,20 +291,22 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
 Skeleton.displayName = 'Skeleton';
 
 // Pulse loader component
-export const PulseLoader: React.FC<{ className?: string }> = ({ className }) => (
+export const PulseLoader: React.FC<{ className?: string }> = ({
+  className,
+}) => (
   <div className={cn('flex space-x-1', className)}>
-    <div className="h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]" />
-    <div className="h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]" />
-    <div className="h-2 w-2 animate-bounce rounded-full bg-primary" />
+    <div className='h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]' />
+    <div className='h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]' />
+    <div className='h-2 w-2 animate-bounce rounded-full bg-primary' />
   </div>
 );
 
 // Dots loader component
 export const DotsLoader: React.FC<{ className?: string }> = ({ className }) => (
   <div className={cn('flex space-x-1', className)}>
-    <div className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-    <div className="h-2 w-2 animate-pulse rounded-full bg-primary [animation-delay:0.2s]" />
-    <div className="h-2 w-2 animate-pulse rounded-full bg-primary [animation-delay:0.4s]" />
+    <div className='h-2 w-2 animate-pulse rounded-full bg-primary' />
+    <div className='h-2 w-2 animate-pulse rounded-full bg-primary [animation-delay:0.2s]' />
+    <div className='h-2 w-2 animate-pulse rounded-full bg-primary [animation-delay:0.4s]' />
   </div>
 );
 
@@ -321,34 +318,41 @@ export interface ProgressBarProps {
   variant?: 'default' | 'success' | 'warning' | 'error';
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ 
-  progress, 
-  className, 
+export const ProgressBar: React.FC<ProgressBarProps> = ({
+  progress,
+  className,
   showPercentage = false,
-  variant = 'default'
+  variant = 'default',
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
-      case 'success': return 'bg-green-500';
-      case 'warning': return 'bg-yellow-500';
-      case 'error': return 'bg-red-500';
-      default: return 'bg-primary';
+      case 'success':
+        return 'bg-green-500';
+      case 'warning':
+        return 'bg-yellow-500';
+      case 'error':
+        return 'bg-red-500';
+      default:
+        return 'bg-primary';
     }
   };
 
   return (
     <div className={cn('w-full', className)}>
-      <div className="w-full bg-border rounded-full h-2">
+      <div className='w-full bg-border rounded-full h-2'>
         <div
-          className={cn('h-2 rounded-full transition-all duration-300', getVariantClasses())}
+          className={cn(
+            'h-2 rounded-full transition-all duration-300',
+            getVariantClasses()
+          )}
           style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
         />
       </div>
       {showPercentage && (
-        <p className="text-xs text-txt-secondary mt-1 text-right">
+        <p className='text-xs text-txt-secondary mt-1 text-right'>
           {Math.round(progress)}%
         </p>
       )}
     </div>
   );
-}; 
+};

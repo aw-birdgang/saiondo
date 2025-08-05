@@ -26,10 +26,14 @@ const IconButton: React.FC<IconButtonProps> = ({
 }) => {
   const getVariantClasses = (variant: IconButtonVariant) => {
     const variantClasses = {
-      primary: 'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary/20 shadow-sm',
-      secondary: 'bg-secondary text-txt-secondary hover:bg-secondary/80 hover:text-txt focus:ring-secondary/20',
-      danger: 'bg-error text-on-error hover:bg-error/90 focus:ring-error/20 shadow-sm',
-      ghost: 'bg-transparent text-txt-secondary hover:bg-secondary hover:text-txt focus:ring-secondary/20',
+      primary:
+        'bg-primary text-on-primary hover:bg-primary-container focus:ring-primary/20 shadow-sm',
+      secondary:
+        'bg-secondary text-txt-secondary hover:bg-secondary/80 hover:text-txt focus:ring-secondary/20',
+      danger:
+        'bg-error text-on-error hover:bg-error/90 focus:ring-error/20 shadow-sm',
+      ghost:
+        'bg-transparent text-txt-secondary hover:bg-secondary hover:text-txt focus:ring-secondary/20',
     };
     return variantClasses[variant];
   };
@@ -45,7 +49,7 @@ const IconButton: React.FC<IconButtonProps> = ({
 
   return (
     <button
-      type="button"
+      type='button'
       onClick={onClick}
       disabled={disabled || loading}
       title={title}
@@ -60,13 +64,9 @@ const IconButton: React.FC<IconButtonProps> = ({
         ${className}
       `}
     >
-      {loading ? (
-        <div className="spinner" />
-      ) : (
-        icon
-      )}
+      {loading ? <div className='spinner' /> : icon}
     </button>
   );
 };
 
-export default IconButton; 
+export default IconButton;

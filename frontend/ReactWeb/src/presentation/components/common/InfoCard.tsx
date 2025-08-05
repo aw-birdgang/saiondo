@@ -24,7 +24,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
   trend,
   onClick,
   className = '',
-  variant = 'default'
+  variant = 'default',
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
@@ -48,8 +48,8 @@ const InfoCard: React.FC<InfoCardProps> = ({
 
   const getTrendColor = () => {
     if (!trend) return '';
-    return trend.isPositive 
-      ? 'text-green-600 dark:text-green-400' 
+    return trend.isPositive
+      ? 'text-green-600 dark:text-green-400'
       : 'text-red-600 dark:text-red-400';
   };
 
@@ -63,23 +63,19 @@ const InfoCard: React.FC<InfoCardProps> = ({
       `}
       onClick={onClick}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          {icon && (
-            <div className="text-3xl mb-4">{icon}</div>
-          )}
-          
+      <div className='flex items-start justify-between'>
+        <div className='flex-1'>
+          {icon && <div className='text-3xl mb-4'>{icon}</div>}
+
           {title && (
-            <h3 className="text-sm font-medium text-txt-secondary mb-2">
+            <h3 className='text-sm font-medium text-txt-secondary mb-2'>
               {title}
             </h3>
           )}
-          
+
           {value !== undefined && (
-            <div className="flex items-baseline gap-3 mb-2">
-              <span className="text-3xl font-bold text-txt">
-                {value}
-              </span>
+            <div className='flex items-baseline gap-3 mb-2'>
+              <span className='text-3xl font-bold text-txt'>{value}</span>
               {trend && (
                 <span className={`text-sm font-medium ${getTrendColor()}`}>
                   {getTrendIcon()} {Math.abs(trend.value)}%
@@ -87,15 +83,13 @@ const InfoCard: React.FC<InfoCardProps> = ({
               )}
             </div>
           )}
-          
+
           {subtitle && (
-            <p className="text-sm text-txt-secondary mb-2">
-              {subtitle}
-            </p>
+            <p className='text-sm text-txt-secondary mb-2'>{subtitle}</p>
           )}
-          
+
           {description && (
-            <p className="text-xs text-txt-secondary leading-relaxed">
+            <p className='text-xs text-txt-secondary leading-relaxed'>
               {description}
             </p>
           )}
@@ -105,4 +99,4 @@ const InfoCard: React.FC<InfoCardProps> = ({
   );
 };
 
-export default InfoCard; 
+export default InfoCard;

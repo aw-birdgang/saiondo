@@ -1,5 +1,5 @@
-import React from "react";
-import QuickActionButton from "./QuickActionButton";
+import React from 'react';
+import { QuickActionButton } from '../common';
 
 interface QuickAction {
   icon: string;
@@ -13,18 +13,16 @@ interface QuickActionsGridProps {
   className?: string;
 }
 
-const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({ 
-  actions, 
-  className = "" 
+const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
+  actions,
+  className = '',
 }) => {
   return (
     <div className={`grid grid-cols-1 sm:grid-cols-2 gap-6 ${className}`}>
       {actions.map((action, index) => (
         <QuickActionButton
           key={index}
-          icon={action.icon}
           label={action.label}
-          description={action.description}
           onClick={action.onClick}
         />
       ))}
@@ -32,4 +30,4 @@ const QuickActionsGrid: React.FC<QuickActionsGridProps> = ({
   );
 };
 
-export default QuickActionsGrid; 
+export default QuickActionsGrid;

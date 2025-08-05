@@ -60,4 +60,4 @@ export interface AuthPageState {
   error: string | null;
   isAuthenticated: boolean;
   redirectPath: string | null;
-} 
+}

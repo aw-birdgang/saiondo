@@ -13,4 +13,4 @@ export interface AssistantCategory {
   id: string;
   name: string;
   icon: string;
-} 
+}

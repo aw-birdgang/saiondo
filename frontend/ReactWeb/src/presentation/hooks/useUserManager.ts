@@ -11,11 +11,7 @@ interface UseUserManagerOptions {
 }
 
 export const useUserManager = (options: UseUserManagerOptions = {}) => {
-  const {
-    autoLoad = true,
-    onUserLoad,
-    onUserUpdate
-  } = options;
+  const { autoLoad = true, onUserLoad, onUserUpdate } = options;
 
   const userStore = useUserStore();
   const { user } = useAuthStore();
@@ -32,7 +28,7 @@ export const useUserManager = (options: UseUserManagerOptions = {}) => {
       // const userData = await userUseCases.getCurrentUser();
       // userStore.setCurrentUser(userData);
       // onUserLoad?.(userData);
-      
+
       // 임시로 현재 인증된 사용자 정보 사용
       if (user) {
         userStore.setCurrentUser(user);
@@ -45,31 +41,34 @@ export const useUserManager = (options: UseUserManagerOptions = {}) => {
     }
   }, [user, userStore, userUseCases, onUserLoad]);
 
-  const updateUser = useCallback(async (userData: any): Promise<void> => {
-    try {
-      if (!user?.id) {
-        toast.error('로그인이 필요합니다.');
-        return;
-      }
+  const updateUser = useCallback(
+    async (userData: any): Promise<void> => {
+      try {
+        if (!user?.id) {
+          toast.error('로그인이 필요합니다.');
+          return;
+        }
 
-      // TODO: 실제 API 호출로 대체
-      // const updatedUser = await userUseCases.updateUser({
-      //   ...userData,
-      //   id: user.id
-      // });
-      // userStore.setCurrentUser(updatedUser);
-      // onUserUpdate?.(updatedUser);
-      
-      // 임시로 로컬 상태 업데이트
-      const updatedUser = { ...user, ...userData };
-      userStore.setCurrentUser(updatedUser);
-      onUserUpdate?.(updatedUser);
-      toast.success('사용자 정보가 업데이트되었습니다.');
-    } catch (error) {
-      console.error('Failed to update user:', error);
-      toast.error('사용자 정보 업데이트에 실패했습니다.');
-    }
-  }, [user, userStore, userUseCases, onUserUpdate]);
+        // TODO: 실제 API 호출로 대체
+        // const updatedUser = await userUseCases.updateUser({
+        //   ...userData,
+        //   id: user.id
+        // });
+        // userStore.setCurrentUser(updatedUser);
+        // onUserUpdate?.(updatedUser);
+
+        // 임시로 로컬 상태 업데이트
+        const updatedUser = { ...user, ...userData };
+        userStore.setCurrentUser(updatedUser);
+        onUserUpdate?.(updatedUser);
+        toast.success('사용자 정보가 업데이트되었습니다.');
+      } catch (error) {
+        console.error('Failed to update user:', error);
+        toast.error('사용자 정보 업데이트에 실패했습니다.');
+      }
+    },
+    [user, userStore, userUseCases, onUserUpdate]
+  );
 
   useEffect(() => {
     // Load user data on mount if not already loaded
@@ -84,4 +83,4 @@ export const useUserManager = (options: UseUserManagerOptions = {}) => {
     updateUser,
     setCurrentUser: userStore.setCurrentUser,
   };
-}; 
+};

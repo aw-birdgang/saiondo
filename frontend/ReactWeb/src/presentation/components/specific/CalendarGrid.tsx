@@ -1,5 +1,5 @@
-import React from "react";
-import { CalendarDay, CalendarHeader } from "../common";
+import React from 'react';
+import { CalendarDay, CalendarHeader } from '../common';
 
 interface Event {
   id: string;
@@ -18,13 +18,13 @@ interface CalendarGridProps {
   className?: string;
 }
 
-const CalendarGrid: React.FC<CalendarGridProps> = ({ 
-  daysInMonth, 
-  currentDate, 
-  selectedDate, 
-  events, 
-  onDateClick, 
-  className = "" 
+const CalendarGrid: React.FC<CalendarGridProps> = ({
+  daysInMonth,
+  currentDate,
+  selectedDate,
+  events,
+  onDateClick,
+  className = '',
 }) => {
   return (
     <div className={`space-y-6 ${className}`}>
@@ -32,8 +32,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       <CalendarHeader />
 
       {/* Calendar Days */}
-      <div className="grid grid-cols-7 gap-3">
-        {daysInMonth.map((day) => (
+      <div className='grid grid-cols-7 gap-3'>
+        {daysInMonth.map(day => (
           <CalendarDay
             key={day.toISOString()}
             day={day}
@@ -48,4 +48,4 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   );
 };
 
-export default CalendarGrid; 
+export default CalendarGrid;

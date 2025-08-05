@@ -1,6 +1,6 @@
-import React from "react";
-import { ChatMessages, ChatInput } from "./";
-import { Container } from "../common";
+import React from 'react';
+import { ChatMessages, ChatInput } from './';
+import { Container } from '../common';
 
 interface Message {
   id: string;
@@ -19,16 +19,16 @@ interface ChatContentProps {
   className?: string;
 }
 
-const ChatContent: React.FC<ChatContentProps> = ({ 
-  messages, 
-  loading, 
-  currentUserId, 
-  onSendMessage, 
-  className = "" 
+const ChatContent: React.FC<ChatContentProps> = ({
+  messages,
+  loading,
+  currentUserId,
+  onSendMessage,
+  className = '',
 }) => {
   return (
     <div className={`flex-1 max-w-6xl mx-auto w-full px-6 py-8 ${className}`}>
-      <Container variant="messages">
+      <Container variant='messages'>
         <ChatMessages
           messages={messages as any}
           loading={loading}
@@ -37,14 +37,11 @@ const ChatContent: React.FC<ChatContentProps> = ({
       </Container>
 
       {/* Input Area */}
-      <Container variant="input">
-        <ChatInput
-          onSendMessage={onSendMessage}
-          loading={loading}
-        />
+      <Container variant='input'>
+        <ChatInput onSendMessage={onSendMessage} loading={loading} />
       </Container>
     </div>
   );
 };
 
-export default ChatContent; 
+export default ChatContent;

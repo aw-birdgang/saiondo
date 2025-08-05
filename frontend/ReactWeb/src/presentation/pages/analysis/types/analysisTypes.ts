@@ -80,4 +80,4 @@ export interface AnalysisChartProps {
   type: 'bar' | 'line' | 'pie';
   maxValue?: number;
   className?: string;
-} 
+}

@@ -168,4 +168,4 @@ export interface UserServiceConfig {
   maxUsernameLength?: number;
   minUsernameLength?: number;
   maxBioLength?: number;
-} 
+}

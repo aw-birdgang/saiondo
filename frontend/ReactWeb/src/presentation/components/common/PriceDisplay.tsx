@@ -26,18 +26,20 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({
 
   return (
     <div className={`${className}`}>
-      <div className="flex items-baseline space-x-2">
-        <span className={`font-bold text-gray-900 dark:text-white ${getSizeClasses(size)}`}>
+      <div className='flex items-baseline space-x-2'>
+        <span
+          className={`font-bold text-gray-900 dark:text-white ${getSizeClasses(size)}`}
+        >
           {price}
         </span>
         {originalPrice && (
-          <span className="text-lg text-gray-500 line-through">
+          <span className='text-lg text-gray-500 line-through'>
             {originalPrice}
           </span>
         )}
       </div>
       {discount && (
-        <span className="text-sm text-green-600 dark:text-green-400 font-medium">
+        <span className='text-sm text-green-600 dark:text-green-400 font-medium'>
           {discount}
         </span>
       )}
@@ -45,4 +47,4 @@ const PriceDisplay: React.FC<PriceDisplayProps> = ({
   );
 };
 
-export default PriceDisplay; 
+export default PriceDisplay;

@@ -91,4 +91,4 @@ export function useStores() {
     messageStore: useDI(DI_TOKENS.MESSAGE_STORE),
     uiStore: useDI(DI_TOKENS.UI_STORE),
   };
-} 
+}

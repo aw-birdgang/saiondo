@@ -11,4 +11,4 @@ export interface LogoutUserRequest {
 export interface LogoutUserResponse {
   success: boolean;
   message: string;
-} 
+}

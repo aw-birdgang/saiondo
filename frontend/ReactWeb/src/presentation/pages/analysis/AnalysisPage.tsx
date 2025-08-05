@@ -2,7 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingState } from '../../components/common';
 import { ErrorState } from '../../components/specific';
-import { AnalysisHeader, AnalysisContent, AnalysisLayout } from '../../components/specific';
+import {
+  AnalysisHeader,
+  AnalysisContent,
+  AnalysisLayout,
+} from '../../components/specific';
 import { AnalysisContainer } from '../../components/specific/analysis';
 import { useAnalysisData } from './hooks/useAnalysisData';
 
@@ -20,7 +24,7 @@ const AnalysisPage: React.FC = () => {
     handleCreateAnalysis,
     handleRefreshAnalysis,
     handleShareAnalysis,
-    handleExportAnalysis
+    handleExportAnalysis,
   } = useAnalysisData();
 
   if (isLoading) {
@@ -30,8 +34,8 @@ const AnalysisPage: React.FC = () => {
   if (!data) {
     return (
       <ErrorState
-        title={t("analysis_load_fail") || "분석 로드 실패"}
-        message="분석 데이터를 불러올 수 없습니다."
+        title={t('analysis_load_fail') || '분석 로드 실패'}
+        message='분석 데이터를 불러올 수 없습니다.'
         onRetry={handleRefreshAnalysis}
       />
     );

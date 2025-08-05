@@ -12,7 +12,7 @@ export const useSettingsData = () => {
     isSaving: false,
     error: null,
     settings: null,
-    hasUnsavedChanges: false
+    hasUnsavedChanges: false,
   });
 
   // 자동 저장 타이머 ref
@@ -21,22 +21,22 @@ export const useSettingsData = () => {
   // 설정 로딩 (로컬 캐시에서 즉시 로드)
   const loadSettings = useCallback(async () => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+
     try {
       // 로컬 캐시에서 동기적으로 로드
       const settings = settingsService.getSettingsSync();
-      
+
       setState(prev => ({
         ...prev,
         settings,
-        isLoading: false
+        isLoading: false,
       }));
     } catch (error) {
       console.error('Failed to load settings:', error);
       setState(prev => ({
         ...prev,
         error: '설정을 불러오는데 실패했습니다.',
-        isLoading: false
+        isLoading: false,
       }));
       toast.error('설정을 불러오는데 실패했습니다.');
     }
@@ -45,25 +45,25 @@ export const useSettingsData = () => {
   // 설정 저장 (로컬 캐시에 즉시 저장)
   const saveSettings = useCallback(async (settings: UserSettings) => {
     setState(prev => ({ ...prev, isSaving: true, error: null }));
-    
+
     try {
       // 로컬 캐시에 동기적으로 저장
       settingsService.saveSettingsSync(settings);
-      
+
       setState(prev => ({
         ...prev,
         settings,
         isSaving: false,
-        hasUnsavedChanges: false
+        hasUnsavedChanges: false,
       }));
-      
+
       toast.success('설정이 저장되었습니다.');
     } catch (error) {
       console.error('Failed to save settings:', error);
       setState(prev => ({
         ...prev,
         error: '설정 저장에 실패했습니다.',
-        isSaving: false
+        isSaving: false,
       }));
       toast.error('설정 저장에 실패했습니다.');
     }
@@ -82,7 +82,7 @@ export const useSettingsData = () => {
         settingsService.saveSettingsSync(settings);
         setState(prev => ({
           ...prev,
-          hasUnsavedChanges: false
+          hasUnsavedChanges: false,
         }));
         console.log('Settings auto-saved');
       } catch (error) {
@@ -92,47 +92,50 @@ export const useSettingsData = () => {
   }, []);
 
   // 설정 변경
-  const updateSetting = useCallback((key: string, value: any) => {
-    if (!state.settings) return;
+  const updateSetting = useCallback(
+    (key: string, value: any) => {
+      if (!state.settings) return;
 
-    setState(prev => {
-      const newSettings = { ...prev.settings! };
-      
-      // 중첩된 객체 키 처리 (예: 'notifications.pushEnabled')
-      const keys = key.split('.');
-      let current: any = newSettings;
-      
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) {
-          current[keys[i]] = {};
+      setState(prev => {
+        const newSettings = { ...prev.settings! };
+
+        // 중첩된 객체 키 처리 (예: 'notifications.pushEnabled')
+        const keys = key.split('.');
+        let current: any = newSettings;
+
+        for (let i = 0; i < keys.length - 1; i++) {
+          if (!current[keys[i]]) {
+            current[keys[i]] = {};
+          }
+          current = current[keys[i]];
         }
-        current = current[keys[i]];
-      }
-      
-      current[keys[keys.length - 1]] = value;
-      
-      // 자동 저장 스케줄링
-      scheduleAutoSave(newSettings);
-      
-      return {
-        ...prev,
-        settings: newSettings,
-        hasUnsavedChanges: true
-      };
-    });
-  }, [state.settings, scheduleAutoSave]);
+
+        current[keys[keys.length - 1]] = value;
+
+        // 자동 저장 스케줄링
+        scheduleAutoSave(newSettings);
+
+        return {
+          ...prev,
+          settings: newSettings,
+          hasUnsavedChanges: true,
+        };
+      });
+    },
+    [state.settings, scheduleAutoSave]
+  );
 
   // 설정 초기화
   const resetSettings = useCallback(async () => {
     try {
       const defaultSettings = await settingsService.resetUserSettings();
-      
+
       setState(prev => ({
         ...prev,
         settings: defaultSettings,
-        hasUnsavedChanges: false
+        hasUnsavedChanges: false,
       }));
-      
+
       toast.success('설정이 초기화되었습니다.');
     } catch (error) {
       console.error('Failed to reset settings:', error);
@@ -146,7 +149,7 @@ export const useSettingsData = () => {
       const jsonString = settingsService.exportSettings();
       const blob = new Blob([jsonString], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      
+
       const a = document.createElement('a');
       a.href = url;
       a.download = `saiondo-settings-${new Date().toISOString().split('T')[0]}.json`;
@@ -154,7 +157,7 @@ export const useSettingsData = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       toast.success('설정이 내보내기되었습니다.');
     } catch (error) {
       console.error('Failed to export settings:', error);
@@ -165,38 +168,38 @@ export const useSettingsData = () => {
   // 설정 복원 (JSON 파일에서 가져오기)
   const importSettings = useCallback((file: File) => {
     const reader = new FileReader();
-    
-    reader.onload = async (e) => {
+
+    reader.onload = async e => {
       try {
         const jsonString = e.target?.result as string;
         const importedSettings = settingsService.importSettings(jsonString);
-        
+
         setState(prev => ({
           ...prev,
           settings: importedSettings,
-          hasUnsavedChanges: false
+          hasUnsavedChanges: false,
         }));
-        
+
         toast.success('설정이 가져와졌습니다.');
       } catch (error) {
         console.error('Failed to import settings:', error);
         toast.error('설정 가져오기에 실패했습니다.');
       }
     };
-    
+
     reader.readAsText(file);
   }, []);
 
   // 설정 저장 처리 (수동 저장)
   const handleSave = useCallback(async () => {
     if (!state.settings) return;
-    
+
     // 자동 저장 타이머 취소
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
       autoSaveTimerRef.current = null;
     }
-    
+
     await saveSettings(state.settings);
   }, [state.settings, saveSettings]);
 
@@ -212,11 +215,11 @@ export const useSettingsData = () => {
 
   // 설정 변경 리스너 등록 (다른 탭에서의 변경 감지)
   useEffect(() => {
-    const unsubscribe = settingsService.onSettingsChange((newSettings) => {
+    const unsubscribe = settingsService.onSettingsChange(newSettings => {
       setState(prev => ({
         ...prev,
         settings: newSettings,
-        hasUnsavedChanges: false
+        hasUnsavedChanges: false,
       }));
     });
 
@@ -259,6 +262,6 @@ export const useSettingsData = () => {
     handleReset,
     loadSettings,
     exportSettings,
-    importSettings
+    importSettings,
   };
-}; 
+};

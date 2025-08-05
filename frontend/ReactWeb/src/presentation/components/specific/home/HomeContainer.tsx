@@ -7,20 +7,22 @@ interface HomeContainerProps {
   className?: string;
 }
 
-const HomeContainer: React.FC<HomeContainerProps> = ({ 
-  children, 
-  isVisible, 
-  className 
+const HomeContainer: React.FC<HomeContainerProps> = ({
+  children,
+  isVisible,
+  className,
 }) => {
   return (
-    <div className={cn(
-      "space-y-8 transition-all duration-700",
-      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-      className
-    )}>
+    <div
+      className={cn(
+        'space-y-8 transition-all duration-700',
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        className
+      )}
+    >
       {children}
     </div>
   );
 };
 
-export default HomeContainer; 
+export default HomeContainer;

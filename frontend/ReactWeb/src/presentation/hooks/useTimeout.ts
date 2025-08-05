@@ -10,10 +10,7 @@ export const useTimeout = (
   delay: number,
   options: UseTimeoutOptions = {}
 ) => {
-  const {
-    autoStart = true,
-    onComplete
-  } = options;
+  const { autoStart = true, onComplete } = options;
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const callbackRef = useRef(callback);
@@ -63,4 +60,4 @@ export const useTimeout = (
     restart,
     isActive: !!timeoutRef.current,
   };
-}; 
+};

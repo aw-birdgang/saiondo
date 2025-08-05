@@ -6,7 +6,7 @@ import { PaymentUseCase } from '../PaymentUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createPaymentUseCase = (
-  repository: IPaymentRepository, 
+  repository: IPaymentRepository,
   cache?: ICache
 ): IPaymentUseCase => {
   const service = new PaymentService(repository, cache);
@@ -19,29 +19,29 @@ export const createMockPaymentUseCase = (): IPaymentUseCase => {
     getSubscriptionProducts: async () => [],
     getPaymentMethods: async () => [],
     validateCoupon: async () => null,
-    processPayment: async () => ({ 
-      id: 'mock-payment-id', 
-      status: 'completed', 
-      amount: 0, 
+    processPayment: async () => ({
+      id: 'mock-payment-id',
+      status: 'completed',
+      amount: 0,
       currency: 'KRW',
       timestamp: new Date(),
       success: true,
-      message: 'Payment processed successfully'
+      message: 'Payment processed successfully',
     }),
     getPaymentHistory: async () => [],
-    refundPayment: async () => ({ 
-      id: 'mock-refund-id', 
-      status: 'completed', 
-      amount: 0, 
+    refundPayment: async () => ({
+      id: 'mock-refund-id',
+      status: 'completed',
+      amount: 0,
       currency: 'KRW',
       timestamp: new Date(),
       success: true,
-      message: 'Refund processed successfully'
+      message: 'Refund processed successfully',
     }),
     getPaymentStatus: async () => 'completed',
     savePaymentMethod: async () => {},
     getSavedPaymentMethods: async () => [],
   };
-  
+
   return createPaymentUseCase(mockRepository);
-}; 
+};

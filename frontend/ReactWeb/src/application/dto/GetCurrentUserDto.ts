@@ -9,4 +9,4 @@ export interface GetCurrentUserRequest {
 
 export interface GetCurrentUserResponse {
   user: any; // User DTO
-} 
+}

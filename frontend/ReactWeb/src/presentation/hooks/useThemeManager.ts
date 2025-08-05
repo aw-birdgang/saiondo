@@ -7,10 +7,7 @@ interface UseThemeManagerOptions {
 }
 
 export const useThemeManager = (options: UseThemeManagerOptions = {}) => {
-  const {
-    autoApply = true,
-    onThemeChange
-  } = options;
+  const { autoApply = true, onThemeChange } = options;
 
   const themeStore = useThemeStore();
 
@@ -31,16 +28,16 @@ export const useThemeManager = (options: UseThemeManagerOptions = {}) => {
   // Enhanced theme application
   const applyTheme = useCallback((isDarkMode: boolean) => {
     const root = document.documentElement;
-    
+
     // Add transition class for smooth animation
     root.classList.add('theme-transition');
-    
+
     if (isDarkMode) {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-    
+
     // Remove transition class after animation
     setTimeout(() => {
       root.classList.remove('theme-transition');
@@ -73,4 +70,4 @@ export const useThemeManager = (options: UseThemeManagerOptions = {}) => {
     getSystemThemePreference,
     theme: themeStore.theme,
   };
-}; 
+};

@@ -1,11 +1,7 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { UserProfile, LoadingState } from "../common";
-import {
-  QuickActionsCard,
-  SystemStatusCard,
-  ChannelInfoCard
-} from "./";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { UserProfile, LoadingState } from '../common';
+import { QuickActionsCard, SystemStatusCard, ChannelInfoCard } from './';
 
 interface ChannelInfo {
   ownedChannels?: any[];
@@ -18,26 +14,28 @@ interface HomeContentProps {
   className?: string;
 }
 
-const HomeContent: React.FC<HomeContentProps> = ({ 
-  loading, 
-  channels, 
-  className = "" 
+const HomeContent: React.FC<HomeContentProps> = ({
+  loading,
+  channels,
+  className = '',
 }) => {
   const { t } = useTranslation();
 
   if (loading) {
     return (
       <LoadingState
-        message={t("common.loading") || "로딩 중..."}
+        message={t('common.loading') || '로딩 중...'}
         className={className}
       />
     );
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${className}`}>
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${className}`}
+    >
       {/* User Profile Card */}
-      <UserProfile size="lg" />
+      <UserProfile size='lg' />
 
       {/* Quick Actions */}
       <QuickActionsCard />
@@ -46,7 +44,7 @@ const HomeContent: React.FC<HomeContentProps> = ({
       <SystemStatusCard />
 
       {/* Channel Information */}
-      <ChannelInfoCard 
+      <ChannelInfoCard
         ownedChannelsCount={channels?.ownedChannels?.length || 0}
         memberChannelsCount={channels?.memberChannels?.length || 0}
       />
@@ -54,4 +52,4 @@ const HomeContent: React.FC<HomeContentProps> = ({
   );
 };
 
-export default HomeContent; 
+export default HomeContent;

@@ -15,14 +15,14 @@ export const useAnimation = (
     duration = 1000,
     easing = 'linear',
     autoStart = true,
-    loop = false
+    loop = false,
   } = options;
 
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const animationRef = useRef<number | undefined>(undefined);
   const startTimeRef = useRef<number | undefined>(undefined);
-  
+
   // ref를 사용하여 최신 값을 참조
   const optionsRef = useRef({ duration, easing, targetValue, loop });
   optionsRef.current = { duration, easing, targetValue, loop };
@@ -31,7 +31,7 @@ export const useAnimation = (
     linear: (t: number) => t,
     'ease-in': (t: number) => t * t,
     'ease-out': (t: number) => t * (2 - t),
-    'ease-in-out': (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+    'ease-in-out': (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
   };
 
   const animate = useCallback((timestamp: number) => {
@@ -60,7 +60,7 @@ export const useAnimation = (
 
   const start = useCallback(() => {
     if (isAnimating) return;
-    
+
     setIsAnimating(true);
     startTimeRef.current = undefined;
     animationRef.current = requestAnimationFrame(animate);
@@ -98,7 +98,7 @@ export const useAnimation = (
       const timer = setTimeout(() => {
         start();
       }, 100); // 약간의 지연을 두어 무한 루프 방지
-      
+
       return () => clearTimeout(timer);
     }
   }, [loop, isAnimating, progress, targetValue, start]);
@@ -110,4 +110,4 @@ export const useAnimation = (
     stop,
     reset,
   };
-}; 
+};

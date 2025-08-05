@@ -1,9 +1,9 @@
-import type { 
-  SubscriptionProduct, 
-  PaymentMethod, 
-  Coupon, 
-  PaymentRequest, 
-  PaymentResponse 
+import type {
+  SubscriptionProduct,
+  PaymentMethod,
+  Coupon,
+  PaymentRequest,
+  PaymentResponse,
 } from '../../domain/types/payment';
 import type { IPaymentRepository } from '../../application/usecases/PaymentUseCase';
 
@@ -79,29 +79,29 @@ export class PaymentRepository implements IPaymentRepository {
         name: '신용카드',
         icon: '💳',
         description: 'Visa, Mastercard, Amex',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 'bank',
         name: '계좌이체',
         icon: '🏦',
         description: '실시간 계좌이체',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 'mobile',
         name: '휴대폰 결제',
         icon: '📱',
         description: '통신사 결제',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 'crypto',
         name: '암호화폐',
         icon: '₿',
         description: 'Bitcoin, Ethereum',
-        isAvailable: false
-      }
+        isAvailable: false,
+      },
     ];
   }
 
@@ -110,20 +110,20 @@ export class PaymentRepository implements IPaymentRepository {
     await new Promise(resolve => setTimeout(resolve, 500));
 
     const validCoupons: Record<string, Coupon> = {
-      'WELCOME10': {
+      WELCOME10: {
         code: 'WELCOME10',
         discountPercent: 10,
         description: '신규 가입 10% 할인',
         isValid: true,
-        expiresAt: '2024-12-31'
+        expiresAt: '2024-12-31',
       },
-      'SAVE20': {
+      SAVE20: {
         code: 'SAVE20',
         discountPercent: 20,
         description: '20% 할인 쿠폰',
         isValid: true,
-        expiresAt: '2024-12-31'
-      }
+        expiresAt: '2024-12-31',
+      },
     };
 
     return validCoupons[code] || null;
@@ -140,14 +140,14 @@ export class PaymentRepository implements IPaymentRepository {
       return {
         success: true,
         transactionId: `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        message: '결제가 성공적으로 완료되었습니다.'
+        message: '결제가 성공적으로 완료되었습니다.',
       };
     } else {
       return {
         success: false,
         message: '결제에 실패했습니다. 다시 시도해주세요.',
-        error: 'PAYMENT_FAILED'
+        error: 'PAYMENT_FAILED',
       };
     }
   }
-} 
+}

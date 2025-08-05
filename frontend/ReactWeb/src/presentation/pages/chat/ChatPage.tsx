@@ -8,7 +8,7 @@ import {
   ChatContainer,
   ChatHeader,
   MessageList,
-  TypingIndicator
+  TypingIndicator,
 } from '../../components/specific/chat';
 import type { Message, User } from './types/chatTypes';
 
@@ -43,7 +43,7 @@ const ChatPage: React.FC = () => {
               name: 'John Doe',
               email: 'john@example.com',
               avatar: 'https://via.placeholder.com/150',
-              isOnline: true
+              isOnline: true,
             };
           }
         );
@@ -80,8 +80,8 @@ const ChatPage: React.FC = () => {
                 isRead: true,
                 reactions: [
                   { emoji: '👍', count: 2, users: ['1', '3'] },
-                  { emoji: '❤️', count: 1, users: ['4'] }
-                ]
+                  { emoji: '❤️', count: 1, users: ['4'] },
+                ],
               },
               {
                 id: '2',
@@ -90,7 +90,7 @@ const ChatPage: React.FC = () => {
                 senderName: 'John Doe',
                 timestamp: new Date(Date.now() - 30000),
                 type: 'text' as const,
-                isRead: true
+                isRead: true,
               },
               {
                 id: '3',
@@ -100,8 +100,8 @@ const ChatPage: React.FC = () => {
                 timestamp: new Date(Date.now() - 15000),
                 type: 'file' as const,
                 metadata: { fileName: 'project_report.pdf', fileSize: '2.5MB' },
-                isRead: false
-              }
+                isRead: false,
+              },
             ];
           }
         );
@@ -118,11 +118,14 @@ const ChatPage: React.FC = () => {
   }, [channelId, messageController, toast]);
 
   // 메시지 전송 처리
-  const handleMessageSent = useCallback((newMessage: Message) => {
-    setMessages(prev => [...prev, newMessage]);
-    scrollToBottom();
-    toast.success('메시지가 전송되었습니다.');
-  }, [toast]);
+  const handleMessageSent = useCallback(
+    (newMessage: Message) => {
+      setMessages(prev => [...prev, newMessage]);
+      scrollToBottom();
+      toast.success('메시지가 전송되었습니다.');
+    },
+    [toast]
+  );
 
   // 메시지 검색
   const handleSearch = async () => {
@@ -143,8 +146,8 @@ const ChatPage: React.FC = () => {
               senderName: 'Jane Smith',
               timestamp: new Date(Date.now() - 120000),
               type: 'text' as const,
-              isRead: true
-            }
+              isRead: true,
+            },
           ];
         }
       );
@@ -178,7 +181,7 @@ const ChatPage: React.FC = () => {
               senderName: 'Jane Smith',
               timestamp: new Date(Date.now() - 60000),
               type: 'text' as const,
-              isRead: true
+              isRead: true,
             },
             {
               id: '2',
@@ -187,8 +190,8 @@ const ChatPage: React.FC = () => {
               senderName: 'John Doe',
               timestamp: new Date(Date.now() - 30000),
               type: 'text' as const,
-              isRead: true
-            }
+              isRead: true,
+            },
           ];
         }
       );
@@ -207,31 +210,37 @@ const ChatPage: React.FC = () => {
 
   // 메시지 반응 추가
   const handleAddReaction = (messageId: string, emoji: string) => {
-    setMessages(prev => prev.map(msg => {
-      if (msg.id === messageId) {
-        const existingReaction = msg.reactions?.find(r => r.emoji === emoji);
-        if (existingReaction) {
-          return {
-            ...msg,
-            reactions: msg.reactions?.map(r =>
-              r.emoji === emoji
-                ? { ...r, count: r.count + 1, users: [...r.users, currentUser?.id || ''] }
-                : r
-            )
-          };
-        } else {
-          return {
-            ...msg,
-            reactions: [...(msg.reactions || []), { emoji, count: 1, users: [currentUser?.id || ''] }]
-          };
+    setMessages(prev =>
+      prev.map(msg => {
+        if (msg.id === messageId) {
+          const existingReaction = msg.reactions?.find(r => r.emoji === emoji);
+          if (existingReaction) {
+            return {
+              ...msg,
+              reactions: msg.reactions?.map(r =>
+                r.emoji === emoji
+                  ? {
+                      ...r,
+                      count: r.count + 1,
+                      users: [...r.users, currentUser?.id || ''],
+                    }
+                  : r
+              ),
+            };
+          } else {
+            return {
+              ...msg,
+              reactions: [
+                ...(msg.reactions || []),
+                { emoji, count: 1, users: [currentUser?.id || ''] },
+              ],
+            };
+          }
         }
-      }
-      return msg;
-    }));
+        return msg;
+      })
+    );
   };
-
-
-
 
   if (!currentUser) {
     return null;

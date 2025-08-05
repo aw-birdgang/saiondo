@@ -1,13 +1,13 @@
 import type { IPaymentService } from './interfaces/IPaymentService';
 import type { IPaymentUseCase } from './interfaces/IPaymentUseCase';
-import type { 
-  SubscriptionProduct, 
-  PaymentMethod, 
-  Coupon, 
-  PaymentRequest, 
+import type {
+  SubscriptionProduct,
+  PaymentMethod,
+  Coupon,
+  PaymentRequest,
   PaymentResponse,
   PaymentValidationError,
-  CardDetails 
+  CardDetails,
 } from '../../domain/types/payment';
 
 // Payment UseCase 구현체 - Service를 사용하여 애플리케이션 로직 조율
@@ -34,7 +34,10 @@ export class PaymentUseCase implements IPaymentUseCase {
     return await this.paymentService.getPaymentHistory(userId);
   }
 
-  async refundPayment(paymentId: string, amount: number): Promise<PaymentResponse> {
+  async refundPayment(
+    paymentId: string,
+    amount: number
+  ): Promise<PaymentResponse> {
     return await this.paymentService.refundPayment(paymentId, amount);
   }
 
@@ -42,7 +45,10 @@ export class PaymentUseCase implements IPaymentUseCase {
     return await this.paymentService.getPaymentStatus(paymentId);
   }
 
-  async savePaymentMethod(userId: string, paymentMethod: PaymentMethod): Promise<void> {
+  async savePaymentMethod(
+    userId: string,
+    paymentMethod: PaymentMethod
+  ): Promise<void> {
     return await this.paymentService.savePaymentMethod(userId, paymentMethod);
   }
 
@@ -54,7 +60,10 @@ export class PaymentUseCase implements IPaymentUseCase {
     return this.paymentService.validateCardDetails(cardDetails);
   }
 
-  calculateDiscountedPrice(product: SubscriptionProduct, coupon?: Coupon): number {
+  calculateDiscountedPrice(
+    product: SubscriptionProduct,
+    coupon?: Coupon
+  ): number {
     return this.paymentService.calculateDiscountedPrice(product, coupon);
   }
 
@@ -66,7 +75,11 @@ export class PaymentUseCase implements IPaymentUseCase {
     return this.paymentService.validatePaymentRequest(request);
   }
 
-  async processRefund(paymentId: string, amount: number, reason: string): Promise<PaymentResponse> {
+  async processRefund(
+    paymentId: string,
+    amount: number,
+    reason: string
+  ): Promise<PaymentResponse> {
     return await this.paymentService.processRefund(paymentId, amount, reason);
   }
-} 
+}

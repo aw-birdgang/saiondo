@@ -10,4 +10,9 @@ export { aiChatService } from './aiChatService';
 // 타입들도 함께 export
 export type { Notification, NotificationRequest } from './notificationService';
 export type { SearchResult, SearchRequest } from './searchService';
-export type { AIChatMessage, AIChatRequest, AIChatResponse, AIConversation } from './aiChatService'; 
+export type {
+  AIChatMessage,
+  AIChatRequest,
+  AIChatResponse,
+  AIConversation,
+} from './aiChatService';

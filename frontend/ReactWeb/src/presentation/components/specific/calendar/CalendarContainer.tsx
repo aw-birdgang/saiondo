@@ -4,13 +4,9 @@ import type { CalendarContainerProps } from '../../../pages/calendar/types/calen
 
 const CalendarContainer: React.FC<CalendarContainerProps> = ({
   children,
-  className
+  className,
 }) => {
-  return (
-    <div className={cn("flex-1 p-6", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn('flex-1 p-6', className)}>{children}</div>;
 };
 
-export default CalendarContainer; 
+export default CalendarContainer;

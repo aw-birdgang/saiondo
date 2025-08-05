@@ -1,6 +1,9 @@
 import type { UserService } from '../services/UserService';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { RegisterUserRequest, RegisterUserResponse } from '../dto/RegisterUserDto';
+import type {
+  RegisterUserRequest,
+  RegisterUserResponse,
+} from '../dto/RegisterUserDto';
 
 export class RegisterUserUseCase {
   constructor(private readonly userService: UserService) {}
@@ -9,7 +12,9 @@ export class RegisterUserUseCase {
     try {
       // Validate request
       if (!request.email || !this.isValidEmail(request.email)) {
-        throw DomainErrorFactory.createUserValidation('Valid email is required');
+        throw DomainErrorFactory.createUserValidation(
+          'Valid email is required'
+        );
       }
 
       if (!request.username || request.username.trim().length === 0) {
@@ -17,7 +22,9 @@ export class RegisterUserUseCase {
       }
 
       if (!request.password || request.password.length < 6) {
-        throw DomainErrorFactory.createUserValidation('Password must be at least 6 characters');
+        throw DomainErrorFactory.createUserValidation(
+          'Password must be at least 6 characters'
+        );
       }
 
       // Use UserService to create user

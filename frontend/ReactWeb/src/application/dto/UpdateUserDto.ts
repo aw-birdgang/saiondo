@@ -14,4 +14,4 @@ export interface UpdateUserRequest {
 
 export interface UpdateUserResponse {
   user: any; // User DTO
-} 
+}

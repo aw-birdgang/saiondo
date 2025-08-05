@@ -17,7 +17,7 @@ const Flex: React.FC<FlexProps> = ({
   justify = 'start',
   wrap = 'nowrap',
   gap = 'none',
-  className = ''
+  className = '',
 }) => {
   const getDirectionClass = () => {
     switch (direction) {
@@ -101,4 +101,4 @@ const Flex: React.FC<FlexProps> = ({
   );
 };
 
-export default Flex; 
+export default Flex;

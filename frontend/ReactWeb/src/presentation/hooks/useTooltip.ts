@@ -7,11 +7,7 @@ interface UseTooltipOptions {
 }
 
 export const useTooltip = (options: UseTooltipOptions = {}) => {
-  const {
-    delay = 0,
-    showOnHover = true,
-    showOnFocus = true
-  } = options;
+  const { delay = 0, showOnHover = true, showOnFocus = true } = options;
 
   const [isVisible, setIsVisible] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -21,7 +17,7 @@ export const useTooltip = (options: UseTooltipOptions = {}) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     if (delay > 0) {
       timeoutRef.current = setTimeout(() => setIsVisible(true), delay);
     } else {
@@ -75,7 +71,7 @@ export const useTooltip = (options: UseTooltipOptions = {}) => {
       trigger.removeEventListener('mouseleave', handleMouseLeave);
       trigger.removeEventListener('focus', handleFocus);
       trigger.removeEventListener('blur', handleBlur);
-      
+
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -88,4 +84,4 @@ export const useTooltip = (options: UseTooltipOptions = {}) => {
     showTooltip,
     hideTooltip,
   };
-}; 
+};

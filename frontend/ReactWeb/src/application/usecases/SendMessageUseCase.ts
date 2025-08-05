@@ -1,5 +1,8 @@
 import { MessageService } from '../services/MessageService';
-import type { SendMessageRequest, SendMessageResponse } from '../dto/SendMessageDto';
+import type {
+  SendMessageRequest,
+  SendMessageResponse,
+} from '../dto/SendMessageDto';
 
 export class SendMessageUseCase {
   constructor(private readonly messageService: MessageService) {}
@@ -23,4 +26,4 @@ export class SendMessageUseCase {
       throw new Error('Failed to send message');
     }
   }
-} 
+}

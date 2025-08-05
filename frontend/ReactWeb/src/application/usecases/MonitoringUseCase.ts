@@ -1,15 +1,17 @@
 import { MonitoringService } from '../services/MonitoringService';
-import type { 
+import type {
   SystemMetrics,
   ApplicationMetrics,
   HealthCheckRequest,
   HealthCheckResponse,
   GetPerformanceMetricsRequest,
-  GetPerformanceMetricsResponse
+  GetPerformanceMetricsResponse,
 } from '../dto/MonitoringDto';
 import type { IUseCase } from './interfaces/IUseCase';
 
-export class MonitoringUseCase implements IUseCase<HealthCheckRequest, HealthCheckResponse> {
+export class MonitoringUseCase
+  implements IUseCase<HealthCheckRequest, HealthCheckResponse>
+{
   constructor(private readonly monitoringService: MonitoringService) {}
 
   async execute(request: HealthCheckRequest): Promise<HealthCheckResponse> {
@@ -28,7 +30,9 @@ export class MonitoringUseCase implements IUseCase<HealthCheckRequest, HealthChe
     return await this.monitoringService.healthCheck(request);
   }
 
-  async getPerformanceMetrics(request: GetPerformanceMetricsRequest): Promise<GetPerformanceMetricsResponse> {
+  async getPerformanceMetrics(
+    request: GetPerformanceMetricsRequest
+  ): Promise<GetPerformanceMetricsResponse> {
     return await this.monitoringService.getPerformanceMetrics(request);
   }
-} 
+}

@@ -17,7 +17,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   showBackButton = false,
   onBackClick,
   rightContent,
-  className = ''
+  className = '',
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -32,37 +32,43 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   return (
     <div className={`bg-surface shadow-sm border-b border-border ${className}`}>
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+      <div className='max-w-4xl mx-auto px-4 py-6'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-4'>
             {showBackButton && (
               <button
                 onClick={handleBackClick}
-                className="p-2 hover:bg-secondary rounded-full transition-all duration-200 text-txt-secondary hover:text-txt"
+                className='p-2 hover:bg-secondary rounded-full transition-all duration-200 text-txt-secondary hover:text-txt'
                 aria-label={t('go_back') || '뒤로 가기'}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <svg
+                  className='w-6 h-6'
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M15 19l-7-7 7-7'
+                  />
                 </svg>
               </button>
             )}
-            
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold text-txt">
-                {title}
-              </h1>
+
+            <div className='flex-1'>
+              <h1 className='text-2xl font-bold text-txt'>{title}</h1>
               {subtitle && (
-                <p className="text-sm text-txt-secondary mt-2 leading-relaxed">
+                <p className='text-sm text-txt-secondary mt-2 leading-relaxed'>
                   {subtitle}
                 </p>
               )}
             </div>
           </div>
-          
+
           {rightContent && (
-            <div className="flex items-center space-x-3">
-              {rightContent}
-            </div>
+            <div className='flex items-center space-x-3'>{rightContent}</div>
           )}
         </div>
       </div>
@@ -70,4 +76,4 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   );
 };
 
-export default PageHeader; 
+export default PageHeader;

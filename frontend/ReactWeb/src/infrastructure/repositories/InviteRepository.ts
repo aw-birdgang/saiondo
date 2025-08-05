@@ -1,10 +1,10 @@
-import type { 
-  ChannelInvitationItem, 
-  InviteRequest, 
+import type {
+  ChannelInvitationItem,
+  InviteRequest,
   InviteResponse,
   InvitationResponseRequest,
   InvitationResponseResponse,
-  InviteStats
+  InviteStats,
 } from '../../domain/types/invite';
 import type { IInviteRepository } from '../../application/usecases/interfaces/IInviteRepository';
 
@@ -20,13 +20,13 @@ export class InviteRepository implements IInviteRepository {
       return {
         success: true,
         invitationId: `INV_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        message: '초대가 성공적으로 발송되었습니다.'
+        message: '초대가 성공적으로 발송되었습니다.',
       };
     } else {
       return {
         success: false,
         message: '초대 발송에 실패했습니다. 다시 시도해주세요.',
-        error: 'SEND_FAILED'
+        error: 'SEND_FAILED',
       };
     }
   }
@@ -75,7 +75,9 @@ export class InviteRepository implements IInviteRepository {
     return mockInvitations;
   }
 
-  async respondToInvitation(request: InvitationResponseRequest): Promise<InvitationResponseResponse> {
+  async respondToInvitation(
+    request: InvitationResponseRequest
+  ): Promise<InvitationResponseResponse> {
     // 초대 응답 시뮬레이션
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -85,15 +87,15 @@ export class InviteRepository implements IInviteRepository {
     if (isSuccess) {
       return {
         success: true,
-        message: request.accepted 
-          ? '초대를 수락했습니다!' 
-          : '초대를 거절했습니다.'
+        message: request.accepted
+          ? '초대를 수락했습니다!'
+          : '초대를 거절했습니다.',
       };
     } else {
       return {
         success: false,
         message: '초대 응답에 실패했습니다. 다시 시도해주세요.',
-        error: 'RESPONSE_FAILED'
+        error: 'RESPONSE_FAILED',
       };
     }
   }
@@ -103,12 +105,15 @@ export class InviteRepository implements IInviteRepository {
     await new Promise(resolve => setTimeout(resolve, 300));
 
     const invitations = await this.getInvitations(userId);
-    
+
     const stats: InviteStats = {
       totalInvitations: invitations.length,
-      pendingInvitations: invitations.filter(inv => inv.status === 'pending').length,
-      acceptedInvitations: invitations.filter(inv => inv.status === 'accepted').length,
-      rejectedInvitations: invitations.filter(inv => inv.status === 'rejected').length,
+      pendingInvitations: invitations.filter(inv => inv.status === 'pending')
+        .length,
+      acceptedInvitations: invitations.filter(inv => inv.status === 'accepted')
+        .length,
+      rejectedInvitations: invitations.filter(inv => inv.status === 'rejected')
+        .length,
       totalSent: invitations.length,
       accepted: invitations.filter(inv => inv.status === 'accepted').length,
       todaySent: invitations.filter(inv => {
@@ -130,4 +135,4 @@ export class InviteRepository implements IInviteRepository {
 
     return isSuccess;
   }
-} 
+}

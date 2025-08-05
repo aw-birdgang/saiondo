@@ -1,11 +1,11 @@
 import type { ICategoryService } from './interfaces/ICategoryService';
 import type { ICategoryUseCase } from './interfaces/ICategoryUseCase';
-import type { 
-  Category, 
+import type {
+  Category,
   CategoryCode,
   CategoryStats,
   CategoryUsageGuide,
-  CategoryFilter
+  CategoryFilter,
 } from '../../domain/types/category';
 
 // Category UseCase 구현체 - Service를 사용하여 애플리케이션 로직 조율
@@ -44,7 +44,10 @@ export class CategoryUseCase implements ICategoryUseCase {
     return await this.categoryService.createCategory(category);
   }
 
-  async updateCategory(id: string, category: Partial<Category>): Promise<Category> {
+  async updateCategory(
+    id: string,
+    category: Partial<Category>
+  ): Promise<Category> {
     return await this.categoryService.updateCategory(id, category);
   }
 
@@ -71,4 +74,4 @@ export class CategoryUseCase implements ICategoryUseCase {
   getCategoryFilters(): CategoryFilter[] {
     return this.categoryService.getCategoryFilters();
   }
-} 
+}

@@ -4,23 +4,23 @@ import { MessageEntity } from '../../domain/entities/Message';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   FileUploadRequest,
-  FileUploadResponse
+  FileUploadResponse,
 } from '../dto/UploadFileDto';
 import type {
   FileDownloadRequest,
-  FileDownloadResponse
+  FileDownloadResponse,
 } from '../dto/FileDownloadDto';
 
 export class FileService {
   private readonly maxFileSize = 10 * 1024 * 1024; // 10MB
   private readonly allowedTypes = [
     'image/jpeg',
-    'image/png', 
+    'image/png',
     'image/gif',
     'application/pdf',
     'text/plain',
     'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ];
 
   constructor(
@@ -35,7 +35,9 @@ export class FileService {
     }
 
     if (!request.channelId || request.channelId.trim().length === 0) {
-      throw DomainErrorFactory.createMessageValidation('Channel ID is required');
+      throw DomainErrorFactory.createMessageValidation(
+        'Channel ID is required'
+      );
     }
 
     if (!request.senderId || request.senderId.trim().length === 0) {
@@ -44,18 +46,27 @@ export class FileService {
 
     // Validate file size
     if (request.file.size > this.maxFileSize) {
-      throw DomainErrorFactory.createMessageValidation('File size must be less than 10MB');
+      throw DomainErrorFactory.createMessageValidation(
+        'File size must be less than 10MB'
+      );
     }
 
     // Validate file type
     if (!this.allowedTypes.includes(request.file.type)) {
-      throw DomainErrorFactory.createMessageValidation('File type not supported');
+      throw DomainErrorFactory.createMessageValidation(
+        'File type not supported'
+      );
     }
 
     // Check if sender is member of the channel
-    const isMember = await this.channelRepository.isMember(request.channelId, request.senderId);
+    const isMember = await this.channelRepository.isMember(
+      request.channelId,
+      request.senderId
+    );
     if (!isMember) {
-      throw DomainErrorFactory.createMessageValidation('Sender is not a member of this channel');
+      throw DomainErrorFactory.createMessageValidation(
+        'Sender is not a member of this channel'
+      );
     }
 
     // Upload file to storage
@@ -95,7 +106,9 @@ export class FileService {
     };
   }
 
-  async downloadFile(request: FileDownloadRequest): Promise<FileDownloadResponse> {
+  async downloadFile(
+    request: FileDownloadRequest
+  ): Promise<FileDownloadResponse> {
     // Validate request
     if (!request.fileId || request.fileId.trim().length === 0) {
       throw DomainErrorFactory.createMessageValidation('File ID is required');
@@ -120,7 +133,9 @@ export class FileService {
     };
   }
 
-  async validateFile(file: File): Promise<{ isValid: boolean; error?: string }> {
+  async validateFile(
+    file: File
+  ): Promise<{ isValid: boolean; error?: string }> {
     // Check file size
     if (file.size > this.maxFileSize) {
       return {
@@ -159,17 +174,19 @@ export class FileService {
   private async uploadFileToStorage(file: File): Promise<string> {
     // In real implementation, this would upload to cloud storage (AWS S3, Google Cloud Storage, etc.)
     // For now, we'll simulate the upload and return a mock URL
-    
+
     // Simulate upload delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Generate mock file URL
     const timestamp = Date.now();
     const randomId = Math.random().toString(36).substring(2, 8);
     return `https://storage.example.com/files/${timestamp}_${randomId}_${file.name}`;
   }
 
-  private getMessageTypeFromFile(mimeType: string): 'text' | 'image' | 'file' | 'system' {
+  private getMessageTypeFromFile(
+    mimeType: string
+  ): 'text' | 'image' | 'file' | 'system' {
     if (mimeType.startsWith('image/')) {
       return 'image';
     }
@@ -184,4 +201,4 @@ export class FileService {
     // For now, return the original URL
     return fileUrl;
   }
-} 
+}

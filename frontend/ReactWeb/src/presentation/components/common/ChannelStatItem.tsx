@@ -30,4 +30,4 @@ const ChannelStatItem: React.FC<ChannelStatItemProps> = ({
   );
 };
 
-export default ChannelStatItem; 
+export default ChannelStatItem;

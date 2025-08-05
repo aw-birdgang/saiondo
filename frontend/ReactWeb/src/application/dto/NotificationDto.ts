@@ -117,4 +117,4 @@ export interface NotificationServiceConfig {
   maxMessageLength?: number;
   enablePushNotifications?: boolean;
   enableEmailNotifications?: boolean;
-} 
+}

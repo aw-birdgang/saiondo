@@ -1,20 +1,20 @@
-import React from "react";
-import type { ChannelListProps } from "../../pages/channel/types/channelTypes";
-import { ChannelCard, EmptyChannelState } from "./channel";
+import React from 'react';
+import type { ChannelListProps } from '../../pages/channel/types/channelTypes';
+import { ChannelCard, EmptyChannelState } from './channel';
 
-const ChannelList: React.FC<ChannelListProps> = ({ 
-  channels, 
-  onChannelClick, 
-  onCreateChannel, 
-  className = "" 
+const ChannelList: React.FC<ChannelListProps> = ({
+  channels,
+  onChannelClick,
+  onCreateChannel,
+  className = '',
 }) => {
   return (
     <div className={`space-y-6 ${className}`}>
       {channels.length === 0 ? (
         <EmptyChannelState onCreateChannel={onCreateChannel} />
       ) : (
-        <div className="grid gap-6">
-          {channels.map((channel) => (
+        <div className='grid gap-6'>
+          {channels.map(channel => (
             <ChannelCard
               key={channel.id}
               channel={channel}
@@ -27,4 +27,4 @@ const ChannelList: React.FC<ChannelListProps> = ({
   );
 };
 
-export default ChannelList; 
+export default ChannelList;

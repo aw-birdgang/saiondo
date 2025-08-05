@@ -17,12 +17,13 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Use custom hook for theme management
-  const { isDarkMode, toggleTheme, setTheme, theme, isSystemTheme } = useThemeManager({
-    autoApply: true,
-    onThemeChange: (isDark) => {
-      console.log('Theme changed to:', isDark ? 'dark' : 'light');
-    }
-  });
+  const { isDarkMode, toggleTheme, setTheme, theme, isSystemTheme } =
+    useThemeManager({
+      autoApply: true,
+      onThemeChange: _isDark => {
+        // Theme changed callback - can be used for analytics or other side effects
+      },
+    });
 
   const value: ThemeContextType = {
     isDarkMode,
@@ -33,9 +34,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
 
@@ -45,4 +44,4 @@ export const useTheme = (): ThemeContextType => {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
-}; 
+};

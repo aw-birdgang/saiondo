@@ -7,7 +7,8 @@ const inputVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-border focus-visible:border-primary focus-visible:ring-primary',
+        default:
+          'border-border focus-visible:border-primary focus-visible:ring-primary',
         error: 'border-error focus-visible:ring-error',
         success: 'border-green-500 focus-visible:ring-green-500',
         warning: 'border-yellow-500 focus-visible:ring-yellow-500',
@@ -48,30 +49,33 @@ export interface InputProps
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    state,
-    label, 
-    error, 
-    helperText, 
-    leftIcon, 
-    rightIcon, 
-    fullWidth = true,
-    required = false,
-    showCharacterCount = false,
-    maxLength,
-    animated = true,
-    id,
-    onFocus,
-    onBlur,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      state,
+      label,
+      error,
+      helperText,
+      leftIcon,
+      rightIcon,
+      fullWidth = true,
+      required = false,
+      showCharacterCount = false,
+      maxLength,
+      animated = true,
+      id,
+      onFocus,
+      onBlur,
+      ...props
+    },
+    ref
+  ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [value, setValue] = useState(props.value || props.defaultValue || '');
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
       setIsFocused(true);
       onFocus?.(e);
@@ -88,11 +92,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     const currentState = error ? 'error' : isFocused ? 'focused' : 'default';
-    
+
     return (
       <div className={cn('space-y-2', fullWidth && 'w-full')}>
         {label && (
-          <label 
+          <label
             htmlFor={inputId}
             className={cn(
               'text-sm font-medium text-txt transition-colors duration-200',
@@ -101,22 +105,29 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           >
             {label}
-            {required && <span className="text-error ml-1">*</span>}
+            {required && <span className='text-error ml-1'>*</span>}
           </label>
         )}
-        <div className="relative group">
+        <div className='relative group'>
           {leftIcon && (
-            <div className={cn(
-              'absolute left-3 top-1/2 -translate-y-1/2 text-txt-secondary transition-all duration-200',
-              animated && 'group-focus-within:text-primary group-focus-within:scale-110'
-            )}>
+            <div
+              className={cn(
+                'absolute left-3 top-1/2 -translate-y-1/2 text-txt-secondary transition-all duration-200',
+                animated &&
+                  'group-focus-within:text-primary group-focus-within:scale-110'
+              )}
+            >
               {leftIcon}
             </div>
           )}
           <input
             id={inputId}
             className={cn(
-              inputVariants({ variant: error ? 'error' : variant, size, state: currentState }),
+              inputVariants({
+                variant: error ? 'error' : variant,
+                size,
+                state: currentState,
+              }),
               leftIcon && 'pl-10',
               rightIcon && 'pr-10',
               animated && 'hover:border-primary/50',
@@ -128,47 +139,71 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             onChange={handleChange}
             maxLength={maxLength}
             aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
+            aria-describedby={
+              error
+                ? `${inputId}-error`
+                : helperText
+                  ? `${inputId}-helper`
+                  : undefined
+            }
             {...props}
           />
           {rightIcon && (
-            <div className={cn(
-              'absolute right-3 top-1/2 -translate-y-1/2 text-txt-secondary transition-all duration-200',
-              animated && 'group-focus-within:text-primary group-focus-within:scale-110'
-            )}>
+            <div
+              className={cn(
+                'absolute right-3 top-1/2 -translate-y-1/2 text-txt-secondary transition-all duration-200',
+                animated &&
+                  'group-focus-within:text-primary group-focus-within:scale-110'
+              )}
+            >
               {rightIcon}
             </div>
           )}
-          
+
           {/* Focus indicator */}
           {animated && isFocused && (
-            <div className="absolute inset-0 rounded-lg ring-2 ring-primary/20 pointer-events-none animate-pulse" />
+            <div className='absolute inset-0 rounded-lg ring-2 ring-primary/20 pointer-events-none animate-pulse' />
           )}
         </div>
-        
+
         {/* Helper text and error */}
         {(error || helperText || (showCharacterCount && maxLength)) && (
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex-1">
+          <div className='flex items-center justify-between text-sm'>
+            <div className='flex-1'>
               {error && (
-                <p id={`${inputId}-error`} className="text-error flex items-center">
-                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                <p
+                  id={`${inputId}-error`}
+                  className='text-error flex items-center'
+                >
+                  <svg
+                    className='w-4 h-4 mr-1'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z'
+                      clipRule='evenodd'
+                    />
                   </svg>
                   {error}
                 </p>
               )}
               {helperText && !error && (
-                <p id={`${inputId}-helper`} className="text-txt-secondary">
+                <p id={`${inputId}-helper`} className='text-txt-secondary'>
                   {helperText}
                 </p>
               )}
             </div>
             {showCharacterCount && maxLength && (
-              <span className={cn(
-                'text-xs transition-colors duration-200',
-                String(value).length > maxLength * 0.9 ? 'text-error' : 'text-txt-secondary'
-              )}>
+              <span
+                className={cn(
+                  'text-xs transition-colors duration-200',
+                  String(value).length > maxLength * 0.9
+                    ? 'text-error'
+                    : 'text-txt-secondary'
+                )}
+              >
                 {String(value).length}/{maxLength}
               </span>
             )}
@@ -179,4 +214,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input'; 
+Input.displayName = 'Input';

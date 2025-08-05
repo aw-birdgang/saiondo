@@ -50,4 +50,4 @@ export interface ChannelCardProps {
 export interface EmptyChannelStateProps {
   onCreateChannel: () => void;
   className?: string;
-} 
+}

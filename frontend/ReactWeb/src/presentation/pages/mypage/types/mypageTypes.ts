@@ -68,4 +68,4 @@ export interface AccountManagementProps {
   onSettings: () => void;
   isLoading: boolean;
   className?: string;
-} 
+}

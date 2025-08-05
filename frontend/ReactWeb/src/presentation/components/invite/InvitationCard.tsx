@@ -55,34 +55,58 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
   onAccept,
   onReject,
   onCancel,
-  className
+  className,
 }) => {
   const { t } = useTranslation();
 
   return (
-    <div className={cn('p-4 border border-border rounded-lg bg-surface', className)}>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
+    <div
+      className={cn(
+        'p-4 border border-border rounded-lg bg-surface',
+        className
+      )}
+    >
+      <div className='flex items-start justify-between'>
+        <div className='flex-1'>
           {/* 헤더 */}
-          <div className="flex items-center space-x-3 mb-3">
-            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+          <div className='flex items-center space-x-3 mb-3'>
+            <div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center'>
+              <svg
+                className='w-5 h-5 text-primary'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z'
+                />
               </svg>
             </div>
             <div>
-              <h3 className="font-medium text-txt">{invitation.inviterName || '알 수 없는 사용자'}</h3>
-              <p className="text-sm text-txt-secondary">{formatTimeAgo(invitation.createdAt)}</p>
+              <h3 className='font-medium text-txt'>
+                {invitation.inviterName || '알 수 없는 사용자'}
+              </h3>
+              <p className='text-sm text-txt-secondary'>
+                {formatTimeAgo(invitation.createdAt)}
+              </p>
             </div>
-            <Badge variant="secondary" className={getStatusColor(invitation.status)}>
+            <Badge
+              variant='secondary'
+              className={getStatusColor(invitation.status)}
+            >
               {getStatusLabel(invitation.status)}
             </Badge>
           </div>
 
           {/* 채널 정보 */}
-          <div className="mb-4">
-            <h4 className="font-medium text-txt mb-1">채널: {invitation.channelName || '알 수 없는 채널'}</h4>
-            <p className="text-sm text-txt-secondary">
+          <div className='mb-4'>
+            <h4 className='font-medium text-txt mb-1'>
+              채널: {invitation.channelName || '알 수 없는 채널'}
+            </h4>
+            <p className='text-sm text-txt-secondary'>
               {invitation.inviterName || '알 수 없는 사용자'}님이 초대했습니다.
             </p>
           </div>
@@ -91,20 +115,20 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
       {/* 액션 버튼 */}
       {invitation.status === 'pending' && (
-        <div className="flex space-x-2">
+        <div className='flex space-x-2'>
           <Button
-            variant="primary"
-            size="sm"
+            variant='primary'
+            size='sm'
             onClick={() => onAccept(invitation.id)}
-            className="flex-1"
+            className='flex-1'
           >
             수락
           </Button>
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() => onReject(invitation.id)}
-            className="flex-1"
+            className='flex-1'
           >
             거절
           </Button>
@@ -114,14 +138,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
       {/* 취소 버튼 (수락된 초대장의 경우) */}
       {invitation.status === 'accepted' && (
         <Button
-          variant="ghost"
-          size="sm"
+          variant='ghost'
+          size='sm'
           onClick={() => onCancel(invitation.id)}
-          className="w-full"
+          className='w-full'
         >
           채널 나가기
         </Button>
       )}
     </div>
   );
-}; 
+};

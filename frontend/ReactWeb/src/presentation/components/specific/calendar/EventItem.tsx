@@ -9,7 +9,7 @@ const EventItem: React.FC<EventItemProps> = ({
   onClick,
   onEdit,
   onDelete,
-  className
+  className,
 }) => {
   const handleClick = () => {
     onClick(event);
@@ -49,56 +49,39 @@ const EventItem: React.FC<EventItemProps> = ({
         className
       )}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2 mb-2">
-            <div className={cn(
-              'w-3 h-3 rounded-full',
-              EVENT_TYPE_CONFIG[event.type].color
-            )} />
-            <h3 className="font-medium text-txt truncate">
-              {event.title}
-            </h3>
+      <div className='flex items-start justify-between'>
+        <div className='flex-1 min-w-0'>
+          <div className='flex items-center space-x-2 mb-2'>
+            <div
+              className={cn(
+                'w-3 h-3 rounded-full',
+                EVENT_TYPE_CONFIG[event.type].color
+              )}
+            />
+            <h3 className='font-medium text-txt truncate'>{event.title}</h3>
           </div>
-          
+
           {event.description && (
-            <p className="text-sm text-txt-secondary mb-2 line-clamp-2">
+            <p className='text-sm text-txt-secondary mb-2 line-clamp-2'>
               {event.description}
             </p>
           )}
-          
-          <div className="flex items-center space-x-4 text-xs text-txt-secondary">
-            {event.time && (
-              <span>🕐 {event.time}</span>
-            )}
-            {event.location && (
-              <span>📍 {event.location}</span>
-            )}
-            {event.isAllDay && (
-              <span>📅 종일</span>
-            )}
+
+          <div className='flex items-center space-x-4 text-xs text-txt-secondary'>
+            {event.time && <span>🕐 {event.time}</span>}
+            {event.location && <span>📍 {event.location}</span>}
+            {event.isAllDay && <span>📅 종일</span>}
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 ml-4">
+        <div className='flex items-center space-x-2 ml-4'>
           {event.priority && (
-            <StatusBadge 
-              status={getPriorityStatus(event.priority)}
-              size="sm"
-            />
+            <StatusBadge status={getPriorityStatus(event.priority)} size='sm' />
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleEdit}
-          >
+          <Button variant='ghost' size='sm' onClick={handleEdit}>
             편집
           </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-          >
+          <Button variant='destructive' size='sm' onClick={handleDelete}>
             삭제
           </Button>
         </div>
@@ -107,4 +90,4 @@ const EventItem: React.FC<EventItemProps> = ({
   );
 };
 
-export default EventItem; 
+export default EventItem;

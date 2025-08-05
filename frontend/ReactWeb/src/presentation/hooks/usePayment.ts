@@ -2,21 +2,46 @@ import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../shared/constants/app';
 import { useToastContext } from '../providers/ToastProvider';
-import type { 
-  PaymentState, 
-  PaymentStep, 
-  SubscriptionProduct, 
+import type {
+  PaymentState,
+  PaymentStep,
+  SubscriptionProduct,
   CardDetails,
-  PaymentRequest 
+  PaymentRequest,
 } from '../../domain/types/payment';
 import type { IPaymentUseCase } from '../../application/usecases/PaymentUseCase';
 
 const PAYMENT_STEPS: PaymentStep[] = [
-  { id: 'product', title: '플랜 선택', description: '구독 플랜을 선택하세요', progress: 25 },
-  { id: 'payment', title: '결제 정보', description: '결제 방법과 정보를 입력하세요', progress: 50 },
-  { id: 'confirmation', title: '확인', description: '주문 정보를 확인하세요', progress: 75 },
-  { id: 'processing', title: '처리 중', description: '결제를 처리하고 있습니다', progress: 90 },
-  { id: 'complete', title: '완료', description: '결제가 완료되었습니다', progress: 100 }
+  {
+    id: 'product',
+    title: '플랜 선택',
+    description: '구독 플랜을 선택하세요',
+    progress: 25,
+  },
+  {
+    id: 'payment',
+    title: '결제 정보',
+    description: '결제 방법과 정보를 입력하세요',
+    progress: 50,
+  },
+  {
+    id: 'confirmation',
+    title: '확인',
+    description: '주문 정보를 확인하세요',
+    progress: 75,
+  },
+  {
+    id: 'processing',
+    title: '처리 중',
+    description: '결제를 처리하고 있습니다',
+    progress: 90,
+  },
+  {
+    id: 'complete',
+    title: '완료',
+    description: '결제가 완료되었습니다',
+    progress: 100,
+  },
 ];
 
 export const usePayment = (paymentUseCase: IPaymentUseCase) => {
@@ -33,23 +58,28 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
       number: '',
       expiry: '',
       cvv: '',
-      name: ''
+      name: '',
     },
     isProcessing: false,
     paymentProgress: 0,
-    error: null
+    error: null,
   });
 
   // 현재 단계 정보
-  const currentStepInfo = useMemo(() => 
-    PAYMENT_STEPS.find(step => step.id === state.currentStep) || PAYMENT_STEPS[0], 
+  const currentStepInfo = useMemo(
+    () =>
+      PAYMENT_STEPS.find(step => step.id === state.currentStep) ||
+      PAYMENT_STEPS[0],
     [state.currentStep]
   );
 
   // 할인된 가격 계산
   const discountedPrice = useMemo(() => {
     if (!state.selectedProduct) return 0;
-    return paymentUseCase.calculateDiscountedPrice(state.selectedProduct, state.appliedCoupon || undefined);
+    return paymentUseCase.calculateDiscountedPrice(
+      state.selectedProduct,
+      state.appliedCoupon || undefined
+    );
   }, [state.selectedProduct, state.appliedCoupon, paymentUseCase]);
 
   // 상품 선택
@@ -57,7 +87,7 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
     setState(prev => ({
       ...prev,
       selectedProduct: product,
-      currentStep: 'payment'
+      currentStep: 'payment',
     }));
   }, []);
 
@@ -65,26 +95,29 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
   const selectPaymentMethod = useCallback((methodId: string) => {
     setState(prev => ({
       ...prev,
-      selectedPaymentMethod: methodId
+      selectedPaymentMethod: methodId,
     }));
   }, []);
 
   // 카드 정보 업데이트
-  const updateCardDetails = useCallback((field: keyof CardDetails, value: string) => {
-    setState(prev => ({
-      ...prev,
-      cardDetails: {
-        ...prev.cardDetails,
-        [field]: value
-      }
-    }));
-  }, []);
+  const updateCardDetails = useCallback(
+    (field: keyof CardDetails, value: string) => {
+      setState(prev => ({
+        ...prev,
+        cardDetails: {
+          ...prev.cardDetails,
+          [field]: value,
+        },
+      }));
+    },
+    []
+  );
 
   // 쿠폰 코드 업데이트
   const updateCouponCode = useCallback((code: string) => {
     setState(prev => ({
       ...prev,
-      couponCode: code
+      couponCode: code,
     }));
   }, []);
 
@@ -100,14 +133,16 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
       if (coupon) {
         setState(prev => ({
           ...prev,
-          appliedCoupon: coupon
+          appliedCoupon: coupon,
         }));
         toast.success('쿠폰이 적용되었습니다!');
       } else {
         toast.error('유효하지 않은 쿠폰 코드입니다.');
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : '쿠폰 적용에 실패했습니다.');
+      toast.error(
+        error instanceof Error ? error.message : '쿠폰 적용에 실패했습니다.'
+      );
     }
   }, [state.couponCode, paymentUseCase, toast]);
 
@@ -116,31 +151,35 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
     setState(prev => ({
       ...prev,
       appliedCoupon: null,
-      couponCode: ''
+      couponCode: '',
     }));
     toast.success('쿠폰이 제거되었습니다.');
   }, [toast]);
 
   // 다음 단계로 이동
   const goToNextStep = useCallback(() => {
-    const currentIndex = PAYMENT_STEPS.findIndex(step => step.id === state.currentStep);
+    const currentIndex = PAYMENT_STEPS.findIndex(
+      step => step.id === state.currentStep
+    );
     if (currentIndex < PAYMENT_STEPS.length - 1) {
       const nextStep = PAYMENT_STEPS[currentIndex + 1];
       setState(prev => ({
         ...prev,
-        currentStep: nextStep.id
+        currentStep: nextStep.id,
       }));
     }
   }, [state.currentStep]);
 
   // 이전 단계로 이동
   const goToPreviousStep = useCallback(() => {
-    const currentIndex = PAYMENT_STEPS.findIndex(step => step.id === state.currentStep);
+    const currentIndex = PAYMENT_STEPS.findIndex(
+      step => step.id === state.currentStep
+    );
     if (currentIndex > 0) {
       const prevStep = PAYMENT_STEPS[currentIndex - 1];
       setState(prev => ({
         ...prev,
-        currentStep: prevStep.id
+        currentStep: prevStep.id,
       }));
     }
   }, [state.currentStep]);
@@ -149,7 +188,7 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
   const goToStep = useCallback((stepId: PaymentStep['id']) => {
     setState(prev => ({
       ...prev,
-      currentStep: stepId
+      currentStep: stepId,
     }));
   }, []);
 
@@ -164,7 +203,7 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
       ...prev,
       isProcessing: true,
       currentStep: 'processing',
-      error: null
+      error: null,
     }));
 
     try {
@@ -178,7 +217,10 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
         productId: state.selectedProduct.id,
         paymentMethod: state.selectedPaymentMethod,
         couponCode: state.appliedCoupon?.code,
-        cardDetails: state.selectedPaymentMethod === 'card' ? state.cardDetails : undefined
+        cardDetails:
+          state.selectedPaymentMethod === 'card'
+            ? state.cardDetails
+            : undefined,
       };
 
       const response = await paymentUseCase.processPayment(paymentRequest);
@@ -186,10 +228,10 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
       if (response.success) {
         setState(prev => ({
           ...prev,
-          currentStep: 'complete'
+          currentStep: 'complete',
         }));
         toast.success(response.message);
-        
+
         // 완료 후 홈으로 이동
         setTimeout(() => {
           navigate(ROUTES.HOME);
@@ -198,18 +240,19 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
         throw new Error(response.message);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '결제에 실패했습니다.';
+      const errorMessage =
+        error instanceof Error ? error.message : '결제에 실패했습니다.';
       setState(prev => ({
         ...prev,
         error: errorMessage,
-        currentStep: 'payment'
+        currentStep: 'payment',
       }));
       toast.error(errorMessage);
     } finally {
       setState(prev => ({
         ...prev,
         isProcessing: false,
-        paymentProgress: 0
+        paymentProgress: 0,
       }));
     }
   }, [state, paymentUseCase, toast, navigate]);
@@ -218,7 +261,7 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
   const clearError = useCallback(() => {
     setState(prev => ({
       ...prev,
-      error: null
+      error: null,
     }));
   }, []);
 
@@ -234,11 +277,11 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
         number: '',
         expiry: '',
         cvv: '',
-        name: ''
+        name: '',
       },
       isProcessing: false,
       paymentProgress: 0,
-      error: null
+      error: null,
     });
   }, []);
 
@@ -247,7 +290,7 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
     state,
     currentStepInfo,
     discountedPrice,
-    
+
     // Actions
     selectProduct,
     selectPaymentMethod,
@@ -260,6 +303,6 @@ export const usePayment = (paymentUseCase: IPaymentUseCase) => {
     goToStep,
     processPayment,
     clearError,
-    reset
+    reset,
   };
-}; 
+};

@@ -13,12 +13,12 @@ interface SearchInputProps {
 }
 
 export const SearchInput: React.FC<SearchInputProps> = ({
-  placeholder = "검색어를 입력하세요...",
+  placeholder = '검색어를 입력하세요...',
   className,
   onSearch,
   showSuggestions = false,
   suggestions = [],
-  onSuggestionClick
+  onSuggestionClick,
 }) => {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -30,7 +30,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   // 검색 실행
   const handleSearch = () => {
     if (!query.trim()) return;
-    
+
     if (onSearch) {
       onSearch(query);
     } else {
@@ -50,7 +50,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
     setShowDropdown(false);
-    
+
     if (onSuggestionClick) {
       onSuggestionClick(suggestion);
     } else {
@@ -61,7 +61,10 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
@@ -77,30 +80,40 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <div className={cn('relative', className)} ref={dropdownRef}>
-      <div className="relative">
+      <div className='relative'>
         <Input
           ref={inputRef}
-          type="text"
+          type='text'
           placeholder={placeholder}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={e => setQuery(e.target.value)}
           onKeyPress={handleKeyPress}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="pr-12"
+          className='pr-12'
         />
-        
+
         {/* 검색 버튼 */}
-        <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+        <div className='absolute right-2 top-1/2 transform -translate-y-1/2'>
           <Button
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
             onClick={handleSearch}
             disabled={!query.trim()}
-            className="h-8 w-8 p-0 hover:bg-primary/10"
+            className='h-8 w-8 p-0 hover:bg-primary/10'
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg
+              className='w-4 h-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+              />
             </svg>
           </Button>
         </div>
@@ -108,21 +121,31 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
       {/* 검색 제안 드롭다운 */}
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+        <div className='absolute top-full left-0 right-0 mt-1 bg-surface border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto'>
           {suggestions.map((suggestion, index) => (
             <button
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
-              className="w-full text-left px-4 py-2 hover:bg-secondary transition-colors flex items-center space-x-2"
+              className='w-full text-left px-4 py-2 hover:bg-secondary transition-colors flex items-center space-x-2'
             >
-              <svg className="w-4 h-4 text-txt-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className='w-4 h-4 text-txt-secondary'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                />
               </svg>
-              <span className="text-txt">{suggestion}</span>
+              <span className='text-txt'>{suggestion}</span>
             </button>
           ))}
         </div>
       )}
     </div>
   );
-}; 
+};

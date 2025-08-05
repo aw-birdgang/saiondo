@@ -1,7 +1,7 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useAutoScroll } from "../../hooks/useAutoScroll";
-import { MessageBubble, LoadingSpinner } from "../common";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAutoScroll } from '../../hooks/useAutoScroll';
+import { MessageBubble, LoadingSpinner } from '../common';
 
 interface Message {
   id: string;
@@ -17,19 +17,18 @@ interface ChatMessagesProps {
   className?: string;
 }
 
-const ChatMessages: React.FC<ChatMessagesProps> = ({ 
-  messages, 
-  loading, 
-  currentUserId, 
-  className = "" 
+const ChatMessages: React.FC<ChatMessagesProps> = ({
+  messages,
+  loading,
+  currentUserId,
+  className = '',
 }) => {
   const { t } = useTranslation();
-  
+
   // Use custom hook for auto scroll
-  const { targetRef } = useAutoScroll<HTMLDivElement>(
-    [messages],
-    { enabled: messages.length > 0 }
-  );
+  const { targetRef } = useAutoScroll<HTMLDivElement>([messages], {
+    enabled: messages.length > 0,
+  });
 
   if (loading && messages.length === 0) {
     return (
@@ -42,9 +41,13 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   if (messages.length === 0) {
     return (
       <div className={`flex items-center justify-center h-full ${className}`}>
-        <div className="text-center text-txt-secondary">
-          <p className="text-lg font-medium">{t("chat.no_messages") || "메시지가 없습니다"}</p>
-          <p className="text-sm mt-3 leading-relaxed">{t("chat.start_conversation") || "대화를 시작해보세요"}</p>
+        <div className='text-center text-txt-secondary'>
+          <p className='text-lg font-medium'>
+            {t('chat.no_messages') || '메시지가 없습니다'}
+          </p>
+          <p className='text-sm mt-3 leading-relaxed'>
+            {t('chat.start_conversation') || '대화를 시작해보세요'}
+          </p>
         </div>
       </div>
     );
@@ -52,7 +55,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {messages.map((message) => (
+      {messages.map(message => (
         <MessageBubble
           key={message.id}
           content={message.content}
@@ -65,4 +68,4 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   );
 };
 
-export default ChatMessages; 
+export default ChatMessages;

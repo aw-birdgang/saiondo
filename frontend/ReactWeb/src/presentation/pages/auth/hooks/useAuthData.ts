@@ -12,42 +12,65 @@ export const useAuthData = () => {
   // 에러 처리
   useErrorHandler(error, {
     showToast: true,
-    onError: (errorMsg) => {
+    onError: errorMsg => {
       console.error('Auth error:', errorMsg);
-    }
+    },
   });
 
   // 로그인 처리
-  const handleLogin = useCallback(async (formData: LoginFormData) => {
-    try {
-      console.log('Regular login attempt with email:', formData.email, 'type:', typeof formData.email);
-      await login(formData.email.trim(), formData.password);
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
-    }
-  }, [login]);
+  const handleLogin = useCallback(
+    async (formData: LoginFormData) => {
+      try {
+        console.log(
+          'Regular login attempt with email:',
+          formData.email,
+          'type:',
+          typeof formData.email
+        );
+        await login(formData.email.trim(), formData.password);
+      } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+      }
+    },
+    [login]
+  );
 
   // 빠른 로그인 처리
-  const handleQuickLogin = useCallback(async (email: string) => {
-    try {
-      console.log('Quick login attempt with email:', email, 'type:', typeof email);
-      await login(email, 'password123'); // 테스트용 기본 비밀번호
-    } catch (error) {
-      console.error('Quick login error:', error);
-      throw error;
-    }
-  }, [login]);
+  const handleQuickLogin = useCallback(
+    async (email: string) => {
+      try {
+        console.log(
+          'Quick login attempt with email:',
+          email,
+          'type:',
+          typeof email
+        );
+        await login(email, 'password123'); // 테스트용 기본 비밀번호
+      } catch (error) {
+        console.error('Quick login error:', error);
+        throw error;
+      }
+    },
+    [login]
+  );
 
   // 회원가입 처리
-  const handleRegister = useCallback(async (formData: RegisterFormData) => {
-    try {
-      await register(formData.email.trim(), formData.password, formData.name.trim());
-    } catch (error) {
-      console.error('Register error:', error);
-      throw error;
-    }
-  }, [register]);
+  const handleRegister = useCallback(
+    async (formData: RegisterFormData) => {
+      try {
+        await register(
+          formData.email.trim(),
+          formData.password,
+          formData.name.trim()
+        );
+      } catch (error) {
+        console.error('Register error:', error);
+        throw error;
+      }
+    },
+    [register]
+  );
 
   // 인증 상태 확인 및 리다이렉트
   const checkAuthAndRedirect = useCallback(() => {
@@ -86,6 +109,6 @@ export const useAuthData = () => {
     checkAuthAndRedirect,
     goToLogin,
     goToRegister,
-    goToHome
+    goToHome,
   };
-}; 
+};

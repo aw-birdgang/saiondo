@@ -65,127 +65,271 @@ class DIContainer {
   private registerDefaultServices(): void {
     // Configuration
     this.register(DI_TOKENS.API_CONFIG, () => this.config.api, true);
-    this.register(DI_TOKENS.WEBSOCKET_CONFIG, () => this.config.websocket, true);
+    this.register(
+      DI_TOKENS.WEBSOCKET_CONFIG,
+      () => this.config.websocket,
+      true
+    );
 
     // Infrastructure Layer
-    this.register(DI_TOKENS.API_CLIENT, () => {
-      return new ApiClient();
-    }, true);
+    this.register(
+      DI_TOKENS.API_CLIENT,
+      () => {
+        return new ApiClient();
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.WEBSOCKET_CLIENT, () => {
-      const config = this.get<typeof this.config.websocket>(DI_TOKENS.WEBSOCKET_CONFIG);
-      return new WebSocketClient(config.url);
-    }, true);
+    this.register(
+      DI_TOKENS.WEBSOCKET_CLIENT,
+      () => {
+        const config = this.get<typeof this.config.websocket>(
+          DI_TOKENS.WEBSOCKET_CONFIG
+        );
+        return new WebSocketClient(config.url);
+      },
+      true
+    );
 
     // Repositories
-    this.register(DI_TOKENS.USER_REPOSITORY, () => {
-      const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
-      return new UserRepositoryImpl(apiClient);
-    }, true);
+    this.register(
+      DI_TOKENS.USER_REPOSITORY,
+      () => {
+        const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
+        return new UserRepositoryImpl(apiClient);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.CHANNEL_REPOSITORY, () => {
-      const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
-      return new ChannelRepositoryImpl(apiClient);
-    }, true);
+    this.register(
+      DI_TOKENS.CHANNEL_REPOSITORY,
+      () => {
+        const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
+        return new ChannelRepositoryImpl(apiClient);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.MESSAGE_REPOSITORY, () => {
-      const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
-      return new MessageRepositoryImpl(apiClient);
-    }, true);
+    this.register(
+      DI_TOKENS.MESSAGE_REPOSITORY,
+      () => {
+        const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
+        return new MessageRepositoryImpl(apiClient);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.PAYMENT_REPOSITORY, () => {
-      return new PaymentRepository();
-    }, true);
+    this.register(
+      DI_TOKENS.PAYMENT_REPOSITORY,
+      () => {
+        return new PaymentRepository();
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.SEARCH_REPOSITORY, () => {
-      return new SearchRepository();
-    }, true);
+    this.register(
+      DI_TOKENS.SEARCH_REPOSITORY,
+      () => {
+        return new SearchRepository();
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.INVITE_REPOSITORY, () => {
-      return new InviteRepository();
-    }, true);
+    this.register(
+      DI_TOKENS.INVITE_REPOSITORY,
+      () => {
+        return new InviteRepository();
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.CATEGORY_REPOSITORY, () => {
-      return new CategoryRepository();
-    }, true);
+    this.register(
+      DI_TOKENS.CATEGORY_REPOSITORY,
+      () => {
+        return new CategoryRepository();
+      },
+      true
+    );
 
     // Services
-    this.register(DI_TOKENS.AUTH_SERVICE, () => {
-      const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
-      return new AuthService(apiClient);
-    }, true);
+    this.register(
+      DI_TOKENS.AUTH_SERVICE,
+      () => {
+        const apiClient = this.get<ApiClient>(DI_TOKENS.API_CLIENT);
+        return new AuthService(apiClient);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.USER_SERVICE, () => {
-      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
-      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
-      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
-      return new UserService(userRepository, channelRepository, messageRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.USER_SERVICE,
+      () => {
+        const userRepository = this.get<IUserRepository>(
+          DI_TOKENS.USER_REPOSITORY
+        );
+        const channelRepository = this.get<IChannelRepository>(
+          DI_TOKENS.CHANNEL_REPOSITORY
+        );
+        const messageRepository = this.get<IMessageRepository>(
+          DI_TOKENS.MESSAGE_REPOSITORY
+        );
+        return new UserService(
+          userRepository,
+          channelRepository,
+          messageRepository
+        );
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.CHANNEL_SERVICE, () => {
-      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
-      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
-      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
-      return new ChannelService(channelRepository, userRepository, messageRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.CHANNEL_SERVICE,
+      () => {
+        const channelRepository = this.get<IChannelRepository>(
+          DI_TOKENS.CHANNEL_REPOSITORY
+        );
+        const userRepository = this.get<IUserRepository>(
+          DI_TOKENS.USER_REPOSITORY
+        );
+        const messageRepository = this.get<IMessageRepository>(
+          DI_TOKENS.MESSAGE_REPOSITORY
+        );
+        return new ChannelService(
+          channelRepository,
+          userRepository,
+          messageRepository
+        );
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.MESSAGE_SERVICE, () => {
-      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
-      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
-      const userRepository = this.get<IUserRepository>(DI_TOKENS.USER_REPOSITORY);
-      return new MessageService(messageRepository, channelRepository, userRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.MESSAGE_SERVICE,
+      () => {
+        const messageRepository = this.get<IMessageRepository>(
+          DI_TOKENS.MESSAGE_REPOSITORY
+        );
+        const channelRepository = this.get<IChannelRepository>(
+          DI_TOKENS.CHANNEL_REPOSITORY
+        );
+        const userRepository = this.get<IUserRepository>(
+          DI_TOKENS.USER_REPOSITORY
+        );
+        return new MessageService(
+          messageRepository,
+          channelRepository,
+          userRepository
+        );
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.FILE_SERVICE, () => {
-      const messageRepository = this.get<IMessageRepository>(DI_TOKENS.MESSAGE_REPOSITORY);
-      const channelRepository = this.get<IChannelRepository>(DI_TOKENS.CHANNEL_REPOSITORY);
-      return new FileService(messageRepository, channelRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.FILE_SERVICE,
+      () => {
+        const messageRepository = this.get<IMessageRepository>(
+          DI_TOKENS.MESSAGE_REPOSITORY
+        );
+        const channelRepository = this.get<IChannelRepository>(
+          DI_TOKENS.CHANNEL_REPOSITORY
+        );
+        return new FileService(messageRepository, channelRepository);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.NOTIFICATION_SERVICE, () => {
-      return NotificationService;
-    }, true);
+    this.register(
+      DI_TOKENS.NOTIFICATION_SERVICE,
+      () => {
+        return NotificationService;
+      },
+      true
+    );
 
     // Use Cases
-    this.register(DI_TOKENS.USER_USE_CASES, () => {
-      const userService = this.get<UserService>(DI_TOKENS.USER_SERVICE);
-      return new UserUseCases(userService);
-    }, true);
+    this.register(
+      DI_TOKENS.USER_USE_CASES,
+      () => {
+        const userService = this.get<UserService>(DI_TOKENS.USER_SERVICE);
+        return new UserUseCases(userService);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.CHANNEL_USE_CASES, () => {
-      const channelService = this.get<ChannelService>(DI_TOKENS.CHANNEL_SERVICE);
-      return new ChannelUseCases(channelService);
-    }, true);
+    this.register(
+      DI_TOKENS.CHANNEL_USE_CASES,
+      () => {
+        const channelService = this.get<ChannelService>(
+          DI_TOKENS.CHANNEL_SERVICE
+        );
+        return new ChannelUseCases(channelService);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.MESSAGE_USE_CASES, () => {
-      const messageService = this.get<MessageService>(DI_TOKENS.MESSAGE_SERVICE);
-      return new MessageUseCases(messageService);
-    }, true);
+    this.register(
+      DI_TOKENS.MESSAGE_USE_CASES,
+      () => {
+        const messageService = this.get<MessageService>(
+          DI_TOKENS.MESSAGE_SERVICE
+        );
+        return new MessageUseCases(messageService);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.PAYMENT_USE_CASE, () => {
-      const paymentRepository = this.get<PaymentRepository>(DI_TOKENS.PAYMENT_REPOSITORY);
-      return new PaymentUseCase(paymentRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.PAYMENT_USE_CASE,
+      () => {
+        const paymentRepository = this.get<PaymentRepository>(
+          DI_TOKENS.PAYMENT_REPOSITORY
+        );
+        return new PaymentUseCase(paymentRepository);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.SEARCH_USE_CASE, () => {
-      const searchRepository = this.get<SearchRepository>(DI_TOKENS.SEARCH_REPOSITORY);
-      return new SearchUseCase(searchRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.SEARCH_USE_CASE,
+      () => {
+        const searchRepository = this.get<SearchRepository>(
+          DI_TOKENS.SEARCH_REPOSITORY
+        );
+        return new SearchUseCase(searchRepository);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.INVITE_USE_CASE, () => {
-      const inviteRepository = this.get<InviteRepository>(DI_TOKENS.INVITE_REPOSITORY);
-      return new InviteUseCase(inviteRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.INVITE_USE_CASE,
+      () => {
+        const inviteRepository = this.get<InviteRepository>(
+          DI_TOKENS.INVITE_REPOSITORY
+        );
+        return new InviteUseCase(inviteRepository);
+      },
+      true
+    );
 
-    this.register(DI_TOKENS.CATEGORY_USE_CASE, () => {
-      const categoryRepository = this.get<CategoryRepository>(DI_TOKENS.CATEGORY_REPOSITORY);
-      return new CategoryUseCase(categoryRepository);
-    }, true);
+    this.register(
+      DI_TOKENS.CATEGORY_USE_CASE,
+      () => {
+        const categoryRepository = this.get<CategoryRepository>(
+          DI_TOKENS.CATEGORY_REPOSITORY
+        );
+        return new CategoryUseCase(categoryRepository);
+      },
+      true
+    );
 
     // Use Case Factory
-    this.register(DI_TOKENS.USE_CASE_FACTORY, () => {
-      return UseCaseFactory;
-    }, true);
+    this.register(
+      DI_TOKENS.USE_CASE_FACTORY,
+      () => {
+        return UseCaseFactory;
+      },
+      true
+    );
 
     // Zustand Stores
     this.register(DI_TOKENS.AUTH_STORE, () => useAuthStore, false);
@@ -196,7 +340,11 @@ class DIContainer {
     this.register(DI_TOKENS.UI_STORE, () => useUIStore, false);
   }
 
-  register<T>(token: DIToken, factory: () => T, singleton: boolean = true): void {
+  register<T>(
+    token: DIToken,
+    factory: () => T,
+    singleton: boolean = true
+  ): void {
     this.providers.set(token, { token, factory, singleton });
   }
 
@@ -210,12 +358,14 @@ class DIContainer {
     // Get provider
     const provider = this.providers.get(token);
     if (!provider) {
-      throw new Error(`Service provider not found for token: ${token.toString()}`);
+      throw new Error(
+        `Service provider not found for token: ${token.toString()}`
+      );
     }
 
     // Create instance
     const instance = provider.factory();
-    
+
     // Store instance if singleton
     if (provider.singleton) {
       this.services.set(token, { instance, singleton: true });
@@ -303,4 +453,4 @@ export const container = DIContainer.getInstance();
 export { DIContainer };
 
 // Legacy compatibility
-export const getContainer = () => container; 
+export const getContainer = () => container;

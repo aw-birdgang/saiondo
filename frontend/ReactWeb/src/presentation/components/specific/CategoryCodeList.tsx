@@ -1,5 +1,5 @@
-import React from "react";
-import { EmptyState } from "../common";
+import React from 'react';
+import { EmptyState } from '../common';
 
 interface CategoryCode {
   id: string;
@@ -15,10 +15,10 @@ interface CategoryCodeListProps {
   className?: string;
 }
 
-const CategoryCodeList: React.FC<CategoryCodeListProps> = ({ 
-  codes, 
+const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
+  codes,
   onCodeClick,
-  className = "" 
+  className = '',
 }) => {
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -49,16 +49,16 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
   if (codes.length === 0) {
     return (
       <EmptyState
-        icon="🔍"
-        title="검색 결과가 없습니다"
-        description="다른 검색어를 시도해보세요."
+        icon='🔍'
+        title='검색 결과가 없습니다'
+        description='다른 검색어를 시도해보세요.'
       />
     );
   }
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {codes.map((code) => (
+      {codes.map(code => (
         <div
           key={code.id}
           className={`card p-6 hover:shadow-lg transition-all duration-200 hover:scale-[1.01] ${
@@ -66,34 +66,36 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
           }`}
           onClick={() => onCodeClick?.(code)}
         >
-          <div className="flex items-start space-x-4">
+          <div className='flex items-start space-x-4'>
             {/* Code Icon */}
-            <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary-container/20 rounded-full flex items-center justify-center flex-shrink-0 shadow-md border-2 border-border">
-              <span className="text-xl font-bold text-primary">
+            <div className='w-14 h-14 bg-gradient-to-br from-primary/20 to-primary-container/20 rounded-full flex items-center justify-center flex-shrink-0 shadow-md border-2 border-border'>
+              <span className='text-xl font-bold text-primary'>
                 {code.code[0]}
               </span>
             </div>
-            
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-3 mb-3">
-                <h3 className="text-lg font-semibold text-txt leading-tight">
+
+            <div className='flex-1 min-w-0'>
+              <div className='flex items-center space-x-3 mb-3'>
+                <h3 className='text-lg font-semibold text-txt leading-tight'>
                   {code.code}
                 </h3>
-                <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getCategoryColor(code.category)}`}>
+                <span
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold ${getCategoryColor(code.category)}`}
+                >
                   {getCategoryIcon(code.category)} {code.category}
                 </span>
               </div>
-              
-              <p className="text-txt-secondary mb-4 leading-relaxed">
+
+              <p className='text-txt-secondary mb-4 leading-relaxed'>
                 {code.description}
               </p>
-              
+
               {code.examples && code.examples.length > 0 && (
-                <div className="flex flex-wrap gap-3">
+                <div className='flex flex-wrap gap-3'>
                   {code.examples.map((example, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1.5 bg-secondary text-txt-secondary rounded-lg text-xs font-medium border border-border"
+                      className='px-3 py-1.5 bg-secondary text-txt-secondary rounded-lg text-xs font-medium border border-border'
                     >
                       {example}
                     </span>
@@ -108,4 +110,4 @@ const CategoryCodeList: React.FC<CategoryCodeListProps> = ({
   );
 };
 
-export default CategoryCodeList; 
+export default CategoryCodeList;

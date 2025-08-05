@@ -36,7 +36,7 @@ export class WebSocketClient {
     }
 
     const auth = token ? { token } : {};
-    
+
     this.socket = io(this.url, {
       ...this.options,
       auth,
@@ -55,15 +55,11 @@ export class WebSocketClient {
   private setupEventListeners(): void {
     if (!this.socket) return;
 
-    this.socket.on('connect', () => {
-      
-    });
+    this.socket.on('connect', () => {});
 
-          this.socket.on('disconnect', () => {
-        
-      });
+    this.socket.on('disconnect', () => {});
 
-    this.socket.on('connect_error', (error) => {
+    this.socket.on('connect_error', error => {
       console.error('WebSocket connection error:', error);
     });
 
@@ -80,7 +76,7 @@ export class WebSocketClient {
       this.listeners.set(event, new Set());
     }
     this.listeners.get(event)?.add(callback);
-    
+
     if (this.socket) {
       this.socket.on(event, callback);
     }
@@ -88,7 +84,7 @@ export class WebSocketClient {
 
   off(event: string, callback: (data: unknown) => void): void {
     this.listeners.get(event)?.delete(callback);
-    
+
     if (this.socket) {
       this.socket.off(event, callback);
     }
@@ -109,4 +105,4 @@ export class WebSocketClient {
   getSocket(): Socket | null {
     return this.socket;
   }
-} 
+}

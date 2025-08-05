@@ -4,13 +4,13 @@ import type { SettingsContainerProps } from '../../../pages/settings/types/setti
 
 const SettingsContainer: React.FC<SettingsContainerProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("flex h-screen bg-background", className)}>
+    <div className={cn('flex h-screen bg-background', className)}>
       {children}
     </div>
   );
 };
 
-export default SettingsContainer; 
+export default SettingsContainer;

@@ -13,12 +13,12 @@ const ProfileSectionWrapper: React.FC<ProfileSectionWrapperProps> = ({
   isEditing,
   onEdit,
   onSave,
-  onCancel
+  onCancel,
 }) => (
-  <SectionBlock 
-    id="profile-section" 
-    ariaLabelledby="profile-heading"
-    className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white dark:from-blue-900/10 dark:to-gray-800"
+  <SectionBlock
+    id='profile-section'
+    ariaLabelledby='profile-heading'
+    className='border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white dark:from-blue-900/10 dark:to-gray-800'
   >
     <ProfileSection
       isEditing={isEditing}
@@ -29,4 +29,4 @@ const ProfileSectionWrapper: React.FC<ProfileSectionWrapperProps> = ({
   </SectionBlock>
 );
 
-export default ProfileSectionWrapper; 
+export default ProfileSectionWrapper;

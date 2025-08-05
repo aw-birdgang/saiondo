@@ -3,7 +3,7 @@ import type {
   ErrorReport,
   ErrorHandlingConfig,
   ErrorPatternAnalysis,
-  ErrorRecoveryResult
+  ErrorRecoveryResult,
 } from '../dto/ErrorHandlingDto';
 
 export class ErrorHandlingService {
@@ -113,7 +113,8 @@ export class ErrorHandlingService {
     const errorsByOperation: Record<string, number> = {};
     filteredLogs.forEach(log => {
       if (log.operation) {
-        errorsByOperation[log.operation] = (errorsByOperation[log.operation] || 0) + 1;
+        errorsByOperation[log.operation] =
+          (errorsByOperation[log.operation] || 0) + 1;
       }
     });
 
@@ -141,7 +142,9 @@ export class ErrorHandlingService {
   analyzeErrorPatterns(): ErrorPatternAnalysis {
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const recentLogs = this.errorLogs.filter(log => log.timestamp >= oneWeekAgo);
+    const recentLogs = this.errorLogs.filter(
+      log => log.timestamp >= oneWeekAgo
+    );
 
     // 가장 흔한 에러 메시지
     const errorCounts: Record<string, number> = {};
@@ -169,7 +172,8 @@ export class ErrorHandlingService {
     const operationCounts: Record<string, number> = {};
     recentLogs.forEach(log => {
       if (log.operation) {
-        operationCounts[log.operation] = (operationCounts[log.operation] || 0) + 1;
+        operationCounts[log.operation] =
+          (operationCounts[log.operation] || 0) + 1;
       }
     });
 
@@ -205,7 +209,9 @@ export class ErrorHandlingService {
     }
 
     if (filters?.operation) {
-      filteredLogs = filteredLogs.filter(log => log.operation === filters.operation);
+      filteredLogs = filteredLogs.filter(
+        log => log.operation === filters.operation
+      );
     }
 
     if (filters?.userId) {
@@ -213,11 +219,15 @@ export class ErrorHandlingService {
     }
 
     if (filters?.startDate) {
-      filteredLogs = filteredLogs.filter(log => log.timestamp >= filters.startDate!);
+      filteredLogs = filteredLogs.filter(
+        log => log.timestamp >= filters.startDate!
+      );
     }
 
     if (filters?.endDate) {
-      filteredLogs = filteredLogs.filter(log => log.timestamp <= filters.endDate!);
+      filteredLogs = filteredLogs.filter(
+        log => log.timestamp <= filters.endDate!
+      );
     }
 
     return filteredLogs
@@ -237,7 +247,7 @@ export class ErrorHandlingService {
    */
   setupGlobalErrorHandling(): void {
     // JavaScript 에러 처리
-    window.addEventListener('error', (event) => {
+    window.addEventListener('error', event => {
       const error = event.error || new Error(event.message);
       this.logError(error, {
         filename: event.filename,
@@ -247,8 +257,11 @@ export class ErrorHandlingService {
     });
 
     // Promise rejection 처리
-    window.addEventListener('unhandledrejection', (event) => {
-      const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
+    window.addEventListener('unhandledrejection', event => {
+      const error =
+        event.reason instanceof Error
+          ? event.reason
+          : new Error(String(event.reason));
       this.logError(error, { type: 'unhandledrejection' });
     });
 
@@ -265,7 +278,10 @@ export class ErrorHandlingService {
   /**
    * 에러 복구 시도
    */
-  async attemptErrorRecovery(error: Error, context?: Record<string, any>): Promise<ErrorRecoveryResult> {
+  async attemptErrorRecovery(
+    error: Error,
+    context?: Record<string, any>
+  ): Promise<ErrorRecoveryResult> {
     try {
       // 에러 타입에 따른 복구 로직
       if (error.name === 'NetworkError') {
@@ -277,7 +293,10 @@ export class ErrorHandlingService {
       if (error.name === 'QuotaExceededError') {
         // 저장소 공간 부족 복구 시도
         this.clearOldLogs();
-        return { success: true, message: 'Storage quota exceeded, logs cleared' };
+        return {
+          success: true,
+          message: 'Storage quota exceeded, logs cleared',
+        };
       }
 
       // 기타 에러는 복구 불가능으로 간주
@@ -297,7 +316,7 @@ export class ErrorHandlingService {
 
   private logToConsole(errorLog: ErrorLog): void {
     const logMessage = `[${errorLog.level.toUpperCase()}] ${errorLog.message}`;
-    
+
     switch (errorLog.level) {
       case 'info':
         console.info(logMessage, errorLog.context);
@@ -337,7 +356,7 @@ export class ErrorHandlingService {
 
   private async retryNetworkOperation(): Promise<void> {
     // 네트워크 재연결 시도 로직
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       setTimeout(resolve, 1000);
     });
   }
@@ -346,4 +365,4 @@ export class ErrorHandlingService {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     this.errorLogs = this.errorLogs.filter(log => log.timestamp > oneDayAgo);
   }
-} 
+}

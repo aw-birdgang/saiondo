@@ -183,7 +183,12 @@ export interface MessageStats {
 }
 
 export interface MessageValidationSchema {
-  content: { required: boolean; type: string; minLength: number; maxLength: number };
+  content: {
+    required: boolean;
+    type: string;
+    minLength: number;
+    maxLength: number;
+  };
   channelId: { required: boolean; type: string };
   senderId: { required: boolean; type: string };
   type: { required: boolean; type: string; enum: string[] };
@@ -196,4 +201,4 @@ export interface MessageServiceConfig {
   maxMessageLength?: number;
   minMessageLength?: number;
   maxMessagesPerChannel?: number;
-} 
+}

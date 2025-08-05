@@ -17,7 +17,9 @@ export class MessageEntity {
   }
 
   // Factory method
-  static create(messageData: Omit<Message, 'id' | 'createdAt' | 'updatedAt' | 'isEdited'>): MessageEntity {
+  static create(
+    messageData: Omit<Message, 'id' | 'createdAt' | 'updatedAt' | 'isEdited'>
+  ): MessageEntity {
     return new MessageEntity(
       crypto.randomUUID(),
       messageData.content,
@@ -52,23 +54,23 @@ export class MessageEntity {
     if (!this._id || this._id.trim().length === 0) {
       throw new Error('Message ID is required');
     }
-    
+
     if (!this._content || this._content.trim().length === 0) {
       throw new Error('Message content is required');
     }
-    
+
     if (this._content.length > 2000) {
       throw new Error('Message content must be less than 2000 characters');
     }
-    
+
     if (!this._channelId || this._channelId.trim().length === 0) {
       throw new Error('Channel ID is required');
     }
-    
+
     if (!this._senderId || this._senderId.trim().length === 0) {
       throw new Error('Sender ID is required');
     }
-    
+
     if (!['text', 'image', 'file', 'system'].includes(this._type)) {
       throw new Error('Invalid message type');
     }
@@ -79,11 +81,11 @@ export class MessageEntity {
     if (newContent.trim().length === 0) {
       throw new Error('Message content cannot be empty');
     }
-    
+
     if (newContent.length > 2000) {
       throw new Error('Message content must be less than 2000 characters');
     }
-    
+
     return new MessageEntity(
       this._id,
       newContent,
@@ -100,7 +102,7 @@ export class MessageEntity {
 
   addMetadata(key: string, value: unknown): MessageEntity {
     const newMetadata = { ...this._metadata, [key]: value };
-    
+
     return new MessageEntity(
       this._id,
       this._content,
@@ -128,16 +130,36 @@ export class MessageEntity {
   }
 
   // Getters
-  get id(): string { return this._id; }
-  get content(): string { return this._content; }
-  get channelId(): string { return this._channelId; }
-  get senderId(): string { return this._senderId; }
-  get type(): 'text' | 'image' | 'file' | 'system' { return this._type; }
-  get metadata(): Record<string, unknown> | undefined { return this._metadata; }
-  get createdAt(): Date { return this._createdAt; }
-  get updatedAt(): Date { return this._updatedAt; }
-  get isEdited(): boolean { return this._isEdited; }
-  get replyTo(): string | undefined { return this._replyTo; }
+  get id(): string {
+    return this._id;
+  }
+  get content(): string {
+    return this._content;
+  }
+  get channelId(): string {
+    return this._channelId;
+  }
+  get senderId(): string {
+    return this._senderId;
+  }
+  get type(): 'text' | 'image' | 'file' | 'system' {
+    return this._type;
+  }
+  get metadata(): Record<string, unknown> | undefined {
+    return this._metadata;
+  }
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
+  get isEdited(): boolean {
+    return this._isEdited;
+  }
+  get replyTo(): string | undefined {
+    return this._replyTo;
+  }
 
   // Data transfer
   toJSON(): Message {
@@ -154,4 +176,4 @@ export class MessageEntity {
       replyTo: this._replyTo,
     };
   }
-} 
+}

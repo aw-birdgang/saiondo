@@ -131,4 +131,4 @@ export interface CalendarSidebarProps {
 export interface CalendarContainerProps {
   children: React.ReactNode;
   className?: string;
-} 
+}

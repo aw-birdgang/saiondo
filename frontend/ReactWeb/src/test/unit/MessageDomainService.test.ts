@@ -11,11 +11,11 @@ describe('MessageDomainService', () => {
 
   beforeEach(() => {
     messageService = new MessageDomainService();
-    
+
     // Mock entities 생성
     mockUser = UserEntity.create({
       email: 'test@example.com',
-      name: 'Test User'
+      name: 'Test User',
     });
 
     mockChannel = ChannelEntity.create({
@@ -23,14 +23,14 @@ describe('MessageDomainService', () => {
       type: 'public',
       ownerId: mockUser.id,
       members: [mockUser.id],
-      maxMembers: 100
+      maxMembers: 100,
     });
 
     mockMessage = MessageEntity.create({
       content: 'Test message content',
       channelId: mockChannel.id,
       senderId: mockUser.id,
-      type: 'text'
+      type: 'text',
     });
   });
 
@@ -45,9 +45,9 @@ describe('MessageDomainService', () => {
         content: '',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const isValid = messageService.validateMessage(emptyMessage);
       expect(isValid).toBe(false);
     });
@@ -57,9 +57,9 @@ describe('MessageDomainService', () => {
         content: '   ',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const isValid = messageService.validateMessage(whitespaceMessage);
       expect(isValid).toBe(false);
     });
@@ -70,9 +70,9 @@ describe('MessageDomainService', () => {
         content: longContent,
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const isValid = messageService.validateMessage(longMessage);
       expect(isValid).toBe(false);
     });
@@ -80,17 +80,25 @@ describe('MessageDomainService', () => {
 
   describe('canUserReadMessage', () => {
     it('should return true for channel member', () => {
-      const canRead = messageService.canUserReadMessage(mockUser, mockMessage, mockChannel);
+      const canRead = messageService.canUserReadMessage(
+        mockUser,
+        mockMessage,
+        mockChannel
+      );
       expect(canRead).toBe(true);
     });
 
     it('should return false for non-channel member', () => {
       const otherUser = UserEntity.create({
         email: 'other@example.com',
-        name: 'Other User'
+        name: 'Other User',
       });
-      
-      const canRead = messageService.canUserReadMessage(otherUser, mockMessage, mockChannel);
+
+      const canRead = messageService.canUserReadMessage(
+        otherUser,
+        mockMessage,
+        mockChannel
+      );
       expect(canRead).toBe(false);
     });
 
@@ -100,10 +108,14 @@ describe('MessageDomainService', () => {
         type: 'private',
         ownerId: mockUser.id,
         members: [mockUser.id],
-        maxMembers: 100
+        maxMembers: 100,
       });
-      
-      const canRead = messageService.canUserReadMessage(mockUser, mockMessage, privateChannel);
+
+      const canRead = messageService.canUserReadMessage(
+        mockUser,
+        mockMessage,
+        privateChannel
+      );
       expect(canRead).toBe(true);
     });
   });
@@ -117,9 +129,9 @@ describe('MessageDomainService', () => {
     it('should return false for non-sender', () => {
       const otherUser = UserEntity.create({
         email: 'other@example.com',
-        name: 'Other User'
+        name: 'Other User',
       });
-      
+
       const canEdit = messageService.canUserEditMessage(otherUser, mockMessage);
       expect(canEdit).toBe(false);
     });
@@ -127,46 +139,58 @@ describe('MessageDomainService', () => {
 
   describe('canUserDeleteMessage', () => {
     it('should return true for message sender', () => {
-      const canDelete = messageService.canUserDeleteMessage(mockUser, mockMessage, mockChannel);
+      const canDelete = messageService.canUserDeleteMessage(
+        mockUser,
+        mockMessage,
+        mockChannel
+      );
       expect(canDelete).toBe(true);
     });
 
     it('should return true for channel owner', () => {
       const otherUser = UserEntity.create({
         email: 'other@example.com',
-        name: 'Other User'
+        name: 'Other User',
       });
-      
+
       const messageFromOther = MessageEntity.create({
         content: 'Message from other user',
         channelId: mockChannel.id,
         senderId: otherUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
-      const canDelete = messageService.canUserDeleteMessage(mockUser, messageFromOther, mockChannel);
+
+      const canDelete = messageService.canUserDeleteMessage(
+        mockUser,
+        messageFromOther,
+        mockChannel
+      );
       expect(canDelete).toBe(true);
     });
 
     it('should return false for regular user', () => {
       const otherUser = UserEntity.create({
         email: 'other@example.com',
-        name: 'Other User'
+        name: 'Other User',
       });
-      
+
       const messageFromOther = MessageEntity.create({
         content: 'Message from other user',
         channelId: mockChannel.id,
         senderId: otherUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const regularUser = UserEntity.create({
         email: 'regular@example.com',
-        name: 'Regular User'
+        name: 'Regular User',
       });
-      
-      const canDelete = messageService.canUserDeleteMessage(regularUser, messageFromOther, mockChannel);
+
+      const canDelete = messageService.canUserDeleteMessage(
+        regularUser,
+        messageFromOther,
+        mockChannel
+      );
       expect(canDelete).toBe(false);
     });
   });
@@ -175,21 +199,30 @@ describe('MessageDomainService', () => {
     it('should extract keywords from content', () => {
       const content = 'Hello world this is a test message';
       const keywords = messageService.extractSearchKeywords(content);
-      
-      expect(keywords).toEqual(['hello', 'world', 'this', 'is', 'a', 'test', 'message']);
+
+      expect(keywords).toEqual([
+        'hello',
+        'world',
+        'this',
+        'is',
+        'a',
+        'test',
+        'message',
+      ]);
     });
 
     it('should filter out short words', () => {
       const content = 'a b c hello world test';
       const keywords = messageService.extractSearchKeywords(content);
-      
+
       expect(keywords).toEqual(['hello', 'world', 'test']);
     });
 
     it('should limit to 10 keywords', () => {
-      const content = 'one two three four five six seven eight nine ten eleven twelve';
+      const content =
+        'one two three four five six seven eight nine ten eleven twelve';
       const keywords = messageService.extractSearchKeywords(content);
-      
+
       expect(keywords).toHaveLength(10);
     });
 
@@ -203,21 +236,21 @@ describe('MessageDomainService', () => {
     it('should extract user mentions', () => {
       const content = 'Hello @user1 and @user2, how are you?';
       const mentions = messageService.extractMentions(content);
-      
+
       expect(mentions).toEqual(['user1', 'user2']);
     });
 
     it('should handle no mentions', () => {
       const content = 'Hello world, how are you?';
       const mentions = messageService.extractMentions(content);
-      
+
       expect(mentions).toEqual([]);
     });
 
     it('should handle multiple mentions of same user', () => {
       const content = 'Hello @user1, @user1 again!';
       const mentions = messageService.extractMentions(content);
-      
+
       expect(mentions).toEqual(['user1', 'user1']);
     });
   });
@@ -226,21 +259,21 @@ describe('MessageDomainService', () => {
     it('should extract hashtags', () => {
       const content = 'Hello world #react #typescript #testing';
       const hashtags = messageService.extractHashtags(content);
-      
+
       expect(hashtags).toEqual(['react', 'typescript', 'testing']);
     });
 
     it('should convert hashtags to lowercase', () => {
       const content = 'Hello #React #TypeScript #TESTING';
       const hashtags = messageService.extractHashtags(content);
-      
+
       expect(hashtags).toEqual(['react', 'typescript', 'testing']);
     });
 
     it('should handle no hashtags', () => {
       const content = 'Hello world, how are you?';
       const hashtags = messageService.extractHashtags(content);
-      
+
       expect(hashtags).toEqual([]);
     });
   });
@@ -249,21 +282,25 @@ describe('MessageDomainService', () => {
     it('should filter inappropriate words', () => {
       const content = 'This is a spam message with inappropriate content';
       const filtered = messageService.filterInappropriateContent(content);
-      
-      expect(filtered).toBe('This is a **** message with *************** content');
+
+      expect(filtered).toBe(
+        'This is a **** message with *************** content'
+      );
     });
 
     it('should handle case insensitive filtering', () => {
       const content = 'This is a SPAM message with INAPPROPRIATE content';
       const filtered = messageService.filterInappropriateContent(content);
-      
-      expect(filtered).toBe('This is a **** message with *************** content');
+
+      expect(filtered).toBe(
+        'This is a **** message with *************** content'
+      );
     });
 
     it('should return original content if no inappropriate words', () => {
       const content = 'This is a normal message';
       const filtered = messageService.filterInappropriateContent(content);
-      
+
       expect(filtered).toBe(content);
     });
   });
@@ -274,10 +311,11 @@ describe('MessageDomainService', () => {
         content: 'Hello @user1 @user2',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
-      const priority = messageService.calculateMessagePriority(messageWithMentions);
+
+      const priority =
+        messageService.calculateMessagePriority(messageWithMentions);
       expect(priority).toBe(20); // 2 mentions * 10
     });
 
@@ -286,10 +324,11 @@ describe('MessageDomainService', () => {
         content: 'Hello #react #typescript',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
-      const priority = messageService.calculateMessagePriority(messageWithHashtags);
+
+      const priority =
+        messageService.calculateMessagePriority(messageWithHashtags);
       expect(priority).toBe(10); // 2 hashtags * 5
     });
 
@@ -299,9 +338,9 @@ describe('MessageDomainService', () => {
         content: longContent,
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const priority = messageService.calculateMessagePriority(longMessage);
       expect(priority).toBe(3); // long message bonus
     });
@@ -311,9 +350,9 @@ describe('MessageDomainService', () => {
         content: 'Hello @user1 @user2 #react #typescript ' + 'a'.repeat(101),
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const priority = messageService.calculateMessagePriority(complexMessage);
       expect(priority).toBe(33); // 2 mentions * 10 + 2 hashtags * 5 + 3 for long message
     });
@@ -325,41 +364,47 @@ describe('MessageDomainService', () => {
         content: 'First message',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const currentMessage = MessageEntity.create({
         content: 'Second message',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
-      const shouldGroup = messageService.shouldGroupWithPreviousMessage(currentMessage, previousMessage);
+
+      const shouldGroup = messageService.shouldGroupWithPreviousMessage(
+        currentMessage,
+        previousMessage
+      );
       expect(shouldGroup).toBe(true);
     });
 
     it('should return false for messages from different users', () => {
       const otherUser = UserEntity.create({
         email: 'other@example.com',
-        name: 'Other User'
+        name: 'Other User',
       });
-      
+
       const previousMessage = MessageEntity.create({
         content: 'First message',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const currentMessage = MessageEntity.create({
         content: 'Second message',
         channelId: mockChannel.id,
         senderId: otherUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
-      const shouldGroup = messageService.shouldGroupWithPreviousMessage(currentMessage, previousMessage);
+
+      const shouldGroup = messageService.shouldGroupWithPreviousMessage(
+        currentMessage,
+        previousMessage
+      );
       expect(shouldGroup).toBe(false);
     });
 
@@ -369,30 +414,36 @@ describe('MessageDomainService', () => {
         type: 'public',
         ownerId: mockUser.id,
         members: [mockUser.id],
-        maxMembers: 100
+        maxMembers: 100,
       });
-      
+
       const previousMessage = MessageEntity.create({
         content: 'First message',
         channelId: mockChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
+
       const currentMessage = MessageEntity.create({
         content: 'Second message',
         channelId: otherChannel.id,
         senderId: mockUser.id,
-        type: 'text'
+        type: 'text',
       });
-      
-      const shouldGroup = messageService.shouldGroupWithPreviousMessage(currentMessage, previousMessage);
+
+      const shouldGroup = messageService.shouldGroupWithPreviousMessage(
+        currentMessage,
+        previousMessage
+      );
       expect(shouldGroup).toBe(false);
     });
 
     it('should return false when no previous message', () => {
-      const shouldGroup = messageService.shouldGroupWithPreviousMessage(mockMessage, null);
+      const shouldGroup = messageService.shouldGroupWithPreviousMessage(
+        mockMessage,
+        null
+      );
       expect(shouldGroup).toBe(false);
     });
   });
-}); 
+});

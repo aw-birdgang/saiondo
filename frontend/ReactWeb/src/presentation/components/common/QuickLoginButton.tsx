@@ -8,12 +8,12 @@ interface QuickLoginButtonProps {
   className?: string;
 }
 
-export const QuickLoginButton: React.FC<QuickLoginButtonProps> = ({ 
+export const QuickLoginButton: React.FC<QuickLoginButtonProps> = ({
   email,
   label,
-  onClick, 
-  disabled = false, 
-  className = '' 
+  onClick,
+  disabled = false,
+  className = '',
 }) => {
   const handleClick = () => {
     onClick(email);
@@ -35,4 +35,4 @@ export const QuickLoginButton: React.FC<QuickLoginButtonProps> = ({
   );
 };
 
-export default QuickLoginButton; 
+export default QuickLoginButton;

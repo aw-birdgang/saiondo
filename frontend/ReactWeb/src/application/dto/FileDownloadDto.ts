@@ -22,4 +22,4 @@ export interface FileDownloadProgress {
   progress: number;
   status: 'pending' | 'downloading' | 'completed' | 'error';
   error?: string;
-} 
+}

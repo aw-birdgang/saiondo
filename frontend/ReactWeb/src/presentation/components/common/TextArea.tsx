@@ -35,11 +35,14 @@ const TextArea: React.FC<TextAreaProps> = ({
   const hasError = !!error;
 
   return (
-    <div className="space-y-2">
+    <div className='space-y-2'>
       {label && (
-        <label htmlFor={textareaId} className="block text-sm font-medium text-txt">
+        <label
+          htmlFor={textareaId}
+          className='block text-sm font-medium text-txt'
+        >
           {label}
-          {required && <span className="text-error ml-1">*</span>}
+          {required && <span className='text-error ml-1'>*</span>}
         </label>
       )}
       <textarea
@@ -61,13 +64,13 @@ const TextArea: React.FC<TextAreaProps> = ({
         `}
       />
       {hasError && (
-        <p className="text-sm text-error flex items-center">
-          <span className="w-1 h-1 bg-error rounded-full mr-2"></span>
+        <p className='text-sm text-error flex items-center'>
+          <span className='w-1 h-1 bg-error rounded-full mr-2'></span>
           {error}
         </p>
       )}
       {maxLength && (
-        <p className="text-xs text-txt-secondary text-right">
+        <p className='text-xs text-txt-secondary text-right'>
           {value.length}/{maxLength}
         </p>
       )}
@@ -75,4 +78,4 @@ const TextArea: React.FC<TextAreaProps> = ({
   );
 };
 
-export default TextArea; 
+export default TextArea;

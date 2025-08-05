@@ -80,16 +80,16 @@ export const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
 
   const formatDisplayValue = (val: number): string => {
     const formatted = val.toFixed(decimalPlaces);
-    
+
     if (formatNumber) {
       return new Intl.NumberFormat('ko-KR').format(parseFloat(formatted));
     }
-    
+
     return formatted;
   };
 
   return (
-    <span 
+    <span
       className={cn(
         'inline-block transition-all duration-200',
         isAnimating && 'scale-105',
@@ -123,7 +123,7 @@ export const PercentageCounter: React.FC<{
 }> = ({ value, className }) => (
   <AnimatedCounter
     value={value}
-    suffix="%"
+    suffix='%'
     decimalPlaces={1}
     className={className}
   />
@@ -135,11 +135,11 @@ export const StatCounter: React.FC<{
   className?: string;
 }> = ({ value, label, className }) => (
   <div className={cn('text-center', className)}>
-    <div className="text-2xl font-bold text-primary">
+    <div className='text-2xl font-bold text-primary'>
       <AnimatedCounter value={value} formatNumber={true} />
     </div>
-    <div className="text-sm text-txt-secondary mt-1">{label}</div>
+    <div className='text-sm text-txt-secondary mt-1'>{label}</div>
   </div>
 );
 
-AnimatedCounter.displayName = 'AnimatedCounter'; 
+AnimatedCounter.displayName = 'AnimatedCounter';

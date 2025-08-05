@@ -25,11 +25,11 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   onInputChange,
   onSendMessage,
   onKeyPress,
-  onSendSuggestion
+  onSendSuggestion,
 }) => {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="bg-surface border border-border rounded-lg shadow-sm h-[600px] flex flex-col">
+    <div className='max-w-4xl mx-auto px-4 py-6'>
+      <div className='bg-surface border border-border rounded-lg shadow-sm h-[600px] flex flex-col'>
         {/* 메시지 영역 */}
         {messages.length === 0 && !isLoading ? (
           <ChatEmptyState onSendMessage={onSendSuggestion} />
@@ -53,4 +53,4 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       </div>
     </div>
   );
-}; 
+};

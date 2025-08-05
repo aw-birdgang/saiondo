@@ -35,4 +35,4 @@ export interface FileUploadProgress {
   progress: number;
   status: 'uploading' | 'completed' | 'error';
   error?: string;
-} 
+}

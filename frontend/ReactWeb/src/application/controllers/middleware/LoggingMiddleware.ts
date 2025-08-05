@@ -1,5 +1,8 @@
 import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
-import type { ControllerContext, ControllerResult } from '../interfaces/IController';
+import type {
+  ControllerContext,
+  ControllerResult,
+} from '../interfaces/IController';
 import { Logger } from '../../../shared/utils/Logger';
 
 /**
@@ -24,7 +27,7 @@ export class LoggingMiddleware extends BaseMiddleware {
       userId: context.userId,
       sessionId: context.sessionId,
       params: this.sanitizeParams(params),
-      timestamp: context.timestamp
+      timestamp: context.timestamp,
     });
   }
 
@@ -35,7 +38,7 @@ export class LoggingMiddleware extends BaseMiddleware {
     context: ControllerContext
   ): Promise<void> {
     const logLevel = result.success ? 'info' : 'error';
-    const message = result.success 
+    const message = result.success
       ? `[${controllerName}] Completed operation: ${operation}`
       : `[${controllerName}] Failed operation: ${operation}`;
 
@@ -46,7 +49,7 @@ export class LoggingMiddleware extends BaseMiddleware {
       executionTime: result.executionTime,
       success: result.success,
       error: result.error?.message,
-      timestamp: context.timestamp
+      timestamp: context.timestamp,
     });
   }
 
@@ -62,7 +65,7 @@ export class LoggingMiddleware extends BaseMiddleware {
       sessionId: context.sessionId,
       error: error.message,
       stack: error.stack,
-      timestamp: context.timestamp
+      timestamp: context.timestamp,
     });
   }
 
@@ -71,16 +74,23 @@ export class LoggingMiddleware extends BaseMiddleware {
    */
   private sanitizeParams(params: any): any {
     if (!params) return params;
-    
-    const sensitiveFields = ['password', 'token', 'secret', 'key', 'authorization', 'apiKey'];
+
+    const sensitiveFields = [
+      'password',
+      'token',
+      'secret',
+      'key',
+      'authorization',
+      'apiKey',
+    ];
     const sanitized = { ...params };
-    
+
     sensitiveFields.forEach(field => {
       if (sanitized[field]) {
         sanitized[field] = '[REDACTED]';
       }
     });
-    
+
     return sanitized;
   }
-} 
+}

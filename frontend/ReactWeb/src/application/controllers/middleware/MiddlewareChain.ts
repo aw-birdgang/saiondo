@@ -1,8 +1,11 @@
-import type { 
-  IControllerMiddleware, 
-  IMiddlewareChain
+import type {
+  IControllerMiddleware,
+  IMiddlewareChain,
 } from '../interfaces/IControllerMiddleware';
-import type { ControllerContext, ControllerResult } from '../interfaces/IController';
+import type {
+  ControllerContext,
+  ControllerResult,
+} from '../interfaces/IController';
 import { Logger } from '../../../shared/utils/Logger';
 
 /**
@@ -20,7 +23,9 @@ export class MiddlewareChain implements IMiddlewareChain {
     this.middlewares.push(middleware);
     // 우선순위에 따라 정렬 (낮은 숫자가 먼저 실행)
     this.middlewares.sort((a, b) => a.priority - b.priority);
-    this.logger.info(`Middleware added: ${middleware.name} (priority: ${middleware.priority})`);
+    this.logger.info(
+      `Middleware added: ${middleware.name} (priority: ${middleware.priority})`
+    );
   }
 
   /**
@@ -49,7 +54,12 @@ export class MiddlewareChain implements IMiddlewareChain {
 
     try {
       // 실행 전 미들웨어 실행
-      await this.executeBeforeMiddlewares(controllerName, operation, params, context);
+      await this.executeBeforeMiddlewares(
+        controllerName,
+        operation,
+        params,
+        context
+      );
 
       // 실제 작업 실행
       const data = await operationFn();
@@ -61,14 +71,18 @@ export class MiddlewareChain implements IMiddlewareChain {
         data,
         executionTime,
         flowId,
-        context
+        context,
       };
 
       // 실행 후 미들웨어 실행
-      await this.executeAfterMiddlewares(controllerName, operation, result, context);
+      await this.executeAfterMiddlewares(
+        controllerName,
+        operation,
+        result,
+        context
+      );
 
       return result;
-
     } catch (error) {
       const endTime = performance.now();
       const executionTime = endTime - startTime;
@@ -78,11 +92,16 @@ export class MiddlewareChain implements IMiddlewareChain {
         error: error instanceof Error ? error : new Error(String(error)),
         executionTime,
         flowId,
-        context
+        context,
       };
 
       // 에러 처리 미들웨어 실행
-      await this.executeErrorMiddlewares(controllerName, operation, error, context);
+      await this.executeErrorMiddlewares(
+        controllerName,
+        operation,
+        error,
+        context
+      );
 
       return result;
     }
@@ -100,9 +119,17 @@ export class MiddlewareChain implements IMiddlewareChain {
     for (const middleware of this.middlewares) {
       if (middleware.beforeExecute) {
         try {
-          await middleware.beforeExecute(controllerName, operation, params, context);
+          await middleware.beforeExecute(
+            controllerName,
+            operation,
+            params,
+            context
+          );
         } catch (error) {
-          this.logger.error(`Error in beforeExecute middleware ${middleware.name}:`, error);
+          this.logger.error(
+            `Error in beforeExecute middleware ${middleware.name}:`,
+            error
+          );
         }
       }
     }
@@ -120,9 +147,17 @@ export class MiddlewareChain implements IMiddlewareChain {
     for (const middleware of this.middlewares) {
       if (middleware.afterExecute) {
         try {
-          await middleware.afterExecute(controllerName, operation, result, context);
+          await middleware.afterExecute(
+            controllerName,
+            operation,
+            result,
+            context
+          );
         } catch (error) {
-          this.logger.error(`Error in afterExecute middleware ${middleware.name}:`, error);
+          this.logger.error(
+            `Error in afterExecute middleware ${middleware.name}:`,
+            error
+          );
         }
       }
     }
@@ -142,7 +177,10 @@ export class MiddlewareChain implements IMiddlewareChain {
         try {
           await middleware.onError(controllerName, operation, error, context);
         } catch (middlewareError) {
-          this.logger.error(`Error in onError middleware ${middleware.name}:`, middlewareError);
+          this.logger.error(
+            `Error in onError middleware ${middleware.name}:`,
+            middlewareError
+          );
         }
       }
     }
@@ -162,4 +200,4 @@ export class MiddlewareChain implements IMiddlewareChain {
     this.middlewares = [];
     this.logger.info('Middleware chain cleared');
   }
-} 
+}

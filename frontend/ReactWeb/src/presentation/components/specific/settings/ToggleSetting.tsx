@@ -8,7 +8,7 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
   value,
   onChange,
   disabled = false,
-  className
+  className,
 }) => {
   const handleToggle = () => {
     if (!disabled) {
@@ -17,14 +17,19 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
   };
 
   return (
-    <div className={cn("flex items-center justify-between p-4 border border-border rounded-lg", className)}>
-      <div className="flex-1">
-        <h3 className="font-medium text-txt">{title}</h3>
+    <div
+      className={cn(
+        'flex items-center justify-between p-4 border border-border rounded-lg',
+        className
+      )}
+    >
+      <div className='flex-1'>
+        <h3 className='font-medium text-txt'>{title}</h3>
         {description && (
-          <p className="text-sm text-txt-secondary mt-1">{description}</p>
+          <p className='text-sm text-txt-secondary mt-1'>{description}</p>
         )}
       </div>
-      
+
       <button
         onClick={handleToggle}
         disabled={disabled}
@@ -46,4 +51,4 @@ const ToggleSetting: React.FC<ToggleSettingProps> = ({
   );
 };
 
-export default ToggleSetting; 
+export default ToggleSetting;

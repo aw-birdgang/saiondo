@@ -6,22 +6,19 @@ import type { ActivityStatsProps } from '../../../pages/mypage/types/mypageTypes
 import StatCard from './components/StatCard';
 import ActivitySummary from './components/ActivitySummary';
 
-const ActivityStats: React.FC<ActivityStatsProps> = ({
-  stats,
-  className
-}) => {
+const ActivityStats: React.FC<ActivityStatsProps> = ({ stats, className }) => {
   return (
-    <div className={cn("space-y-6", className)}>
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+    <div className={cn('space-y-6', className)}>
+      <div className='flex items-center justify-between'>
+        <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
           활동 통계
         </h3>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
+        <span className='text-sm text-gray-500 dark:text-gray-400'>
           최근 30일 기준
         </span>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
         {stats.map((stat, index) => (
           <StatCard
             key={index}
@@ -34,8 +31,8 @@ const ActivityStats: React.FC<ActivityStatsProps> = ({
           />
         ))}
       </div>
-      
-      <ActivitySummary 
+
+      <ActivitySummary
         onViewDetails={() => {
           // 상세보기 이벤트 처리
           console.log('View activity details');
@@ -45,4 +42,4 @@ const ActivityStats: React.FC<ActivityStatsProps> = ({
   );
 };
 
-export default ActivityStats; 
+export default ActivityStats;

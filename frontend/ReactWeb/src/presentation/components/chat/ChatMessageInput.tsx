@@ -17,7 +17,7 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
   userId,
   onMessageSent,
   onTyping,
-  onStopTyping
+  onStopTyping,
 }) => {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -31,7 +31,7 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
   // 타이핑 상태 관리
   useEffect(() => {
     let typingTimer: NodeJS.Timeout;
-    
+
     if (message.trim() && !isTyping) {
       setIsTyping(true);
       onTyping?.();
@@ -66,7 +66,7 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
     if (!message.trim() || isSending) return;
 
     setIsSending(true);
-    
+
     try {
       const sentMessage = await messageController.executeWithTracking(
         'sendMessage',
@@ -78,7 +78,7 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
             content: message.trim(),
             senderId: userId,
             timestamp: new Date(),
-            type: 'text' as const
+            type: 'text' as const,
           };
         }
       );
@@ -87,7 +87,7 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
       setIsTyping(false);
       onStopTyping?.();
       onMessageSent?.(sentMessage);
-      
+
       toast.success('메시지가 전송되었습니다.');
     } catch (error) {
       console.error('메시지 전송 실패:', error);
@@ -97,7 +97,9 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -108,11 +110,16 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
     }
 
     setIsSending(true);
-    
+
     try {
       const result = await messageController.executeWithTracking(
         'uploadFile',
-        { channelId, senderId: userId, file, description: `파일 업로드: ${file.name}` },
+        {
+          channelId,
+          senderId: userId,
+          file,
+          description: `파일 업로드: ${file.name}`,
+        },
         async () => {
           await new Promise(resolve => setTimeout(resolve, 1000));
           return {
@@ -122,12 +129,12 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
               senderId: userId,
               timestamp: new Date(),
               type: 'file' as const,
-              metadata: { 
-                fileName: file.name, 
+              metadata: {
+                fileName: file.name,
                 fileSize: file.size,
-                fileType: file.type 
-              }
-            }
+                fileType: file.type,
+              },
+            },
           };
         }
       );
@@ -158,29 +165,40 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
     textareaRef.current?.focus();
   };
 
-  const commonEmojis = ['😊', '👍', '❤️', '😂', '🎉', '🔥', '👏', '🙏', '🤔', '😍'];
+  const commonEmojis = [
+    '😊',
+    '👍',
+    '❤️',
+    '😂',
+    '🎉',
+    '🔥',
+    '👏',
+    '🙏',
+    '🤔',
+    '😍',
+  ];
 
   return (
-    <div className="border-t border-border bg-surface p-4">
+    <div className='border-t border-border bg-surface p-4'>
       {/* 이모지 피커 */}
       {showEmojiPicker && (
-        <div className="mb-3 p-3 bg-focus rounded-lg border border-border">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-txt">이모지</span>
+        <div className='mb-3 p-3 bg-focus rounded-lg border border-border'>
+          <div className='flex items-center justify-between mb-2'>
+            <span className='text-sm font-medium text-txt'>이모지</span>
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               onClick={() => setShowEmojiPicker(false)}
             >
               ✕
             </Button>
           </div>
-          <div className="grid grid-cols-10 gap-1">
+          <div className='grid grid-cols-10 gap-1'>
             {commonEmojis.map((emoji, index) => (
               <button
                 key={index}
                 onClick={() => addEmoji(emoji)}
-                className="w-8 h-8 text-lg hover:bg-primary/10 rounded transition-colors"
+                className='w-8 h-8 text-lg hover:bg-primary/10 rounded transition-colors'
               >
                 {emoji}
               </button>
@@ -189,28 +207,38 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
         </div>
       )}
 
-      <div className="flex items-end gap-2">
+      <div className='flex items-end gap-2'>
         {/* 파일 업로드 버튼 */}
         <Button
-          variant="ghost"
-          size="sm"
+          variant='ghost'
+          size='sm'
           onClick={() => fileInputRef.current?.click()}
           disabled={isSending}
-          className="p-2"
-          title="파일 첨부"
+          className='p-2'
+          title='파일 첨부'
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+          <svg
+            className='w-5 h-5'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13'
+            />
           </svg>
         </Button>
 
         {/* 이모지 버튼 */}
         <Button
-          variant="ghost"
-          size="sm"
+          variant='ghost'
+          size='sm'
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className="p-2"
-          title="이모지"
+          className='p-2'
+          title='이모지'
         >
           😊
         </Button>
@@ -218,20 +246,20 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
         {/* 파일 입력 (숨김) */}
         <input
           ref={fileInputRef}
-          type="file"
+          type='file'
           onChange={handleFileUpload}
-          className="hidden"
-          accept="image/*,.pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"
+          className='hidden'
+          accept='image/*,.pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx'
         />
 
         {/* 메시지 입력 */}
-        <div className="flex-1 relative">
+        <div className='flex-1 relative'>
           <textarea
             ref={textareaRef}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={e => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="메시지를 입력하세요... (Enter로 전송, Shift+Enter로 줄바꿈)"
+            placeholder='메시지를 입력하세요... (Enter로 전송, Shift+Enter로 줄바꿈)'
             disabled={isSending}
             className={cn(
               'w-full px-3 py-2 border border-border rounded-lg resize-none',
@@ -242,10 +270,10 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
             )}
             rows={1}
           />
-          
+
           {/* 문자 수 표시 */}
           {message.length > 0 && (
-            <div className="absolute bottom-1 right-2 text-xs text-txt-secondary">
+            <div className='absolute bottom-1 right-2 text-xs text-txt-secondary'>
               {message.length}/1000
             </div>
           )}
@@ -256,17 +284,17 @@ export const ChatMessageInput: React.FC<ChatMessageInputProps> = ({
           onClick={handleSendMessage}
           disabled={!message.trim() || isSending}
           loading={isSending}
-          loadingText="전송중..."
-          className="px-4 py-2"
+          loadingText='전송중...'
+          className='px-4 py-2'
         >
           전송
         </Button>
       </div>
 
       {/* 파일 업로드 가이드 */}
-      <div className="mt-2 text-xs text-txt-secondary">
+      <div className='mt-2 text-xs text-txt-secondary'>
         지원 파일: 이미지, PDF, 문서 (최대 10MB)
       </div>
     </div>
   );
-}; 
+};

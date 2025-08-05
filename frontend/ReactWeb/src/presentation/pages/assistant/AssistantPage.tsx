@@ -8,7 +8,7 @@ import { ErrorState, PageHeader } from '../../components/specific';
 import {
   AssistantContainer,
   AssistantFilters,
-  AssistantGrid
+  AssistantGrid,
 } from '../../components/specific/assistant';
 import { useAssistantData } from './hooks/useAssistantData';
 import type { Assistant } from './types/assistantTypes';
@@ -26,7 +26,7 @@ const AssistantListScreen: React.FC = () => {
     isLoading,
     error,
     setSearchTerm,
-    setSelectedCategory
+    setSelectedCategory,
   } = useAssistantData();
 
   // 어시스턴트 선택 처리
@@ -37,16 +37,22 @@ const AssistantListScreen: React.FC = () => {
         assistantId: assistant.id,
         assistantName: assistant.name,
         assistantCategory: assistant.category,
-        assistantDescription: assistant.description
+        assistantDescription: assistant.description,
       });
-      
+
       navigate(`${ROUTES.CHAT}?${chatParams.toString()}`);
-      
+
       // 성공 메시지 표시
-      toast.success(t('chat.started_with_assistant') || `${assistant.name}와 대화를 시작합니다.`);
+      toast.success(
+        t('chat.started_with_assistant') ||
+          `${assistant.name}와 대화를 시작합니다.`
+      );
     } catch (error) {
       console.error('Failed to navigate to chat:', error);
-      toast.error(t('chat.navigation_error') || '채팅 페이지로 이동하는 중 오류가 발생했습니다.');
+      toast.error(
+        t('chat.navigation_error') ||
+          '채팅 페이지로 이동하는 중 오류가 발생했습니다.'
+      );
     }
   };
 
@@ -73,7 +79,7 @@ const AssistantListScreen: React.FC = () => {
   return (
     <AssistantContainer>
       {/* Header */}
-      <div className="mb-6">
+      <div className='mb-6'>
         <PageHeader
           title={t('ai_assistants') || 'AI 상담사'}
           subtitle={`${filteredAssistants.length}명의 상담사`}
@@ -82,7 +88,7 @@ const AssistantListScreen: React.FC = () => {
       </div>
 
       {/* Search and Filter */}
-      <div className="mb-6">
+      <div className='mb-6'>
         <AssistantFilters
           selectedCategory={selectedCategory}
           categories={categories}
@@ -96,9 +102,12 @@ const AssistantListScreen: React.FC = () => {
       <div>
         {filteredAssistants.length === 0 ? (
           <EmptyState
-            icon="🤖"
+            icon='🤖'
             title={t('no_assistants_found') || 'AI 상담사를 찾을 수 없습니다'}
-            description={t('no_assistants_found_description') || '다른 검색어나 카테고리를 시도해보세요.'}
+            description={
+              t('no_assistants_found_description') ||
+              '다른 검색어나 카테고리를 시도해보세요.'
+            }
           />
         ) : (
           <AssistantGrid

@@ -4,7 +4,7 @@ export type {
   CreateChannelRequest,
   UpdateChannelRequest,
   ChannelResponse,
-  ChannelListResponse
+  ChannelListResponse,
 } from './ChannelDto';
 
 // Message DTOs
@@ -15,7 +15,7 @@ export type {
   MessageResponse,
   MessageListResponse,
   MessageMetadata,
-  MessageReaction
+  MessageReaction,
 } from './MessageDto';
 
 // User DTOs
@@ -27,5 +27,5 @@ export type {
   CreateUserRequest,
   UpdateUserRequest,
   UserResponse,
-  UserListResponse
-} from './UserDto'; 
+  UserListResponse,
+} from './UserDto';

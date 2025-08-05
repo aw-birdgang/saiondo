@@ -9,27 +9,27 @@ import ActivitiesSummary from './components/ActivitiesSummary';
 
 const RecentActivities: React.FC<RecentActivitiesProps> = ({
   activities,
-  className
+  className,
 }) => {
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn('space-y-6', className)}>
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+          <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
             최근 활동
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className='text-sm text-gray-500 dark:text-gray-400 mt-1'>
             최근 7일간의 활동 내역입니다
           </p>
         </div>
-        <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
+        <button className='text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium'>
           전체보기 →
         </button>
       </div>
 
       {/* 활동 목록 */}
-      <div className="space-y-3">
+      <div className='space-y-3'>
         {activities.map((activity, index) => (
           <ActivityItem
             key={activity.id}
@@ -42,10 +42,10 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({
           />
         ))}
       </div>
-      
+
       {/* 빈 상태 */}
       {activities.length === 0 && (
-        <EmptyActivities 
+        <EmptyActivities
           onStartActivity={() => {
             // 활동 시작 로직
             console.log('Start new activity');
@@ -61,4 +61,4 @@ const RecentActivities: React.FC<RecentActivitiesProps> = ({
   );
 };
 
-export default RecentActivities; 
+export default RecentActivities;

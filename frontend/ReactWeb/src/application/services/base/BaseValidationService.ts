@@ -26,7 +26,7 @@ export abstract class BaseValidationService {
     const result: PasswordStrengthResult = {
       isValid: true,
       score: 0,
-      issues: []
+      issues: [],
     };
 
     // 최소 길이 체크
@@ -73,7 +73,7 @@ export abstract class BaseValidationService {
   protected validateUsername(username: string): UsernameValidationResult {
     const result: UsernameValidationResult = {
       isValid: true,
-      issues: []
+      issues: [],
     };
 
     // 길이 체크
@@ -90,7 +90,9 @@ export abstract class BaseValidationService {
     // 형식 체크 (알파벳, 숫자, 언더스코어, 하이픈만 허용)
     if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
       result.isValid = false;
-      result.issues.push('Username can only contain letters, numbers, underscores, and hyphens');
+      result.issues.push(
+        'Username can only contain letters, numbers, underscores, and hyphens'
+      );
     }
 
     // 예약어 체크
@@ -118,17 +120,22 @@ export abstract class BaseValidationService {
   /**
    * 파일 크기 검증
    */
-  protected validateFileSize(fileSize: number, maxSize: number): FileSizeValidationResult {
+  protected validateFileSize(
+    fileSize: number,
+    maxSize: number
+  ): FileSizeValidationResult {
     const result: FileSizeValidationResult = {
       isValid: fileSize <= maxSize,
       size: fileSize,
       maxSize,
       formattedSize: this.formatFileSize(fileSize),
-      formattedMaxSize: this.formatFileSize(maxSize)
+      formattedMaxSize: this.formatFileSize(maxSize),
     };
 
     if (!result.isValid) {
-      result.issues = [`File size (${result.formattedSize}) exceeds maximum allowed size (${result.formattedMaxSize})`];
+      result.issues = [
+        `File size (${result.formattedSize}) exceeds maximum allowed size (${result.formattedMaxSize})`,
+      ];
     }
 
     return result;
@@ -137,16 +144,21 @@ export abstract class BaseValidationService {
   /**
    * 파일 타입 검증
    */
-  protected validateFileType(fileName: string, allowedTypes: string[]): FileTypeValidationResult {
+  protected validateFileType(
+    fileName: string,
+    allowedTypes: string[]
+  ): FileTypeValidationResult {
     const extension = fileName.split('.').pop()?.toLowerCase();
     const result: FileTypeValidationResult = {
       isValid: extension ? allowedTypes.includes(extension) : false,
       extension,
-      allowedTypes
+      allowedTypes,
     };
 
     if (!result.isValid) {
-      result.issues = [`File type .${extension} is not allowed. Allowed types: ${allowedTypes.join(', ')}`];
+      result.issues = [
+        `File type .${extension} is not allowed. Allowed types: ${allowedTypes.join(', ')}`,
+      ];
     }
 
     return result;
@@ -158,7 +170,7 @@ export abstract class BaseValidationService {
   protected validateChannelName(name: string): ChannelNameValidationResult {
     const result: ChannelNameValidationResult = {
       isValid: true,
-      issues: []
+      issues: [],
     };
 
     // 길이 체크
@@ -175,7 +187,9 @@ export abstract class BaseValidationService {
     // 형식 체크 (알파벳, 숫자, 공백, 하이픈, 언더스코어만 허용)
     if (!/^[a-zA-Z0-9\s\-_]+$/.test(name)) {
       result.isValid = false;
-      result.issues.push('Channel name can only contain letters, numbers, spaces, hyphens, and underscores');
+      result.issues.push(
+        'Channel name can only contain letters, numbers, spaces, hyphens, and underscores'
+      );
     }
 
     // 예약어 체크
@@ -191,10 +205,13 @@ export abstract class BaseValidationService {
   /**
    * 메시지 내용 검증
    */
-  protected validateMessageContent(content: string, maxLength: number = 2000): MessageValidationResult {
+  protected validateMessageContent(
+    content: string,
+    maxLength: number = 2000
+  ): MessageValidationResult {
     const result: MessageValidationResult = {
       isValid: true,
-      issues: []
+      issues: [],
     };
 
     // 길이 체크
@@ -205,14 +222,16 @@ export abstract class BaseValidationService {
 
     if (content.length > maxLength) {
       result.isValid = false;
-      result.issues.push(`Message must be at most ${maxLength} characters long`);
+      result.issues.push(
+        `Message must be at most ${maxLength} characters long`
+      );
     }
 
     // XSS 방지를 위한 기본 검증
     const dangerousPatterns = [
       /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       /javascript:/gi,
-      /on\w+\s*=/gi
+      /on\w+\s*=/gi,
     ];
 
     for (const pattern of dangerousPatterns) {
@@ -231,11 +250,11 @@ export abstract class BaseValidationService {
    */
   private formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -243,17 +262,17 @@ export abstract class BaseValidationService {
    * 검증 결과 로깅
    */
   protected logValidationResult(
-    operation: string, 
-    isValid: boolean, 
-    issues: string[], 
+    operation: string,
+    isValid: boolean,
+    issues: string[],
     context?: Record<string, any>
   ): void {
     if (isValid) {
       this.logger?.debug(`Validation passed for ${operation}`, context);
     } else {
-      this.logger?.warn(`Validation failed for ${operation}`, { 
-        issues, 
-        context 
+      this.logger?.warn(`Validation failed for ${operation}`, {
+        issues,
+        context,
       });
     }
   }
@@ -295,4 +314,4 @@ export interface ChannelNameValidationResult {
 export interface MessageValidationResult {
   isValid: boolean;
   issues: string[];
-} 
+}

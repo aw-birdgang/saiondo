@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
-import { LoginForm, AuthLayout, QuickLoginButtons, AuthGuard } from '../../components/specific';
+import {
+  LoginForm,
+  AuthLayout,
+  QuickLoginButtons,
+  AuthGuard,
+} from '../../components/specific';
 import { AuthContainer } from '../../components/specific/auth';
 import { useAuthData } from './hooks/useAuthData';
 import { ROUTES } from '../../../shared/constants/app';
@@ -14,7 +19,7 @@ const LoginPage: React.FC = () => {
     // 액션
     handleLogin,
     handleQuickLogin,
-    checkAuthAndRedirect
+    checkAuthAndRedirect,
   } = useAuthData();
 
   // 이미 인증된 경우 홈으로 리다이렉트
@@ -33,7 +38,7 @@ const LoginPage: React.FC = () => {
           />
 
           {/* Quick Login Buttons */}
-          <QuickLoginButtons 
+          <QuickLoginButtons
             onQuickLogin={handleQuickLogin}
             loading={isLoading}
           />

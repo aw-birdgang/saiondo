@@ -14,7 +14,7 @@ export const useIntersectionObserver = (
     threshold = 0,
     root = null,
     rootMargin = '0px',
-    freezeOnceVisible = false
+    freezeOnceVisible = false,
   } = options;
 
   const [isIntersecting, setIsIntersecting] = useState(false);
@@ -43,7 +43,7 @@ export const useIntersectionObserver = (
       {
         threshold,
         root,
-        rootMargin
+        rootMargin,
       }
     );
 
@@ -65,6 +65,6 @@ export const useIntersectionObserver = (
     ref: setElement,
     isIntersecting,
     entry,
-    disconnect
+    disconnect,
   };
-}; 
+};

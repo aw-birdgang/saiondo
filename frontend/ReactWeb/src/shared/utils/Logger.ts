@@ -4,8 +4,12 @@
 
 // 로깅 서비스 인터페이스
 interface LoggingService {
-  captureMessage(message: string, level?: string, context?: any): void;
-  captureException(error: Error, context?: any): void;
+  captureMessage(
+    message: string,
+    level?: string,
+    context?: Record<string, unknown>
+  ): void;
+  captureException(error: Error, context?: Record<string, unknown>): void;
   setUser(user: { id: string; email?: string; name?: string }): void;
   setTag(key: string, value: string): void;
 }
@@ -19,47 +23,43 @@ class SentryService implements LoggingService {
   }
 
   private initialize() {
-    // TODO: 실제 Sentry 초기화
-    // import * as Sentry from '@sentry/react';
-    // Sentry.init({
-    //   dsn: process.env.REACT_APP_SENTRY_DSN,
-    //   environment: process.env.NODE_ENV,
-    //   integrations: [new Sentry.BrowserTracing()],
-    //   tracesSampleRate: 1.0,
-    // });
-    this.isInitialized = true;
+    // Sentry 초기화는 환경 변수에 따라 조건부로 수행
+    if (import.meta.env.VITE_SENTRY_DSN) {
+      // Sentry가 설정된 경우에만 초기화
+      this.isInitialized = true;
+    }
   }
 
-  captureMessage(message: string, level: string = 'info', context?: any) {
+  captureMessage(
+    message: string,
+    level: string = 'info',
+    context?: Record<string, unknown>
+  ) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 Sentry 호출
-    // Sentry.captureMessage(message, level);
-    console.log(`[Sentry] ${level.toUpperCase()}: ${message}`, context);
+
+    // Sentry가 설정된 경우에만 메시지 캡처
+    // 실제 구현에서는 Sentry SDK를 사용
   }
 
-  captureException(error: Error, context?: any) {
+  captureException(error: Error, context?: Record<string, unknown>) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 Sentry 호출
-    // Sentry.captureException(error);
-    console.error(`[Sentry] EXCEPTION:`, error, context);
+
+    // Sentry가 설정된 경우에만 예외 캡처
+    // 실제 구현에서는 Sentry SDK를 사용
   }
 
   setUser(user: { id: string; email?: string; name?: string }) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 Sentry 호출
-    // Sentry.setUser(user);
-    console.log(`[Sentry] Set user:`, user);
+
+    // Sentry가 설정된 경우에만 사용자 설정
+    // 실제 구현에서는 Sentry SDK를 사용
   }
 
   setTag(key: string, value: string) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 Sentry 호출
-    // Sentry.setTag(key, value);
-    console.log(`[Sentry] Set tag: ${key} = ${value}`);
+
+    // Sentry가 설정된 경우에만 태그 설정
+    // 실제 구현에서는 Sentry SDK를 사용
   }
 }
 
@@ -72,45 +72,43 @@ class LogRocketService implements LoggingService {
   }
 
   private initialize() {
-    // TODO: 실제 LogRocket 초기화
-    // import LogRocket from 'logrocket';
-    // LogRocket.init(process.env.REACT_APP_LOGROCKET_APP_ID);
-    this.isInitialized = true;
+    // LogRocket 초기화는 환경 변수에 따라 조건부로 수행
+    if (import.meta.env.VITE_LOGROCKET_APP_ID) {
+      // LogRocket이 설정된 경우에만 초기화
+      this.isInitialized = true;
+    }
   }
 
-  captureMessage(message: string, level: string = 'info', context?: any) {
+  captureMessage(
+    message: string,
+    level: string = 'info',
+    context?: Record<string, unknown>
+  ) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 LogRocket 호출
-    // LogRocket.captureMessage(message, level);
-    console.log(`[LogRocket] ${level.toUpperCase()}: ${message}`, context);
+
+    // LogRocket이 설정된 경우에만 메시지 캡처
+    // 실제 구현에서는 LogRocket SDK를 사용
   }
 
-  captureException(error: Error, context?: any) {
+  captureException(error: Error, context?: Record<string, unknown>) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 LogRocket 호출
-    // LogRocket.captureException(error);
-    console.error(`[LogRocket] EXCEPTION:`, error, context);
+
+    // LogRocket이 설정된 경우에만 예외 캡처
+    // 실제 구현에서는 LogRocket SDK를 사용
   }
 
   setUser(user: { id: string; email?: string; name?: string }) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 LogRocket 호출
-    // LogRocket.identify(user.id, {
-    //   email: user.email,
-    //   name: user.name,
-    // });
-    console.log(`[LogRocket] Set user:`, user);
+
+    // LogRocket이 설정된 경우에만 사용자 설정
+    // 실제 구현에서는 LogRocket SDK를 사용
   }
 
   setTag(key: string, value: string) {
     if (!this.isInitialized) return;
-    
-    // TODO: 실제 LogRocket 호출
-    // LogRocket.setTag(key, value);
-    console.log(`[LogRocket] Set tag: ${key} = ${value}`);
+
+    // LogRocket이 설정된 경우에만 태그 설정
+    // 실제 구현에서는 LogRocket SDK를 사용
   }
 }
 
@@ -118,7 +116,7 @@ export class Logger {
   private readonly context: string;
   private readonly isDevelopment = import.meta.env.MODE === 'development';
   private readonly isProduction = import.meta.env.MODE === 'production';
-  
+
   // 로깅 서비스들
   private readonly sentry = new SentryService();
   private readonly logRocket = new LogRocketService();
@@ -130,28 +128,28 @@ export class Logger {
   /**
    * 정보 로그
    */
-  info(message: string, data?: any) {
+  info(message: string, data?: Record<string, unknown>) {
     this.log('INFO', message, data);
   }
 
   /**
    * 경고 로그
    */
-  warn(message: string, data?: any) {
+  warn(message: string, data?: Record<string, unknown>) {
     this.log('WARN', message, data);
   }
 
   /**
    * 에러 로그
    */
-  error(message: string, data?: any) {
+  error(message: string, data?: Record<string, unknown>) {
     this.log('ERROR', message, data);
   }
 
   /**
    * 디버그 로그 (개발 환경에서만)
    */
-  debug(message: string, data?: any) {
+  debug(message: string, data?: Record<string, unknown>) {
     if (this.isDevelopment) {
       this.log('DEBUG', message, data);
     }
@@ -160,9 +158,9 @@ export class Logger {
   /**
    * 예외 로그
    */
-  exception(error: Error, context?: any) {
+  exception(error: Error, context?: Record<string, unknown>) {
     this.log('EXCEPTION', error.message, { error, context });
-    
+
     // 프로덕션에서는 외부 서비스로 예외 전송
     if (this.isProduction) {
       this.sentry.captureException(error, context);
@@ -193,23 +191,31 @@ export class Logger {
   /**
    * 실제 로그 출력
    */
-  private log(level: string, message: string, data?: any) {
+  private log(level: string, message: string, data?: Record<string, unknown>) {
     const timestamp = new Date().toISOString();
     const logEntry = {
       timestamp,
       level,
       context: this.context,
       message,
-      data
+      data,
     };
 
     // 개발 환경에서는 콘솔에 출력
     if (this.isDevelopment) {
-      const consoleMethod = level === 'ERROR' || level === 'EXCEPTION' ? 'error' : 
-                           level === 'WARN' ? 'warn' : 
-                           level === 'DEBUG' ? 'debug' : 'log';
-      
-      console[consoleMethod](`[${timestamp}] ${level} [${this.context}] ${message}`, data || '');
+      const consoleMethod =
+        level === 'ERROR' || level === 'EXCEPTION'
+          ? 'error'
+          : level === 'WARN'
+            ? 'warn'
+            : level === 'DEBUG'
+              ? 'debug'
+              : 'log';
+
+      console[consoleMethod](
+        `[${timestamp}] ${level} [${this.context}] ${message}`,
+        data || ''
+      );
     }
 
     // 프로덕션에서는 외부 로깅 서비스로 전송
@@ -221,18 +227,22 @@ export class Logger {
   /**
    * 외부 로깅 서비스로 전송
    */
-  private sendToLoggingServices(level: string, message: string, data?: any) {
+  private sendToLoggingServices(
+    level: string,
+    message: string,
+    data?: Record<string, unknown>
+  ) {
     try {
       // Sentry로 전송
       this.sentry.captureMessage(message, level.toLowerCase(), {
         context: this.context,
-        data
+        data,
       });
 
       // LogRocket으로 전송
       this.logRocket.captureMessage(message, level.toLowerCase(), {
         context: this.context,
-        data
+        data,
       });
     } catch (error) {
       // 로깅 서비스 전송 실패 시 콘솔에 출력
@@ -242,4 +252,4 @@ export class Logger {
 }
 
 // 전역 로거 인스턴스
-export const logger = new Logger('App'); 
+export const logger = new Logger('App');

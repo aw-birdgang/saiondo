@@ -10,7 +10,7 @@ import type {
   ChannelProfile,
   ChannelStats,
   ChannelValidationSchema,
-  ChannelServiceConfig
+  ChannelServiceConfig,
 } from '../dto/ChannelDto';
 
 export class ChannelService {
@@ -29,12 +29,12 @@ export class ChannelService {
       channelRepository,
       messageRepository
     );
-    
+
     this.errorService = new ErrorHandlingService({
       enableConsoleLogging: true,
       enableRemoteLogging: false,
     });
-    
+
     this.securityService = new SecurityService({
       enableInputValidation: config.enableValidation ?? true,
       enableXSSProtection: true,
@@ -58,64 +58,89 @@ export class ChannelService {
           // 입력 검증
           if (this.config.enableValidation) {
             const validationSchema: ChannelValidationSchema = {
-              name: { 
-                required: true, 
-                type: 'string', 
-                minLength: this.config.minChannelNameLength || 1, 
+              name: {
+                required: true,
+                type: 'string',
+                minLength: this.config.minChannelNameLength || 1,
                 maxLength: this.config.maxChannelNameLength || 50,
-                pattern: /^[a-zA-Z0-9\s\-_]+$/
+                pattern: /^[a-zA-Z0-9\s\-_]+$/,
               },
-              description: { 
-                required: false, 
-                type: 'string', 
-                maxLength: this.config.maxDescriptionLength || 200
+              description: {
+                required: false,
+                type: 'string',
+                maxLength: this.config.maxDescriptionLength || 200,
               },
-              type: { 
-                required: true, 
-                type: 'string', 
-                enum: ['public', 'private', 'direct']
+              type: {
+                required: true,
+                type: 'string',
+                enum: ['public', 'private', 'direct'],
               },
-              ownerId: { 
-                required: true, 
-                type: 'string'
+              ownerId: {
+                required: true,
+                type: 'string',
               },
-              members: { 
-                required: true, 
-                type: 'string', 
-                minLength: 1
-              }
+              members: {
+                required: true,
+                type: 'string',
+                minLength: 1,
+              },
             };
 
-            const validation = this.securityService.validateInput(channelData, validationSchema);
+            const validation = this.securityService.validateInput(
+              channelData,
+              validationSchema
+            );
             if (!validation.isValid) {
-              throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
+              throw new Error(
+                `Validation failed: ${validation.errors.join(', ')}`
+              );
             }
           }
 
           // 비즈니스 규칙 검증
           if (!channelData.name || channelData.name.trim().length === 0) {
-            throw DomainErrorFactory.createChannelValidation('Channel name is required');
+            throw DomainErrorFactory.createChannelValidation(
+              'Channel name is required'
+            );
           }
 
-          if (channelData.name.length > (this.config.maxChannelNameLength || 50)) {
-            throw DomainErrorFactory.createChannelValidation('Channel name must be less than 50 characters');
+          if (
+            channelData.name.length > (this.config.maxChannelNameLength || 50)
+          ) {
+            throw DomainErrorFactory.createChannelValidation(
+              'Channel name must be less than 50 characters'
+            );
           }
 
           if (!channelData.ownerId || channelData.ownerId.trim().length === 0) {
-            throw DomainErrorFactory.createChannelValidation('Channel owner is required');
+            throw DomainErrorFactory.createChannelValidation(
+              'Channel owner is required'
+            );
           }
 
           if (!channelData.members.includes(channelData.ownerId)) {
-            throw DomainErrorFactory.createChannelValidation('Channel owner must be a member');
+            throw DomainErrorFactory.createChannelValidation(
+              'Channel owner must be a member'
+            );
           }
 
-          if (channelData.type === 'direct' && channelData.members.length !== 2) {
-            throw DomainErrorFactory.createChannelValidation('Direct channels must have exactly 2 members');
+          if (
+            channelData.type === 'direct' &&
+            channelData.members.length !== 2
+          ) {
+            throw DomainErrorFactory.createChannelValidation(
+              'Direct channels must have exactly 2 members'
+            );
           }
 
           // 최대 멤버 수 제한
-          if (this.config.maxMembersPerChannel && channelData.members.length > this.config.maxMembersPerChannel) {
-            throw DomainErrorFactory.createChannelValidation(`Channel cannot have more than ${this.config.maxMembersPerChannel} members`);
+          if (
+            this.config.maxMembersPerChannel &&
+            channelData.members.length > this.config.maxMembersPerChannel
+          ) {
+            throw DomainErrorFactory.createChannelValidation(
+              `Channel cannot have more than ${this.config.maxMembersPerChannel} members`
+            );
           }
 
           // 채널 엔티티 생성
@@ -132,9 +157,9 @@ export class ChannelService {
 
           return this.mapToChannelProfile(savedChannel);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.createChannel',
-            channelData
+            channelData,
           });
           throw error;
         }
@@ -159,9 +184,9 @@ export class ChannelService {
 
           return this.mapToChannelProfile(channel);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.getChannel',
-            channelId
+            channelId,
           });
           throw error;
         }
@@ -181,9 +206,9 @@ export class ChannelService {
           const channels = await this.channelRepository.findByUserId(userId);
           return channels.map(channel => this.mapToChannelProfile(channel));
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.getUserChannels',
-            userId
+            userId,
           });
           throw error;
         }
@@ -195,37 +220,50 @@ export class ChannelService {
   /**
    * 채널 업데이트
    */
-  async updateChannel(channelId: string, updates: Partial<ChannelProfile>): Promise<ChannelProfile> {
+  async updateChannel(
+    channelId: string,
+    updates: Partial<ChannelProfile>
+  ): Promise<ChannelProfile> {
     return await this.performanceService.measurePerformance(
       'update_channel',
       async () => {
         try {
           // 입력 검증
           if (this.config.enableValidation && updates.name) {
-            const sanitizedName = this.securityService.sanitizeInput(updates.name);
-            if (sanitizedName.length < (this.config.minChannelNameLength || 1)) {
+            const sanitizedName = this.securityService.sanitizeInput(
+              updates.name
+            );
+            if (
+              sanitizedName.length < (this.config.minChannelNameLength || 1)
+            ) {
               throw new Error('Channel name is too short');
             }
-            if (sanitizedName.length > (this.config.maxChannelNameLength || 50)) {
+            if (
+              sanitizedName.length > (this.config.maxChannelNameLength || 50)
+            ) {
               throw new Error('Channel name is too long');
             }
           }
 
-          const existingChannel = await this.channelRepository.findById(channelId);
+          const existingChannel =
+            await this.channelRepository.findById(channelId);
 
           if (!existingChannel) {
             throw DomainErrorFactory.createChannelNotFound(channelId);
           }
 
           // 업데이트 적용
-          const updatedChannel = await this.channelRepository.update(channelId, updates);
+          const updatedChannel = await this.channelRepository.update(
+            channelId,
+            updates
+          );
 
           return this.mapToChannelProfile(updatedChannel);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.updateChannel',
             channelId,
-            updates
+            updates,
           });
           throw error;
         }
@@ -260,22 +298,30 @@ export class ChannelService {
           }
 
           // 최대 멤버 수 제한 확인
-          if (this.config.maxMembersPerChannel && channel.members.length >= this.config.maxMembersPerChannel) {
-            throw new Error(`Channel cannot have more than ${this.config.maxMembersPerChannel} members`);
+          if (
+            this.config.maxMembersPerChannel &&
+            channel.members.length >= this.config.maxMembersPerChannel
+          ) {
+            throw new Error(
+              `Channel cannot have more than ${this.config.maxMembersPerChannel} members`
+            );
           }
 
           // 멤버 추가
           const updatedMembers = [...channel.members, userId];
-          const updatedChannel = await this.channelRepository.update(channelId, {
-            members: updatedMembers
-          });
+          const updatedChannel = await this.channelRepository.update(
+            channelId,
+            {
+              members: updatedMembers,
+            }
+          );
 
           return this.mapToChannelProfile(updatedChannel);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.addMember',
             channelId,
-            userId
+            userId,
           });
           throw error;
         }
@@ -287,7 +333,10 @@ export class ChannelService {
   /**
    * 채널 멤버 제거
    */
-  async removeMember(channelId: string, userId: string): Promise<ChannelProfile> {
+  async removeMember(
+    channelId: string,
+    userId: string
+  ): Promise<ChannelProfile> {
     return await this.performanceService.measurePerformance(
       'remove_channel_member',
       async () => {
@@ -309,17 +358,22 @@ export class ChannelService {
           }
 
           // 멤버 제거
-          const updatedMembers = channel.members.filter(memberId => memberId !== userId);
-          const updatedChannel = await this.channelRepository.update(channelId, {
-            members: updatedMembers
-          });
+          const updatedMembers = channel.members.filter(
+            memberId => memberId !== userId
+          );
+          const updatedChannel = await this.channelRepository.update(
+            channelId,
+            {
+              members: updatedMembers,
+            }
+          );
 
           return this.mapToChannelProfile(updatedChannel);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.removeMember',
             channelId,
-            userId
+            userId,
           });
           throw error;
         }
@@ -343,7 +397,8 @@ export class ChannelService {
           }
 
           // 채널의 메시지 수 조회
-          const messages = await this.messageRepository.findByChannelId(channelId);
+          const messages =
+            await this.messageRepository.findByChannelId(channelId);
           const totalMessages = messages.length;
 
           // 활성 멤버 수 계산 (최근 7일 내 활동)
@@ -357,12 +412,12 @@ export class ChannelService {
             totalMessages,
             activeMembers,
             lastActivity,
-            messageCount: totalMessages
+            messageCount: totalMessages,
           };
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.getChannelStats',
-            channelId
+            channelId,
           });
           throw error;
         }
@@ -374,7 +429,11 @@ export class ChannelService {
   /**
    * 채널 검색
    */
-  async searchChannels(query: string, userId?: string, limit: number = 10): Promise<ChannelProfile[]> {
+  async searchChannels(
+    query: string,
+    userId?: string,
+    limit: number = 10
+  ): Promise<ChannelProfile[]> {
     return await this.performanceService.measurePerformance(
       'search_channels',
       async () => {
@@ -383,18 +442,24 @@ export class ChannelService {
           if (this.config.enableValidation) {
             const sanitizedQuery = this.securityService.sanitizeInput(query);
             if (sanitizedQuery.length < 2) {
-              throw new Error('Search query must be at least 2 characters long');
+              throw new Error(
+                'Search query must be at least 2 characters long'
+              );
             }
           }
 
-          const channels = await this.channelRepository.search(query, userId, limit);
-          return channels.map(channel => this.mapToChannelProfile(channel));
-        } catch (error) {
-          this.errorService.logError(error, { 
-            context: 'ChannelService.searchChannels',
+          const channels = await this.channelRepository.search(
             query,
             userId,
             limit
+          );
+          return channels.map(channel => this.mapToChannelProfile(channel));
+        } catch (error) {
+          this.errorService.logError(error, {
+            context: 'ChannelService.searchChannels',
+            query,
+            userId,
+            limit,
           });
           throw error;
         }
@@ -425,10 +490,10 @@ export class ChannelService {
           await this.channelRepository.delete(channelId);
           return true;
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.deleteChannel',
             channelId,
-            userId
+            userId,
           });
           throw error;
         }
@@ -445,9 +510,9 @@ export class ChannelService {
       const channel = await this.channelRepository.findById(channelId);
       return !!channel;
     } catch (error) {
-      this.errorService.logError(error, { 
+      this.errorService.logError(error, {
         context: 'ChannelService.channelExists',
-        channelId
+        channelId,
       });
       return false;
     }
@@ -469,10 +534,10 @@ export class ChannelService {
 
           return channel.members.includes(userId);
         } catch (error) {
-          this.errorService.logError(error, { 
+          this.errorService.logError(error, {
             context: 'ChannelService.isMember',
             channelId,
-            userId
+            userId,
           });
           return false;
         }
@@ -495,7 +560,7 @@ export class ChannelService {
       memberCount: channel.members.length,
       createdAt: channel.createdAt,
       updatedAt: channel.updatedAt,
-      lastMessageAt: channel.lastMessageAt
+      lastMessageAt: channel.lastMessageAt,
     };
   }
-} 
+}

@@ -6,22 +6,20 @@ import type { EmptyChannelStateProps } from '../../../pages/channel/types/channe
 
 const EmptyChannelState: React.FC<EmptyChannelStateProps> = ({
   onCreateChannel,
-  className
+  className,
 }) => {
   const { t } = useTranslation();
 
   return (
     <EmptyState
-      icon="💬"
+      icon='💬'
       title={t('channels.no_channels') || '채널이 없습니다'}
-      description={t('channels.no_channels_description') || '첫 번째 채널을 만들어보세요!'}
-      className={cn("", className)}
+      description={
+        t('channels.no_channels_description') || '첫 번째 채널을 만들어보세요!'
+      }
+      className={cn('', className)}
       action={
-        <Button
-          variant="primary"
-          onClick={onCreateChannel}
-          leftIcon="➕"
-        >
+        <Button variant='primary' onClick={onCreateChannel} leftIcon='➕'>
           {t('channels.create_new_channel') || '새 채널 만들기'}
         </Button>
       }
@@ -29,4 +27,4 @@ const EmptyChannelState: React.FC<EmptyChannelStateProps> = ({
   );
 };
 
-export default EmptyChannelState; 
+export default EmptyChannelState;

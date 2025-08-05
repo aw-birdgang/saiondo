@@ -15,7 +15,7 @@ export const VirtualizedListLoader: React.FC<VirtualizedListLoaderProps> = ({
   itemHeight,
   containerHeight,
   renderItem,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [scrollTop, setScrollTop] = useState(0);
 
@@ -33,7 +33,7 @@ export const VirtualizedListLoader: React.FC<VirtualizedListLoaderProps> = ({
 
   return (
     <div
-      className="overflow-y-auto"
+      className='overflow-y-auto'
       style={{ height: containerHeight }}
       onScroll={handleScroll}
     >
@@ -47,10 +47,10 @@ export const VirtualizedListLoader: React.FC<VirtualizedListLoaderProps> = ({
         </div>
       </div>
       {isLoading && (
-        <div className="flex justify-center p-4">
-          <LoadingSpinner size="sm" />
+        <div className='flex justify-center p-4'>
+          <LoadingSpinner size='sm' />
         </div>
       )}
     </div>
   );
-}; 
+};

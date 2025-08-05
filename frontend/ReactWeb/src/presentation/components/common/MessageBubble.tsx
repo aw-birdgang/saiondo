@@ -25,9 +25,9 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         isOwnMessage ? 'justify-end' : 'justify-start'
       } ${className}`}
     >
-      <div className="max-w-xs lg:max-w-md">
+      <div className='max-w-xs lg:max-w-md'>
         {!isOwnMessage && senderName && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 ml-1">
+          <p className='text-xs text-gray-500 dark:text-gray-400 mb-1 ml-1'>
             {senderName}
           </p>
         )}
@@ -38,18 +38,12 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
           }`}
         >
-          <MessageContent 
-            content={content} 
-            type={messageType}
-          />
-          <MessageTimestamp 
-            timestamp={timestamp} 
-            isOwnMessage={isOwnMessage}
-          />
+          <MessageContent content={content} type={messageType} />
+          <MessageTimestamp timestamp={timestamp} isOwnMessage={isOwnMessage} />
         </div>
       </div>
     </div>
   );
 };
 
-export default MessageBubble; 
+export default MessageBubble;

@@ -10,10 +10,7 @@ export const useLocalStorage = <T>(
   initialValue: T,
   options: UseLocalStorageOptions = {}
 ) => {
-  const {
-    serialize = JSON.stringify,
-    deserialize = JSON.parse
-  } = options;
+  const { serialize = JSON.stringify, deserialize = JSON.parse } = options;
 
   // Get initial value from localStorage or use provided initial value
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -27,15 +24,19 @@ export const useLocalStorage = <T>(
   });
 
   // Update localStorage when state changes
-  const setValue = useCallback((value: T | ((val: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, serialize(valueToStore));
-    } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
-    }
-  }, [key, serialize, storedValue]);
+  const setValue = useCallback(
+    (value: T | ((val: T) => T)) => {
+      try {
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.localStorage.setItem(key, serialize(valueToStore));
+      } catch (error) {
+        console.error(`Error setting localStorage key "${key}":`, error);
+      }
+    },
+    [key, serialize, storedValue]
+  );
 
   // Remove item from localStorage
   const removeValue = useCallback(() => {
@@ -68,4 +69,4 @@ export const useLocalStorage = <T>(
     setValue,
     removeValue,
   };
-}; 
+};

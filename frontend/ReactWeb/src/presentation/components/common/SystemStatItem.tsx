@@ -30,4 +30,4 @@ const SystemStatItem: React.FC<SystemStatItemProps> = ({
   );
 };
 
-export default SystemStatItem; 
+export default SystemStatItem;

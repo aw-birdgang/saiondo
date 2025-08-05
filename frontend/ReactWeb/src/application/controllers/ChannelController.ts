@@ -1,6 +1,6 @@
-import {BaseController} from './BaseController';
-import {UseCaseFactory} from '../usecases/UseCaseFactory';
-import type {IUseCase} from '../usecases/interfaces/IUseCase';
+import { BaseController } from './BaseController';
+import { UseCaseFactory } from '../usecases/UseCaseFactory';
+import type { IUseCase } from '../usecases/interfaces/IUseCase';
 
 /**
  * ChannelController - 채널 관련 비즈니스 로직 조정
@@ -28,11 +28,13 @@ export class ChannelController extends BaseController {
     try {
       // Use Case 인스턴스 생성
       this.createChannelUseCase = UseCaseFactory.createCreateChannelUseCase();
-      this.inviteToChannelUseCase = UseCaseFactory.createInviteToChannelUseCase();
+      this.inviteToChannelUseCase =
+        UseCaseFactory.createInviteToChannelUseCase();
       this.leaveChannelUseCase = UseCaseFactory.createLeaveChannelUseCase();
-      this.userActivityLogUseCase = UseCaseFactory.createUserActivityLogUseCase();
+      this.userActivityLogUseCase =
+        UseCaseFactory.createUserActivityLogUseCase();
       this.userPermissionUseCase = UseCaseFactory.createUserPermissionUseCase();
-      
+
       this.useCasesInitialized = true;
     } catch (error) {
       console.error('Failed to initialize UseCases:', error);
@@ -65,7 +67,11 @@ export class ChannelController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        if (!this.userPermissionUseCase || !this.createChannelUseCase || !this.userActivityLogUseCase) {
+        if (
+          !this.userPermissionUseCase ||
+          !this.createChannelUseCase ||
+          !this.userActivityLogUseCase
+        ) {
           throw new Error('UseCase가 초기화되지 않았습니다.');
         }
 
@@ -73,7 +79,7 @@ export class ChannelController extends BaseController {
         const permissionResult = await this.userPermissionUseCase.execute({
           userId: channelData.ownerId,
           resource: 'channel',
-          action: 'create'
+          action: 'create',
         });
 
         if (!permissionResult.hasPermission) {
@@ -88,14 +94,13 @@ export class ChannelController extends BaseController {
           action: 'CHANNEL_CREATE',
           resource: 'channel',
           resourceId: result.channel.id,
-          details: { channelName: channelData.name }
+          details: { channelName: channelData.name },
         });
 
         return result.channel;
       }
     );
   }
-
 
   /**
    * 채널에서 나가기
@@ -119,10 +124,9 @@ export class ChannelController extends BaseController {
           action: 'CHANNEL_LEAVE',
           resource: 'channel',
           resourceId: channelId,
-          details: { left: true }
+          details: { left: true },
         });
       }
     );
   }
-
 }

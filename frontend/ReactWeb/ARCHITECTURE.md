@@ -119,6 +119,7 @@ frontend/ReactWeb/
 ## 계층별 설명
 
 ### 1. Domain Layer (도메인 계층)
+
 - **목적**: 비즈니스 로직과 규칙을 포함
 - **의존성**: 외부 계층에 의존하지 않음
 - **구성요소**:
@@ -129,6 +130,7 @@ frontend/ReactWeb/
   - **Domain Errors**: 도메인별 에러 타입
 
 ### 2. Application Layer (애플리케이션 계층)
+
 - **목적**: 도메인 계층을 조합하여 애플리케이션 기능 구현
 - **의존성**: 도메인 계층에만 의존
 - **구성요소**:
@@ -136,6 +138,7 @@ frontend/ReactWeb/
   - **Application Services**: 도메인 간 조정 서비스
 
 ### 3. Infrastructure Layer (인프라스트럭처 계층)
+
 - **목적**: 외부 시스템과의 통신 및 데이터 영속성
 - **의존성**: 도메인 계층의 인터페이스 구현
 - **구성요소**:
@@ -144,6 +147,7 @@ frontend/ReactWeb/
   - **WebSocket Client**: 실시간 통신 클라이언트
 
 ### 4. Presentation Layer (프레젠테이션 계층)
+
 - **목적**: 사용자 인터페이스와 사용자 상호작용
 - **의존성**: 애플리케이션 계층에 의존
 - **구성요소**:
@@ -166,10 +170,14 @@ export const DI_TOKENS = {
 };
 
 // DI 컨테이너에서 서비스 등록
-container.register(DI_TOKENS.USER_REPOSITORY, () => {
-  const apiClient = container.get<ApiClient>(DI_TOKENS.API_CLIENT);
-  return new UserRepositoryImpl(apiClient);
-}, true);
+container.register(
+  DI_TOKENS.USER_REPOSITORY,
+  () => {
+    const apiClient = container.get<ApiClient>(DI_TOKENS.API_CLIENT);
+    return new UserRepositoryImpl(apiClient);
+  },
+  true
+);
 
 // 컴포넌트에서 사용
 const { userUseCases } = useUseCaseContext();
@@ -181,9 +189,9 @@ Zustand를 사용한 상태 관리:
 
 ```typescript
 // 스토어 정의
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>(set => ({
   user: null,
-  setUser: (user) => set({ user }),
+  setUser: user => set({ user }),
   clearUser: () => set({ user: null }),
 }));
 
@@ -210,26 +218,31 @@ throw DomainErrorFactory.createUserNotFound(userId);
 ## 주요 개선사항
 
 ### 1. 도메인 엔티티 강화
+
 - 비즈니스 규칙과 유효성 검사를 엔티티 내부에 캡슐화
 - 불변성 보장을 위한 팩토리 메서드 패턴 적용
 - 도메인 로직의 명확한 분리
 
 ### 2. 값 객체 도입
+
 - ID, 이메일 등의 기본 타입을 값 객체로 래핑
 - 타입 안전성과 도메인 의미 강화
 - 유효성 검사 로직 캡슐화
 
 ### 3. 리포지토리 패턴 개선
+
 - 인터페이스와 구현체의 명확한 분리
 - 도메인 중심의 메서드명 사용
 - 일관된 에러 처리
 
 ### 4. Use Case 패턴 적용
+
 - Request/Response 객체를 통한 명확한 입출력 정의
 - 비즈니스 로직의 단일 책임 원칙 준수
 - 테스트 가능한 구조
 
 ### 5. 의존성 역전 원칙 적용
+
 - 도메인 계층이 외부 계층에 의존하지 않음
 - 인터페이스를 통한 느슨한 결합
 - 의존성 주입을 통한 제어 역전
@@ -237,6 +250,7 @@ throw DomainErrorFactory.createUserNotFound(userId);
 ## 개발 가이드라인
 
 ### 1. 새로운 기능 추가 시
+
 1. 도메인 계층에 엔티티/값 객체 정의
 2. 리포지토리 인터페이스 정의
 3. 애플리케이션 계층에 Use Case 구현
@@ -244,14 +258,16 @@ throw DomainErrorFactory.createUserNotFound(userId);
 5. 프레젠테이션 계층에 UI 구현
 
 ### 2. 테스트 작성 시
+
 - 각 계층별로 독립적인 테스트 작성
 - 도메인 로직은 단위 테스트로 검증
 - Use Case는 통합 테스트로 검증
 - UI는 컴포넌트 테스트로 검증
 
 ### 3. 코드 품질
+
 - TypeScript의 엄격한 타입 체크 활용
 - ESLint와 Prettier를 통한 코드 스타일 통일
 - 의존성 주입을 통한 테스트 가능성 확보
 
-이 구조를 통해 유지보수성, 확장성, 테스트 가능성을 모두 확보할 수 있습니다. 
+이 구조를 통해 유지보수성, 확장성, 테스트 가능성을 모두 확보할 수 있습니다.

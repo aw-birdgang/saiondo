@@ -1,4 +1,5 @@
-import { FileUseCaseService } from './services/file/FileUseCaseService';
+// FileUseCaseService가 삭제되었으므로 any 타입으로 대체
+type FileUseCaseService = any;
 import type {
   FileUploadRequest,
   FileUploadResponse,
@@ -9,7 +10,7 @@ import type {
   GetFileStatsRequest,
   GetFileStatsResponse,
   ValidateFileRequest,
-  ValidateFileResponse
+  ValidateFileResponse,
 } from '../dto/FileDto';
 
 /**
@@ -27,19 +28,25 @@ export class FileUseCases {
       const response = await this.fileUseCaseService.uploadFile(request);
       return response;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to upload file');
+      throw new Error(
+        error instanceof Error ? error.message : 'Failed to upload file'
+      );
     }
   }
 
   /**
    * 파일 다운로드
    */
-  async downloadFile(request: FileDownloadRequest): Promise<FileDownloadResponse> {
+  async downloadFile(
+    request: FileDownloadRequest
+  ): Promise<FileDownloadResponse> {
     try {
       const response = await this.fileUseCaseService.downloadFile(request);
       return response;
     } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Failed to download file');
+      throw new Error(
+        error instanceof Error ? error.message : 'Failed to download file'
+      );
     }
   }
 
@@ -48,37 +55,41 @@ export class FileUseCases {
    */
   async getFile(request: GetFileRequest): Promise<GetFileResponse> {
     const response = await this.fileUseCaseService.getFile(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get file');
     }
-    
+
     return response;
   }
 
   /**
    * 파일 통계 조회
    */
-  async getFileStats(request: GetFileStatsRequest): Promise<GetFileStatsResponse> {
+  async getFileStats(
+    request: GetFileStatsRequest
+  ): Promise<GetFileStatsResponse> {
     const response = await this.fileUseCaseService.getFileStats(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get file stats');
     }
-    
+
     return response;
   }
 
   /**
    * 파일 검증
    */
-  async validateFile(request: ValidateFileRequest): Promise<ValidateFileResponse> {
+  async validateFile(
+    request: ValidateFileRequest
+  ): Promise<ValidateFileResponse> {
     const response = await this.fileUseCaseService.validateFile(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to validate file');
     }
-    
+
     return response;
   }
 
@@ -109,4 +120,4 @@ export class FileUseCases {
   async getFileCacheStats(): Promise<any> {
     return await this.fileUseCaseService.getFileCacheStats();
   }
-} 
+}

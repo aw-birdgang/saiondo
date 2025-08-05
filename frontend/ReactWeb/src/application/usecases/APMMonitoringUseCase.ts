@@ -1,5 +1,5 @@
 import type { PerformanceMonitoringService } from '../services/PerformanceMonitoringService';
-import type { 
+import type {
   Trace,
   Span,
   Alert,
@@ -16,16 +16,20 @@ import type {
   GetTracesRequest,
   GetTracesResponse,
   GetAlertsRequest,
-  GetAlertsResponse
+  GetAlertsResponse,
 } from '../dto/APMMonitoringDto';
 import type { IUseCase } from './interfaces/IUseCase';
 
-export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, CreateTraceResponse> {
+export class APMMonitoringUseCase
+  implements IUseCase<CreateTraceRequest, CreateTraceResponse>
+{
   private traces = new Map<string, Trace>();
   private spans = new Map<string, Span>();
   private alerts = new Map<string, Alert>();
 
-  constructor(private readonly performanceService: PerformanceMonitoringService) {}
+  constructor(
+    private readonly performanceService: PerformanceMonitoringService
+  ) {}
 
   async execute(request: CreateTraceRequest): Promise<CreateTraceResponse> {
     return this.createTrace(request);
@@ -33,7 +37,7 @@ export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, Create
 
   async createTrace(request: CreateTraceRequest): Promise<CreateTraceResponse> {
     const traceId = `trace_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-    
+
     const trace: Trace = {
       id: traceId,
       name: request.name,
@@ -73,7 +77,7 @@ export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, Create
 
   async createSpan(request: CreateSpanRequest): Promise<CreateSpanResponse> {
     const spanId = `span_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-    
+
     const span: Span = {
       id: spanId,
       traceId: request.traceId,
@@ -121,7 +125,7 @@ export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, Create
 
   async createAlert(request: CreateAlertRequest): Promise<CreateAlertResponse> {
     const alertId = `alert_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-    
+
     const alert: Alert = {
       id: alertId,
       type: request.type,
@@ -143,11 +147,13 @@ export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, Create
 
   async getTraces(request: GetTracesRequest): Promise<GetTracesResponse> {
     const traces = Array.from(this.traces.values());
-    
+
     // Apply filters
     let filteredTraces = traces;
     if (request.status) {
-      filteredTraces = filteredTraces.filter(trace => trace.status === request.status);
+      filteredTraces = filteredTraces.filter(
+        trace => trace.status === request.status
+      );
     }
 
     // Apply pagination
@@ -164,14 +170,18 @@ export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, Create
 
   async getAlerts(request: GetAlertsRequest): Promise<GetAlertsResponse> {
     const alerts = Array.from(this.alerts.values());
-    
+
     // Apply filters
     let filteredAlerts = alerts;
     if (request.severity) {
-      filteredAlerts = filteredAlerts.filter(alert => alert.severity === request.severity);
+      filteredAlerts = filteredAlerts.filter(
+        alert => alert.severity === request.severity
+      );
     }
     if (request.resolved !== undefined) {
-      filteredAlerts = filteredAlerts.filter(alert => alert.resolved === request.resolved);
+      filteredAlerts = filteredAlerts.filter(
+        alert => alert.resolved === request.resolved
+      );
     }
 
     // Apply pagination
@@ -185,4 +195,4 @@ export class APMMonitoringUseCase implements IUseCase<CreateTraceRequest, Create
       hasMore: offset + limit < filteredAlerts.length,
     };
   }
-} 
+}

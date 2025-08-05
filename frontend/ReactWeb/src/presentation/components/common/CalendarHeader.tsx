@@ -9,10 +9,10 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ className = '' }) => {
 
   return (
     <div className={`grid grid-cols-7 gap-1 ${className}`}>
-      {daysOfWeek.map((day) => (
+      {daysOfWeek.map(day => (
         <div
           key={day}
-          className="p-3 text-center text-sm font-semibold text-txt-secondary bg-secondary/50 rounded-lg"
+          className='p-3 text-center text-sm font-semibold text-txt-secondary bg-secondary/50 rounded-lg'
         >
           {day}
         </div>
@@ -21,4 +21,4 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ className = '' }) => {
   );
 };
 
-export default CalendarHeader; 
+export default CalendarHeader;

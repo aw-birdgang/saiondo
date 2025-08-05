@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useSearchData } from './hooks/useSearchData';
 import { useToastContext } from '../../providers/ToastProvider';
-import { SearchContainer, SearchFilters, SearchHeader, SearchResults, SearchSuggestions } from '../../components/search';
+import {
+  SearchContainer,
+  SearchFilters,
+  SearchHeader,
+  SearchResults,
+  SearchSuggestions,
+} from '../../components/search';
 import { ErrorState } from '../../components/specific';
 
 const SearchPage: React.FC = () => {
@@ -31,7 +37,7 @@ const SearchPage: React.FC = () => {
     getTrendingSearches,
     getSearchHistory,
     clearSearchHistory,
-    resetSearch
+    resetSearch,
   } = useSearchData();
 
   // 검색 제안 및 인기 검색어 상태
@@ -66,7 +72,7 @@ const SearchPage: React.FC = () => {
     const loadInitialData = async () => {
       const [trending, recent] = await Promise.all([
         getTrendingSearches(),
-        getSearchHistory()
+        getSearchHistory(),
       ]);
       setTrendingSearches(trending);
       setRecentSearches(recent);
@@ -129,7 +135,7 @@ const SearchPage: React.FC = () => {
   if (error) {
     return (
       <ErrorState
-        title="검색 중 오류가 발생했습니다"
+        title='검색 중 오류가 발생했습니다'
         message={error}
         onRetry={() => window.location.reload()}
       />
@@ -153,17 +159,44 @@ const SearchPage: React.FC = () => {
       {hasSearchResults && (
         <SearchFilters
           filters={[
-            { type: 'all', label: '전체', count: total, isActive: Object.keys(selectedFilters).length === 0 },
-            { type: 'message', label: '메시지', count: results.filter(r => r.type === 'message').length, isActive: selectedFilters.type === 'message' },
-            { type: 'channel', label: '채널', count: results.filter(r => r.type === 'channel').length, isActive: selectedFilters.type === 'channel' },
-            { type: 'user', label: '사용자', count: results.filter(r => r.type === 'user').length, isActive: selectedFilters.type === 'user' },
-            { type: 'file', label: '파일', count: results.filter(r => r.type === 'file').length, isActive: selectedFilters.type === 'file' }
+            {
+              type: 'all',
+              label: '전체',
+              count: total,
+              isActive: Object.keys(selectedFilters).length === 0,
+            },
+            {
+              type: 'message',
+              label: '메시지',
+              count: results.filter(r => r.type === 'message').length,
+              isActive: selectedFilters.type === 'message',
+            },
+            {
+              type: 'channel',
+              label: '채널',
+              count: results.filter(r => r.type === 'channel').length,
+              isActive: selectedFilters.type === 'channel',
+            },
+            {
+              type: 'user',
+              label: '사용자',
+              count: results.filter(r => r.type === 'user').length,
+              isActive: selectedFilters.type === 'user',
+            },
+            {
+              type: 'file',
+              label: '파일',
+              count: results.filter(r => r.type === 'file').length,
+              isActive: selectedFilters.type === 'file',
+            },
           ]}
-          selectedFilters={Object.keys(selectedFilters).length > 0 ? Object.keys(selectedFilters) : ['all']}
-          onFilterChange={(filterType) => {
-            const newFilters = filterType === 'all' 
-              ? {} 
-              : { type: filterType };
+          selectedFilters={
+            Object.keys(selectedFilters).length > 0
+              ? Object.keys(selectedFilters)
+              : ['all']
+          }
+          onFilterChange={filterType => {
+            const newFilters = filterType === 'all' ? {} : { type: filterType };
             handleFilterChange(newFilters);
           }}
           onClearFilters={() => handleFilterChange({})}
@@ -171,7 +204,7 @@ const SearchPage: React.FC = () => {
       )}
 
       {/* 메인 콘텐츠 */}
-      <div className="flex-1">
+      <div className='flex-1'>
         {showSuggestions ? (
           <SearchSuggestions
             suggestions={suggestions}
@@ -186,7 +219,7 @@ const SearchPage: React.FC = () => {
               ...result,
               description: result.content || '',
               url: `/${result.type}/${result.id}`,
-              type: result.type === 'file' ? 'category' : result.type as any
+              type: result.type === 'file' ? 'category' : (result.type as any),
             }))}
             isLoading={isLoading}
             hasMore={hasMore}

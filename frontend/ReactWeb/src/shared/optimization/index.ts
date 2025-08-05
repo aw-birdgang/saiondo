@@ -1,8 +1,8 @@
 export { default as BundleAnalyzer } from './BundleAnalyzer';
-export { 
+export {
   bundleAnalyzer,
   analyzeBundle,
   formatSize,
-  suggestCodeSplitting
+  suggestCodeSplitting,
 } from './BundleAnalyzer';
-export * from './BundleAnalyzer'; 
+export * from './BundleAnalyzer';

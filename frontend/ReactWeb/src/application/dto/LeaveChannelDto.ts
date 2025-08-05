@@ -11,4 +11,4 @@ export interface LeaveChannelRequest {
 export interface LeaveChannelResponse {
   success: boolean;
   message: string;
-} 
+}

@@ -11,7 +11,7 @@ const Stack: React.FC<StackProps> = ({
   children,
   spacing = 'md',
   align = 'stretch',
-  className = ''
+  className = '',
 }) => {
   const getSpacingClass = () => {
     switch (spacing) {
@@ -42,10 +42,12 @@ const Stack: React.FC<StackProps> = ({
   };
 
   return (
-    <div className={`flex flex-col ${getAlignClass()} ${getSpacingClass()} ${className}`}>
+    <div
+      className={`flex flex-col ${getAlignClass()} ${getSpacingClass()} ${className}`}
+    >
       {children}
     </div>
   );
 };
 
-export default Stack; 
+export default Stack;

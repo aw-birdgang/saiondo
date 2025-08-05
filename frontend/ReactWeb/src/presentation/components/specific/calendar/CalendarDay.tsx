@@ -2,7 +2,10 @@ import React from 'react';
 import { format } from 'date-fns';
 import { cn } from '../../../../utils/cn';
 import { EVENT_TYPE_CONFIG } from '../../../pages/calendar/constants/calendarData';
-import type { CalendarDayProps, Event } from '../../../pages/calendar/types/calendarTypes';
+import type {
+  CalendarDayProps,
+  Event,
+} from '../../../pages/calendar/types/calendarTypes';
 
 const CalendarDay: React.FC<CalendarDayProps> = ({
   date,
@@ -12,7 +15,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
   events,
   onClick,
   onEventClick,
-  className
+  className,
 }) => {
   const handleClick = () => {
     onClick(date);
@@ -35,24 +38,24 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
         className
       )}
     >
-      <div className="flex items-center justify-between mb-1">
-        <span className={cn(
-          'text-sm font-medium',
-          isToday && 'text-primary font-bold',
-          !isCurrentMonth && 'text-txt-secondary'
-        )}>
+      <div className='flex items-center justify-between mb-1'>
+        <span
+          className={cn(
+            'text-sm font-medium',
+            isToday && 'text-primary font-bold',
+            !isCurrentMonth && 'text-txt-secondary'
+          )}
+        >
           {format(date, 'd')}
         </span>
-        {isToday && (
-          <span className="w-2 h-2 bg-primary rounded-full"></span>
-        )}
+        {isToday && <span className='w-2 h-2 bg-primary rounded-full'></span>}
       </div>
 
-      <div className="space-y-1">
-        {events.slice(0, 3).map((event) => (
+      <div className='space-y-1'>
+        {events.slice(0, 3).map(event => (
           <div
             key={event.id}
-            onClick={(e) => handleEventClick(e, event)}
+            onClick={e => handleEventClick(e, event)}
             className={cn(
               'text-xs p-1 rounded truncate cursor-pointer transition-colors',
               'hover:opacity-80',
@@ -65,7 +68,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
           </div>
         ))}
         {events.length > 3 && (
-          <div className="text-xs text-txt-secondary text-center">
+          <div className='text-xs text-txt-secondary text-center'>
             +{events.length - 3}개 더
           </div>
         )}
@@ -74,4 +77,4 @@ const CalendarDay: React.FC<CalendarDayProps> = ({
   );
 };
 
-export default CalendarDay; 
+export default CalendarDay;

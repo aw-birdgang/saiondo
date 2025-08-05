@@ -8,4 +8,4 @@ export const usePrevious = <T>(value: T): T | undefined => {
   }, [value]);
 
   return ref.current;
-}; 
+};

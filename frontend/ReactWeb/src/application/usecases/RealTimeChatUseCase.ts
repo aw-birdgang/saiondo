@@ -9,34 +9,48 @@ import type {
   SendRealTimeMessageRequest,
   SendRealTimeMessageResponse,
   TypingIndicatorRequest,
-  TypingIndicatorResponse
+  TypingIndicatorResponse,
 } from '../dto/RealTimeChatDto';
 import type { IUseCase } from './interfaces/IUseCase';
 
-export class RealTimeChatUseCase implements IUseCase<SendRealTimeMessageRequest, SendRealTimeMessageResponse> {
+export class RealTimeChatUseCase
+  implements IUseCase<SendRealTimeMessageRequest, SendRealTimeMessageResponse>
+{
   constructor(private readonly realTimeChatService: RealTimeChatService) {}
 
-  async execute(request: SendRealTimeMessageRequest): Promise<SendRealTimeMessageResponse> {
+  async execute(
+    request: SendRealTimeMessageRequest
+  ): Promise<SendRealTimeMessageResponse> {
     return this.sendRealTimeMessage(request);
   }
 
-  async sendRealTimeMessage(request: SendRealTimeMessageRequest): Promise<SendRealTimeMessageResponse> {
+  async sendRealTimeMessage(
+    request: SendRealTimeMessageRequest
+  ): Promise<SendRealTimeMessageResponse> {
     return await this.realTimeChatService.sendRealTimeMessage(request);
   }
 
-  async sendTypingIndicator(request: TypingIndicatorRequest): Promise<TypingIndicatorResponse> {
+  async sendTypingIndicator(
+    request: TypingIndicatorRequest
+  ): Promise<TypingIndicatorResponse> {
     return await this.realTimeChatService.sendTypingIndicator(request);
   }
 
-  async sendReadReceipt(request: ReadReceiptRequest): Promise<ReadReceiptResponse> {
+  async sendReadReceipt(
+    request: ReadReceiptRequest
+  ): Promise<ReadReceiptResponse> {
     return await this.realTimeChatService.sendReadReceipt(request);
   }
 
-  async joinChatRoom(request: JoinChatRoomRequest): Promise<JoinChatRoomResponse> {
+  async joinChatRoom(
+    request: JoinChatRoomRequest
+  ): Promise<JoinChatRoomResponse> {
     return await this.realTimeChatService.joinChatRoom(request);
   }
 
-  async leaveChatRoom(request: LeaveChatRoomRequest): Promise<LeaveChatRoomResponse> {
+  async leaveChatRoom(
+    request: LeaveChatRoomRequest
+  ): Promise<LeaveChatRoomResponse> {
     return await this.realTimeChatService.leaveChatRoom(request);
   }
 
@@ -47,4 +61,4 @@ export class RealTimeChatUseCase implements IUseCase<SendRealTimeMessageRequest,
   getReadReceipts(messageId: string): Map<string, Date> {
     return this.realTimeChatService.getReadReceipts(messageId);
   }
-} 
+}

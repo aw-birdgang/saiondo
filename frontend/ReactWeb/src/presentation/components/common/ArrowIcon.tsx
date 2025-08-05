@@ -31,15 +31,20 @@ export const ArrowIcon: React.FC<ArrowIconProps> = ({
   };
 
   return (
-    <svg 
-      className={`text-gray-400 ${getSizeClasses(size)} ${getDirectionClasses(direction)} ${className}`} 
-      fill="none" 
-      stroke="currentColor" 
-      viewBox="0 0 24 24"
+    <svg
+      className={`text-gray-400 ${getSizeClasses(size)} ${getDirectionClasses(direction)} ${className}`}
+      fill='none'
+      stroke='currentColor'
+      viewBox='0 0 24 24'
     >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      <path
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth={2}
+        d='M9 5l7 7-7 7'
+      />
     </svg>
   );
 };
 
-ArrowIcon.displayName = 'ArrowIcon'; 
+ArrowIcon.displayName = 'ArrowIcon';

@@ -8,7 +8,7 @@ import type {
   SearchUsersRequest,
   SearchUsersResponse,
   UpdateUserRequest,
-  UpdateUserResponse
+  UpdateUserResponse,
 } from '../../dto/UserDto';
 
 // User Service 인터페이스 - 비즈니스 로직 담당
@@ -17,7 +17,9 @@ export interface IUserService {
   updateUser(request: UpdateUserRequest): Promise<UpdateUserResponse>;
   getUser(request: GetUserRequest): Promise<GetUserResponse>;
   searchUsers(request: SearchUsersRequest): Promise<SearchUsersResponse>;
-  getCurrentUser(request?: GetCurrentUserRequest): Promise<GetCurrentUserResponse>;
+  getCurrentUser(
+    request?: GetCurrentUserRequest
+  ): Promise<GetCurrentUserResponse>;
   deleteUser(userId: string): Promise<boolean>;
   getUserById(userId: string): Promise<GetUserResponse>;
   updateUserStatus(userId: string, status: string): Promise<boolean>;
@@ -26,4 +28,4 @@ export interface IUserService {
   validateUsername(username: string): boolean;
   checkUserPermissions(userId: string, operation: string): Promise<boolean>;
   processUserProfile(userData: any): any;
-} 
+}

@@ -1,10 +1,10 @@
-import type { 
-  SearchResult, 
-  SearchRequest, 
+import type {
+  SearchResult,
+  SearchRequest,
   SearchResponse,
   SearchSuggestion,
   SearchHistoryItem,
-  SearchTrendingItem
+  SearchTrendingItem,
 } from '../../../domain/types/search';
 
 // Search UseCase 인터페이스 - 애플리케이션 로직 조율
@@ -17,6 +17,13 @@ export interface ISearchUseCase {
   clearSearchHistory(): Promise<void>;
   validateSearchQuery(query: string): boolean;
   sortSearchResults(results: SearchResult[], query: string): SearchResult[];
-  filterSearchResults(results: SearchResult[], filters: string[]): SearchResult[];
-  calculateSearchStats(results: SearchResult[], query: string, searchTime: number): any;
-} 
+  filterSearchResults(
+    results: SearchResult[],
+    filters: string[]
+  ): SearchResult[];
+  calculateSearchStats(
+    results: SearchResult[],
+    query: string,
+    searchTime: number
+  ): any;
+}

@@ -12,7 +12,7 @@ interface CategoryCodeGridProps {
 export const CategoryCodeGrid: React.FC<CategoryCodeGridProps> = ({
   codes,
   onCodeClick,
-  className
+  className,
 }) => {
   const { t } = useTranslation();
 
@@ -43,46 +43,54 @@ export const CategoryCodeGrid: React.FC<CategoryCodeGridProps> = ({
   };
 
   return (
-    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4', className)}>
-      {codes.map((code) => (
+    <div
+      className={cn(
+        'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4',
+        className
+      )}
+    >
+      {codes.map(code => (
         <div
           key={code.id}
-          className="p-4 border border-border rounded-lg cursor-pointer hover:shadow-md transition-shadow bg-surface"
+          className='p-4 border border-border rounded-lg cursor-pointer hover:shadow-md transition-shadow bg-surface'
           onClick={() => onCodeClick(code)}
         >
           {/* 헤더 */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">{getCategoryIcon(code.category)}</span>
-              <span className={cn('px-2 py-1 rounded text-xs font-medium', getCategoryColor(code.category))}>
+          <div className='flex items-center justify-between mb-3'>
+            <div className='flex items-center space-x-2'>
+              <span className='text-lg'>{getCategoryIcon(code.category)}</span>
+              <span
+                className={cn(
+                  'px-2 py-1 rounded text-xs font-medium',
+                  getCategoryColor(code.category)
+                )}
+              >
                 {code.category}
               </span>
             </div>
-            <div className="text-sm font-mono text-txt-secondary">
+            <div className='text-sm font-mono text-txt-secondary'>
               {code.code}
             </div>
           </div>
 
           {/* 설명 */}
-          <h3 className="font-medium text-txt mb-2">
-            {code.description}
-          </h3>
+          <h3 className='font-medium text-txt mb-2'>{code.description}</h3>
 
           {/* 예시 */}
           {code.examples && code.examples.length > 0 && (
-            <div className="space-y-1">
-              <p className="text-xs text-txt-secondary">예시:</p>
-              <div className="flex flex-wrap gap-1">
+            <div className='space-y-1'>
+              <p className='text-xs text-txt-secondary'>예시:</p>
+              <div className='flex flex-wrap gap-1'>
                 {code.examples.slice(0, 3).map((example, index) => (
                   <span
                     key={index}
-                    className="px-2 py-1 bg-secondary text-xs rounded text-txt-secondary"
+                    className='px-2 py-1 bg-secondary text-xs rounded text-txt-secondary'
                   >
                     {example}
                   </span>
                 ))}
                 {code.examples.length > 3 && (
-                  <span className="px-2 py-1 bg-secondary text-xs rounded text-txt-secondary">
+                  <span className='px-2 py-1 bg-secondary text-xs rounded text-txt-secondary'>
                     +{code.examples.length - 3}
                   </span>
                 )}
@@ -93,4 +101,4 @@ export const CategoryCodeGrid: React.FC<CategoryCodeGridProps> = ({
       ))}
     </div>
   );
-}; 
+};

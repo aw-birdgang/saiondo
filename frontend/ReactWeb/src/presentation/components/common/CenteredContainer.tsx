@@ -12,12 +12,12 @@ const CenteredContainer: React.FC<CenteredContainerProps> = ({
   children,
   maxWidth = '4xl',
   padding = 'md',
-  className = ''
+  className = '',
 }) => {
   return (
-    <Container 
-      variant="centered" 
-      maxWidth={maxWidth} 
+    <Container
+      variant='centered'
+      maxWidth={maxWidth}
       padding={padding}
       className={className}
     >
@@ -26,4 +26,4 @@ const CenteredContainer: React.FC<CenteredContainerProps> = ({
   );
 };
 
-export default CenteredContainer; 
+export default CenteredContainer;

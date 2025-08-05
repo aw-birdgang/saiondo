@@ -32,4 +32,4 @@ export class MessageId {
   equals(other: MessageId): boolean {
     return this.value === other.value;
   }
-} 
+}

@@ -5,7 +5,9 @@ import type { AppConfig } from './config';
 /**
  * Creates a test container with test configuration
  */
-export const createTestContainer = (config?: Partial<AppConfig>): DIContainer => {
+export const createTestContainer = (
+  config?: Partial<AppConfig>
+): DIContainer => {
   const testConfig: AppConfig = {
     api: {
       baseURL: 'http://localhost:3000',
@@ -94,16 +96,40 @@ export const mockServices = {
  */
 export const registerMockServices = (container: DIContainer): void => {
   // Register mock infrastructure
-  container.register(DI_TOKENS.API_CLIENT, createMockService(mockServices.apiClient), true);
-  container.register(DI_TOKENS.WEBSOCKET_CLIENT, createMockService(mockServices.webSocketClient), true);
+  container.register(
+    DI_TOKENS.API_CLIENT,
+    createMockService(mockServices.apiClient),
+    true
+  );
+  container.register(
+    DI_TOKENS.WEBSOCKET_CLIENT,
+    createMockService(mockServices.webSocketClient),
+    true
+  );
 
   // Register mock repositories
-  container.register(DI_TOKENS.USER_REPOSITORY, createMockService(mockServices.userRepository), true);
-  container.register(DI_TOKENS.CHANNEL_REPOSITORY, createMockService(mockServices.channelRepository), true);
-  container.register(DI_TOKENS.MESSAGE_REPOSITORY, createMockService(mockServices.messageRepository), true);
+  container.register(
+    DI_TOKENS.USER_REPOSITORY,
+    createMockService(mockServices.userRepository),
+    true
+  );
+  container.register(
+    DI_TOKENS.CHANNEL_REPOSITORY,
+    createMockService(mockServices.channelRepository),
+    true
+  );
+  container.register(
+    DI_TOKENS.MESSAGE_REPOSITORY,
+    createMockService(mockServices.messageRepository),
+    true
+  );
 
   // Register mock services
-  container.register(DI_TOKENS.AUTH_SERVICE, createMockService(mockServices.authService), true);
+  container.register(
+    DI_TOKENS.AUTH_SERVICE,
+    createMockService(mockServices.authService),
+    true
+  );
 };
 
 /**
@@ -127,7 +153,7 @@ export const resetMocks = (): void => {
 export const createTestEnvironment = (config?: Partial<AppConfig>) => {
   const container = createTestContainer(config);
   registerMockServices(container);
-  
+
   return {
     container,
     mocks: mockServices,
@@ -136,4 +162,4 @@ export const createTestEnvironment = (config?: Partial<AppConfig>) => {
       container.reset();
     },
   };
-}; 
+};

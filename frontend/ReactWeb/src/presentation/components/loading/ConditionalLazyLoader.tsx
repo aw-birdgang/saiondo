@@ -14,19 +14,13 @@ interface ConditionalLazyLoaderProps {
 export const ConditionalLazyLoader: React.FC<ConditionalLazyLoaderProps> = ({
   condition,
   component,
-  fallback = <LoadingSpinner size="md" />,
+  fallback = <LoadingSpinner size='md' />,
   placeholder = <div>컴포넌트를 로드할 수 없습니다.</div>,
-  props = {}
+  props = {},
 }) => {
   if (!condition) {
     return <>{placeholder}</>;
   }
 
-  return (
-    <LazyLoader
-      component={component}
-      fallback={fallback}
-      props={props}
-    />
-  );
-}; 
+  return <LazyLoader component={component} fallback={fallback} props={props} />;
+};

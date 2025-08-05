@@ -16,59 +16,59 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
     onTokenFound,
     onTokenNotFound,
     onTokenValidated,
-    onTokenInvalid
+    onTokenInvalid,
   } = options;
 
   const [isInitialized, setIsInitialized] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
-  
+
   // useRef를 사용하여 callback 함수들을 저장하여 의존성 문제 해결
   const callbacksRef = useRef({
     onTokenFound,
     onTokenNotFound,
     onTokenValidated,
-    onTokenInvalid
+    onTokenInvalid,
   });
-  
+
   // callback 함수들이 변경될 때마다 ref 업데이트
   useEffect(() => {
     callbacksRef.current = {
       onTokenFound,
       onTokenNotFound,
       onTokenValidated,
-      onTokenInvalid
+      onTokenInvalid,
     };
   }, [onTokenFound, onTokenNotFound, onTokenValidated, onTokenInvalid]);
 
   const validateToken = useCallback(async (token: string): Promise<boolean> => {
     try {
       setIsValidating(true);
-      
+
       // TODO: 실제 API 호출로 대체
       // const response = await authService.validateToken(token);
       // return response.isValid;
-      
+
       // 임시 토큰 검증 로직
       if (!token || token.length < 10) {
         return false;
       }
-      
+
       // JWT 토큰 형식 검증 (간단한 검증)
       const tokenParts = token.split('.');
       if (tokenParts.length !== 3) {
         return false;
       }
-      
+
       // 토큰 만료 시간 검증
       try {
         const payload = JSON.parse(atob(tokenParts[1]));
         const currentTime = Math.floor(Date.now() / 1000);
-        
+
         if (payload.exp && payload.exp < currentTime) {
           console.warn('Token has expired');
           return false;
         }
-        
+
         return true;
       } catch (error) {
         console.error('Failed to parse token payload:', error);
@@ -85,21 +85,21 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
   const initializeAuth = useCallback(async () => {
     try {
       const token = localStorage.getItem('accessToken');
-      
+
       if (token && token.trim() !== '') {
         // Zustand store의 setToken 메서드를 직접 호출하여 의존성 문제 해결
         useAuthStore.getState().setToken(token);
         callbacksRef.current.onTokenFound?.(token);
-        
+
         // 토큰 검증
         const isValid = await validateToken(token);
-        
+
         if (isValid) {
           // TODO: 실제 사용자 정보 가져오기
           // const user = await authService.getCurrentUser();
           // useAuthStore.getState().setUser(user);
           // callbacksRef.current.onTokenValidated?.(user);
-          
+
           // 임시로 토큰에서 사용자 정보 추출
           try {
             const tokenParts = token.split('.');
@@ -108,9 +108,9 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
               id: payload.sub || payload.userId,
               email: payload.email,
               name: payload.name || payload.username,
-              role: payload.role || 'user'
+              role: payload.role || 'user',
             };
-            
+
             useAuthStore.getState().setUser(user);
             useAuthStore.getState().setLoading(false); // 로딩 상태를 false로 설정
             callbacksRef.current.onTokenValidated?.(user);
@@ -166,4 +166,4 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
     isValidating,
     reinitialize: initializeAuth,
   };
-}; 
+};

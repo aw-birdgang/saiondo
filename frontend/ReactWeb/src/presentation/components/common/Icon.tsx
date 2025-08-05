@@ -3,8 +3,24 @@ import React from 'react';
 interface IconProps {
   icon: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'white' | 'gray';
-  background?: 'none' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'gray';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'white'
+    | 'gray';
+  background?:
+    | 'none'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'gray';
   rounded?: boolean;
   className?: string;
 }
@@ -15,7 +31,7 @@ const Icon: React.FC<IconProps> = ({
   color = 'gray',
   background = 'none',
   rounded = false,
-  className = ''
+  className = '',
 }) => {
   const getSizeClasses = () => {
     switch (size) {
@@ -57,7 +73,7 @@ const Icon: React.FC<IconProps> = ({
 
   const getBackgroundClass = () => {
     if (background === 'none') return '';
-    
+
     switch (background) {
       case 'primary':
         return 'bg-primary/10';
@@ -94,4 +110,4 @@ const Icon: React.FC<IconProps> = ({
   );
 };
 
-export default Icon; 
+export default Icon;

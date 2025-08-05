@@ -3,7 +3,14 @@ import React from 'react';
 interface CaptionProps {
   children: React.ReactNode;
   size?: 'xs' | 'sm';
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'muted';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'muted';
   align?: 'left' | 'center' | 'right' | 'justify';
   className?: string;
 }
@@ -13,7 +20,7 @@ const Caption: React.FC<CaptionProps> = ({
   size = 'sm',
   color = 'muted',
   align = 'left',
-  className = ''
+  className = '',
 }) => {
   const getSizeClass = () => {
     switch (size) {
@@ -67,4 +74,4 @@ const Caption: React.FC<CaptionProps> = ({
   );
 };
 
-export default Caption; 
+export default Caption;

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { useAnimation } from '../../hooks/useAnimation';
 import { useTimeout } from '../../hooks/useTimeout';
-import { LogoAnimation, LoadingDots, SplashProgressBar, SplashTagline } from '../common';
+import {
+  LogoAnimation,
+  LoadingDots,
+  SplashProgressBar,
+  SplashTagline,
+} from '../common';
 
 interface SplashAnimationProps {
   appName: string;
@@ -16,15 +21,17 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
   loadingMessage = 'Loading...',
   onAnimationComplete,
   duration = 2000,
-  className = ''
+  className = '',
 }) => {
-  const [animationPhase, setAnimationPhase] = useState<'logo' | 'loading' | 'complete'>('logo');
+  const [animationPhase, setAnimationPhase] = useState<
+    'logo' | 'loading' | 'complete'
+  >('logo');
 
   // Use custom hook for progress animation
   const { progress } = useAnimation(100, {
     duration,
     easing: 'linear',
-    autoStart: true
+    autoStart: true,
   });
 
   // Use custom hook for phase transitions
@@ -46,19 +53,18 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
   );
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-primary via-primary-container to-error flex items-center justify-center ${className}`}>
-      <div className="text-center text-white">
+    <div
+      className={`min-h-screen bg-gradient-to-br from-primary via-primary-container to-error flex items-center justify-center ${className}`}
+    >
+      <div className='text-center text-white'>
         {/* Logo Animation */}
-        <LogoAnimation
-          appName={appName}
-          isActive={animationPhase === 'logo'}
-        />
+        <LogoAnimation appName={appName} isActive={animationPhase === 'logo'} />
 
         {/* Loading Animation */}
         {animationPhase === 'loading' && (
-          <div className="space-y-6 animate-fade-in">
+          <div className='space-y-6 animate-fade-in'>
             <LoadingDots />
-            <p className="text-lg font-medium opacity-90">{loadingMessage}</p>
+            <p className='text-lg font-medium opacity-90'>{loadingMessage}</p>
           </div>
         )}
 
@@ -67,7 +73,7 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
 
         {/* Tagline */}
         <SplashTagline
-          text="사랑을 이어주는 커플 앱"
+          text='사랑을 이어주는 커플 앱'
           isVisible={animationPhase === 'complete'}
         />
       </div>
@@ -75,4 +81,4 @@ const SplashAnimation: React.FC<SplashAnimationProps> = ({
   );
 };
 
-export default SplashAnimation; 
+export default SplashAnimation;

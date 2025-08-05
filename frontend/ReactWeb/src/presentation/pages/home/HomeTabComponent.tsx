@@ -1,5 +1,5 @@
 import React from 'react';
-import {HomeDashboard} from "../../components/specific";
+import { HomeDashboard } from '../../components/specific';
 
 const HomeTab: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const HomeTab: React.FC = () => {
         totalChats: 12,
         activeChannels: 3,
         unreadMessages: 5,
-        lastActivity: '2시간 전'
+        lastActivity: '2시간 전',
       }}
     />
   );

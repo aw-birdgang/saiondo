@@ -10,7 +10,7 @@ import type {
   RemoveMemberRequest,
   RemoveMemberResponse,
   UpdateChannelRequest,
-  UpdateChannelResponse
+  UpdateChannelResponse,
 } from '../../dto/ChannelDto';
 
 // Channel Repository 인터페이스 - 데이터 접근만 담당
@@ -25,4 +25,4 @@ export interface IChannelRepository {
   getChannelMembers(channelId: string): Promise<string[]>;
   isMember(channelId: string, userId: string): Promise<boolean>;
   updateChannelStatus(channelId: string, status: string): Promise<boolean>;
-} 
+}

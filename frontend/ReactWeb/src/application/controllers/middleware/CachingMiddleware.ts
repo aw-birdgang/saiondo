@@ -1,5 +1,8 @@
 import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
-import type { ControllerContext, ControllerResult } from '../interfaces/IController';
+import type {
+  ControllerContext,
+  ControllerResult,
+} from '../interfaces/IController';
 import { Logger } from '../../../shared/utils/Logger';
 
 interface CacheEntry<T = any> {
@@ -33,9 +36,9 @@ export class CachingMiddleware extends BaseMiddleware {
     if (cachedEntry && !this.isExpired(cachedEntry)) {
       this.logger.info(`Cache hit for ${controllerName}.${operation}`, {
         flowId: context.requestId,
-        cacheKey
+        cacheKey,
       });
-      
+
       // 캐시된 결과를 context에 저장하여 afterExecute에서 사용
       (context as any).cachedResult = cachedEntry.data;
       (context as any).cacheKey = cacheKey;
@@ -57,19 +60,23 @@ export class CachingMiddleware extends BaseMiddleware {
 
     // 성공한 결과만 캐시
     if (result.success && result.data) {
-      const cacheKey = this.generateCacheKey(controllerName, operation, (context as any).metadata?.params);
+      const cacheKey = this.generateCacheKey(
+        controllerName,
+        operation,
+        (context as any).metadata?.params
+      );
       const ttl = this.getTTLForOperation(controllerName, operation);
-      
+
       this.cache.set(cacheKey, {
         data: result.data,
         timestamp: Date.now(),
-        ttl
+        ttl,
       });
 
       this.logger.info(`Cached result for ${controllerName}.${operation}`, {
         flowId: result.flowId,
         cacheKey,
-        ttl
+        ttl,
       });
     }
   }
@@ -81,21 +88,32 @@ export class CachingMiddleware extends BaseMiddleware {
     context: ControllerContext
   ): Promise<void> {
     // 에러 발생 시 캐시 무효화
-    const cacheKey = this.generateCacheKey(controllerName, operation, (context as any).metadata?.params);
+    const cacheKey = this.generateCacheKey(
+      controllerName,
+      operation,
+      (context as any).metadata?.params
+    );
     if (this.cache.has(cacheKey)) {
       this.cache.delete(cacheKey);
-      this.logger.info(`Invalidated cache for ${controllerName}.${operation} due to error`, {
-        flowId: context.requestId,
-        cacheKey,
-        error: error.message
-      });
+      this.logger.info(
+        `Invalidated cache for ${controllerName}.${operation} due to error`,
+        {
+          flowId: context.requestId,
+          cacheKey,
+          error: error.message,
+        }
+      );
     }
   }
 
   /**
    * 캐시 키 생성
    */
-  private generateCacheKey(controllerName: string, operation: string, params: any): string {
+  private generateCacheKey(
+    controllerName: string,
+    operation: string,
+    params: any
+  ): string {
     const paramsHash = JSON.stringify(params || {});
     return `${controllerName}:${operation}:${this.hashString(paramsHash)}`;
   }
@@ -107,7 +125,7 @@ export class CachingMiddleware extends BaseMiddleware {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // 32bit 정수로 변환
     }
     return hash.toString(36);
@@ -123,13 +141,16 @@ export class CachingMiddleware extends BaseMiddleware {
   /**
    * 작업별 TTL 설정
    */
-  private getTTLForOperation(controllerName: string, operation: string): number {
+  private getTTLForOperation(
+    controllerName: string,
+    operation: string
+  ): number {
     // 작업별로 다른 TTL 설정
     const ttlMap: Record<string, number> = {
       'UserController:getCurrentUser': 10 * 60 * 1000, // 10분
-      'UserController:getUserProfile': 5 * 60 * 1000,  // 5분
-      'ChannelController:getChannels': 2 * 60 * 1000,  // 2분
-      'MessageController:getMessages': 1 * 60 * 1000,  // 1분
+      'UserController:getUserProfile': 5 * 60 * 1000, // 5분
+      'ChannelController:getChannels': 2 * 60 * 1000, // 2분
+      'MessageController:getMessages': 1 * 60 * 1000, // 1분
     };
 
     const key = `${controllerName}:${operation}`;
@@ -154,7 +175,7 @@ export class CachingMiddleware extends BaseMiddleware {
       totalEntries,
       hitRate,
       totalHits,
-      totalRequests
+      totalRequests,
     };
   }
 
@@ -177,7 +198,9 @@ export class CachingMiddleware extends BaseMiddleware {
       }
     }
 
-    this.logger.info(`Cache invalidated for pattern: ${pattern}`, { clearedEntries: clearedCount });
+    this.logger.info(`Cache invalidated for pattern: ${pattern}`, {
+      clearedEntries: clearedCount,
+    });
     return clearedCount;
   }
 
@@ -194,9 +217,11 @@ export class CachingMiddleware extends BaseMiddleware {
     }
 
     if (cleanedCount > 0) {
-      this.logger.info('Expired cache entries cleaned', { cleanedEntries: cleanedCount });
+      this.logger.info('Expired cache entries cleaned', {
+        cleanedEntries: cleanedCount,
+      });
     }
 
     return cleanedCount;
   }
-} 
+}

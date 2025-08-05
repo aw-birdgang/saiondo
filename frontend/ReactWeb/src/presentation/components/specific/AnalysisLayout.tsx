@@ -1,15 +1,11 @@
-import React from "react";
-import type { AnalysisLayoutProps } from "../../pages/analysis/types/analysisTypes";
+import React from 'react';
+import type { AnalysisLayoutProps } from '../../pages/analysis/types/analysisTypes';
 
-const AnalysisLayout: React.FC<AnalysisLayoutProps> = ({ 
-  children, 
-  className = "" 
+const AnalysisLayout: React.FC<AnalysisLayoutProps> = ({
+  children,
+  className = '',
 }) => {
-  return (
-    <div className={`min-h-screen bg-bg ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`min-h-screen bg-bg ${className}`}>{children}</div>;
 };
 
-export default AnalysisLayout; 
+export default AnalysisLayout;

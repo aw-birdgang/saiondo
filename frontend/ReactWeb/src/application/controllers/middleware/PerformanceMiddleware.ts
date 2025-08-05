@@ -1,5 +1,8 @@
 import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
-import type { ControllerContext, ControllerResult } from '../interfaces/IController';
+import type {
+  ControllerContext,
+  ControllerResult,
+} from '../interfaces/IController';
 import { Logger } from '../../../shared/utils/Logger';
 
 /**
@@ -8,13 +11,16 @@ import { Logger } from '../../../shared/utils/Logger';
  */
 export class PerformanceMiddleware extends BaseMiddleware {
   private readonly logger = new Logger('PerformanceMiddleware');
-  private performanceMetrics: Map<string, {
-    totalExecutions: number;
-    totalTime: number;
-    minTime: number;
-    maxTime: number;
-    lastExecution: Date;
-  }> = new Map();
+  private performanceMetrics: Map<
+    string,
+    {
+      totalExecutions: number;
+      totalTime: number;
+      minTime: number;
+      maxTime: number;
+      lastExecution: Date;
+    }
+  > = new Map();
 
   constructor() {
     super('PerformanceMiddleware', 20);
@@ -45,7 +51,7 @@ export class PerformanceMiddleware extends BaseMiddleware {
       totalTime: 0,
       minTime: Infinity,
       maxTime: 0,
-      lastExecution: new Date()
+      lastExecution: new Date(),
     };
 
     currentMetrics.totalExecutions++;
@@ -57,13 +63,19 @@ export class PerformanceMiddleware extends BaseMiddleware {
     this.performanceMetrics.set(key, currentMetrics);
 
     // 성능 경고 로그
-    if (executionTime > 1000) { // 1초 이상
-      this.logger.warn(`Slow operation detected: ${key} took ${executionTime.toFixed(2)}ms`, {
-        flowId: result.flowId,
-        executionTime,
-        avgTime: (currentMetrics.totalTime / currentMetrics.totalExecutions).toFixed(2),
-        totalExecutions: currentMetrics.totalExecutions
-      });
+    if (executionTime > 1000) {
+      // 1초 이상
+      this.logger.warn(
+        `Slow operation detected: ${key} took ${executionTime.toFixed(2)}ms`,
+        {
+          flowId: result.flowId,
+          executionTime,
+          avgTime: (
+            currentMetrics.totalTime / currentMetrics.totalExecutions
+          ).toFixed(2),
+          totalExecutions: currentMetrics.totalExecutions,
+        }
+      );
     }
 
     // 성능 통계 로그 (주기적으로)
@@ -80,13 +92,13 @@ export class PerformanceMiddleware extends BaseMiddleware {
   ): Promise<void> {
     const key = `${controllerName}.${operation}`;
     const startTime = (context as any).startTime;
-    
+
     if (startTime) {
       const executionTime = performance.now() - startTime;
       this.logger.error(`Operation failed with performance impact: ${key}`, {
         flowId: context.requestId,
         executionTime: executionTime.toFixed(2),
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -96,13 +108,13 @@ export class PerformanceMiddleware extends BaseMiddleware {
    */
   private logPerformanceStats(key: string, metrics: any): void {
     const avgTime = metrics.totalTime / metrics.totalExecutions;
-    
+
     this.logger.info(`Performance stats for ${key}:`, {
       totalExecutions: metrics.totalExecutions,
       averageTime: avgTime.toFixed(2),
       minTime: metrics.minTime.toFixed(2),
       maxTime: metrics.maxTime.toFixed(2),
-      lastExecution: metrics.lastExecution
+      lastExecution: metrics.lastExecution,
     });
   }
 
@@ -111,14 +123,14 @@ export class PerformanceMiddleware extends BaseMiddleware {
    */
   getPerformanceMetrics(): Record<string, any> {
     const result: Record<string, any> = {};
-    
+
     for (const [key, metrics] of this.performanceMetrics.entries()) {
       result[key] = {
         ...metrics,
-        averageTime: metrics.totalTime / metrics.totalExecutions
+        averageTime: metrics.totalTime / metrics.totalExecutions,
       };
     }
-    
+
     return result;
   }
 
@@ -128,12 +140,12 @@ export class PerformanceMiddleware extends BaseMiddleware {
   getOperationMetrics(controllerName: string, operation: string): any {
     const key = `${controllerName}.${operation}`;
     const metrics = this.performanceMetrics.get(key);
-    
+
     if (!metrics) return null;
-    
+
     return {
       ...metrics,
-      averageTime: metrics.totalTime / metrics.totalExecutions
+      averageTime: metrics.totalTime / metrics.totalExecutions,
     };
   }
 
@@ -144,4 +156,4 @@ export class PerformanceMiddleware extends BaseMiddleware {
     this.performanceMetrics.clear();
     this.logger.info('Performance metrics cleared');
   }
-} 
+}

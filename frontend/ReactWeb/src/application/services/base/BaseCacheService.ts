@@ -21,13 +21,13 @@ export class MemoryCache implements ICache {
   get<T>(key: string): T | null {
     const item = this.cache.get(key);
     if (!item) return null;
-    
+
     // TTL 체크
     if (item.expiry && Date.now() > item.expiry) {
       this.cache.delete(key);
       return null;
     }
-    
+
     return item.value as T;
   }
 
@@ -70,7 +70,7 @@ export abstract class BaseCacheService {
    * 캐시에서 데이터 조회
    */
   protected async getCached<T>(
-    key: string, 
+    key: string,
     ttl: number = 300 // 기본 5분
   ): Promise<T | null> {
     try {
@@ -79,11 +79,13 @@ export abstract class BaseCacheService {
         this.logger?.debug(`Cache hit for key: ${key}`);
         return cached;
       }
-      
+
       this.logger?.debug(`Cache miss for key: ${key}`);
       return null;
     } catch (error) {
-      this.logger?.error(`Failed to get cached data for key: ${key}`, { error });
+      this.logger?.error(`Failed to get cached data for key: ${key}`, {
+        error,
+      });
       return null;
     }
   }
@@ -92,8 +94,8 @@ export abstract class BaseCacheService {
    * 캐시에 데이터 저장
    */
   protected async setCached<T>(
-    key: string, 
-    data: T, 
+    key: string,
+    data: T,
     ttl: number = 300
   ): Promise<void> {
     try {
@@ -112,7 +114,9 @@ export abstract class BaseCacheService {
       this.cache.delete(key);
       this.logger?.debug(`Invalidated cache for key: ${key}`);
     } catch (error) {
-      this.logger?.error(`Failed to invalidate cache for key: ${key}`, { error });
+      this.logger?.error(`Failed to invalidate cache for key: ${key}`, {
+        error,
+      });
     }
   }
 
@@ -123,16 +127,18 @@ export abstract class BaseCacheService {
     try {
       const keys = this.cache.keys();
       const regex = new RegExp(pattern);
-      
+
       for (const key of keys) {
         if (regex.test(key)) {
           this.cache.delete(key);
         }
       }
-      
+
       this.logger?.debug(`Invalidated cache pattern: ${pattern}`);
     } catch (error) {
-      this.logger?.error(`Failed to invalidate cache pattern: ${pattern}`, { error });
+      this.logger?.error(`Failed to invalidate cache pattern: ${pattern}`, {
+        error,
+      });
     }
   }
 
@@ -144,7 +150,7 @@ export abstract class BaseCacheService {
     return {
       totalKeys: keys.length,
       keys,
-      size: keys.length
+      size: keys.length,
     };
   }
 
@@ -163,8 +169,11 @@ export abstract class BaseCacheService {
   /**
    * 캐시 키 생성
    */
-  protected generateCacheKey(prefix: string, ...parts: (string | number)[]): string {
-    const sanitizedParts = parts.map(part => 
+  protected generateCacheKey(
+    prefix: string,
+    ...parts: (string | number)[]
+  ): string {
+    const sanitizedParts = parts.map(part =>
       String(part).replace(/[^a-zA-Z0-9_-]/g, '_')
     );
     return `${prefix}:${sanitizedParts.join(':')}`;
@@ -175,17 +184,17 @@ export abstract class BaseCacheService {
    */
   protected calculateTTL(dataType: CacheDataType): number {
     const ttlMap: Record<CacheDataType, number> = {
-      user_profile: 300,      // 5분
-      channel_info: 600,      // 10분
-      channel_list: 180,      // 3분
-      message_list: 120,      // 2분
+      user_profile: 300, // 5분
+      channel_info: 600, // 10분
+      channel_list: 180, // 3분
+      message_list: 120, // 2분
       analytics_report: 1800, // 30분
-      search_results: 300,    // 5분
-      permissions: 900,       // 15분
-      temporary: 60,          // 1분
-      session: 3600          // 1시간
+      search_results: 300, // 5분
+      permissions: 900, // 15분
+      temporary: 60, // 1분
+      session: 3600, // 1시간
     };
-    
+
     return ttlMap[dataType] || 300;
   }
 }
@@ -196,7 +205,7 @@ export interface CacheStats {
   size: number;
 }
 
-export type CacheDataType = 
+export type CacheDataType =
   | 'user_profile'
   | 'channel_info'
   | 'channel_list'
@@ -205,4 +214,4 @@ export type CacheDataType =
   | 'search_results'
   | 'permissions'
   | 'temporary'
-  | 'session'; 
+  | 'session';

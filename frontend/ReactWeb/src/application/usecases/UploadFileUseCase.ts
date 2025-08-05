@@ -1,5 +1,8 @@
 import { FileService } from '../services/FileService';
-import type { FileUploadRequest, FileUploadResponse } from '../dto/UploadFileDto';
+import type {
+  FileUploadRequest,
+  FileUploadResponse,
+} from '../dto/UploadFileDto';
 
 export class UploadFileUseCase {
   constructor(private readonly fileService: FileService) {}
@@ -8,7 +11,9 @@ export class UploadFileUseCase {
     return await this.fileService.uploadFile(request);
   }
 
-  async validateFile(file: File): Promise<{ isValid: boolean; error?: string }> {
+  async validateFile(
+    file: File
+  ): Promise<{ isValid: boolean; error?: string }> {
     return await this.fileService.validateFile(file);
   }
 
@@ -19,4 +24,4 @@ export class UploadFileUseCase {
   getMaxFileSize(): number {
     return this.fileService.getMaxFileSize();
   }
-} 
+}

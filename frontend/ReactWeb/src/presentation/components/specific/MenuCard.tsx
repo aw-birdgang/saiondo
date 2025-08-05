@@ -1,5 +1,5 @@
-import React from "react";
-import { Card, MenuIcon, MenuItemContent } from "../common";
+import React from 'react';
+import { Card, MenuIcon, MenuItemContent } from '../common';
 
 interface MenuItem {
   id: string;
@@ -14,22 +14,19 @@ interface MenuCardProps {
   className?: string;
 }
 
-const MenuCard: React.FC<MenuCardProps> = ({ item, className = "" }) => {
+const MenuCard: React.FC<MenuCardProps> = ({ item, className = '' }) => {
   return (
     <Card
       onClick={item.onClick}
       hoverable
       className={`text-left cursor-pointer transition-all duration-200 hover:scale-[1.02] ${className}`}
     >
-      <div className="flex items-center space-x-4">
-        <MenuIcon icon={item.icon} size="md" />
-        <MenuItemContent
-          title={item.title}
-          description={item.description}
-        />
+      <div className='flex items-center space-x-4'>
+        <MenuIcon icon={item.icon} size='md' />
+        <MenuItemContent title={item.title} description={item.description} />
       </div>
     </Card>
   );
 };
 
-export default MenuCard; 
+export default MenuCard;

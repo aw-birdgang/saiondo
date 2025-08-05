@@ -16,16 +16,16 @@ const Grid: React.FC<GridProps> = ({
   children,
   cols = { sm: 1, md: 2, lg: 3 },
   gap = 'md',
-  className = ''
+  className = '',
 }) => {
   const getColsClasses = () => {
     const classes = ['grid'];
-    
+
     if (cols.sm) classes.push(`grid-cols-${cols.sm}`);
     if (cols.md) classes.push(`md:grid-cols-${cols.md}`);
     if (cols.lg) classes.push(`lg:grid-cols-${cols.lg}`);
     if (cols.xl) classes.push(`xl:grid-cols-${cols.xl}`);
-    
+
     return classes.join(' ');
   };
 
@@ -51,4 +51,4 @@ const Grid: React.FC<GridProps> = ({
   );
 };
 
-export default Grid; 
+export default Grid;

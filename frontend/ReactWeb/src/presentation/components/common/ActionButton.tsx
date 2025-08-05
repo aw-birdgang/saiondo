@@ -19,7 +19,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   disabled = false,
   loading = false,
   fullWidth = false,
-  className = ''
+  className = '',
 }) => {
   const getVariantClasses = () => {
     switch (variant) {
@@ -62,8 +62,8 @@ const ActionButton: React.FC<ActionButtonProps> = ({
       `}
     >
       {loading ? (
-        <div className="flex items-center justify-center space-x-2">
-          <div className="spinner" />
+        <div className='flex items-center justify-center space-x-2'>
+          <div className='spinner' />
           <span>처리 중...</span>
         </div>
       ) : (
@@ -73,4 +73,4 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   );
 };
 
-export default ActionButton; 
+export default ActionButton;

@@ -23,4 +23,4 @@ export const useAuth = () => {
     setLoading: authStore.setLoading,
     setError: authStore.setError,
   };
-}; 
+};

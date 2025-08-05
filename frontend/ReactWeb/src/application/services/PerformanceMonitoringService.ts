@@ -1,7 +1,11 @@
-import type {IUserRepository} from '../../domain/repositories/IUserRepository';
-import type {IChannelRepository} from '../../domain/repositories/IChannelRepository';
-import type {IMessageRepository} from '../../domain/repositories/IMessageRepository';
-import type {PerformanceAlert, PerformanceMetric, PerformanceReport} from '../dto/PerformanceDto';
+import type { IUserRepository } from '../../domain/repositories/IUserRepository';
+import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
+import type {
+  PerformanceAlert,
+  PerformanceMetric,
+  PerformanceReport,
+} from '../dto/PerformanceDto';
 
 export class PerformanceMonitoringService {
   private metrics: PerformanceMetric[] = [];
@@ -72,7 +76,8 @@ export class PerformanceMonitoringService {
    */
   generateReport(timeRange: { start: Date; end: Date }): PerformanceReport {
     const filteredMetrics = this.metrics.filter(
-      metric => metric.timestamp >= timeRange.start && metric.timestamp <= timeRange.end
+      metric =>
+        metric.timestamp >= timeRange.start && metric.timestamp <= timeRange.end
     );
 
     if (filteredMetrics.length === 0) {
@@ -89,14 +94,17 @@ export class PerformanceMonitoringService {
       };
     }
 
-    const durations = filteredMetrics.map(m => m.duration).sort((a, b) => a - b);
+    const durations = filteredMetrics
+      .map(m => m.duration)
+      .sort((a, b) => a - b);
     const successfulOperations = filteredMetrics.filter(m => m.success);
     const failedOperations = filteredMetrics.filter(m => !m.success);
 
     // 작업 타입별 통계
     const operationsByType: Record<string, number> = {};
     filteredMetrics.forEach(metric => {
-      operationsByType[metric.operation] = (operationsByType[metric.operation] || 0) + 1;
+      operationsByType[metric.operation] =
+        (operationsByType[metric.operation] || 0) + 1;
     });
 
     // 가장 느린 작업들
@@ -112,7 +120,8 @@ export class PerformanceMonitoringService {
 
     return {
       totalOperations: filteredMetrics.length,
-      averageResponseTime: durations.reduce((sum, d) => sum + d, 0) / durations.length,
+      averageResponseTime:
+        durations.reduce((sum, d) => sum + d, 0) / durations.length,
       p95ResponseTime: this.calculatePercentile(durations, 95),
       p99ResponseTime: this.calculatePercentile(durations, 99),
       errorRate: failedOperations.length / filteredMetrics.length,
@@ -135,7 +144,10 @@ export class PerformanceMonitoringService {
     }
 
     // 로그 출력
-    console.warn(`[Performance Alert] ${alert.severity.toUpperCase()}: ${alert.message}`, alert.metadata);
+    console.warn(
+      `[Performance Alert] ${alert.severity.toUpperCase()}: ${alert.message}`,
+      alert.metadata
+    );
   }
 
   /**
@@ -159,21 +171,29 @@ export class PerformanceMonitoringService {
 
     // 느린 응답 시간 권장사항
     if (recentReport.averageResponseTime > 500) {
-      recommendations.push('평균 응답 시간이 500ms를 초과합니다. 캐싱을 고려해보세요.');
+      recommendations.push(
+        '평균 응답 시간이 500ms를 초과합니다. 캐싱을 고려해보세요.'
+      );
     }
 
     if (recentReport.p95ResponseTime > 1000) {
-      recommendations.push('95% 응답 시간이 1초를 초과합니다. 데이터베이스 쿼리를 최적화하세요.');
+      recommendations.push(
+        '95% 응답 시간이 1초를 초과합니다. 데이터베이스 쿼리를 최적화하세요.'
+      );
     }
 
     // 에러율 권장사항
     if (recentReport.errorRate > 0.01) {
-      recommendations.push('에러율이 1%를 초과합니다. 에러 처리 로직을 점검하세요.');
+      recommendations.push(
+        '에러율이 1%를 초과합니다. 에러 처리 로직을 점검하세요.'
+      );
     }
 
     // 느린 작업별 권장사항
     recentReport.slowestOperations.forEach(operation => {
-      recommendations.push(`${operation.operation} 작업이 ${operation.duration}ms로 느립니다. 최적화가 필요합니다.`);
+      recommendations.push(
+        `${operation.operation} 작업이 ${operation.duration}ms로 느립니다. 최적화가 필요합니다.`
+      );
     });
 
     return recommendations;
@@ -211,7 +231,10 @@ export class PerformanceMonitoringService {
   /**
    * 특정 작업의 성능 통계
    */
-  getOperationStats(operation: string, timeRange?: { start: Date; end: Date }): {
+  getOperationStats(
+    operation: string,
+    timeRange?: { start: Date; end: Date }
+  ): {
     count: number;
     averageDuration: number;
     errorRate: number;
@@ -241,7 +264,8 @@ export class PerformanceMonitoringService {
 
     return {
       count: filteredMetrics.length,
-      averageDuration: durations.reduce((sum, d) => sum + d, 0) / durations.length,
+      averageDuration:
+        durations.reduce((sum, d) => sum + d, 0) / durations.length,
       errorRate: errors / filteredMetrics.length,
       minDuration: Math.min(...durations),
       maxDuration: Math.max(...durations),
@@ -253,12 +277,17 @@ export class PerformanceMonitoringService {
     return values[index] || 0;
   }
 
-  private checkPerformanceAlerts(operation: string, duration: number, success: boolean): void {
+  private checkPerformanceAlerts(
+    operation: string,
+    duration: number,
+    success: boolean
+  ): void {
     // 느린 응답 시간 알림
     if (duration > this.slowThreshold) {
       this.createAlert({
         type: 'slow_response',
-        severity: duration > 5000 ? 'critical' : duration > 2000 ? 'high' : 'medium',
+        severity:
+          duration > 5000 ? 'critical' : duration > 2000 ? 'high' : 'medium',
         message: `${operation} 작업이 ${duration}ms로 느립니다.`,
         timestamp: new Date(),
         metadata: { operation, duration },
@@ -284,7 +313,8 @@ export class PerformanceMonitoringService {
     );
 
     if (recentMetrics.length > 10) {
-      const errorRate = recentMetrics.filter(m => !m.success).length / recentMetrics.length;
+      const errorRate =
+        recentMetrics.filter(m => !m.success).length / recentMetrics.length;
       if (errorRate > this.errorRateThreshold) {
         this.createAlert({
           type: 'high_error_rate',

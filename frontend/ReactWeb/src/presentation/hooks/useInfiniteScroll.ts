@@ -19,7 +19,7 @@ export const useInfiniteScroll = <T>({
   onLoadMore,
   threshold = 0.1,
   rootMargin = '100px',
-  throttleDelay = 100
+  throttleDelay = 100,
 }: UseInfiniteScrollOptions<T>) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
@@ -39,7 +39,7 @@ export const useInfiniteScroll = <T>({
   const { ref, isIntersecting } = useIntersectionObserver({
     threshold,
     rootMargin,
-    freezeOnceVisible: false
+    freezeOnceVisible: false,
   });
 
   useEffect(() => {
@@ -53,6 +53,6 @@ export const useInfiniteScroll = <T>({
     isLoadingMore,
     isIntersecting,
     hasMore,
-    data
+    data,
   };
-}; 
+};

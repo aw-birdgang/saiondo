@@ -4,7 +4,10 @@ import { ko } from 'date-fns/locale';
 import { Button } from '../../common';
 import { cn } from '../../../../utils/cn';
 import { VIEW_MODE_OPTIONS } from '../../../pages/calendar/constants/calendarData';
-import type { CalendarHeaderProps, ViewMode } from '../../../pages/calendar/types/calendarTypes';
+import type {
+  CalendarHeaderProps,
+  ViewMode,
+} from '../../../pages/calendar/types/calendarTypes';
 
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   currentDate,
@@ -13,7 +16,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onNext,
   onToday,
   onViewModeChange,
-  className
+  className,
 }) => {
   const getDateDisplay = () => {
     switch (viewMode) {
@@ -29,46 +32,40 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <div className={cn("flex items-center justify-between p-4 bg-surface border-b border-border", className)}>
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
+    <div
+      className={cn(
+        'flex items-center justify-between p-4 bg-surface border-b border-border',
+        className
+      )}
+    >
+      <div className='flex items-center space-x-4'>
+        <div className='flex items-center space-x-2'>
           <Button
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
             onClick={onPrevious}
-            className="p-2"
+            className='p-2'
           >
             ←
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onNext}
-            className="p-2"
-          >
+          <Button variant='ghost' size='sm' onClick={onNext} className='p-2'>
             →
           </Button>
         </div>
-        
-        <h1 className="text-xl font-semibold text-txt">
-          {getDateDisplay()}
-        </h1>
-        
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onToday}
-        >
+
+        <h1 className='text-xl font-semibold text-txt'>{getDateDisplay()}</h1>
+
+        <Button variant='outline' size='sm' onClick={onToday}>
           오늘
         </Button>
       </div>
 
-      <div className="flex items-center space-x-2">
-        {VIEW_MODE_OPTIONS.map((option) => (
+      <div className='flex items-center space-x-2'>
+        {VIEW_MODE_OPTIONS.map(option => (
           <Button
             key={option.value}
             variant={viewMode === option.value ? 'primary' : 'outline'}
-            size="sm"
+            size='sm'
             onClick={() => onViewModeChange(option.value as ViewMode)}
           >
             {option.label}
@@ -79,4 +76,4 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   );
 };
 
-export default CalendarHeader; 
+export default CalendarHeader;

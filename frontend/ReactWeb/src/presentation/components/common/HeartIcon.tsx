@@ -24,13 +24,15 @@ const HeartIcon: React.FC<HeartIconProps> = ({
 
   return (
     <div className={`${getSizeClasses(size)} ${className}`}>
-      <span className={`text-pink-500 transition-all duration-300 ${
-        animated ? 'animate-pulse hover:scale-110' : 'hover:scale-105'
-      }`}>
+      <span
+        className={`text-pink-500 transition-all duration-300 ${
+          animated ? 'animate-pulse hover:scale-110' : 'hover:scale-105'
+        }`}
+      >
         ❤️
       </span>
     </div>
   );
 };
 
-export default HeartIcon; 
+export default HeartIcon;

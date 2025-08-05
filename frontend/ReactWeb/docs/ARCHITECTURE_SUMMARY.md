@@ -2,7 +2,7 @@
 
 ## 📋 프로젝트 개요
 
-ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로 리팩토링되었습니다. 
+ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로 리팩토링되었습니다.
 이 문서는 리팩토링 과정과 최종 아키텍처 구조를 상세히 설명합니다.
 
 ## 🎯 리팩토링 목표
@@ -70,11 +70,13 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 ### **1단계: 복잡한 Use Case 식별 및 Service Layer 도입**
 
 **대상 Use Cases:**
+
 - `UserActivityLogUseCase` → `UserActivityService`
 - `UserPermissionUseCase` → `UserPermissionService`
 - `RealTimeChatUseCase` → `RealTimeChatService`
 
 **변경 사항:**
+
 - 복잡한 비즈니스 로직을 Service로 이동
 - Use Case는 Service 호출만 담당
 - 의존성 주입 패턴 적용
@@ -82,11 +84,13 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 ### **2단계: 공통 비즈니스 로직 Service 추출**
 
 **대상 Use Cases:**
+
 - `NotificationUseCase` → `NotificationService`
 - `UploadFileUseCase` → `FileService`
 - `CacheUseCase` → `CacheService`
 
 **변경 사항:**
+
 - 재사용 가능한 비즈니스 로직 분리
 - 설정 기반 Service 초기화
 - 에러 처리 및 로깅 통합
@@ -94,10 +98,12 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 ### **3단계: 모니터링 및 WebSocket Service 확장**
 
 **대상 Use Cases:**
+
 - `MonitoringUseCase` → `MonitoringService`
 - `WebSocketUseCase` → `WebSocketService`
 
 **변경 사항:**
+
 - 실시간 모니터링 기능 강화
 - WebSocket 연결 관리 개선
 - 이벤트 기반 아키텍처 적용
@@ -105,11 +111,13 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 ### **4단계: 고급 기능 통합**
 
 **새로운 Services:**
+
 - `PerformanceMonitoringService` - 성능 측정 및 최적화
 - `ErrorHandlingService` - 중앙화된 에러 처리
 - `AnalyticsService` - 사용자 행동 분석
 
 **변경 사항:**
+
 - 성능 메트릭 수집 및 분석
 - 글로벌 에러 핸들링
 - 사용자 이탈 예측
@@ -117,11 +125,13 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 ### **5단계: 실전 적용 및 최적화**
 
 **새로운 Services:**
+
 - `MultiLevelCacheService` - 계층화된 캐싱
 - `SecurityService` - 포괄적인 보안 관리
 - `SystemHealthService` - 시스템 통합 모니터링
 
 **변경 사항:**
+
 - L1/L2/L3 캐시 시스템
 - Rate Limiting, XSS/CSRF 방지
 - 실시간 시스템 건강 상태 모니터링
@@ -129,9 +139,11 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 ### **6단계: 고급 최적화 및 프로덕션 준비**
 
 **새로운 Use Case:**
+
 - `SystemManagementUseCase` - 모든 고급 기능 통합 관리
 
 **변경 사항:**
+
 - 시스템 백업 및 복구
 - 자동 최적화 권장사항
 - 유지보수 작업 자동화
@@ -140,32 +152,32 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 
 ### **코드 품질 개선**
 
-| 항목 | 리팩토링 전 | 리팩토링 후 | 개선율 |
-|------|-------------|-------------|--------|
-| Service 개수 | 8개 | 15개 | +87.5% |
-| Use Case 개수 | 10개 | 13개 | +30% |
-| 코드 재사용성 | 낮음 | 높음 | +200% |
-| 테스트 용이성 | 보통 | 높음 | +150% |
-| 확장성 | 제한적 | 높음 | +300% |
+| 항목          | 리팩토링 전 | 리팩토링 후 | 개선율 |
+| ------------- | ----------- | ----------- | ------ |
+| Service 개수  | 8개         | 15개        | +87.5% |
+| Use Case 개수 | 10개        | 13개        | +30%   |
+| 코드 재사용성 | 낮음        | 높음        | +200%  |
+| 테스트 용이성 | 보통        | 높음        | +150%  |
+| 확장성        | 제한적      | 높음        | +300%  |
 
 ### **성능 개선**
 
-| 기능 | 리팩토링 전 | 리팩토링 후 | 개선율 |
-|------|-------------|-------------|--------|
-| 캐시 히트율 | 60% | 85% | +41.7% |
-| 응답 시간 | 500ms | 200ms | +60% |
-| 에러 처리 | 수동 | 자동 | +100% |
-| 모니터링 | 기본 | 고급 | +200% |
+| 기능        | 리팩토링 전 | 리팩토링 후 | 개선율 |
+| ----------- | ----------- | ----------- | ------ |
+| 캐시 히트율 | 60%         | 85%         | +41.7% |
+| 응답 시간   | 500ms       | 200ms       | +60%   |
+| 에러 처리   | 수동        | 자동        | +100%  |
+| 모니터링    | 기본        | 고급        | +200%  |
 
 ### **보안 강화**
 
-| 보안 기능 | 리팩토링 전 | 리팩토링 후 |
-|-----------|-------------|-------------|
-| 입력 검증 | 부분적 | 포괄적 |
-| Rate Limiting | 없음 | 자동화 |
-| XSS 방지 | 기본 | 고급 |
-| CSRF 보호 | 없음 | 완전 |
-| IP 차단 | 수동 | 자동 |
+| 보안 기능     | 리팩토링 전 | 리팩토링 후 |
+| ------------- | ----------- | ----------- |
+| 입력 검증     | 부분적      | 포괄적      |
+| Rate Limiting | 없음        | 자동화      |
+| XSS 방지      | 기본        | 고급        |
+| CSRF 보호     | 없음        | 완전        |
+| IP 차단       | 수동        | 자동        |
 
 ## 🚀 핵심 기능
 
@@ -173,7 +185,7 @@ ReactWeb 프로젝트가 **Clean Architecture** 원칙에 따라 성공적으로
 
 ```typescript
 // L1: 자주 접근하는 데이터 (1분 TTL)
-// L2: 중간 빈도 데이터 (5분 TTL)  
+// L2: 중간 빈도 데이터 (5분 TTL)
 // L3: 덜 자주 접근하는 데이터 (30분 TTL)
 
 const cacheService = new MultiLevelCacheService(
@@ -201,13 +213,13 @@ const securityService = new SecurityService({
   enableXSSProtection: true,
   enableCSRFProtection: true,
   maxRequestSize: 10 * 1024 * 1024, // 10MB
-  sessionTimeout: 30 * 60 * 1000,   // 30분
+  sessionTimeout: 30 * 60 * 1000, // 30분
 });
 
 // Rate Limiting
 const rateLimit = securityService.checkRateLimit(userId, {
   windowMs: 60000,
-  maxRequests: 100
+  maxRequests: 100,
 });
 
 // 입력 검증
@@ -230,7 +242,8 @@ const health = await systemHealthService.getSystemHealth();
 const metrics = await systemHealthService.getSystemMetrics();
 
 // 최적화 권장사항
-const recommendations = await systemHealthService.getOptimizationRecommendations();
+const recommendations =
+  await systemHealthService.getOptimizationRecommendations();
 ```
 
 ### **4. 사용자 행동 분석**
@@ -396,7 +409,7 @@ describe('SystemManagementUseCase', () => {
 
 ## 📝 결론
 
-ReactWeb 프로젝트의 Clean Architecture 리팩토링이 성공적으로 완료되었습니다. 
+ReactWeb 프로젝트의 Clean Architecture 리팩토링이 성공적으로 완료되었습니다.
 
 ### **주요 성과:**
 
@@ -417,4 +430,4 @@ ReactWeb 프로젝트의 Clean Architecture 리팩토링이 성공적으로 완�
 
 ---
 
-**🎉 리팩토링 완료! 프로덕션 준비 완료! 🚀** 
+**🎉 리팩토링 완료! 프로덕션 준비 완료! 🚀**

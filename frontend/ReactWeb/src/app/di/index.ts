@@ -10,27 +10,27 @@ export const initializeServices = (token?: string) => {
     if (token) {
       initializeFileUploadService(token);
     }
-    
+
     // WebSocket 서비스 초기화 (토큰이 있으면 인증된 상태로)
     if (token) {
       initializeWebSocket({
         url: import.meta.env.VITE_WEBSOCKET_URL || 'ws://localhost:3001',
         token,
         reconnectInterval: 3000,
-        maxReconnectAttempts: 5
+        maxReconnectAttempts: 5,
       });
     }
-    
+
     // 결제 서비스 초기화 (토큰이 있으면 인증된 상태로)
     if (token) {
       initializePaymentService(token);
     }
-    
+
     // 푸시 알림 서비스 초기화 (토큰이 있으면 인증된 상태로)
     if (token) {
       initializePushNotificationService(token);
     }
-    
+
     console.log('Services initialized successfully', { hasToken: !!token });
   } catch (error) {
     console.error('Failed to initialize services:', error);
@@ -40,9 +40,9 @@ export const initializeServices = (token?: string) => {
 // Container and core DI functionality
 export { container, DIContainer, getContainer } from './container';
 export { DI_TOKENS, type DIToken } from './tokens';
-export { 
-  type ApiConfig, 
-  type WebSocketConfig, 
+export {
+  type ApiConfig,
+  type WebSocketConfig,
   type AppConfig,
   defaultApiConfig,
   defaultWebSocketConfig,
@@ -65,4 +65,4 @@ export {
 } from './useDI';
 
 // Re-export for convenience
-export { container as di } from './container'; 
+export { container as di } from './container';

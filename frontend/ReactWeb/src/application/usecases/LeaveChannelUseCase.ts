@@ -1,6 +1,9 @@
 import type { ChannelService } from '../services/ChannelService';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { LeaveChannelRequest, LeaveChannelResponse } from '../dto/LeaveChannelDto';
+import type {
+  LeaveChannelRequest,
+  LeaveChannelResponse,
+} from '../dto/LeaveChannelDto';
 
 export class LeaveChannelUseCase {
   constructor(private readonly channelService: ChannelService) {}
@@ -9,7 +12,9 @@ export class LeaveChannelUseCase {
     try {
       // Validate request
       if (!request.channelId || request.channelId.trim().length === 0) {
-        throw DomainErrorFactory.createChannelValidation('Channel ID is required');
+        throw DomainErrorFactory.createChannelValidation(
+          'Channel ID is required'
+        );
       }
 
       if (!request.userId || request.userId.trim().length === 0) {
@@ -20,14 +25,21 @@ export class LeaveChannelUseCase {
       const channel = await this.channelService.getChannel(request.channelId);
 
       // Check if user is member of the channel
-      const isMember = await this.channelService.isMember(request.channelId, request.userId);
+      const isMember = await this.channelService.isMember(
+        request.channelId,
+        request.userId
+      );
       if (!isMember) {
-        throw DomainErrorFactory.createChannelValidation('User is not a member of this channel');
+        throw DomainErrorFactory.createChannelValidation(
+          'User is not a member of this channel'
+        );
       }
 
       // Check if user is the owner (owners cannot leave, they must transfer ownership first)
       if (channel.ownerId === request.userId) {
-        throw DomainErrorFactory.createChannelValidation('Channel owner cannot leave. Transfer ownership first.');
+        throw DomainErrorFactory.createChannelValidation(
+          'Channel owner cannot leave. Transfer ownership first.'
+        );
       }
 
       // Remove user from channel
@@ -41,7 +53,9 @@ export class LeaveChannelUseCase {
       if (error instanceof Error) {
         throw error;
       }
-      throw DomainErrorFactory.createChannelValidation('Failed to leave channel');
+      throw DomainErrorFactory.createChannelValidation(
+        'Failed to leave channel'
+      );
     }
   }
 }

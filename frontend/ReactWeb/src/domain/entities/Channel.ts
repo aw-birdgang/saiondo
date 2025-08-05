@@ -20,7 +20,9 @@ export class ChannelEntity {
   }
 
   // Factory method
-  static create(channelData: Omit<Channel, 'id' | 'createdAt' | 'updatedAt' | 'unreadCount'>): ChannelEntity {
+  static create(
+    channelData: Omit<Channel, 'id' | 'createdAt' | 'updatedAt' | 'unreadCount'>
+  ): ChannelEntity {
     return new ChannelEntity(
       crypto.randomUUID(),
       channelData.name,
@@ -59,27 +61,27 @@ export class ChannelEntity {
     if (!this._id || this._id.trim().length === 0) {
       throw new Error('Channel ID is required');
     }
-    
+
     if (!this._name || this._name.trim().length === 0) {
       throw new Error('Channel name is required');
     }
-    
+
     if (this._name.length > 50) {
       throw new Error('Channel name must be less than 50 characters');
     }
-    
+
     if (this._description && this._description.length > 200) {
       throw new Error('Channel description must be less than 200 characters');
     }
-    
+
     if (!this._ownerId || this._ownerId.trim().length === 0) {
       throw new Error('Channel owner is required');
     }
-    
+
     if (!this._members.includes(this._ownerId)) {
       throw new Error('Channel owner must be a member');
     }
-    
+
     if (this._type === 'direct' && this._members.length !== 2) {
       throw new Error('Direct channels must have exactly 2 members');
     }
@@ -90,11 +92,11 @@ export class ChannelEntity {
     if (this._members.includes(userId)) {
       throw new Error('User is already a member of this channel');
     }
-    
+
     if (this.isFull()) {
       throw new Error('Channel is full');
     }
-    
+
     return new ChannelEntity(
       this._id,
       this._name,
@@ -115,11 +117,11 @@ export class ChannelEntity {
     if (!this._members.includes(userId)) {
       throw new Error('User is not a member of this channel');
     }
-    
+
     if (userId === this._ownerId) {
       throw new Error('Cannot remove channel owner');
     }
-    
+
     return new ChannelEntity(
       this._id,
       this._name,
@@ -194,35 +196,59 @@ export class ChannelEntity {
     if (this._type === ChannelType.DIRECT) {
       return false;
     }
-    
+
     if (this._members.includes(userId)) {
       return false;
     }
-    
+
     if (this._blockedUsers.includes(userId)) {
       return false;
     }
-    
+
     if (this.isFull()) {
       return false;
     }
-    
+
     return this._type === ChannelType.PUBLIC;
   }
 
   // Getters
-  get id(): string { return this._id; }
-  get name(): string { return this._name; }
-  get description(): string | undefined { return this._description; }
-  get type(): ChannelType { return this._type; }
-  get ownerId(): string { return this._ownerId; }
-  get members(): string[] { return [...this._members]; }
-  get blockedUsers(): string[] { return [...this._blockedUsers]; }
-  get maxMembers(): number { return this._maxMembers; }
-  get createdAt(): Date { return this._createdAt; }
-  get updatedAt(): Date { return this._updatedAt; }
-  get lastMessageAt(): Date | undefined { return this._lastMessageAt; }
-  get unreadCount(): number { return this._unreadCount; }
+  get id(): string {
+    return this._id;
+  }
+  get name(): string {
+    return this._name;
+  }
+  get description(): string | undefined {
+    return this._description;
+  }
+  get type(): ChannelType {
+    return this._type;
+  }
+  get ownerId(): string {
+    return this._ownerId;
+  }
+  get members(): string[] {
+    return [...this._members];
+  }
+  get blockedUsers(): string[] {
+    return [...this._blockedUsers];
+  }
+  get maxMembers(): number {
+    return this._maxMembers;
+  }
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
+  get lastMessageAt(): Date | undefined {
+    return this._lastMessageAt;
+  }
+  get unreadCount(): number {
+    return this._unreadCount;
+  }
 
   // Data transfer
   toJSON(): Channel {
@@ -241,4 +267,4 @@ export class ChannelEntity {
       unreadCount: this._unreadCount,
     };
   }
-} 
+}

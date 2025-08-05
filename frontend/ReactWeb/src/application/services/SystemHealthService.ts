@@ -12,7 +12,7 @@ import type {
   SystemMetrics,
   OptimizationRecommendation,
   SystemBackup,
-  RestartPreparation
+  RestartPreparation,
 } from '../dto/SystemHealthDto';
 
 export class SystemHealthService {
@@ -99,7 +99,9 @@ export class SystemHealthService {
 
       // 컴포넌트별 상태 업데이트
       healthChecks.forEach(check => {
-        this.healthStatus.components[check.component as keyof SystemHealthStatus['components']] = check.status;
+        this.healthStatus.components[
+          check.component as keyof SystemHealthStatus['components']
+        ] = check.status;
       });
 
       // 전체 상태 결정
@@ -116,8 +118,10 @@ export class SystemHealthService {
 
       return this.healthStatus;
     } catch (error) {
-      this.errorService.logError(error as Error, { context: 'SystemHealthService.getSystemHealth' });
-      
+      this.errorService.logError(error as Error, {
+        context: 'SystemHealthService.getSystemHealth',
+      });
+
       // 에러 발생 시 degraded 상태로 설정
       this.healthStatus.overall = 'degraded';
       this.healthStatus.alerts.push({
@@ -135,15 +139,19 @@ export class SystemHealthService {
    * 실시간 시스템 메트릭 조회
    */
   async getSystemMetrics(): Promise<SystemMetrics> {
-    const [performanceStats, securityReport, cacheStats, realTimeActivity] = await Promise.all([
-      this.performanceService.generateReport({ start: new Date(Date.now() - 24 * 60 * 60 * 1000), end: new Date() }),
-      this.securityService.generateSecurityReport({
-        start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
-        end: new Date(),
-      }),
-      this.cacheService.getStats(),
-      this.analyticsService.getRealTimeActivity(),
-    ]);
+    const [performanceStats, securityReport, cacheStats, realTimeActivity] =
+      await Promise.all([
+        this.performanceService.generateReport({
+          start: new Date(Date.now() - 24 * 60 * 60 * 1000),
+          end: new Date(),
+        }),
+        this.securityService.generateSecurityReport({
+          start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
+          end: new Date(),
+        }),
+        this.cacheService.getStats(),
+        this.analyticsService.getRealTimeActivity(),
+      ]);
 
     return {
       performance: {
@@ -178,7 +186,9 @@ export class SystemHealthService {
   /**
    * 시스템 최적화 권장사항
    */
-  async getOptimizationRecommendations(): Promise<Array<OptimizationRecommendation>> {
+  async getOptimizationRecommendations(): Promise<
+    Array<OptimizationRecommendation>
+  > {
     const recommendations: Array<OptimizationRecommendation> = [];
 
     const metrics = await this.getSystemMetrics();
@@ -188,7 +198,8 @@ export class SystemHealthService {
       recommendations.push({
         category: 'performance',
         priority: 'high',
-        recommendation: '응답 시간이 500ms를 초과합니다. 캐싱을 강화하거나 데이터베이스 쿼리를 최적화하세요.',
+        recommendation:
+          '응답 시간이 500ms를 초과합니다. 캐싱을 강화하거나 데이터베이스 쿼리를 최적화하세요.',
         impact: '사용자 경험 개선',
         effort: 'medium',
       });
@@ -198,7 +209,8 @@ export class SystemHealthService {
       recommendations.push({
         category: 'performance',
         priority: 'critical',
-        recommendation: '에러율이 1%를 초과합니다. 에러 처리 로직을 점검하세요.',
+        recommendation:
+          '에러율이 1%를 초과합니다. 에러 처리 로직을 점검하세요.',
         impact: '시스템 안정성 향상',
         effort: 'high',
       });
@@ -209,7 +221,8 @@ export class SystemHealthService {
       recommendations.push({
         category: 'security',
         priority: 'high',
-        recommendation: '보안 위반이 증가하고 있습니다. 보안 설정을 강화하세요.',
+        recommendation:
+          '보안 위반이 증가하고 있습니다. 보안 설정을 강화하세요.',
         impact: '보안 강화',
         effort: 'medium',
       });
@@ -262,11 +275,16 @@ export class SystemHealthService {
     // 활성 사용자 확인
     const realTimeActivity = this.analyticsService.getRealTimeActivity();
     if (realTimeActivity.activeUsers > 0) {
-      warnings.push(`${realTimeActivity.activeUsers}명의 활성 사용자가 있습니다.`);
+      warnings.push(
+        `${realTimeActivity.activeUsers}명의 활성 사용자가 있습니다.`
+      );
     }
 
     // 진행 중인 작업 확인
-    const performanceStats = this.performanceService.generateReport({ start: new Date(Date.now() - 24 * 60 * 60 * 1000), end: new Date() });
+    const performanceStats = this.performanceService.generateReport({
+      start: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      end: new Date(),
+    });
     if (performanceStats.totalOperations > 0) {
       warnings.push(`${performanceStats.totalOperations}개의 작업이 있습니다.`);
     }
@@ -285,13 +303,16 @@ export class SystemHealthService {
 
   private async checkPerformanceHealth(): Promise<HealthCheckResult> {
     const startTime = Date.now();
-    
+
     try {
-      const stats = this.performanceService.generateReport({ start: new Date(Date.now() - 24 * 60 * 60 * 1000), end: new Date() });
+      const stats = this.performanceService.generateReport({
+        start: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        end: new Date(),
+      });
       const responseTime = Date.now() - startTime;
 
       let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-      
+
       if (stats.errorRate > 0.05) status = 'unhealthy';
       else if (stats.errorRate > 0.01) status = 'degraded';
 
@@ -313,16 +334,16 @@ export class SystemHealthService {
 
   private async checkSecurityHealth(): Promise<HealthCheckResult> {
     const startTime = Date.now();
-    
+
     try {
       const report = this.securityService.generateSecurityReport({
         start: new Date(Date.now() - 60 * 60 * 1000), // 1시간
         end: new Date(),
       });
-      
+
       const responseTime = Date.now() - startTime;
       let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-      
+
       if (report.totalViolations > 50) status = 'unhealthy';
       else if (report.totalViolations > 10) status = 'degraded';
 
@@ -344,13 +365,13 @@ export class SystemHealthService {
 
   private async checkCacheHealth(): Promise<HealthCheckResult> {
     const startTime = Date.now();
-    
+
     try {
       const stats = this.cacheService.getStats();
       const responseTime = Date.now() - startTime;
-      
+
       let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-      
+
       if (stats.hitRate < 0.5) status = 'unhealthy';
       else if (stats.hitRate < 0.8) status = 'degraded';
 
@@ -372,7 +393,7 @@ export class SystemHealthService {
 
   private async checkAnalyticsHealth(): Promise<HealthCheckResult> {
     const startTime = Date.now();
-    
+
     try {
       const activity = this.analyticsService.getRealTimeActivity();
       const responseTime = Date.now() - startTime;
@@ -395,7 +416,7 @@ export class SystemHealthService {
 
   private async checkDatabaseHealth(): Promise<HealthCheckResult> {
     const startTime = Date.now();
-    
+
     try {
       // 간단한 DB 연결 테스트
       await this.userRepository.findAll();
@@ -417,7 +438,9 @@ export class SystemHealthService {
     }
   }
 
-  private determineOverallStatus(checks: HealthCheckResult[]): 'healthy' | 'degraded' | 'unhealthy' {
+  private determineOverallStatus(
+    checks: HealthCheckResult[]
+  ): 'healthy' | 'degraded' | 'unhealthy' {
     const hasUnhealthy = checks.some(check => check.status === 'unhealthy');
     const hasDegraded = checks.some(check => check.status === 'degraded');
 
@@ -428,7 +451,7 @@ export class SystemHealthService {
 
   private async collectMetrics(): Promise<SystemHealthStatus['metrics']> {
     const metrics = await this.getSystemMetrics();
-    
+
     return {
       responseTime: metrics.performance.averageResponseTime,
       errorRate: metrics.performance.errorRate,
@@ -517,8 +540,10 @@ export class SystemHealthService {
       try {
         await this.getSystemHealth();
       } catch (error) {
-        this.errorService.logError(error as Error, { context: 'SystemHealthService.monitoring' });
+        this.errorService.logError(error as Error, {
+          context: 'SystemHealthService.monitoring',
+        });
       }
     }, this.checkInterval);
   }
-} 
+}

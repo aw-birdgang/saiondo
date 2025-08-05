@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface PageBackgroundProps {
   children: React.ReactNode;
@@ -6,16 +6,14 @@ interface PageBackgroundProps {
   className?: string;
 }
 
-const PageBackground: React.FC<PageBackgroundProps> = ({ 
-  children, 
-  background = "bg-bg", 
-  className = "" 
+const PageBackground: React.FC<PageBackgroundProps> = ({
+  children,
+  background = 'bg-bg',
+  className = '',
 }) => {
   return (
-    <div className={`min-h-screen ${background} ${className}`}>
-      {children}
-    </div>
+    <div className={`min-h-screen ${background} ${className}`}>{children}</div>
   );
 };
 
-export default PageBackground; 
+export default PageBackground;

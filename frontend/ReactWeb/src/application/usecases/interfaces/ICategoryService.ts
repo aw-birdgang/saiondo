@@ -1,9 +1,9 @@
-import type { 
-  Category, 
+import type {
+  Category,
   CategoryCode,
   CategoryStats,
   CategoryUsageGuide,
-  CategoryFilter
+  CategoryFilter,
 } from '../../../domain/types/category';
 
 // Category Service 인터페이스 - 비즈니스 로직 담당
@@ -24,4 +24,4 @@ export interface ICategoryService {
   getUsageGuide(): CategoryUsageGuide;
   getCategoryFilters(): CategoryFilter[];
   processCategoryData(category: Category): Category;
-} 
+}

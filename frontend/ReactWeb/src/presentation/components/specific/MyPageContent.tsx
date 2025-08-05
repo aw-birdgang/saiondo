@@ -1,9 +1,9 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-import { UserProfile, Card, Button } from "../common";
-import { MenuGrid } from "./";
+import { UserProfile, Card, Button } from '../common';
+import { MenuGrid } from './';
 
 interface MenuItem {
   id: string;
@@ -19,10 +19,10 @@ interface MyPageContentProps {
   className?: string;
 }
 
-const MyPageContent: React.FC<MyPageContentProps> = ({ 
-  isLoading, 
-  onLogout, 
-  className = "" 
+const MyPageContent: React.FC<MyPageContentProps> = ({
+  isLoading,
+  onLogout,
+  className = '',
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -32,7 +32,8 @@ const MyPageContent: React.FC<MyPageContentProps> = ({
       id: 'profile',
       title: t('profile') || '프로필',
       icon: '👤',
-      description: t('profile_description') || '프로필 정보를 확인하고 수정하세요',
+      description:
+        t('profile_description') || '프로필 정보를 확인하고 수정하세요',
       onClick: () => navigate('/profile'),
     },
     {
@@ -61,20 +62,15 @@ const MyPageContent: React.FC<MyPageContentProps> = ({
   return (
     <div className={`space-y-8 ${className}`}>
       {/* Profile Section */}
-      <UserProfile
-        showEditButton
-        showMemberSince
-        size="lg"
-        className="mb-8"
-      />
+      <UserProfile showEditButton showMemberSince size='lg' className='mb-8' />
 
       {/* Menu Items */}
-      <MenuGrid items={menuItems} className="mb-8" />
+      <MenuGrid items={menuItems} className='mb-8' />
 
       {/* Logout Button */}
       <Card>
         <Button
-          variant="danger"
+          variant='danger'
           fullWidth
           onClick={onLogout}
           disabled={isLoading}
@@ -87,4 +83,4 @@ const MyPageContent: React.FC<MyPageContentProps> = ({
   );
 };
 
-export default MyPageContent; 
+export default MyPageContent;

@@ -6,7 +6,7 @@ import { SearchUseCase } from '../SearchUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createSearchUseCase = (
-  repository: ISearchRepository, 
+  repository: ISearchRepository,
   cache?: ICache
 ): ISearchUseCase => {
   const service = new SearchService(repository, cache);
@@ -16,8 +16,8 @@ export const createSearchUseCase = (
 // 테스트를 위한 Mock 팩토리
 export const createMockSearchUseCase = (): ISearchUseCase => {
   const mockRepository: ISearchRepository = {
-    search: async () => ({ 
-      results: [], 
+    search: async () => ({
+      results: [],
       totalResults: 0,
       query: '',
       filters: [],
@@ -25,7 +25,7 @@ export const createMockSearchUseCase = (): ISearchUseCase => {
       totalPages: 1,
       hasMore: false,
       searchTime: 0,
-      suggestions: []
+      suggestions: [],
     }),
     getSuggestions: async () => [],
     getSearchHistory: async () => [],
@@ -35,6 +35,6 @@ export const createMockSearchUseCase = (): ISearchUseCase => {
     getSearchStats: async () => ({}),
     updateSearchIndex: async () => {},
   };
-  
+
   return createSearchUseCase(mockRepository);
-}; 
+};

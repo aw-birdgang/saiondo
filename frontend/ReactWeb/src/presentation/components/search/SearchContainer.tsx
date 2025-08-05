@@ -8,11 +8,11 @@ interface SearchContainerProps {
 
 export const SearchContainer: React.FC<SearchContainerProps> = ({
   children,
-  className
+  className,
 }) => {
   return (
     <div className={cn('min-h-screen bg-bg flex flex-col', className)}>
       {children}
     </div>
   );
-}; 
+};

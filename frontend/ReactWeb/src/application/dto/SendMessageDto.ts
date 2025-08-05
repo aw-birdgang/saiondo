@@ -14,4 +14,4 @@ export interface SendMessageRequest {
 
 export interface SendMessageResponse {
   message: any; // Message DTO
-} 
+}

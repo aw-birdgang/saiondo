@@ -1,6 +1,11 @@
 import { apiClient } from '../ApiClient';
 import { ENDPOINTS } from '../endpoints';
-import type { LoginRequest, RegisterRequest, AuthResponse, ApiResponse } from '../../../domain/types';
+import type {
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  ApiResponse,
+} from '../../../domain/types';
 
 export class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {
@@ -9,13 +14,14 @@ export class AuthService {
         ENDPOINTS.AUTH_LOGIN,
         credentials
       );
-      
+
       // Store token in localStorage
       localStorage.setItem('accessToken', response.data.accessToken);
-      
+
       return response.data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || '로그인 실패';
+      const message =
+        error.response?.data?.message || error.message || '로그인 실패';
       throw new Error(`로그인 실패: ${message}`);
     }
   }
@@ -26,13 +32,14 @@ export class AuthService {
         ENDPOINTS.AUTH_REGISTER,
         userData
       );
-      
+
       // Store token in localStorage
       localStorage.setItem('accessToken', response.data.accessToken);
-      
+
       return response.data;
     } catch (error: any) {
-      const message = error.response?.data?.message || error.message || '회원가입 실패';
+      const message =
+        error.response?.data?.message || error.message || '회원가입 실패';
       throw new Error(`회원가입 실패: ${message}`);
     }
   }
@@ -51,4 +58,4 @@ export class AuthService {
   }
 }
 
-export const authService = new AuthService(); 
+export const authService = new AuthService();

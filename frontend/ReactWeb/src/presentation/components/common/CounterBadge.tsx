@@ -42,18 +42,21 @@ export interface CounterBadgeProps
 }
 
 export const CounterBadge = React.forwardRef<HTMLDivElement, CounterBadgeProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    animate,
-    count, 
-    maxCount = 99,
-    showZero = false,
-    ...props 
-  }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      animate,
+      count,
+      maxCount = 99,
+      showZero = false,
+      ...props
+    },
+    ref
+  ) => {
     const displayCount = count > maxCount ? `${maxCount}+` : count.toString();
-    
+
     if (count === 0 && !showZero) {
       return null;
     }
@@ -67,17 +70,17 @@ export const CounterBadge = React.forwardRef<HTMLDivElement, CounterBadgeProps>(
         )}
         {...props}
       >
-        <span className="flex items-center justify-center w-full h-full">
+        <span className='flex items-center justify-center w-full h-full'>
           {displayCount}
         </span>
-        
+
         {/* Glow effect for high counts */}
         {count > 10 && (
-          <div className="absolute inset-0 rounded-full bg-current opacity-20 animate-ping" />
+          <div className='absolute inset-0 rounded-full bg-current opacity-20 animate-ping' />
         )}
       </div>
     );
   }
 );
 
-CounterBadge.displayName = 'CounterBadge'; 
+CounterBadge.displayName = 'CounterBadge';

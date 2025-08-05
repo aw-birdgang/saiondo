@@ -1,12 +1,19 @@
 import { UserService } from '../services/UserService';
-import type { GetCurrentUserRequest, GetCurrentUserResponse } from '../dto/GetCurrentUserDto';
+import type {
+  GetCurrentUserRequest,
+  GetCurrentUserResponse,
+} from '../dto/GetCurrentUserDto';
 
 export class GetCurrentUserUseCase {
   constructor(private readonly userService: UserService) {}
 
-  async execute(request?: GetCurrentUserRequest): Promise<GetCurrentUserResponse> {
+  async execute(
+    request?: GetCurrentUserRequest
+  ): Promise<GetCurrentUserResponse> {
     try {
-      const userProfile = await this.userService.getCurrentUser(request?.userId);
+      const userProfile = await this.userService.getCurrentUser(
+        request?.userId
+      );
       return { user: userProfile };
     } catch (error) {
       if (error instanceof Error) {

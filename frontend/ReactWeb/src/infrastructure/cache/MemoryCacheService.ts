@@ -26,7 +26,7 @@ export class MemoryCacheService implements ICacheService {
 
   get<T>(key: string): T | null {
     const item = this.cache.get(key);
-    
+
     if (!item) {
       return null;
     }
@@ -40,7 +40,8 @@ export class MemoryCacheService implements ICacheService {
     return item.data;
   }
 
-  set<T>(key: string, data: T, ttl: number = 300000): void { // 기본 5분
+  set<T>(key: string, data: T, ttl: number = 300000): void {
+    // 기본 5분
     // 캐시 크기 제한 체크
     if (this.cache.size >= this.maxSize && !this.cache.has(key)) {
       this.evictOldest();
@@ -49,7 +50,7 @@ export class MemoryCacheService implements ICacheService {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
-      ttl
+      ttl,
     });
   }
 
@@ -64,13 +65,13 @@ export class MemoryCacheService implements ICacheService {
   has(key: string): boolean {
     const item = this.cache.get(key);
     if (!item) return false;
-    
+
     // TTL 체크
     if (Date.now() > item.timestamp + item.ttl) {
       this.cache.delete(key);
       return false;
     }
-    
+
     return true;
   }
 
@@ -129,7 +130,11 @@ export class MemoryCacheService implements ICacheService {
     return data;
   }
 
-  async getOrSetAsync<T>(key: string, factory: () => Promise<T>, ttl?: number): Promise<T> {
+  async getOrSetAsync<T>(
+    key: string,
+    factory: () => Promise<T>,
+    ttl?: number
+  ): Promise<T> {
     const cached = this.get<T>(key);
     if (cached !== null) {
       return cached;
@@ -155,7 +160,7 @@ export class MemoryCacheService implements ICacheService {
       size: this.cache.size,
       maxSize: this.maxSize,
       hitRate,
-      missRate
+      missRate,
     };
   }
 
@@ -204,8 +209,12 @@ export class MemoryCacheService implements ICacheService {
   }
 
   // 캐시 프리로딩
-  async preload<T>(keys: string[], factory: (key: string) => Promise<T>, ttl?: number): Promise<void> {
-    const promises = keys.map(async (key) => {
+  async preload<T>(
+    keys: string[],
+    factory: (key: string) => Promise<T>,
+    ttl?: number
+  ): Promise<void> {
+    const promises = keys.map(async key => {
       if (!this.has(key)) {
         try {
           const data = await factory(key);
@@ -218,4 +227,4 @@ export class MemoryCacheService implements ICacheService {
 
     await Promise.all(promises);
   }
-} 
+}

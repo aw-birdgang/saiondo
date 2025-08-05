@@ -70,4 +70,4 @@ export interface PaymentResponse {
 export interface PaymentValidationError {
   field: string;
   message: string;
-} 
+}

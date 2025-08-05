@@ -54,18 +54,19 @@ export const useChannelStore = create<ChannelState>()(
       error: null,
 
       // Actions
-      setChannels: (channels) => set({ channels }),
-      setCurrentChannel: (channel) => set({ currentChannel: channel }),
-      setInvitations: (invitations) => set({ invitations }),
-      setLoading: (loading) => set({ loading }),
-      setError: (error) => set({ error }),
-      
-      clearChannelData: () => set({
-        channels: null,
-        currentChannel: null,
-        invitations: [],
-        error: null,
-      }),
+      setChannels: channels => set({ channels }),
+      setCurrentChannel: channel => set({ currentChannel: channel }),
+      setInvitations: invitations => set({ invitations }),
+      setLoading: loading => set({ loading }),
+      setError: error => set({ error }),
+
+      clearChannelData: () =>
+        set({
+          channels: null,
+          currentChannel: null,
+          invitations: [],
+          error: null,
+        }),
 
       // API Actions using Repository Pattern
       fetchChannelsByUserId: async (userId: string) => {
@@ -73,11 +74,11 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           const userChannels = await channelRepository.findByUserId(userId);
-          
+
           // Separate owned and member channels
           const ownedChannels: Channel[] = [];
           const memberChannels: Channel[] = [];
-          
+
           userChannels.forEach(channelEntity => {
             const channel = channelEntity.toJSON();
             if (channelEntity.isOwner(userId)) {
@@ -86,13 +87,14 @@ export const useChannelStore = create<ChannelState>()(
               memberChannels.push(channel);
             }
           });
-          
-          set({ 
-            channels: { ownedChannels, memberChannels }, 
-            loading: false 
+
+          set({
+            channels: { ownedChannels, memberChannels },
+            loading: false,
           });
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch channels';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to fetch channels';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -102,43 +104,45 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           const channelEntity = await channelRepository.findById(channelId);
-          
+
           if (channelEntity) {
             set({ currentChannel: channelEntity.toJSON(), loading: false });
           } else {
             set({ currentChannel: null, loading: false });
           }
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to fetch channel';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to fetch channel';
           set({ error: errorMessage, loading: false });
         }
       },
 
-      createChannel: async (channelData) => {
+      createChannel: async channelData => {
         try {
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
-          
+
           // Create channel entity
           const { ChannelEntity } = await import('../domain/entities/Channel');
           const channelEntity = ChannelEntity.create(channelData);
-          
+
           const savedChannel = await channelRepository.save(channelEntity);
           const channel = savedChannel.toJSON();
-          
+
           // Update local state
           const { channels } = get();
           if (channels) {
-            set({ 
+            set({
               channels: {
                 ...channels,
-                ownedChannels: [...channels.ownedChannels, channel]
+                ownedChannels: [...channels.ownedChannels, channel],
               },
-              loading: false 
+              loading: false,
             });
           }
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to create channel';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to create channel';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -150,7 +154,8 @@ export const useChannelStore = create<ChannelState>()(
           // For now, we'll just refresh the channels
           await get().fetchChannelsByUserId(userId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to join channel';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to join channel';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -160,11 +165,12 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           await channelRepository.removeMember(channelId, userId);
-          
+
           // Refresh channels after leaving
           await get().fetchChannelsByUserId(userId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to leave channel';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to leave channel';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -174,20 +180,25 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           await channelRepository.delete(channelId);
-          
+
           // Update local state
           const { channels } = get();
           if (channels) {
-            set({ 
+            set({
               channels: {
-                ownedChannels: channels.ownedChannels.filter(c => c.id !== channelId),
-                memberChannels: channels.memberChannels.filter(c => c.id !== channelId)
+                ownedChannels: channels.ownedChannels.filter(
+                  c => c.id !== channelId
+                ),
+                memberChannels: channels.memberChannels.filter(
+                  c => c.id !== channelId
+                ),
               },
-              loading: false 
+              loading: false,
             });
           }
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to delete channel';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to delete channel';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -197,11 +208,12 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           await channelRepository.addMember(channelId, userId);
-          
+
           // Refresh current channel
           await get().fetchChannelById(channelId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to add member';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to add member';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -211,11 +223,12 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           await channelRepository.removeMember(channelId, userId);
-          
+
           // Refresh current channel
           await get().fetchChannelById(channelId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to remove member';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to remove member';
           set({ error: errorMessage, loading: false });
         }
       },
@@ -225,22 +238,23 @@ export const useChannelStore = create<ChannelState>()(
           set({ loading: true, error: null });
           const channelRepository = container.getChannelRepository();
           await channelRepository.markAsRead(channelId);
-          
+
           // Refresh current channel
           await get().fetchChannelById(channelId);
         } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Failed to mark as read';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Failed to mark as read';
           set({ error: errorMessage, loading: false });
         }
       },
     }),
     {
       name: 'channel-storage',
-      partialize: (state) => ({
+      partialize: state => ({
         channels: state.channels,
         currentChannel: state.currentChannel,
         invitations: state.invitations,
       }),
     }
   )
-); 
+);

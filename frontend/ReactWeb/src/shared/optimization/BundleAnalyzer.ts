@@ -116,11 +116,15 @@ export class BundleAnalyzer {
 
     // 라우트 기반 스플리팅 제안
     if (bundles.some(b => b.name.includes('main'))) {
-      suggestions.push('Implement route-based code splitting using React.lazy()');
+      suggestions.push(
+        'Implement route-based code splitting using React.lazy()'
+      );
     }
 
     // 컴포넌트 기반 스플리팅 제안
-    suggestions.push('Use dynamic imports for large components: React.lazy(() => import("./Component"))');
+    suggestions.push(
+      'Use dynamic imports for large components: React.lazy(() => import("./Component"))'
+    );
 
     return suggestions;
   }
@@ -151,7 +155,9 @@ export class BundleAnalyzer {
 
     // 벤더 번들 분리 제안
     if (bundles.some(b => b.name.includes('vendor'))) {
-      suggestions.push('Vendor bundle detected - ensure it has proper caching headers');
+      suggestions.push(
+        'Vendor bundle detected - ensure it has proper caching headers'
+      );
     }
 
     return suggestions;
@@ -185,28 +191,36 @@ export class BundleAnalyzer {
     // First Contentful Paint 분석
     if (metrics.firstContentfulPaint) {
       if (metrics.firstContentfulPaint > 2000) {
-        suggestions.push('First Contentful Paint is slow (>2s). Consider optimizing critical rendering path');
+        suggestions.push(
+          'First Contentful Paint is slow (>2s). Consider optimizing critical rendering path'
+        );
       }
     }
 
     // Largest Contentful Paint 분석
     if (metrics.largestContentfulPaint) {
       if (metrics.largestContentfulPaint > 2500) {
-        suggestions.push('Largest Contentful Paint is slow (>2.5s). Optimize largest content element');
+        suggestions.push(
+          'Largest Contentful Paint is slow (>2.5s). Optimize largest content element'
+        );
       }
     }
 
     // First Input Delay 분석
     if (metrics.firstInputDelay) {
       if (metrics.firstInputDelay > 100) {
-        suggestions.push('First Input Delay is high (>100ms). Reduce JavaScript execution time');
+        suggestions.push(
+          'First Input Delay is high (>100ms). Reduce JavaScript execution time'
+        );
       }
     }
 
     // Cumulative Layout Shift 분석
     if (metrics.cumulativeLayoutShift) {
       if (metrics.cumulativeLayoutShift > 0.1) {
-        suggestions.push('Cumulative Layout Shift is high (>0.1). Fix layout shifts');
+        suggestions.push(
+          'Cumulative Layout Shift is high (>0.1). Fix layout shifts'
+        );
       }
     }
 
@@ -321,8 +335,10 @@ export class BundleAnalyzer {
 // 편의 함수들
 export const bundleAnalyzer = BundleAnalyzer.getInstance();
 
-export const analyzeBundle = (bundleData: any) => bundleAnalyzer.analyzeBundleSize(bundleData);
+export const analyzeBundle = (bundleData: any) =>
+  bundleAnalyzer.analyzeBundleSize(bundleData);
 export const formatSize = (bytes: number) => bundleAnalyzer.formatSize(bytes);
-export const suggestCodeSplitting = (bundles: BundleInfo[]) => bundleAnalyzer.suggestCodeSplitting(bundles);
+export const suggestCodeSplitting = (bundles: BundleInfo[]) =>
+  bundleAnalyzer.suggestCodeSplitting(bundles);
 
-export default BundleAnalyzer; 
+export default BundleAnalyzer;

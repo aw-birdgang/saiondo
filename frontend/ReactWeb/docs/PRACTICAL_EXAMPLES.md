@@ -14,7 +14,7 @@ const loginUser = async (email: string, password: string) => {
   try {
     const authUseCase = UseCaseFactory.createAuthUseCase();
     const result = await authUseCase.login({ email, password });
-    
+
     console.log('로그인 성공:', result.user);
     return result;
   } catch (error) {
@@ -35,7 +35,7 @@ const logUserActivity = async (userId: string, activity: string) => {
   return await activityUseCase.execute({
     userId,
     activity,
-    timestamp: new Date()
+    timestamp: new Date(),
   });
 };
 ```
@@ -56,25 +56,25 @@ const createNewChannel = async (channelData: {
 // 실시간 채팅
 const setupRealTimeChat = async (channelId: string) => {
   const chatUseCase = UseCaseFactory.createRealTimeChatUseCase();
-  
+
   // 채널 참여
   await chatUseCase.joinChannel({ channelId, userId: 'current-user-id' });
-  
+
   // 메시지 전송
   const sendMessage = async (content: string) => {
     return await chatUseCase.sendMessage({
       channelId,
       userId: 'current-user-id',
       content,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   };
-  
+
   // 메시지 수신 리스너
-  chatUseCase.onMessage('message', (message) => {
+  chatUseCase.onMessage('message', message => {
     console.log('새 메시지:', message);
   });
-  
+
   return { sendMessage };
 };
 ```
@@ -85,7 +85,7 @@ const setupRealTimeChat = async (channelId: string) => {
 // 파일 업로드
 const uploadFile = async (file: File, channelId: string) => {
   const uploadUseCase = UseCaseFactory.createUploadFileUseCase();
-  
+
   return await uploadUseCase.execute({
     file,
     channelId,
@@ -93,8 +93,8 @@ const uploadFile = async (file: File, channelId: string) => {
     metadata: {
       originalName: file.name,
       size: file.size,
-      type: file.type
-    }
+      type: file.type,
+    },
   });
 };
 
@@ -122,12 +122,10 @@ const measurePerformance = async <T>(
     channelRepository,
     messageRepository
   );
-  
-  return await performanceService.measurePerformance(
-    operationName,
-    operation,
-    { userId: 'current-user-id' }
-  );
+
+  return await performanceService.measurePerformance(operationName, operation, {
+    userId: 'current-user-id',
+  });
 };
 
 // 사용 예시
@@ -147,12 +145,12 @@ const generatePerformanceReport = async () => {
     channelRepository,
     messageRepository
   );
-  
+
   const report = performanceService.generateReport({
     start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
-    end: new Date()
+    end: new Date(),
   });
-  
+
   console.log('성능 리포트:', report);
   return report;
 };
@@ -168,52 +166,54 @@ const securityService = new SecurityService({
   enableRateLimiting: true,
   enableInputValidation: true,
   enableXSSProtection: true,
-  enableCSRFProtection: true
+  enableCSRFProtection: true,
 });
 
 // 입력 검증
 const validateUserInput = (userData: any) => {
   const schema = {
-    username: { 
-      required: true, 
-      type: 'string', 
-      minLength: 3, 
+    username: {
+      required: true,
+      type: 'string',
+      minLength: 3,
       maxLength: 20,
-      pattern: /^[a-zA-Z0-9_]+$/
+      pattern: /^[a-zA-Z0-9_]+$/,
     },
-    email: { 
-      required: true, 
-      type: 'string', 
-      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    email: {
+      required: true,
+      type: 'string',
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     },
-    password: { 
-      required: true, 
-      type: 'string', 
+    password: {
+      required: true,
+      type: 'string',
       minLength: 8,
-      maxLength: 128
-    }
+      maxLength: 128,
+    },
   };
-  
+
   const validation = securityService.validateInput(userData, schema);
-  
+
   if (!validation.isValid) {
     throw new Error(`입력 검증 실패: ${validation.errors.join(', ')}`);
   }
-  
+
   return validation.sanitizedData;
 };
 
 // Rate Limiting
 const checkRateLimit = (userId: string) => {
   const rateLimit = securityService.checkRateLimit(userId, {
-    windowMs: 60000,    // 1분
-    maxRequests: 100    // 최대 100개 요청
+    windowMs: 60000, // 1분
+    maxRequests: 100, // 최대 100개 요청
   });
-  
+
   if (!rateLimit.allowed) {
-    throw new Error(`Rate limit exceeded. Try again in ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds`);
+    throw new Error(
+      `Rate limit exceeded. Try again in ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds`
+    );
   }
-  
+
   return rateLimit;
 };
 
@@ -231,8 +231,8 @@ import { MultiLevelCacheService } from '../application/services/MultiLevelCacheS
 // 다단계 캐시 설정
 const cacheConfig = {
   levels: [
-    { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 },    // 1분
-    { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 },   // 5분
+    { name: 'L1', ttl: 60000, maxSize: 1000, priority: 1 }, // 1분
+    { name: 'L2', ttl: 300000, maxSize: 5000, priority: 2 }, // 5분
     { name: 'L3', ttl: 1800000, maxSize: 10000, priority: 3 }, // 30분
   ],
   enableCompression: true,
@@ -258,7 +258,7 @@ const getCachedUserData = async (userId: string) => {
 
 // 배치 캐시 조회
 const getMultipleUsers = async (userIds: string[]) => {
-  return await cacheService.batchGet(userIds, async (keys) => {
+  return await cacheService.batchGet(userIds, async keys => {
     // 여러 사용자를 한 번에 조회
     const users = await userRepository.findByIds(keys);
     const userMap = new Map();
@@ -286,26 +286,26 @@ const errorService = new ErrorHandlingService({
   enableConsoleLogging: true,
   enableRemoteLogging: true,
   remoteEndpoint: 'https://api.example.com/logs',
-  logLevel: 'error'
+  logLevel: 'error',
 });
 
 // 글로벌 에러 핸들러 설정
 const setupGlobalErrorHandling = () => {
   errorService.setupGlobalErrorHandling();
-  
+
   // React 에러 바운더리와 통합
-  window.addEventListener('error', (event) => {
+  window.addEventListener('error', event => {
     errorService.logError(event.error, {
       context: 'global_error',
       url: window.location.href,
-      userAgent: navigator.userAgent
+      userAgent: navigator.userAgent,
     });
   });
-  
-  window.addEventListener('unhandledrejection', (event) => {
+
+  window.addEventListener('unhandledrejection', event => {
     errorService.logError(event.reason, {
       context: 'unhandled_promise_rejection',
-      url: window.location.href
+      url: window.location.href,
     });
   });
 };
@@ -313,13 +313,13 @@ const setupGlobalErrorHandling = () => {
 // 에러 복구 시도
 const attemptErrorRecovery = async (error: Error, context: any) => {
   const recovered = await errorService.attemptErrorRecovery(error, context);
-  
+
   if (recovered) {
     console.log('에러 복구 성공');
   } else {
     console.log('에러 복구 실패');
   }
-  
+
   return recovered;
 };
 
@@ -327,9 +327,9 @@ const attemptErrorRecovery = async (error: Error, context: any) => {
 const generateErrorReport = async () => {
   const report = errorService.generateErrorReport({
     start: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24시간
-    end: new Date()
+    end: new Date(),
   });
-  
+
   console.log('에러 리포트:', report);
   return report;
 };
@@ -348,14 +348,24 @@ const analyticsService = new AnalyticsService(
 );
 
 // 사용자 이벤트 추적
-const trackUserEvent = (userId: string, eventType: string, properties?: any) => {
+const trackUserEvent = (
+  userId: string,
+  eventType: string,
+  properties?: any
+) => {
   analyticsService.trackEvent(userId, eventType, properties);
 };
 
 // 사용 예시
 trackUserEvent('user123', 'page_view', { page: '/dashboard' });
-trackUserEvent('user123', 'message_sent', { channelId: 'channel456', messageLength: 50 });
-trackUserEvent('user123', 'file_uploaded', { fileType: 'image', fileSize: 1024000 });
+trackUserEvent('user123', 'message_sent', {
+  channelId: 'channel456',
+  messageLength: 50,
+});
+trackUserEvent('user123', 'file_uploaded', {
+  fileType: 'image',
+  fileSize: 1024000,
+});
 
 // 사용자 세션 관리
 const startUserSession = (userId: string) => {
@@ -371,9 +381,9 @@ const endUserSession = (sessionId: string) => {
 const analyzeUserBehavior = async (userId: string) => {
   const behavior = analyticsService.analyzeUserBehavior(userId, {
     start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30일
-    end: new Date()
+    end: new Date(),
   });
-  
+
   console.log('사용자 행동 분석:', behavior);
   return behavior;
 };
@@ -381,7 +391,7 @@ const analyzeUserBehavior = async (userId: string) => {
 // 이탈 예측
 const predictUserChurn = async (userId: string) => {
   const prediction = analyticsService.predictUserChurn(userId);
-  
+
   console.log('이탈 예측:', prediction);
   return prediction;
 };
@@ -400,33 +410,33 @@ const systemManagement = UseCaseFactory.createSystemManagementUseCase();
 // 시스템 전체 개요 조회
 const getSystemOverview = async () => {
   const overview = await systemManagement.getSystemOverview();
-  
+
   console.log('시스템 상태:', overview.health.overall);
   console.log('성능 메트릭:', overview.metrics);
   console.log('보안 상태:', overview.security);
-  
+
   return overview;
 };
 
 // 실시간 모니터링
 const getRealTimeMonitoring = async () => {
   const monitoring = await systemManagement.getRealTimeMonitoring();
-  
+
   console.log('활성 사용자:', monitoring.activeUsers);
   console.log('최근 에러:', monitoring.recentErrors);
   console.log('보안 알림:', monitoring.securityAlerts);
-  
+
   return monitoring;
 };
 
 // 시스템 진단
 const diagnoseSystem = async () => {
   const diagnosis = await systemManagement.diagnoseSystem();
-  
+
   console.log('발견된 문제:', diagnosis.issues);
   console.log('권장사항:', diagnosis.recommendations);
   console.log('예상 해결 시간:', diagnosis.estimatedResolutionTime);
-  
+
   return diagnosis;
 };
 ```
@@ -456,9 +466,9 @@ const optimizeSystem = async () => {
       enableCSRFProtection: true,
     },
   };
-  
+
   const result = await systemManagement.optimizeSystem(optimizationRequest);
-  
+
   console.log('최적화 결과:', result);
   return result;
 };
@@ -472,10 +482,10 @@ const backupSystem = async () => {
   const result = await systemManagement.performMaintenance({
     type: 'backup',
     options: {
-      backupAnalytics: true
-    }
+      backupAnalytics: true,
+    },
   });
-  
+
   console.log('백업 결과:', result);
   return result;
 };
@@ -485,10 +495,10 @@ const cleanupSystem = async () => {
   const result = await systemManagement.performMaintenance({
     type: 'cleanup',
     options: {
-      cleanupOldLogs: true
-    }
+      cleanupOldLogs: true,
+    },
   });
-  
+
   console.log('정리 결과:', result);
   return result;
 };
@@ -498,10 +508,10 @@ const performSystemOptimization = async () => {
   const result = await systemManagement.performMaintenance({
     type: 'optimization',
     options: {
-      optimizeCache: true
-    }
+      optimizeCache: true,
+    },
   });
-  
+
   console.log('최적화 결과:', result);
   return result;
 };
@@ -538,7 +548,7 @@ export const useSystemManagement = () => {
 
   useEffect(() => {
     refreshOverview();
-    
+
     // 30초마다 자동 새로고침
     const interval = setInterval(refreshOverview, 30000);
     return () => clearInterval(interval);
@@ -548,7 +558,7 @@ export const useSystemManagement = () => {
     systemOverview,
     loading,
     error,
-    refreshOverview
+    refreshOverview,
   };
 };
 ```
@@ -570,14 +580,14 @@ export const SystemDashboard: React.FC = () => {
   return (
     <div className="system-dashboard">
       <h1>시스템 대시보드</h1>
-      
+
       <div className="status-section">
         <h2>시스템 상태</h2>
         <div className={`status ${systemOverview.health.overall}`}>
           {systemOverview.health.overall}
         </div>
       </div>
-      
+
       <div className="metrics-section">
         <h2>성능 메트릭</h2>
         <div className="metrics-grid">
@@ -595,7 +605,7 @@ export const SystemDashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       <div className="alerts-section">
         <h2>알림</h2>
         {systemOverview.health.alerts.map((alert, index) => (
@@ -605,7 +615,7 @@ export const SystemDashboard: React.FC = () => {
           </div>
         ))}
       </div>
-      
+
       <button onClick={refreshOverview}>새로고침</button>
     </div>
   );
@@ -630,7 +640,7 @@ describe('SystemManagementUseCase', () => {
   beforeEach(() => {
     mockSystemHealthService = createMockSystemHealthService();
     mockPerformanceService = createMockPerformanceService();
-    
+
     useCase = new SystemManagementUseCase(
       mockSystemHealthService,
       mockPerformanceService,
@@ -648,8 +658,12 @@ describe('SystemManagementUseCase', () => {
       // ... 기타 데이터
     };
 
-    mockSystemHealthService.getSystemHealth.mockResolvedValue(mockOverview.health);
-    mockSystemHealthService.getSystemMetrics.mockResolvedValue(mockOverview.metrics);
+    mockSystemHealthService.getSystemHealth.mockResolvedValue(
+      mockOverview.health
+    );
+    mockSystemHealthService.getSystemMetrics.mockResolvedValue(
+      mockOverview.metrics
+    );
 
     const result = await useCase.getSystemOverview();
 
@@ -678,7 +692,7 @@ describe('SecurityService', () => {
 
   it('should validate input correctly', () => {
     const schema = {
-      username: { required: true, type: 'string', minLength: 3 }
+      username: { required: true, type: 'string', minLength: 3 },
     };
 
     const validInput = { username: 'testuser' };
@@ -689,7 +703,9 @@ describe('SecurityService', () => {
 
     expect(validResult.isValid).toBe(true);
     expect(invalidResult.isValid).toBe(false);
-    expect(invalidResult.errors).toContain('username must be at least 3 characters long');
+    expect(invalidResult.errors).toContain(
+      'username must be at least 3 characters long'
+    );
   });
 
   it('should sanitize XSS input', () => {
@@ -702,4 +718,4 @@ describe('SecurityService', () => {
 });
 ```
 
-이러한 예시들을 통해 Clean Architecture 기반의 ReactWeb 프로젝트를 효과적으로 활용할 수 있습니다. 
+이러한 예시들을 통해 Clean Architecture 기반의 ReactWeb 프로젝트를 효과적으로 활용할 수 있습니다.

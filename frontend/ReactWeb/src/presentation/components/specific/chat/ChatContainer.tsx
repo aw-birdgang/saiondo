@@ -6,20 +6,19 @@ interface ChatContainerProps {
   className?: string;
 }
 
-const ChatContainer = forwardRef<HTMLDivElement, ChatContainerProps>(({
-  children,
-  className
-}, ref) => {
-  return (
-    <div 
-      ref={ref}
-      className={cn("flex flex-col h-full bg-background", className)}
-    >
-      {children}
-    </div>
-  );
-});
+const ChatContainer = forwardRef<HTMLDivElement, ChatContainerProps>(
+  ({ children, className }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn('flex flex-col h-full bg-background', className)}
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
 ChatContainer.displayName = 'ChatContainer';
 
-export default ChatContainer; 
+export default ChatContainer;

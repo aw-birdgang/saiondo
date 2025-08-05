@@ -72,4 +72,4 @@ export interface MessageSearchResponse {
   page: number;
   limit: number;
   totalPages: number;
-} 
+}

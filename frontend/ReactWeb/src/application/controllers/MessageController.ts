@@ -81,9 +81,10 @@ export class MessageController extends BaseController {
       this.searchMessagesUseCase = UseCaseFactory.createSearchMessagesUseCase();
       this.uploadFileUseCase = UseCaseFactory.createUploadFileUseCase();
       this.fileDownloadUseCase = UseCaseFactory.createFileDownloadUseCase();
-      this.userActivityLogUseCase = UseCaseFactory.createUserActivityLogUseCase();
+      this.userActivityLogUseCase =
+        UseCaseFactory.createUserActivityLogUseCase();
       this.userPermissionUseCase = UseCaseFactory.createUserPermissionUseCase();
-      
+
       this.useCasesInitialized = true;
     } catch (error) {
       this.logger.error('Failed to initialize UseCases:', error);
@@ -109,17 +110,23 @@ export class MessageController extends BaseController {
     action: string
   ): Promise<boolean> {
     try {
-      if (this.userPermissionUseCase && typeof this.userPermissionUseCase.checkPermission === 'function') {
+      if (
+        this.userPermissionUseCase &&
+        typeof this.userPermissionUseCase.checkPermission === 'function'
+      ) {
         const result = await this.userPermissionUseCase.checkPermission({
           userId,
           resource,
-          action
+          action,
         });
         return result?.hasPermission || false;
       }
       return true; // 권한 체크가 불가능한 경우 기본적으로 허용
     } catch (error) {
-      this.logger.warn(`Failed to check message permission for user ${userId}:`, error);
+      this.logger.warn(
+        `Failed to check message permission for user ${userId}:`,
+        error
+      );
       return true; // 에러 발생 시 기본적으로 허용
     }
   }
@@ -135,13 +142,16 @@ export class MessageController extends BaseController {
     details: Record<string, unknown>
   ): Promise<void> {
     try {
-      if (this.userActivityLogUseCase && typeof this.userActivityLogUseCase.logActivity === 'function') {
+      if (
+        this.userActivityLogUseCase &&
+        typeof this.userActivityLogUseCase.logActivity === 'function'
+      ) {
         await this.userActivityLogUseCase.logActivity({
           userId,
           action,
           resource,
           resourceId,
-          details
+          details,
         });
       }
     } catch (error) {
@@ -176,26 +186,26 @@ export class MessageController extends BaseController {
           senderId: data.senderId,
           type: data.type || 'text',
           metadata: data.metadata,
-          replyTo: data.replyTo
+          replyTo: data.replyTo,
         });
 
         if (!result?.message) {
           throw new Error('메시지 전송에 실패했습니다.');
         }
-        
+
         // 메시지 전송 활동 로그 기록
         await this.logMessageActivity(
           data.senderId,
           'MESSAGE_SEND',
           'channel',
           data.channelId,
-          { 
-            messageId: result.message.id, 
+          {
+            messageId: result.message.id,
             hasMetadata: !!data.metadata,
-            messageType: data.type || 'text'
+            messageType: data.type || 'text',
           }
         );
-        
+
         return result.message;
       }
     );
@@ -215,14 +225,17 @@ export class MessageController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        if (this.searchMessagesUseCase && typeof this.searchMessagesUseCase.execute === 'function') {
+        if (
+          this.searchMessagesUseCase &&
+          typeof this.searchMessagesUseCase.execute === 'function'
+        ) {
           const result = await this.searchMessagesUseCase.execute({
             query,
             channelId,
             limit: options?.limit,
             offset: options?.offset,
             dateFrom: options?.dateFrom,
-            dateTo: options?.dateTo
+            dateTo: options?.dateTo,
           });
           return result?.messages || [];
         }
@@ -235,10 +248,16 @@ export class MessageController extends BaseController {
   /**
    * 파일 업로드
    */
-  async uploadFile(data: UploadFileData): Promise<{ message: Message; fileUrl: string }> {
+  async uploadFile(
+    data: UploadFileData
+  ): Promise<{ message: Message; fileUrl: string }> {
     return this.executeWithTracking(
       'uploadFile',
-      { channelId: data.channelId, senderId: data.senderId, fileName: data.file.name },
+      {
+        channelId: data.channelId,
+        senderId: data.senderId,
+        fileName: data.file.name,
+      },
       async () => {
         await this.ensureInitialized();
 
@@ -258,21 +277,21 @@ export class MessageController extends BaseController {
         if (!result) {
           throw new Error('파일 업로드에 실패했습니다.');
         }
-        
+
         // 파일 업로드 활동 로그 기록
         await this.logMessageActivity(
           data.senderId,
           'FILE_UPLOAD',
           'channel',
           data.channelId,
-          { 
-            fileName: data.file.name, 
+          {
+            fileName: data.file.name,
             fileSize: data.file.size,
             fileType: data.file.type,
-            fileUrl: result.fileUrl
+            fileUrl: result.fileUrl,
           }
         );
-        
+
         return result;
       }
     );
@@ -288,8 +307,14 @@ export class MessageController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        if (this.fileDownloadUseCase && typeof this.fileDownloadUseCase.downloadFile === 'function') {
-          const result = await this.fileDownloadUseCase.downloadFile({ fileId, userId });
+        if (
+          this.fileDownloadUseCase &&
+          typeof this.fileDownloadUseCase.downloadFile === 'function'
+        ) {
+          const result = await this.fileDownloadUseCase.downloadFile({
+            fileId,
+            userId,
+          });
 
           if (result) {
             // 파일 다운로드 활동 로그 기록
@@ -301,7 +326,7 @@ export class MessageController extends BaseController {
               { fileName: result.fileName }
             );
           }
-          
+
           return result;
         }
 
@@ -313,7 +338,10 @@ export class MessageController extends BaseController {
   /**
    * 메시지 통계 조회
    */
-  async getMessageStats(channelId: string, userId: string): Promise<MessageStats> {
+  async getMessageStats(
+    channelId: string,
+    userId: string
+  ): Promise<MessageStats> {
     return this.executeWithTracking(
       'getMessageStats',
       { channelId, userId },
@@ -321,20 +349,30 @@ export class MessageController extends BaseController {
         await this.ensureInitialized();
 
         // 최근 메시지 검색으로 통계 생성
-        const recentMessages = await this.searchMessages(channelId, '', { limit: 100 });
-        
+        const recentMessages = await this.searchMessages(channelId, '', {
+          limit: 100,
+        });
+
         const totalMessages = recentMessages.length;
-        const userMessages = recentMessages.filter(msg => msg.senderId === userId).length;
-                 const messagesWithFiles = recentMessages.filter(msg => (msg as any).attachments?.length > 0).length;
-        const averageMessageLength = totalMessages > 0 
-          ? recentMessages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0) / totalMessages 
-          : 0;
+        const userMessages = recentMessages.filter(
+          msg => msg.senderId === userId
+        ).length;
+        const messagesWithFiles = recentMessages.filter(
+          msg => (msg as any).attachments?.length > 0
+        ).length;
+        const averageMessageLength =
+          totalMessages > 0
+            ? recentMessages.reduce(
+                (sum, msg) => sum + (msg.content?.length || 0),
+                0
+              ) / totalMessages
+            : 0;
 
         return {
           totalMessages,
           userMessages,
           messagesWithFiles,
-          averageMessageLength
+          averageMessageLength,
         };
       }
     );
@@ -354,7 +392,11 @@ export class MessageController extends BaseController {
       async () => {
         await this.ensureInitialized();
 
-        return this.checkMessagePermissionHelper(userId, messageId, `message_${action}`);
+        return this.checkMessagePermissionHelper(
+          userId,
+          messageId,
+          `message_${action}`
+        );
       }
     );
   }
@@ -370,15 +412,25 @@ export class MessageController extends BaseController {
         await this.ensureInitialized();
 
         // 메시지 삭제 권한 확인
-        const hasPermission = await this.checkMessagePermission(messageId, userId, 'delete');
+        const hasPermission = await this.checkMessagePermission(
+          messageId,
+          userId,
+          'delete'
+        );
         if (!hasPermission) {
           throw new Error('메시지 삭제 권한이 없습니다.');
         }
 
         // 메시지 삭제 로직 (실제 구현은 UseCase에서 처리)
-        if (this.sendMessageUseCase && typeof this.sendMessageUseCase.deleteMessage === 'function') {
-          const result = await this.sendMessageUseCase.deleteMessage(messageId, userId);
-          
+        if (
+          this.sendMessageUseCase &&
+          typeof this.sendMessageUseCase.deleteMessage === 'function'
+        ) {
+          const result = await this.sendMessageUseCase.deleteMessage(
+            messageId,
+            userId
+          );
+
           if (result) {
             await this.logMessageActivity(
               userId,
@@ -388,7 +440,7 @@ export class MessageController extends BaseController {
               { deletedAt: new Date().toISOString() }
             );
           }
-          
+
           return result || false;
         }
 
@@ -412,28 +464,39 @@ export class MessageController extends BaseController {
         await this.ensureInitialized();
 
         // 메시지 수정 권한 확인
-        const hasPermission = await this.checkMessagePermission(messageId, userId, 'edit');
+        const hasPermission = await this.checkMessagePermission(
+          messageId,
+          userId,
+          'edit'
+        );
         if (!hasPermission) {
           throw new Error('메시지 수정 권한이 없습니다.');
         }
 
         // 메시지 수정 로직 (실제 구현은 UseCase에서 처리)
-        if (this.sendMessageUseCase && typeof this.sendMessageUseCase.editMessage === 'function') {
-          const result = await this.sendMessageUseCase.editMessage(messageId, userId, newContent);
-          
+        if (
+          this.sendMessageUseCase &&
+          typeof this.sendMessageUseCase.editMessage === 'function'
+        ) {
+          const result = await this.sendMessageUseCase.editMessage(
+            messageId,
+            userId,
+            newContent
+          );
+
           if (result) {
             await this.logMessageActivity(
               userId,
               'MESSAGE_EDIT',
               'message',
               messageId,
-              { 
+              {
                 newContent,
-                editedAt: new Date().toISOString()
+                editedAt: new Date().toISOString(),
               }
             );
           }
-          
+
           return result || null;
         }
 
@@ -441,4 +504,4 @@ export class MessageController extends BaseController {
       }
     );
   }
-} 
+}

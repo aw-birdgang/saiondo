@@ -1,18 +1,20 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Form } from "../common";
-import AuthHeader from "./auth/AuthHeader";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Form } from '../common';
+import AuthHeader from './auth/AuthHeader';
 
+import type {
+  RegisterFormProps,
+  RegisterFormData,
+} from '../../pages/auth/types/authTypes';
 
-import type { RegisterFormProps, RegisterFormData } from "../../pages/auth/types/authTypes";
-
-const RegisterForm: React.FC<RegisterFormProps> = ({ 
-  onSubmit, 
-  loading, 
-  className = "" 
+const RegisterForm: React.FC<RegisterFormProps> = ({
+  onSubmit,
+  loading,
+  className = '',
 }) => {
   const { t } = useTranslation();
-  
+
   const [formData, setFormData] = useState<RegisterFormData>({
     email: '',
     password: '',
@@ -36,21 +38,25 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     if (!formData.email) {
       newErrors.email = t('enter_email') || '이메일을 입력해주세요';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t('invalid_email_format') || '올바른 이메일 형식이 아닙니다';
+      newErrors.email =
+        t('invalid_email_format') || '올바른 이메일 형식이 아닙니다';
     }
 
     // 비밀번호 검증
     if (!formData.password) {
       newErrors.password = t('enter_password') || '비밀번호를 입력해주세요';
     } else if (formData.password.length < 6) {
-      newErrors.password = t('password_min_length') || '비밀번호는 6자 이상이어야 합니다';
+      newErrors.password =
+        t('password_min_length') || '비밀번호는 6자 이상이어야 합니다';
     }
 
     // 비밀번호 확인 검증
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = t('enter_confirm_password') || '비밀번호 확인을 입력해주세요';
+      newErrors.confirmPassword =
+        t('enter_confirm_password') || '비밀번호 확인을 입력해주세요';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = t('password_mismatch') || '비밀번호가 일치하지 않습니다';
+      newErrors.confirmPassword =
+        t('password_mismatch') || '비밀번호가 일치하지 않습니다';
     }
 
     // 성별 검증
@@ -62,10 +68,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // 실시간 에러 제거
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -74,9 +82,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     try {
       await onSubmit(formData);
     } catch (error) {
@@ -90,9 +98,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         title={t('create_account') || '계정 만들기'}
         subtitle={t('or') || '또는'}
         linkText={t('sign_in_to_existing_account') || '기존 계정으로 로그인'}
-        linkTo="/login"
+        linkTo='/login'
       />
-      
+
       <Form
         fields={[
           {
@@ -142,11 +150,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         errors={errors}
         onChange={handleInputChange}
         onSubmit={handleSubmit}
-        submitText={loading ? t('creating_account') || '계정 생성 중...' : t('create_account') || '계정 만들기'}
+        submitText={
+          loading
+            ? t('creating_account') || '계정 생성 중...'
+            : t('create_account') || '계정 만들기'
+        }
         loading={loading}
       />
     </div>
   );
 };
 
-export default RegisterForm; 
+export default RegisterForm;

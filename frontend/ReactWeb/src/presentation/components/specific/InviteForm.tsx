@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Input, Button, InviteIcon, InviteHeader } from "../common";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Input, Button, InviteIcon, InviteHeader } from '../common';
 
 interface InviteFormProps {
   onInvite: (email: string) => void;
@@ -9,11 +9,11 @@ interface InviteFormProps {
   className?: string;
 }
 
-const InviteForm: React.FC<InviteFormProps> = ({ 
-  onInvite, 
-  isLoading, 
-  error, 
-  className = "" 
+const InviteForm: React.FC<InviteFormProps> = ({
+  onInvite,
+  isLoading,
+  error,
+  className = '',
 }) => {
   const { t } = useTranslation();
   const [partnerEmail, setPartnerEmail] = useState('');
@@ -53,13 +53,13 @@ const InviteForm: React.FC<InviteFormProps> = ({
       <InviteHeader />
 
       {/* Email Input */}
-      <div className="space-y-3">
+      <div className='space-y-3'>
         <Input
-          name="partnerEmail"
-          type="email"
+          name='partnerEmail'
+          type='email'
           placeholder={t('partner_email_placeholder') || '파트너의 이메일 주소'}
           value={partnerEmail}
-          onChange={(e) => setPartnerEmail(e.target.value)}
+          onChange={e => setPartnerEmail(e.target.value)}
           onKeyPress={handleKeyPress}
           error={error || undefined}
           disabled={isLoading}
@@ -68,7 +68,7 @@ const InviteForm: React.FC<InviteFormProps> = ({
 
       {/* Submit Button */}
       <Button
-        variant="primary"
+        variant='primary'
         fullWidth
         onClick={handleInvite}
         disabled={!partnerEmail.trim() || isLoading}
@@ -80,4 +80,4 @@ const InviteForm: React.FC<InviteFormProps> = ({
   );
 };
 
-export default InviteForm; 
+export default InviteForm;

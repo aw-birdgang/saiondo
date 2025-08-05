@@ -1,5 +1,5 @@
-import React from "react";
-import CategoryCard from "./CategoryCard";
+import React from 'react';
+import CategoryCard from './CategoryCard';
 
 interface Category {
   id: string;
@@ -18,15 +18,15 @@ interface CategoryGridProps {
   className?: string;
 }
 
-const CategoryGrid: React.FC<CategoryGridProps> = ({ 
-  categories, 
-  selectedCategory, 
-  onCategorySelect, 
-  className = "" 
+const CategoryGrid: React.FC<CategoryGridProps> = ({
+  categories,
+  selectedCategory,
+  onCategorySelect,
+  className = '',
 }) => {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${className}`}>
-      {categories.map((category) => (
+      {categories.map(category => (
         <CategoryCard
           key={category.id}
           category={category}
@@ -38,4 +38,4 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
   );
 };
 
-export default CategoryGrid; 
+export default CategoryGrid;

@@ -7,7 +7,7 @@ export const EVENT_TYPE_CONFIG: EventTypeConfig = {
   anniversary: { color: 'bg-purple-500', label: '기념일' },
   other: { color: 'bg-gray-500', label: '기타' },
   work: { color: 'bg-green-500', label: '업무' },
-  personal: { color: 'bg-orange-500', label: '개인' }
+  personal: { color: 'bg-orange-500', label: '개인' },
 };
 
 // 요일 라벨
@@ -23,7 +23,7 @@ export const MOCK_EVENTS: Event[] = [
     description: '주간 팀 미팅',
     time: '10:00',
     priority: 'high',
-    isAllDay: false
+    isAllDay: false,
   },
   {
     id: '2',
@@ -33,7 +33,7 @@ export const MOCK_EVENTS: Event[] = [
     description: '영화 보기',
     time: '19:00',
     priority: 'medium',
-    isAllDay: false
+    isAllDay: false,
   },
   {
     id: '3',
@@ -42,7 +42,7 @@ export const MOCK_EVENTS: Event[] = [
     type: 'anniversary',
     description: '우리의 특별한 날',
     priority: 'high',
-    isAllDay: true
+    isAllDay: true,
   },
   {
     id: '4',
@@ -52,7 +52,7 @@ export const MOCK_EVENTS: Event[] = [
     description: '중요한 프로젝트 마감일',
     time: '18:00',
     priority: 'high',
-    isAllDay: false
+    isAllDay: false,
   },
   {
     id: '5',
@@ -62,15 +62,15 @@ export const MOCK_EVENTS: Event[] = [
     description: '헬스장 가기',
     time: '07:00',
     priority: 'low',
-    isAllDay: false
-  }
+    isAllDay: false,
+  },
 ];
 
 // 뷰 모드 옵션
 export const VIEW_MODE_OPTIONS = [
   { value: 'month', label: '월' },
   { value: 'week', label: '주' },
-  { value: 'day', label: '일' }
+  { value: 'day', label: '일' },
 ];
 
 // 이벤트 타입 옵션 (필터용)
@@ -81,14 +81,14 @@ export const EVENT_TYPE_OPTIONS = [
   { value: 'anniversary', label: '기념일' },
   { value: 'work', label: '업무' },
   { value: 'personal', label: '개인' },
-  { value: 'other', label: '기타' }
+  { value: 'other', label: '기타' },
 ];
 
 // 우선순위 옵션
 export const PRIORITY_OPTIONS = [
   { value: 'low', label: '낮음' },
   { value: 'medium', label: '보통' },
-  { value: 'high', label: '높음' }
+  { value: 'high', label: '높음' },
 ];
 
 // 기본 이벤트 폼 데이터
@@ -100,5 +100,5 @@ export const DEFAULT_EVENT: Omit<Event, 'id'> = {
   time: '',
   location: '',
   priority: 'medium',
-  isAllDay: false
-}; 
+  isAllDay: false,
+};

@@ -33,7 +33,7 @@ class PerformanceMonitor {
 
   recordMetric(metric: PerformanceMetric) {
     this.metrics.push(metric);
-    
+
     // Keep only the latest metrics
     if (this.metrics.length > this.maxMetrics) {
       this.metrics = this.metrics.slice(-this.maxMetrics);
@@ -49,13 +49,16 @@ class PerformanceMonitor {
   }
 
   getAverageExecutionTime(hookName?: string): number {
-    const targetMetrics = hookName 
+    const targetMetrics = hookName
       ? this.getMetricsByHook(hookName)
       : this.metrics;
-    
+
     if (targetMetrics.length === 0) return 0;
-    
-    const totalTime = targetMetrics.reduce((sum, metric) => sum + metric.executionTime, 0);
+
+    const totalTime = targetMetrics.reduce(
+      (sum, metric) => sum + metric.executionTime,
+      0
+    );
     return totalTime / targetMetrics.length;
   }
 
@@ -63,12 +66,10 @@ class PerformanceMonitor {
     const hookNames = [...new Set(this.metrics.map(m => m.hookName))];
     const hookStats = hookNames.map(name => ({
       hookName: name,
-      avgTime: this.getAverageExecutionTime(name)
+      avgTime: this.getAverageExecutionTime(name),
     }));
-    
-    return hookStats
-      .sort((a, b) => b.avgTime - a.avgTime)
-      .slice(0, limit);
+
+    return hookStats.sort((a, b) => b.avgTime - a.avgTime).slice(0, limit);
   }
 
   clearMetrics() {
@@ -76,21 +77,27 @@ class PerformanceMonitor {
   }
 
   exportMetrics(): string {
-    return JSON.stringify({
-      totalMetrics: this.metrics.length,
-      averageExecutionTime: this.getAverageExecutionTime(),
-      slowestHooks: this.getSlowestHooks(),
-      metrics: this.metrics
-    }, null, 2);
+    return JSON.stringify(
+      {
+        totalMetrics: this.metrics.length,
+        averageExecutionTime: this.getAverageExecutionTime(),
+        slowestHooks: this.getSlowestHooks(),
+        metrics: this.metrics,
+      },
+      null,
+      2
+    );
   }
 }
 
-export const usePerformanceMonitor = (options: UsePerformanceMonitorOptions = {}) => {
+export const usePerformanceMonitor = (
+  options: UsePerformanceMonitorOptions = {}
+) => {
   const {
     enabled = true,
     logToConsole = false,
     maxMetrics = 100,
-    onMetricRecorded
+    onMetricRecorded,
   } = options;
 
   const monitor = PerformanceMonitor.getInstance();
@@ -100,35 +107,31 @@ export const usePerformanceMonitor = (options: UsePerformanceMonitorOptions = {}
     monitor.setMaxMetrics(maxMetrics);
   }, [maxMetrics]);
 
-  const startMonitoring = useCallback((hookName: string, dependencies: any[] = []) => {
-    if (!enabled) return;
-    
-    startTimeRef.current = performance.now();
-    
-    return {
-      end: (error?: string) => {
-        const executionTime = performance.now() - startTimeRef.current;
-        const metric: PerformanceMetric = {
-          hookName,
-          executionTime,
-          timestamp: Date.now(),
-          dependencies,
-          error
-        };
+  const startMonitoring = useCallback(
+    (hookName: string, dependencies: any[] = []) => {
+      if (!enabled) return;
 
-        monitor.recordMetric(metric);
-        
-        if (logToConsole) {
-          console.log(`[Performance] ${hookName}: ${executionTime.toFixed(2)}ms`, {
+      startTimeRef.current = performance.now();
+
+      return {
+        end: (error?: string) => {
+          const executionTime = performance.now() - startTimeRef.current;
+          const metric: PerformanceMetric = {
+            hookName,
+            executionTime,
+            timestamp: Date.now(),
             dependencies,
-            error
-          });
-        }
+            error,
+          };
 
-        onMetricRecorded?.(metric);
-      }
-    };
-  }, [enabled, logToConsole, onMetricRecorded]);
+          monitor.recordMetric(metric);
+
+          onMetricRecorded?.(metric);
+        },
+      };
+    },
+    [enabled, onMetricRecorded]
+  );
 
   const getMetrics = useCallback(() => {
     return monitor.getMetrics();
@@ -161,6 +164,6 @@ export const usePerformanceMonitor = (options: UsePerformanceMonitorOptions = {}
     getAverageExecutionTime,
     getSlowestHooks,
     clearMetrics,
-    exportMetrics
+    exportMetrics,
   };
-}; 
+};

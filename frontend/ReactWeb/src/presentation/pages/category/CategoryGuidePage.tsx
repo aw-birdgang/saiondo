@@ -4,9 +4,17 @@ import { getContainer } from '../../../app/di/container';
 import { DI_TOKENS } from '../../../app/di/tokens';
 import { useCategory } from '../../hooks/useCategory';
 import { useToastContext } from '../../providers/ToastProvider';
-import { PageWrapper, PageContainer, PageHeader } from '../../components/layout';
+import {
+  PageWrapper,
+  PageContainer,
+  PageHeader,
+} from '../../components/layout';
 import { SectionHeader, ActionButtons } from '../../components/common';
-import { CategoryGrid, CategoryDetailCard, UsageGuide } from '../../components/category';
+import {
+  CategoryGrid,
+  CategoryDetailCard,
+  UsageGuide,
+} from '../../components/category';
 import type { ICategoryUseCase } from '../../../application/usecases/CategoryUseCase';
 
 const CategoryGuidePage: React.FC = () => {
@@ -15,7 +23,7 @@ const CategoryGuidePage: React.FC = () => {
   const container = getContainer();
 
   // Category Use Case 가져오기
-  const [categoryUseCase] = useState<ICategoryUseCase>(() => 
+  const [categoryUseCase] = useState<ICategoryUseCase>(() =>
     container.get<ICategoryUseCase>(DI_TOKENS.CATEGORY_USE_CASE)
   );
 
@@ -28,7 +36,7 @@ const CategoryGuidePage: React.FC = () => {
     getUsageGuide,
     navigateToChat,
     navigateToHome,
-    clearError
+    clearError,
   } = useCategory(categoryUseCase);
 
   // 에러 처리
@@ -43,18 +51,18 @@ const CategoryGuidePage: React.FC = () => {
     <PageWrapper>
       {/* Header */}
       <PageHeader
-        title="대화 카테고리 가이드"
+        title='대화 카테고리 가이드'
         showBackButton
         onBackClick={navigateToHome}
       />
 
       {/* Main Content */}
-      <PageContainer maxWidth="6xl" padding="lg">
-        <div className="space-y-8">
+      <PageContainer maxWidth='6xl' padding='lg'>
+        <div className='space-y-8'>
           {/* Header Section */}
           <SectionHeader
-            title="대화 카테고리 가이드"
-            description="Saiondo에서 제공하는 다양한 대화 카테고리를 통해 더 의미 있는 대화를 나누어보세요. 각 카테고리는 특정 주제에 집중하여 더 깊이 있는 소통을 도와줍니다."
+            title='대화 카테고리 가이드'
+            description='Saiondo에서 제공하는 다양한 대화 카테고리를 통해 더 의미 있는 대화를 나누어보세요. 각 카테고리는 특정 주제에 집중하여 더 깊이 있는 소통을 도와줍니다.'
             centered
           />
 
@@ -83,13 +91,13 @@ const CategoryGuidePage: React.FC = () => {
               {
                 label: '대화 시작하기',
                 onClick: navigateToChat,
-                variant: 'primary'
+                variant: 'primary',
               },
               {
                 label: '홈으로 가기',
                 onClick: navigateToHome,
-                variant: 'secondary'
-              }
+                variant: 'secondary',
+              },
             ]}
           />
         </div>
@@ -99,4 +107,3 @@ const CategoryGuidePage: React.FC = () => {
 };
 
 export default CategoryGuidePage;
-

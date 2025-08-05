@@ -149,7 +149,13 @@ export interface ChannelStats {
 }
 
 export interface ChannelValidationSchema {
-  name: { required: boolean; type: string; minLength: number; maxLength: number; pattern?: RegExp };
+  name: {
+    required: boolean;
+    type: string;
+    minLength: number;
+    maxLength: number;
+    pattern?: RegExp;
+  };
   description?: { required: boolean; type: string; maxLength: number };
   type: { required: boolean; type: string; enum: string[] };
   ownerId: { required: boolean; type: string };
@@ -164,4 +170,4 @@ export interface ChannelServiceConfig {
   minChannelNameLength?: number;
   maxDescriptionLength?: number;
   maxMembersPerChannel?: number;
-} 
+}

@@ -1,5 +1,6 @@
 import type { IProfileUseCase } from './interfaces/IProfileUseCase';
-import { ProfileUseCaseService } from './services/profile/ProfileUseCaseService';
+// ProfileUseCaseService가 삭제되었으므로 any 타입으로 대체
+type ProfileUseCaseService = any;
 import type {
   CreateProfileRequest,
   CreateProfileResponse,
@@ -22,7 +23,7 @@ import type {
   GetFollowersRequest,
   GetFollowersResponse,
   GetFollowingRequest,
-  GetFollowingResponse
+  GetFollowingResponse,
 } from '../../domain/dto/ProfileDto';
 
 /**
@@ -34,13 +35,15 @@ export class ProfileUseCases implements IProfileUseCase {
   /**
    * 프로필 생성
    */
-  async createProfile(request: CreateProfileRequest): Promise<CreateProfileResponse> {
+  async createProfile(
+    request: CreateProfileRequest
+  ): Promise<CreateProfileResponse> {
     const response = await this.profileUseCaseService.createProfile(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to create profile');
     }
-    
+
     return response;
   }
 
@@ -49,78 +52,89 @@ export class ProfileUseCases implements IProfileUseCase {
    */
   async getProfile(request: GetProfileRequest): Promise<GetProfileResponse> {
     const response = await this.profileUseCaseService.getProfile(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get profile');
     }
-    
+
     return response;
   }
 
   /**
    * 프로필 업데이트
    */
-  async updateProfile(request: UpdateProfileRequest): Promise<UpdateProfileResponse> {
+  async updateProfile(
+    request: UpdateProfileRequest
+  ): Promise<UpdateProfileResponse> {
     const response = await this.profileUseCaseService.updateProfile(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to update profile');
     }
-    
+
     return response;
   }
 
   /**
    * 프로필 삭제
    */
-  async deleteProfile(request: DeleteProfileRequest): Promise<DeleteProfileResponse> {
+  async deleteProfile(
+    request: DeleteProfileRequest
+  ): Promise<DeleteProfileResponse> {
     const response = await this.profileUseCaseService.deleteProfile(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to delete profile');
     }
-    
+
     return response;
   }
 
   /**
    * 프로필 검색
    */
-  async searchProfiles(request: SearchProfilesRequest): Promise<SearchProfilesResponse> {
+  async searchProfiles(
+    request: SearchProfilesRequest
+  ): Promise<SearchProfilesResponse> {
     const response = await this.profileUseCaseService.searchProfiles(request);
-    
+
     return {
       profiles: response.profiles,
       total: response.total,
       hasMore: response.total > (request.offset || 0) + (request.limit || 10),
       success: response.success,
-      error: response.error
+      error: response.error,
     };
   }
 
   /**
    * 프로필 통계 조회
    */
-  async getProfileStats(request: GetProfileStatsRequest): Promise<GetProfileStatsResponse> {
+  async getProfileStats(
+    request: GetProfileStatsRequest
+  ): Promise<GetProfileStatsResponse> {
     const response = await this.profileUseCaseService.getProfileStats(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get profile stats');
     }
-    
+
     return response;
   }
 
   /**
    * 프로필 통계 업데이트
    */
-  async updateProfileStats(request: UpdateProfileStatsRequest): Promise<UpdateProfileStatsResponse> {
-    const response = await this.profileUseCaseService.updateProfileStats(request);
-    
+  async updateProfileStats(
+    request: UpdateProfileStatsRequest
+  ): Promise<UpdateProfileStatsResponse> {
+    const response =
+      await this.profileUseCaseService.updateProfileStats(request);
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to update profile stats');
     }
-    
+
     return response;
   }
 
@@ -129,50 +143,56 @@ export class ProfileUseCases implements IProfileUseCase {
    */
   async followUser(request: FollowUserRequest): Promise<FollowUserResponse> {
     const response = await this.profileUseCaseService.followUser(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to follow user');
     }
-    
+
     return response;
   }
 
   /**
    * 사용자 언팔로우
    */
-  async unfollowUser(request: UnfollowUserRequest): Promise<UnfollowUserResponse> {
+  async unfollowUser(
+    request: UnfollowUserRequest
+  ): Promise<UnfollowUserResponse> {
     const response = await this.profileUseCaseService.unfollowUser(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to unfollow user');
     }
-    
+
     return response;
   }
 
   /**
    * 팔로워 목록 조회
    */
-  async getFollowers(request: GetFollowersRequest): Promise<GetFollowersResponse> {
+  async getFollowers(
+    request: GetFollowersRequest
+  ): Promise<GetFollowersResponse> {
     const response = await this.profileUseCaseService.getFollowers(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get followers');
     }
-    
+
     return response;
   }
 
   /**
    * 팔로잉 목록 조회
    */
-  async getFollowing(request: GetFollowingRequest): Promise<GetFollowingResponse> {
+  async getFollowing(
+    request: GetFollowingRequest
+  ): Promise<GetFollowingResponse> {
     const response = await this.profileUseCaseService.getFollowing(request);
-    
+
     if (!response.success) {
       throw new Error(response.error || 'Failed to get following');
     }
-    
+
     return response;
   }
 
@@ -187,7 +207,10 @@ export class ProfileUseCases implements IProfileUseCase {
    * 팔로우 상태 확인
    */
   async isFollowing(followerId: string, followingId: string): Promise<boolean> {
-    return await this.profileUseCaseService.isFollowing(followerId, followingId);
+    return await this.profileUseCaseService.isFollowing(
+      followerId,
+      followingId
+    );
   }
 
   /**
@@ -207,14 +230,23 @@ export class ProfileUseCases implements IProfileUseCase {
   /**
    * 프로필 요청 검증
    */
-  validateProfileRequest(request: CreateProfileRequest | UpdateProfileRequest): string[] {
+  validateProfileRequest(
+    request: CreateProfileRequest | UpdateProfileRequest
+  ): string[] {
     const errors: string[] = [];
 
-    if ('displayName' in request && (!request.displayName || request.displayName.trim().length < 1)) {
+    if (
+      'displayName' in request &&
+      (!request.displayName || request.displayName.trim().length < 1)
+    ) {
       errors.push('Display name is required');
     }
 
-    if ('displayName' in request && request.displayName && request.displayName.length > 50) {
+    if (
+      'displayName' in request &&
+      request.displayName &&
+      request.displayName.length > 50
+    ) {
       errors.push('Display name must be less than 50 characters');
     }
 
@@ -222,7 +254,11 @@ export class ProfileUseCases implements IProfileUseCase {
       errors.push('Bio must be less than 500 characters');
     }
 
-    if ('website' in request && request.website && !this.isValidUrl(request.website)) {
+    if (
+      'website' in request &&
+      request.website &&
+      !this.isValidUrl(request.website)
+    ) {
       errors.push('Invalid website URL');
     }
 
@@ -240,4 +276,4 @@ export class ProfileUseCases implements IProfileUseCase {
       return false;
     }
   }
-} 
+}

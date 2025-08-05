@@ -64,66 +64,74 @@ const EventFormModal: React.FC<EventFormModalProps> = ({
       onClose={onClose}
       title={editingEvent ? '이벤트 수정' : '새 이벤트 추가'}
     >
-      <div className="space-y-4">
+      <div className='space-y-4'>
         <div>
-          <label className="block text-sm font-medium text-txt mb-1">제목</label>
+          <label className='block text-sm font-medium text-txt mb-1'>
+            제목
+          </label>
           <input
-            type="text"
+            type='text'
             value={formData.title}
-            onChange={(e) => handleInputChange('title', e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="이벤트 제목을 입력하세요"
+            onChange={e => handleInputChange('title', e.target.value)}
+            className='w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
+            placeholder='이벤트 제목을 입력하세요'
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt mb-1">타입</label>
+          <label className='block text-sm font-medium text-txt mb-1'>
+            타입
+          </label>
           <select
             value={formData.type}
-            onChange={(e) => handleInputChange('type', e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={e => handleInputChange('type', e.target.value)}
+            className='w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
           >
-            <option value="meeting">회의</option>
-            <option value="date">데이트</option>
-            <option value="anniversary">기념일</option>
-            <option value="work">업무</option>
-            <option value="personal">개인</option>
-            <option value="other">기타</option>
+            <option value='meeting'>회의</option>
+            <option value='date'>데이트</option>
+            <option value='anniversary'>기념일</option>
+            <option value='work'>업무</option>
+            <option value='personal'>개인</option>
+            <option value='other'>기타</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt mb-1">시간</label>
+          <label className='block text-sm font-medium text-txt mb-1'>
+            시간
+          </label>
           <input
-            type="time"
+            type='time'
             value={formData.time}
-            onChange={(e) => handleInputChange('time', e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={e => handleInputChange('time', e.target.value)}
+            className='w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-txt mb-1">설명</label>
+          <label className='block text-sm font-medium text-txt mb-1'>
+            설명
+          </label>
           <textarea
             value={formData.description}
-            onChange={(e) => handleInputChange('description', e.target.value)}
-            className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={e => handleInputChange('description', e.target.value)}
+            className='w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary'
             rows={3}
-            placeholder="이벤트 설명을 입력하세요"
+            placeholder='이벤트 설명을 입력하세요'
           />
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2 mt-6">
+      <div className='flex justify-end space-x-2 mt-6'>
         <button
           onClick={onClose}
-          className="px-4 py-2 border border-border rounded-lg hover:bg-focus"
+          className='px-4 py-2 border border-border rounded-lg hover:bg-focus'
         >
           취소
         </button>
         <button
           onClick={handleSubmit}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+          className='px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark'
         >
           {editingEvent ? '수정' : '추가'}
         </button>
@@ -132,4 +140,4 @@ const EventFormModal: React.FC<EventFormModalProps> = ({
   );
 };
 
-export default EventFormModal; 
+export default EventFormModal;

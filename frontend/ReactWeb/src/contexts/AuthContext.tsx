@@ -1,13 +1,21 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useAuthStore, useIsAuthenticated } from '../stores/authStore';
+import {
+  useAuthStore,
+  useIsAuthenticated,
+  type User,
+} from '../stores/authStore';
 import { useAuthInitializer } from '../presentation/hooks/useAuthInitializer';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: any | null;
+  user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (email: string, password: string, username: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    username: string
+  ) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,12 +31,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Use custom hook for auth initialization
   useAuthInitializer({
     autoInitialize: true,
-    onTokenFound: (token) => {
-      console.log('Token found and set');
+    onTokenFound: _token => {
+      // Token found callback - can be used for analytics or other side effects
     },
     onTokenNotFound: () => {
-      console.log('No token found');
-    }
+      // Token not found callback - can be used for analytics or other side effects
+    },
   });
 
   const value: AuthContextType = {
@@ -39,11 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register: authStore.register,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
@@ -52,4 +56,4 @@ export const useAuth = (): AuthContextType => {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-}; 
+};

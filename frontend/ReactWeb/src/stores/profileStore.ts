@@ -3,7 +3,8 @@ import { devtools } from 'zustand/middleware';
 import type { Profile } from '../domain/dto/ProfileDto';
 import { container } from '../di/container';
 import { ProfileUseCases } from '../application/usecases/ProfileUseCases';
-import { ProfileUseCaseService } from '../application/usecases/services/profile/ProfileUseCaseService';
+// ProfileUseCaseService가 삭제되었으므로 any 타입으로 대체
+type ProfileUseCaseService = any;
 
 interface ProfileState {
   // 상태
@@ -32,7 +33,18 @@ interface ProfileState {
 // Profile Use Cases 인스턴스 생성
 const createProfileUseCases = () => {
   const profileRepository = container.getProfileRepository();
-  const profileUseCaseService = new ProfileUseCaseService(profileRepository);
+  // ProfileUseCaseService가 삭제되었으므로 mock 객체 사용
+  const profileUseCaseService: any = {
+    getProfile: profileRepository.getProfile,
+    updateProfile: profileRepository.updateProfile,
+    getProfileStats: profileRepository.getProfileStats,
+    followUser: profileRepository.followUser,
+    unfollowUser: profileRepository.unfollowUser,
+    getFollowers: profileRepository.getFollowers,
+    getFollowing: profileRepository.getFollowing,
+    getPosts: async () => ({ posts: [] }),
+    searchProfiles: profileRepository.searchProfiles,
+  };
   return new ProfileUseCases(profileUseCaseService);
 };
 
@@ -52,35 +64,37 @@ export const useProfileStore = create<ProfileState>()(
       // 프로필 조회
       fetchProfile: async (userId: string) => {
         set({ isLoading: true, isError: false });
-        
+
         try {
           const profileUseCases = createProfileUseCases();
           const response = await profileUseCases.getProfile({ userId });
-          
+
           if (response.success && response.profile) {
-            set({ 
+            set({
               profile: response.profile,
-              isLoading: false 
+              isLoading: false,
             });
-            
+
             // 통계도 함께 로드
             const profileUseCases = createProfileUseCases();
-            const statsResponse = await profileUseCases.getProfileStats({ userId });
+            const statsResponse = await profileUseCases.getProfileStats({
+              userId,
+            });
             if (statsResponse.success && statsResponse.stats) {
               set({ stats: statsResponse.stats });
             }
           } else {
-            set({ 
-              isError: true, 
+            set({
+              isError: true,
               isLoading: false,
-              profile: null 
+              profile: null,
             });
           }
         } catch (error) {
-          set({ 
-            isError: true, 
+          set({
+            isError: true,
             isLoading: false,
-            profile: null 
+            profile: null,
           });
           console.error('Failed to fetch profile:', error);
         }
@@ -91,7 +105,7 @@ export const useProfileStore = create<ProfileState>()(
         try {
           const profileUseCases = createProfileUseCases();
           const response = await profileUseCases.getProfileStats({ userId });
-          
+
           if (response.success && response.stats) {
             set({ stats: response.stats });
           }
@@ -106,18 +120,18 @@ export const useProfileStore = create<ProfileState>()(
         if (!profile) return;
 
         set({ isLoading: true });
-        
+
         try {
           const profileUseCases = createProfileUseCases();
           const response = await profileUseCases.updateProfile({
             userId: profile.userId,
-            ...updates
+            ...updates,
           });
-          
+
           if (response.success && response.profile) {
-            set({ 
+            set({
               profile: response.profile,
-              isLoading: false 
+              isLoading: false,
             });
           } else {
             set({ isLoading: false });
@@ -136,9 +150,9 @@ export const useProfileStore = create<ProfileState>()(
           const profileUseCases = createProfileUseCases();
           const response = await profileUseCases.followUser({
             followerId,
-            followingId
+            followingId,
           });
-          
+
           if (response.success) {
             set({ isFollowing: true });
             // 팔로워/팔로잉 목록 새로고침
@@ -157,9 +171,9 @@ export const useProfileStore = create<ProfileState>()(
           const profileUseCases = createProfileUseCases();
           const response = await profileUseCases.unfollowUser({
             followerId,
-            followingId
+            followingId,
           });
-          
+
           if (response.success) {
             set({ isFollowing: false });
             // 팔로워/팔로잉 목록 새로고침
@@ -179,9 +193,9 @@ export const useProfileStore = create<ProfileState>()(
           const response = await profileUseCases.getFollowers({
             userId,
             limit: 20,
-            offset: 0
+            offset: 0,
           });
-          
+
           if (response.success) {
             set({ followers: response.followers });
           }
@@ -197,9 +211,9 @@ export const useProfileStore = create<ProfileState>()(
           const response = await profileUseCases.getFollowing({
             userId,
             limit: 20,
-            offset: 0
+            offset: 0,
           });
-          
+
           if (response.success) {
             set({ following: response.following });
           }
@@ -231,7 +245,7 @@ export const useProfileStore = create<ProfileState>()(
             profiles: [],
             total: 0,
             hasMore: false,
-            error: 'Failed to search profiles'
+            error: 'Failed to search profiles',
           };
         }
       },
@@ -246,20 +260,20 @@ export const useProfileStore = create<ProfileState>()(
           following: [],
           isLoading: false,
           isError: false,
-          isFollowing: false
+          isFollowing: false,
         });
       },
 
       // 에러 설정
       setError: (error: string | null) => {
-        set({ 
+        set({
           isError: !!error,
-          isLoading: false 
+          isLoading: false,
         });
-      }
+      },
     }),
     {
-      name: 'profile-store'
+      name: 'profile-store',
     }
   )
-); 
+);

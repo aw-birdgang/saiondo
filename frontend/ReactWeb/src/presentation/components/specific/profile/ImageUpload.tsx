@@ -15,7 +15,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onImageUpload,
   type,
   size = 'md',
-  className = ''
+  className = '',
 }) => {
   const { t } = useTranslation();
   const [isUploading, setIsUploading] = useState(false);
@@ -26,18 +26,18 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     sm: {
       container: 'w-20 h-20',
       image: 'w-20 h-20',
-      icon: 'w-8 h-8'
+      icon: 'w-8 h-8',
     },
     md: {
       container: 'w-32 h-32',
       image: 'w-32 h-32',
-      icon: 'w-12 h-12'
+      icon: 'w-12 h-12',
     },
     lg: {
       container: 'w-48 h-48',
       image: 'w-48 h-48',
-      icon: 'w-16 h-16'
-    }
+      icon: 'w-16 h-16',
+    },
   };
 
   const currentSize = sizeClasses[size];
@@ -52,7 +52,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
       // 미리보기 생성
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         setPreviewUrl(e.target?.result as string);
       };
       reader.readAsDataURL(file);
@@ -126,56 +126,58 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             }`}
           />
         ) : (
-          <div className="text-center">
+          <div className='text-center'>
             <svg
               className={`${currentSize.icon} mx-auto text-gray-400 mb-2`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                strokeLinecap='round'
+                strokeLinejoin='round'
                 strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
               />
             </svg>
-            <p className="text-sm text-gray-500">
-              {type === 'avatar' ? t('click_to_upload_avatar') : t('click_to_upload_cover')}
+            <p className='text-sm text-gray-500'>
+              {type === 'avatar'
+                ? t('click_to_upload_avatar')
+                : t('click_to_upload_cover')}
             </p>
           </div>
         )}
 
         {/* 업로드 중 오버레이 */}
         {isUploading && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
-            <div className="text-white text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
-              <p className="text-sm">{t('uploading')}</p>
+          <div className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg'>
+            <div className='text-white text-center'>
+              <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2'></div>
+              <p className='text-sm'>{t('uploading')}</p>
             </div>
           </div>
         )}
       </div>
 
       {/* 액션 버튼들 */}
-      <div className="mt-2 flex space-x-2">
+      <div className='mt-2 flex space-x-2'>
         <Button
-          variant="outline"
-          size="sm"
+          variant='outline'
+          size='sm'
           onClick={handleClick}
           disabled={isUploading}
-          className="flex-1"
+          className='flex-1'
         >
           {displayImage ? t('change') : t('upload')}
         </Button>
-        
+
         {displayImage && (
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={handleRemove}
             disabled={isUploading}
-            className="text-red-600 hover:text-red-700"
+            className='text-red-600 hover:text-red-700'
           >
             {t('remove')}
           </Button>
@@ -185,21 +187,21 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {/* 파일 입력 */}
       <input
         ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/jpg,image/png,image/webp"
+        type='file'
+        accept='image/jpeg,image/jpg,image/png,image/webp'
         onChange={handleFileSelect}
-        className="hidden"
+        className='hidden'
       />
 
       {/* 도움말 텍스트 */}
-      <p className="mt-2 text-xs text-gray-500">
-        {t('image_upload_help', { 
+      <p className='mt-2 text-xs text-gray-500'>
+        {t('image_upload_help', {
           maxSize: '5MB',
-          formats: 'JPG, PNG, WebP'
+          formats: 'JPG, PNG, WebP',
         })}
       </p>
     </div>
   );
 };
 
-export default ImageUpload; 
+export default ImageUpload;

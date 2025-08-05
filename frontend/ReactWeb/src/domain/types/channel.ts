@@ -15,4 +15,4 @@ export interface ChannelStats {
   unreadMessages: number;
   averageResponseTime: string;
   memberCount: number;
-} 
+}

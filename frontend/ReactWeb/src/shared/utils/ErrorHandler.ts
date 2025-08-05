@@ -45,17 +45,13 @@ export class ErrorHandler {
     ['PERMISSION_DENIED', '권한이 없습니다.'],
     ['VALIDATION_ERROR', '입력 정보를 확인해주세요.'],
     ['SERVER_ERROR', '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'],
-    ['UNKNOWN_ERROR', '알 수 없는 오류가 발생했습니다.']
+    ['UNKNOWN_ERROR', '알 수 없는 오류가 발생했습니다.'],
   ]);
 
   /**
    * 에러 처리 및 표준화
    */
-  handleError(
-    error: any,
-    context: string,
-    operation: string
-  ): AppError {
+  handleError(error: any, context: string, operation: string): AppError {
     // 이미 AppError인 경우 그대로 반환
     if (error instanceof AppError) {
       return error;
@@ -211,7 +207,7 @@ export class ErrorHandler {
       message: error.message,
       userFriendly: error.userFriendly,
       originalError: error.originalError,
-      timestamp: error.timestamp
+      timestamp: error.timestamp,
     });
   }
-} 
+}

@@ -11,4 +11,4 @@ export { default as AIInfoWidget } from './AIInfoWidget';
 export { default as UserProfileSection } from './UserProfileSection';
 export { default as ActionButtons } from './ActionButtons';
 export { default as BackgroundPattern } from './BackgroundPattern';
-export * from './IconComponents'; 
+export * from './IconComponents';

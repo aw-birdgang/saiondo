@@ -5,14 +5,14 @@ import {
   SettingsHeader,
   SettingsSidebar,
   SettingsContent,
-  SettingsContainer
+  SettingsContainer,
 } from '../../components/specific/settings';
 import { useSettingsData } from './hooks/useSettingsData';
 
 const SettingsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('general');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const {
     // 상태
     settings,
@@ -27,7 +27,7 @@ const SettingsPage: React.FC = () => {
     handleReset,
     loadSettings,
     exportSettings,
-    importSettings
+    importSettings,
   } = useSettingsData();
 
   // 파일 업로드 처리
@@ -52,7 +52,7 @@ const SettingsPage: React.FC = () => {
   if (error) {
     return (
       <ErrorState
-        title="설정 로드 실패"
+        title='설정 로드 실패'
         message={error}
         onRetry={loadSettings}
       />
@@ -64,23 +64,23 @@ const SettingsPage: React.FC = () => {
       {/* 숨겨진 파일 입력 */}
       <input
         ref={fileInputRef}
-        type="file"
-        accept=".json"
+        type='file'
+        accept='.json'
         onChange={handleFileUpload}
         style={{ display: 'none' }}
       />
-      
+
       {/* 헤더 */}
-      <div className="w-full flex flex-col">
+      <div className='w-full flex flex-col'>
         <SettingsHeader
           onSave={handleSave}
           onReset={handleReset}
           isSaving={isSaving}
           hasUnsavedChanges={hasUnsavedChanges}
         />
-        
+
         {/* 메인 콘텐츠 */}
-        <div className="flex flex-1">
+        <div className='flex flex-1'>
           <SettingsSidebar
             activeSection={activeSection}
             onSectionChange={setActiveSection}
@@ -98,4 +98,4 @@ const SettingsPage: React.FC = () => {
   );
 };
 
-export default SettingsPage; 
+export default SettingsPage;

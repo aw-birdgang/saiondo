@@ -30,7 +30,7 @@ export const useDataLoader = <T>(
     cacheTime = 300000, // 5 minutes default
     retryCount = 3,
     retryDelay = 1000,
-    enablePerformanceMonitoring = false
+    enablePerformanceMonitoring = false,
   } = options;
 
   const [state, setState] = useState<DataLoaderState<T>>({
@@ -50,92 +50,107 @@ export const useDataLoader = <T>(
   // Performance monitoring
   const { startMonitoring } = usePerformanceMonitor({
     enabled: enablePerformanceMonitoring,
-    logToConsole: enablePerformanceMonitoring
+    logToConsole: enablePerformanceMonitoring,
   });
 
-  const loadData = useCallback(async (forceRefresh = false) => {
-    // Start performance monitoring
-    const monitoring = startMonitoring?.('useDataLoader', dependencies);
-    
-    try {
-      // Check cache first
-      if (!forceRefresh && cacheRef.current) {
-        const now = Date.now();
-        if (now - cacheRef.current.timestamp < cacheTime) {
-          setState({
-            data: cacheRef.current.data,
-            loading: false,
-            error: null,
-          });
-          monitoring?.end();
-          return;
-        }
-      }
+  const loadData = useCallback(
+    async (forceRefresh = false) => {
+      // Start performance monitoring
+      const monitoring = startMonitoring?.('useDataLoader', dependencies);
 
-      // Cancel previous request if still pending
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      // Create new abort controller
-      abortControllerRef.current = new AbortController();
-
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      retryCountRef.current = 0;
-      
-      const attemptLoad = async (): Promise<void> => {
-        try {
-          const result = await loader();
-          
-          // Cache the result
-          cacheRef.current = {
-            data: result,
-            timestamp: Date.now()
-          };
-
-          setState({
-            data: result,
-            loading: false,
-            error: null,
-          });
-        } catch (error) {
-          // Check if request was aborted
-          if (error instanceof Error && error.name === 'AbortError') {
+      try {
+        // Check cache first
+        if (!forceRefresh && cacheRef.current) {
+          const now = Date.now();
+          if (now - cacheRef.current.timestamp < cacheTime) {
+            setState({
+              data: cacheRef.current.data,
+              loading: false,
+              error: null,
+            });
+            monitoring?.end();
             return;
           }
-
-          retryCountRef.current++;
-          
-          if (retryCountRef.current < retryCount) {
-            // Retry after delay
-            setTimeout(() => {
-              attemptLoad();
-            }, retryDelay);
-            return;
-          }
-
-          const errorMsg = error instanceof Error ? error.message : errorMessage;
-          setState({
-            data: null,
-            loading: false,
-            error: errorMsg,
-          });
-          
-          if (showErrorToast) {
-            toast.error(errorMsg);
-          }
-
-          monitoring?.end(errorMsg);
-          throw error;
         }
-      };
 
-      await attemptLoad();
-      monitoring?.end();
-    } catch (error) {
-      monitoring?.end(error instanceof Error ? error.message : 'Unknown error');
-    }
-  }, [loader, showErrorToast, errorMessage, cacheTime, retryCount, retryDelay, startMonitoring, dependencies]);
+        // Cancel previous request if still pending
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+
+        // Create new abort controller
+        abortControllerRef.current = new AbortController();
+
+        setState(prev => ({ ...prev, loading: true, error: null }));
+        retryCountRef.current = 0;
+
+        const attemptLoad = async (): Promise<void> => {
+          try {
+            const result = await loader();
+
+            // Cache the result
+            cacheRef.current = {
+              data: result,
+              timestamp: Date.now(),
+            };
+
+            setState({
+              data: result,
+              loading: false,
+              error: null,
+            });
+          } catch (error) {
+            // Check if request was aborted
+            if (error instanceof Error && error.name === 'AbortError') {
+              return;
+            }
+
+            retryCountRef.current++;
+
+            if (retryCountRef.current < retryCount) {
+              // Retry after delay
+              setTimeout(() => {
+                attemptLoad();
+              }, retryDelay);
+              return;
+            }
+
+            const errorMsg =
+              error instanceof Error ? error.message : errorMessage;
+            setState({
+              data: null,
+              loading: false,
+              error: errorMsg,
+            });
+
+            if (showErrorToast) {
+              toast.error(errorMsg);
+            }
+
+            monitoring?.end(errorMsg);
+            throw error;
+          }
+        };
+
+        await attemptLoad();
+        monitoring?.end();
+      } catch (error) {
+        monitoring?.end(
+          error instanceof Error ? error.message : 'Unknown error'
+        );
+      }
+    },
+    [
+      loader,
+      showErrorToast,
+      errorMessage,
+      cacheTime,
+      retryCount,
+      retryDelay,
+      startMonitoring,
+      dependencies,
+    ]
+  );
 
   const refresh = useCallback(() => {
     loadData(true);
@@ -177,4 +192,4 @@ export const useDataLoader = <T>(
     clearError,
     clearCache,
   };
-}; 
+};

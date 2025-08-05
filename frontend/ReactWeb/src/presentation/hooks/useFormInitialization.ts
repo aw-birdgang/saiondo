@@ -10,12 +10,7 @@ interface UseFormInitializationOptions<T> {
 export const useFormInitialization = <T>(
   options: UseFormInitializationOptions<T>
 ) => {
-  const {
-    initialData,
-    defaultData,
-    dependencies = [],
-    onDataChange
-  } = options;
+  const { initialData, defaultData, dependencies = [], onDataChange } = options;
 
   const [formData, setFormData] = useState<T>(initialData || defaultData);
 
@@ -46,4 +41,4 @@ export const useFormInitialization = <T>(
     updateFormData,
     resetForm,
   };
-}; 
+};

@@ -5,23 +5,48 @@ import { DI_TOKENS } from '../../../app/di/tokens';
 import { usePayment } from '../../hooks/usePayment';
 import { useDataLoader } from '../../hooks/useDataLoader';
 import { useToastContext } from '../../providers/ToastProvider';
-import { 
+import {
   ProductSelectionStep,
   PaymentMethodStep,
   ConfirmationStep,
   ProcessingStep,
   CompleteStep,
-  PaymentProgress
+  PaymentProgress,
 } from '../../components/payment';
 import type { IPaymentUseCase } from '../../../application/usecases/PaymentUseCase';
 import type { PaymentStep } from '../../../domain/types/payment';
 
 const PAYMENT_STEPS: PaymentStep[] = [
-  { id: 'product', title: '플랜 선택', description: '구독 플랜을 선택하세요', progress: 25 },
-  { id: 'payment', title: '결제 정보', description: '결제 방법과 정보를 입력하세요', progress: 50 },
-  { id: 'confirmation', title: '확인', description: '주문 정보를 확인하세요', progress: 75 },
-  { id: 'processing', title: '처리 중', description: '결제를 처리하고 있습니다', progress: 90 },
-  { id: 'complete', title: '완료', description: '결제가 완료되었습니다', progress: 100 }
+  {
+    id: 'product',
+    title: '플랜 선택',
+    description: '구독 플랜을 선택하세요',
+    progress: 25,
+  },
+  {
+    id: 'payment',
+    title: '결제 정보',
+    description: '결제 방법과 정보를 입력하세요',
+    progress: 50,
+  },
+  {
+    id: 'confirmation',
+    title: '확인',
+    description: '주문 정보를 확인하세요',
+    progress: 75,
+  },
+  {
+    id: 'processing',
+    title: '처리 중',
+    description: '결제를 처리하고 있습니다',
+    progress: 90,
+  },
+  {
+    id: 'complete',
+    title: '완료',
+    description: '결제가 완료되었습니다',
+    progress: 100,
+  },
 ];
 
 const PaymentPage: React.FC = () => {
@@ -30,7 +55,7 @@ const PaymentPage: React.FC = () => {
   const container = getContainer();
 
   // Payment Use Case 가져오기
-  const [paymentUseCase] = useState<IPaymentUseCase>(() => 
+  const [paymentUseCase] = useState<IPaymentUseCase>(() =>
     container.get<IPaymentUseCase>(DI_TOKENS.PAYMENT_USE_CASE)
   );
 
@@ -49,37 +74,29 @@ const PaymentPage: React.FC = () => {
     goToPreviousStep,
     processPayment,
     clearError,
-    reset
+    reset,
   } = usePayment(paymentUseCase);
 
   // 상품 데이터 로딩
-  const { 
-    data: products = [], 
-    loading: isLoadingProducts, 
+  const {
+    data: products = [],
+    loading: isLoadingProducts,
     error: productsError,
-    refetch: refetchProducts 
-  } = useDataLoader(
-    () => paymentUseCase.getSubscriptionProducts(),
-    [],
-    {
-      autoLoad: true,
-      errorMessage: '구독 상품을 불러오는데 실패했습니다.'
-    }
-  );
+    refetch: refetchProducts,
+  } = useDataLoader(() => paymentUseCase.getSubscriptionProducts(), [], {
+    autoLoad: true,
+    errorMessage: '구독 상품을 불러오는데 실패했습니다.',
+  });
 
   // 결제 방법 데이터 로딩
-  const { 
-    data: paymentMethods = [], 
-    loading: isLoadingPaymentMethods, 
-    error: paymentMethodsError 
-  } = useDataLoader(
-    () => paymentUseCase.getPaymentMethods(),
-    [],
-    {
-      autoLoad: true,
-      errorMessage: '결제 방법을 불러오는데 실패했습니다.'
-    }
-  );
+  const {
+    data: paymentMethods = [],
+    loading: isLoadingPaymentMethods,
+    error: paymentMethodsError,
+  } = useDataLoader(() => paymentUseCase.getPaymentMethods(), [], {
+    autoLoad: true,
+    errorMessage: '결제 방법을 불러오는데 실패했습니다.',
+  });
 
   // 에러 처리
   useEffect(() => {
@@ -143,18 +160,10 @@ const PaymentPage: React.FC = () => {
         );
 
       case 'processing':
-        return (
-          <ProcessingStep
-            progress={state.paymentProgress}
-          />
-        );
+        return <ProcessingStep progress={state.paymentProgress} />;
 
       case 'complete':
-        return (
-          <CompleteStep
-            onGoHome={() => window.location.href = '/'}
-          />
-        );
+        return <CompleteStep onGoHome={() => (window.location.href = '/')} />;
 
       default:
         return null;
@@ -164,10 +173,10 @@ const PaymentPage: React.FC = () => {
   // 로딩 상태 처리
   if (isLoadingProducts || isLoadingPaymentMethods) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-txt-secondary">결제 정보를 불러오는 중...</p>
+      <div className='min-h-screen bg-bg flex items-center justify-center'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
+          <p className='text-txt-secondary'>결제 정보를 불러오는 중...</p>
         </div>
       </div>
     );
@@ -176,18 +185,20 @@ const PaymentPage: React.FC = () => {
   // 에러 상태 처리
   if (productsError || paymentMethodsError) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-txt mb-2">데이터 로딩 오류</h2>
-          <p className="text-txt-secondary mb-4">
+      <div className='min-h-screen bg-bg flex items-center justify-center'>
+        <div className='text-center'>
+          <h2 className='text-xl font-semibold text-txt mb-2'>
+            데이터 로딩 오류
+          </h2>
+          <p className='text-txt-secondary mb-4'>
             {productsError || paymentMethodsError}
           </p>
-          <button 
+          <button
             onClick={() => {
               if (productsError) refetchProducts();
               window.location.reload();
             }}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+            className='px-4 py-2 bg-primary text-white rounded hover:bg-primary/90'
           >
             다시 시도
           </button>
@@ -197,17 +208,12 @@ const PaymentPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-bg">
+    <div className='min-h-screen bg-bg'>
       {/* 진행률 표시 */}
-      <PaymentProgress 
-        currentStep={state.currentStep} 
-        steps={PAYMENT_STEPS} 
-      />
+      <PaymentProgress currentStep={state.currentStep} steps={PAYMENT_STEPS} />
 
       {/* 메인 콘텐츠 */}
-      <div className="max-w-4xl mx-auto p-6">
-        {renderCurrentStep()}
-      </div>
+      <div className='max-w-4xl mx-auto p-6'>{renderCurrentStep()}</div>
     </div>
   );
 };

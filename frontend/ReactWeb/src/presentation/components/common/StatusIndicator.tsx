@@ -48,36 +48,27 @@ export interface StatusIndicatorProps
   text?: string;
 }
 
-export const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
-  ({ 
-    className, 
-    status, 
-    size, 
-    animate,
-    showText,
-    text,
-    ...props 
-  }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          statusIndicatorVariants({ status, size, animate, showText, className }),
-          'relative'
-        )}
-        {...props}
-      >
-        {showText && text && (
-          <span className="ml-1">{text}</span>
-        )}
-        
-        {/* Pulse animation for active status */}
-        {status === 'active' && (
-          <div className="absolute inset-0 rounded-full bg-current opacity-20 animate-ping" />
-        )}
-      </div>
-    );
-  }
-);
+export const StatusIndicator = React.forwardRef<
+  HTMLDivElement,
+  StatusIndicatorProps
+>(({ className, status, size, animate, showText, text, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        statusIndicatorVariants({ status, size, animate, showText, className }),
+        'relative'
+      )}
+      {...props}
+    >
+      {showText && text && <span className='ml-1'>{text}</span>}
 
-StatusIndicator.displayName = 'StatusIndicator'; 
+      {/* Pulse animation for active status */}
+      {status === 'active' && (
+        <div className='absolute inset-0 rounded-full bg-current opacity-20 animate-ping' />
+      )}
+    </div>
+  );
+});
+
+StatusIndicator.displayName = 'StatusIndicator';

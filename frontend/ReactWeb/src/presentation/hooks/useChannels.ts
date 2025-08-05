@@ -15,10 +15,10 @@ const channelApi = {
     //   }
     // });
     // return response.json();
-    
+
     // 임시 지연 시뮬레이션
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     // 임시 채널 데이터
     return {
       ownedChannels: [
@@ -37,8 +37,8 @@ const channelApi = {
             senderId: 'ai-assistant',
             senderName: 'AI 상담사',
             createdAt: new Date(Date.now() - 1000 * 60 * 30),
-          }
-        }
+          },
+        },
       ],
       memberChannels: [
         {
@@ -56,19 +56,22 @@ const channelApi = {
             senderId: 'another-user-id',
             senderName: '다른 사용자',
             createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
   },
 
-  createChannel: async (channelData: {
-    name: string;
-    description?: string;
-    type: 'public' | 'private' | 'direct';
-    ownerId: string;
-    members: string[];
-  }, token: string) => {
+  createChannel: async (
+    channelData: {
+      name: string;
+      description?: string;
+      type: 'public' | 'private' | 'direct';
+      ownerId: string;
+      members: string[];
+    },
+    token: string
+  ) => {
     // TODO: 실제 API 호출로 대체
     // const response = await fetch('/api/channels', {
     //   method: 'POST',
@@ -79,10 +82,10 @@ const channelApi = {
     //   body: JSON.stringify(channelData)
     // });
     // return response.json();
-    
+
     // 임시 지연 시뮬레이션
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     return {
       id: crypto.randomUUID(),
       name: channelData.name,
@@ -96,10 +99,14 @@ const channelApi = {
     };
   },
 
-  updateChannel: async (channelId: string, updates: {
-    name?: string;
-    description?: string;
-  }, token: string) => {
+  updateChannel: async (
+    channelId: string,
+    updates: {
+      name?: string;
+      description?: string;
+    },
+    token: string
+  ) => {
     // TODO: 실제 API 호출로 대체
     // const response = await fetch(`/api/channels/${channelId}`, {
     //   method: 'PATCH',
@@ -110,10 +117,10 @@ const channelApi = {
     //   body: JSON.stringify(updates)
     // });
     // return response.json();
-    
+
     // 임시 지연 시뮬레이션
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     return { success: true };
   },
 
@@ -127,31 +134,32 @@ const channelApi = {
     //   }
     // });
     // return response.json();
-    
+
     // 임시 지연 시뮬레이션
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     return { success: true };
-  }
+  },
 };
 
 export const useChannels = () => {
   const channelStore = useChannelStore();
   const { user, token } = useAuthStore();
   const { channelUseCases } = useUseCases();
-  
+
   const loadChannels = useCallback(async () => {
     if (!user?.id) return;
-    
+
     try {
       channelStore.setLoading(true);
       channelStore.setError(null);
-      
+
       // 실제 API 호출
       const channels = await channelApi.loadChannels(user.id, token || '');
       channelStore.setChannels(channels);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load channels';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load channels';
       channelStore.setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -159,122 +167,150 @@ export const useChannels = () => {
     }
   }, [user, token, channelStore]);
 
-  const createChannel = useCallback(async (channelData: { 
-    name: string; 
-    description?: string; 
-    type: 'public' | 'private' | 'direct' 
-  }) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return;
-    }
-
-    try {
-      channelStore.setLoading(true);
-      channelStore.setError(null);
-      
-      // 실제 API 호출
-      const channel = await channelApi.createChannel({
-        ...channelData,
-        ownerId: user.id,
-        members: [user.id]
-      }, token || '');
-      
-      // 로컬 상태 업데이트
-      const currentChannels = channelStore.channels;
-      if (currentChannels) {
-        channelStore.setChannels({
-          ...currentChannels,
-          ownedChannels: [...currentChannels.ownedChannels, channel]
-        });
+  const createChannel = useCallback(
+    async (channelData: {
+      name: string;
+      description?: string;
+      type: 'public' | 'private' | 'direct';
+    }) => {
+      if (!user?.id) {
+        toast.error('User not authenticated');
+        return;
       }
-      
-      toast.success('Channel created successfully');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to create channel';
-      channelStore.setError(errorMessage);
-      toast.error(errorMessage);
-      throw err;
-    } finally {
-      channelStore.setLoading(false);
-    }
-  }, [user, token, channelStore]);
 
-  const updateChannel = useCallback(async (channelId: string, updates: { 
-    name?: string; 
-    description?: string 
-  }) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return;
-    }
+      try {
+        channelStore.setLoading(true);
+        channelStore.setError(null);
 
-    try {
-      channelStore.setLoading(true);
-      channelStore.setError(null);
-      
-      // 실제 API 호출
-      await channelApi.updateChannel(channelId, updates, token || '');
-      
-      // 로컬 상태 업데이트
-      const currentChannels = channelStore.channels;
-      if (currentChannels) {
-        const updatedOwnedChannels = currentChannels.ownedChannels.map(channel =>
-          channel.id === channelId ? { ...channel, ...updates, updatedAt: new Date() } : channel
+        // 실제 API 호출
+        const channel = await channelApi.createChannel(
+          {
+            ...channelData,
+            ownerId: user.id,
+            members: [user.id],
+          },
+          token || ''
         );
-        const updatedMemberChannels = currentChannels.memberChannels.map(channel =>
-          channel.id === channelId ? { ...channel, ...updates, updatedAt: new Date() } : channel
-        );
-        
-        channelStore.setChannels({
-          ownedChannels: updatedOwnedChannels,
-          memberChannels: updatedMemberChannels
-        });
-      }
-      
-      toast.success('Channel updated successfully');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update channel';
-      channelStore.setError(errorMessage);
-      toast.error(errorMessage);
-      throw err;
-    } finally {
-      channelStore.setLoading(false);
-    }
-  }, [user, token, channelStore]);
 
-  const deleteChannel = useCallback(async (channelId: string) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return;
-    }
+        // 로컬 상태 업데이트
+        const currentChannels = channelStore.channels;
+        if (currentChannels) {
+          channelStore.setChannels({
+            ...currentChannels,
+            ownedChannels: [...currentChannels.ownedChannels, channel],
+          });
+        }
 
-    try {
-      channelStore.setLoading(true);
-      channelStore.setError(null);
-      
-      // 실제 API 호출
-      await channelApi.deleteChannel(channelId, token || '');
-      
-      // 로컬 상태 업데이트
-      const currentChannels = channelStore.channels;
-      if (currentChannels) {
-        channelStore.setChannels({
-          ownedChannels: currentChannels.ownedChannels.filter(c => c.id !== channelId),
-          memberChannels: currentChannels.memberChannels.filter(c => c.id !== channelId)
-        });
+        toast.success('Channel created successfully');
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to create channel';
+        channelStore.setError(errorMessage);
+        toast.error(errorMessage);
+        throw err;
+      } finally {
+        channelStore.setLoading(false);
       }
-      
-      toast.success('Channel deleted successfully');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete channel';
-      channelStore.setError(errorMessage);
-      toast.error(errorMessage);
-      throw err;
-    } finally {
-      channelStore.setLoading(false);
-    }
-  }, [user, token, channelStore]);
+    },
+    [user, token, channelStore]
+  );
+
+  const updateChannel = useCallback(
+    async (
+      channelId: string,
+      updates: {
+        name?: string;
+        description?: string;
+      }
+    ) => {
+      if (!user?.id) {
+        toast.error('User not authenticated');
+        return;
+      }
+
+      try {
+        channelStore.setLoading(true);
+        channelStore.setError(null);
+
+        // 실제 API 호출
+        await channelApi.updateChannel(channelId, updates, token || '');
+
+        // 로컬 상태 업데이트
+        const currentChannels = channelStore.channels;
+        if (currentChannels) {
+          const updatedOwnedChannels = currentChannels.ownedChannels.map(
+            channel =>
+              channel.id === channelId
+                ? { ...channel, ...updates, updatedAt: new Date() }
+                : channel
+          );
+          const updatedMemberChannels = currentChannels.memberChannels.map(
+            channel =>
+              channel.id === channelId
+                ? { ...channel, ...updates, updatedAt: new Date() }
+                : channel
+          );
+
+          channelStore.setChannels({
+            ownedChannels: updatedOwnedChannels,
+            memberChannels: updatedMemberChannels,
+          });
+        }
+
+        toast.success('Channel updated successfully');
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to update channel';
+        channelStore.setError(errorMessage);
+        toast.error(errorMessage);
+        throw err;
+      } finally {
+        channelStore.setLoading(false);
+      }
+    },
+    [user, token, channelStore]
+  );
+
+  const deleteChannel = useCallback(
+    async (channelId: string) => {
+      if (!user?.id) {
+        toast.error('User not authenticated');
+        return;
+      }
+
+      try {
+        channelStore.setLoading(true);
+        channelStore.setError(null);
+
+        // 실제 API 호출
+        await channelApi.deleteChannel(channelId, token || '');
+
+        // 로컬 상태 업데이트
+        const currentChannels = channelStore.channels;
+        if (currentChannels) {
+          channelStore.setChannels({
+            ownedChannels: currentChannels.ownedChannels.filter(
+              c => c.id !== channelId
+            ),
+            memberChannels: currentChannels.memberChannels.filter(
+              c => c.id !== channelId
+            ),
+          });
+        }
+
+        toast.success('Channel deleted successfully');
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to delete channel';
+        channelStore.setError(errorMessage);
+        toast.error(errorMessage);
+        throw err;
+      } finally {
+        channelStore.setLoading(false);
+      }
+    },
+    [user, token, channelStore]
+  );
 
   // Load channels on mount
   useEffect(() => {
@@ -297,4 +333,4 @@ export const useChannels = () => {
     setLoading: channelStore.setLoading,
     setError: channelStore.setError,
   };
-}; 
+};

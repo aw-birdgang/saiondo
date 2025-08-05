@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface PageLayoutProps {
   children: React.ReactNode;
@@ -8,12 +8,12 @@ interface PageLayoutProps {
   className?: string;
 }
 
-const PageLayout: React.FC<PageLayoutProps> = ({ 
-  children, 
-  background = "bg-bg", 
-  maxWidth = "max-w-6xl", 
-  padding = "px-6 py-8", 
-  className = "" 
+const PageLayout: React.FC<PageLayoutProps> = ({
+  children,
+  background = 'bg-bg',
+  maxWidth = 'max-w-6xl',
+  padding = 'px-6 py-8',
+  className = '',
 }) => {
   return (
     <div className={`min-h-screen ${background}`}>
@@ -24,4 +24,4 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   );
 };
 
-export default PageLayout; 
+export default PageLayout;

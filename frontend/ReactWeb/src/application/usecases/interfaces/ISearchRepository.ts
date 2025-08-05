@@ -1,9 +1,9 @@
-import type { 
-  SearchRequest, 
+import type {
+  SearchRequest,
   SearchResponse,
   SearchSuggestion,
   SearchHistoryItem,
-  SearchTrendingItem
+  SearchTrendingItem,
 } from '../../../domain/types/search';
 
 // Search Repository 인터페이스 - 데이터 접근만 담당
@@ -16,4 +16,4 @@ export interface ISearchRepository {
   clearSearchHistory(): Promise<void>;
   getSearchStats(query: string): Promise<any>;
   updateSearchIndex(): Promise<void>;
-} 
+}

@@ -31,4 +31,4 @@ export interface ChatState {
   typingUsers: string[];
   showEmojiPicker: boolean;
   selectedMessage: string | null;
-} 
+}
