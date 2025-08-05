@@ -11,3 +11,9 @@ export * from './specific/test';
 
 // Layout components
 export * from './layout';
+
+// Chat components
+export * from './chat';
+
+// Loading components
+export * from './loading';

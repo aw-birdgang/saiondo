@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useDataLoader } from '../../../hooks/useDataLoader';
+import { aiChatService } from '../../../../infrastructure/api/services';
 import { MOCK_ASSISTANTS, ASSISTANT_CATEGORIES } from '../constants/assistantData';
 import type { Assistant, AssistantCategory } from '../types/assistantTypes';
 
@@ -10,13 +11,28 @@ export const useAssistantData = () => {
   // 데이터 로딩
   const { data: assistants = [], loading: isLoading, error } = useDataLoader(
     async () => {
-      // TODO: 실제 API 호출로 대체
-      // const response = await getAssistants();
-
-      // 시뮬레이션을 위한 지연
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      return MOCK_ASSISTANTS;
+      try {
+        // 실제 API 호출
+        const response = await aiChatService.getAIAssistants();
+        return response.assistants.map(assistant => ({
+          id: assistant.id,
+          name: assistant.name,
+          description: assistant.description,
+          category: assistant.category,
+          avatar: assistant.avatar,
+          isActive: assistant.isAvailable,
+          rating: 4.5, // API에서 제공하지 않는 경우 기본값
+          reviewCount: 0, // API에서 제공하지 않는 경우 기본값
+          specialties: [], // API에서 제공하지 않는 경우 기본값
+          languages: ['ko', 'en'], // API에서 제공하지 않는 경우 기본값
+          responseTime: '1-2분', // API에서 제공하지 않는 경우 기본값
+          isOnline: assistant.isAvailable
+        }));
+      } catch (error) {
+        console.error('AI 어시스턴트 로드 실패:', error);
+        // API 실패 시 mock 데이터 사용
+        return MOCK_ASSISTANTS;
+      }
     },
     [],
     {

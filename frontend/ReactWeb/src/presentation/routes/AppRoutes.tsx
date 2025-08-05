@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, useMemo } from "react";
 import { Routes, Route } from "react-router-dom";
-import { ErrorBoundary } from "../components/LazyLoader";
+import { ErrorBoundary } from "../components/loading";
 import { PageLoader, ErrorFallback } from "../components/common";
 
 // Extended LazyComponent type with preload capability
@@ -47,6 +47,7 @@ const PaymentPage = createLazyPage(() => import("../pages/payment"));
 const ExamplesPage = createLazyPage(() => import("../pages/examples"));
 const SettingsPage = createLazyPage(() => import("../pages/settings"));
 const SearchPage = createLazyPage(() => import("../pages/search"));
+const AIChatPage = createLazyPage(() => import("../pages/ai-chat"));
 
 
 // Route configuration for better maintainability
@@ -70,6 +71,7 @@ const routeConfig = [
   { path: "/examples", element: ExamplesPage, name: "Examples" },
   { path: "/settings", element: SettingsPage, name: "Settings" },
   { path: "/search", element: SearchPage, name: "Search" },
+  { path: "/ai-chat", element: AIChatPage, name: "AI Chat" },
 ];
 
 export const AppRoutes: React.FC = () => {

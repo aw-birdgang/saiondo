@@ -7,6 +7,7 @@ import {useChannelStore} from '../../../stores/channelStore';
 import {useDataLoader} from "../../hooks/useDataLoader";
 import {useToastContext} from "../../providers/ToastProvider";
 import {SearchInput} from "../../components/search";
+import {AIChatWidget} from "../../components/chat/AIChatWidget";
 import {
   ActivityListSection,
   ChartsSection,
@@ -105,7 +106,12 @@ const HomePage: React.FC = () => {
   };
 
   const handleQuickAction = (action: any) => {
-    toast.success(`${action.title}으로 이동합니다!`);
+    if (action.title === 'AI 어시스턴트 선택') {
+      toast.success('AI 어시스턴트 선택 페이지로 이동합니다!');
+      navigate('/assistant');
+    } else {
+      toast.success(`${action.title}으로 이동합니다!`);
+    }
     // 실제로는 라우터를 사용하여 이동
   };
 
@@ -135,56 +141,79 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <HomeContainer isVisible={isVisible}>
-      <WelcomeSection
-        greeting={greeting}
-        userName={user?.name || '사용자'}
-        onNewProject={handleNewProject}
-        onGetStarted={handleGetStarted}
-      />
+    <>
+      <HomeContainer isVisible={isVisible}>
+        <WelcomeSection
+          greeting={greeting}
+          userName={user?.name || '사용자'}
+          onNewProject={handleNewProject}
+          onGetStarted={handleGetStarted}
+        />
 
-      {/* 검색 섹션 추가 */}
-      <div className="mb-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-4">
-            <h2 className="text-2xl font-bold text-txt mb-2">무엇을 찾고 계신가요?</h2>
-            <p className="text-txt-secondary">상담, 조언, 정보를 검색해보세요</p>
+        {/* 검색 섹션 추가 */}
+        <div className="mb-8">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-txt mb-2">무엇을 찾고 계신가요?</h2>
+              <p className="text-txt-secondary">상담, 조언, 정보를 검색해보세요</p>
+            </div>
+            <SearchInput
+              placeholder="상담 주제나 키워드를 입력하세요..."
+              className="w-full"
+              onSearch={handleSearch}
+              showSuggestions={true}
+              suggestions={searchSuggestions}
+              onSuggestionClick={handleSuggestionClick}
+            />
           </div>
-          <SearchInput
-            placeholder="상담 주제나 키워드를 입력하세요..."
-            className="w-full"
-            onSearch={handleSearch}
-            showSuggestions={true}
-            suggestions={searchSuggestions}
-            onSuggestionClick={handleSuggestionClick}
-          />
+        </div>
+
+        <StatsGrid stats={statsData} />
+
+        <ChartsSection
+          lineChartData={chartData}
+          barChartData={barData}
+          onChartPointClick={handleChartPointClick}
+        />
+
+        <QuickActionsSection
+          actions={quickActions}
+          onActionClick={handleQuickAction}
+        />
+
+        <ActivityListSection
+          activities={activities}
+          onDelete={handleSwipeDelete}
+          onEdit={handleSwipeEdit}
+        />
+
+        <SystemStatusSection
+          systemStatus={systemStatus}
+          notifications={notifications}
+        />
+      </HomeContainer>
+
+      {/* AI 채팅 위젯 */}
+      <AIChatWidget />
+      
+      {/* AI 기능 안내 */}
+      <div className="fixed bottom-20 right-4 z-40 max-w-xs">
+        <div className="bg-surface border border-border rounded-lg p-3 shadow-lg">
+          <div className="flex items-start space-x-2">
+            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div className="text-xs text-txt-secondary">
+              <p className="font-medium text-txt mb-1">AI 기능 안내</p>
+              <p>• <strong>AI 어시스턴트 선택</strong>: 전문 AI 상담사 선택</p>
+              <p>• <strong>AI 채팅 위젯</strong>: 즉시 AI와 대화 시작</p>
+            </div>
+          </div>
         </div>
       </div>
-
-      <StatsGrid stats={statsData} />
-
-      <ChartsSection
-        lineChartData={chartData}
-        barChartData={barData}
-        onChartPointClick={handleChartPointClick}
-      />
-
-      <QuickActionsSection
-        actions={quickActions}
-        onActionClick={handleQuickAction}
-      />
-
-      <ActivityListSection
-        activities={activities}
-        onDelete={handleSwipeDelete}
-        onEdit={handleSwipeEdit}
-      />
-
-      <SystemStatusSection
-        systemStatus={systemStatus}
-        notifications={notifications}
-      />
-    </HomeContainer>
+    </>
   );
 };
 

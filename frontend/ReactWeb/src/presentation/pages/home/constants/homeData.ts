@@ -67,12 +67,12 @@ export const QUICK_ACTIONS = [
     gradient: true
   },
   {
-    title: 'AI 어시스턴트',
-    description: 'AI와 대화해보세요',
+    title: 'AI 어시스턴트 선택',
+    description: '전문 AI 상담사를 선택하세요',
     icon: 'ai',
     href: '/assistant',
     color: 'bg-purple-500',
-    badge: '1',
+    badge: '5',
     gradient: true
   },
   {

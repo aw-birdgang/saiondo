@@ -8,8 +8,8 @@ import { initializeServices } from './di/index';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
 import { AppRoutes } from '../presentation/routes/AppRoutes';
-import { ErrorBoundary } from '../presentation/components/LazyLoader';
-import { PageLoader } from '../presentation/components/LazyLoader';
+import { ErrorBoundary } from '../presentation/components/loading';
+import { PageLoader } from '../presentation/components/common';
 import ErrorState from '../presentation/components/specific/ErrorState';
 
 // 타입 정의

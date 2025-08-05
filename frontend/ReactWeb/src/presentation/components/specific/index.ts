@@ -1,4 +1,3 @@
-// ===== HOME PAGE COMPONENTS =====
 export * from './home';
 export * from './chat';
 export * from './assistant';
@@ -113,4 +112,4 @@ export { default as PageBackground } from './PageBackground';
 export { default as GradientBackground } from './GradientBackground';
 
 // ===== MISC COMPONENTS =====
-export { default as UsageGuide } from './UsageGuide'; 
+export { default as UsageGuide } from './UsageGuide';
