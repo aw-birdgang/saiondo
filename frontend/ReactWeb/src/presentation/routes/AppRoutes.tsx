@@ -44,7 +44,7 @@ const CategoryCodeGuidePage = createLazyPage(() => import("../pages/category"));
 const InvitePartnerPage = createLazyPage(() => import("../pages/invite"));
 const ChannelInvitationPage = createLazyPage(() => import("../pages/invite"));
 const PaymentPage = createLazyPage(() => import("../pages/payment"));
-const ExamplesPage = createLazyPage(() => import("../pages/examples"));
+
 const SettingsPage = createLazyPage(() => import("../pages/settings"));
 const SearchPage = createLazyPage(() => import("../pages/search"));
 const AIChatPage = createLazyPage(() => import("../pages/ai-chat"));
@@ -68,7 +68,7 @@ const routeConfig = [
   { path: "/invite/channel", element: ChannelInvitationPage, name: "ChannelInvitation" },
   { path: "/payment", element: PaymentPage, name: "Payment" },
   { path: "/profile", element: MyPage, name: "Profile" },
-  { path: "/examples", element: ExamplesPage, name: "Examples" },
+
   { path: "/settings", element: SettingsPage, name: "Settings" },
   { path: "/search", element: SearchPage, name: "Search" },
   { path: "/ai-chat", element: AIChatPage, name: "AI Chat" },

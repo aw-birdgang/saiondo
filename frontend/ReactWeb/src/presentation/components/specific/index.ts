@@ -7,8 +7,6 @@ export * from './auth';
 export * from './analysis';
 export * from './calendar';
 export * from './settings';
-export * from './profile';
-export * from './notification';
 export { default as QuickActionsCard } from './QuickActionsCard';
 export { default as SystemStatusCard } from './SystemStatusCard';
 export { default as ChannelInfoCard } from './ChannelInfoCard';

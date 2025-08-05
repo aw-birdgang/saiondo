@@ -7,7 +7,6 @@ export * from './specific/assistant';
 export * from './specific/payment';
 export * from './specific/calendar';
 export * from './specific/splash';
-export * from './specific/test';
 
 // Layout components
 export * from './layout';
