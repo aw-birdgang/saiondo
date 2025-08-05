@@ -42,7 +42,7 @@ export const MOCK_USER_SETTINGS: UserSettings = {
     autoPlayVideos: false,
     showReadReceipts: true
   },
-  updatedAt: new Date()
+  updatedAt: new Date().toISOString()
 };
 
 // 설정 섹션 데이터

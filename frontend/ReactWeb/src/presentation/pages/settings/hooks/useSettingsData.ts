@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { MOCK_USER_SETTINGS, SETTINGS_SAVE_TIME, SETTINGS_LOAD_TIME } from '../constants/settingsData';
+import { settingsService } from '../../../../infrastructure/api/services';
 import type { UserSettings, SettingsState } from '../types/settingsTypes';
 
 export const useSettingsData = () => {
@@ -17,16 +17,11 @@ export const useSettingsData = () => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
     
     try {
-      // TODO: Implement actual API call
-      // const response = await settingsService.getUserSettings();
-      // return response.data;
-
-      // Mock 데이터 로딩 시뮬레이션
-      await new Promise(resolve => setTimeout(resolve, SETTINGS_LOAD_TIME));
+      const settings = await settingsService.getUserSettings();
       
       setState(prev => ({
         ...prev,
-        settings: MOCK_USER_SETTINGS,
+        settings,
         isLoading: false
       }));
     } catch (error) {
@@ -45,15 +40,11 @@ export const useSettingsData = () => {
     setState(prev => ({ ...prev, isSaving: true, error: null }));
     
     try {
-      // TODO: Implement actual API call
-      // await settingsService.updateUserSettings(settings);
-      
-      // Mock 설정 저장 시뮬레이션
-      await new Promise(resolve => setTimeout(resolve, SETTINGS_SAVE_TIME));
+      const updatedSettings = await settingsService.updateUserSettings(settings);
       
       setState(prev => ({
         ...prev,
-        settings,
+        settings: updatedSettings,
         isSaving: false,
         hasUnsavedChanges: false
       }));
@@ -96,13 +87,21 @@ export const useSettingsData = () => {
   }, [state.settings]);
 
   // 설정 초기화
-  const resetSettings = useCallback(() => {
-    setState(prev => ({
-      ...prev,
-      settings: MOCK_USER_SETTINGS,
-      hasUnsavedChanges: false
-    }));
-    toast.success('설정이 초기화되었습니다.');
+  const resetSettings = useCallback(async () => {
+    try {
+      const defaultSettings = await settingsService.resetUserSettings();
+      
+      setState(prev => ({
+        ...prev,
+        settings: defaultSettings,
+        hasUnsavedChanges: false
+      }));
+      
+      toast.success('설정이 초기화되었습니다.');
+    } catch (error) {
+      console.error('Failed to reset settings:', error);
+      toast.error('설정 초기화에 실패했습니다.');
+    }
   }, []);
 
   // 설정 저장 처리

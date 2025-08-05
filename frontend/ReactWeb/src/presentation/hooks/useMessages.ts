@@ -1,332 +1,168 @@
-import { useEffect, useCallback } from 'react';
-import { useMessageStore } from '../../stores/messageStore';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { useUseCases } from '../../app/di';
+import { messageService } from '../../infrastructure/api/services';
 import { toast } from 'react-hot-toast';
-
-// 임시 API 함수들 (실제 구현 시 교체)
-const messageApi = {
-  loadMessages: async (channelId: string, token: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch(`/api/messages/${channelId}`, {
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json'
-    //   }
-    // });
-    // return response.json();
-    
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // 임시 메시지 데이터
-    return [
-      {
-        id: crypto.randomUUID(),
-        content: '안녕하세요! AI 상담사입니다. 무엇을 도와드릴까요?',
-        type: 'text' as const,
-        channelId,
-        senderId: 'ai-assistant',
-        senderName: 'AI 상담사',
-        createdAt: new Date(Date.now() - 1000 * 60 * 5), // 5분 전
-        updatedAt: new Date(Date.now() - 1000 * 60 * 5),
-        reactions: [],
-        isEdited: false,
-      },
-      {
-        id: crypto.randomUUID(),
-        content: '관계에 대해 상담받고 싶어요.',
-        type: 'text' as const,
-        channelId,
-        senderId: 'current-user',
-        senderName: '사용자',
-        createdAt: new Date(Date.now() - 1000 * 60 * 3), // 3분 전
-        updatedAt: new Date(Date.now() - 1000 * 60 * 3),
-        reactions: [],
-        isEdited: false,
-      }
-    ];
-  },
-
-  sendMessage: async (messageData: {
-    content: string;
-    type: 'text' | 'image' | 'file' | 'system';
-    channelId: string;
-    senderId: string;
-  }, token: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch('/api/messages', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(messageData)
-    // });
-    // return response.json();
-    
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    return {
-      id: crypto.randomUUID(),
-      content: messageData.content,
-      type: messageData.type,
-      channelId: messageData.channelId,
-      senderId: messageData.senderId,
-      senderName: messageData.senderId === 'ai-assistant' ? 'AI 상담사' : '사용자',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      reactions: [],
-      isEdited: false,
-    };
-  },
-
-  updateMessage: async (messageId: string, updates: { content?: string }, token: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch(`/api/messages/${messageId}`, {
-    //   method: 'PATCH',
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(updates)
-    // });
-    // return response.json();
-    
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    return { success: true };
-  },
-
-  deleteMessage: async (messageId: string, token: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch(`/api/messages/${messageId}`, {
-    //   method: 'DELETE',
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json'
-    //   }
-    // });
-    // return response.json();
-    
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    return { success: true };
-  },
-
-  addReaction: async (messageId: string, emoji: string, token: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch(`/api/messages/${messageId}/reactions`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({ emoji })
-    // });
-    // return response.json();
-    
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    return {
-      id: crypto.randomUUID(),
-      messageId,
-      userId: 'current-user',
-      emoji,
-      createdAt: new Date(),
-    };
-  },
-
-  removeReaction: async (messageId: string, emoji: string, token: string) => {
-    // TODO: 실제 API 호출로 대체
-    // const response = await fetch(`/api/messages/${messageId}/reactions/${emoji}`, {
-    //   method: 'DELETE',
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`,
-    //     'Content-Type': 'application/json'
-    //   }
-    // });
-    // return response.json();
-    
-    // 임시 지연 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    return { success: true };
-  }
-};
+import type { Message } from '../../domain/types';
 
 export const useMessages = (channelId: string) => {
-  const messageStore = useMessageStore();
-  const { user, token } = useAuthStore();
-  const { messageUseCases } = useUseCases();
-  
-  const loadMessages = useCallback(async () => {
-    if (!channelId || !user?.id) return;
-    
+  const { token } = useAuthStore();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+
+  // 메시지 로딩
+  const loadMessages = useCallback(async (page = 1, limit = 50) => {
+    if (!channelId || !token) return;
+
     try {
-      messageStore.setLoading(true);
-      messageStore.setError(null);
+      setIsLoading(true);
+      setError(null);
+
+      const response = await messageService.getMessages(channelId, { page, limit });
       
-      // 실제 API 호출
-      const messages = await messageApi.loadMessages(channelId, token || '');
-      messageStore.setMessages(channelId, messages);
+      if (page === 1) {
+        setMessages(response.messages);
+      } else {
+        setMessages(prev => [...prev, ...response.messages]);
+      }
+      
+      setHasMore(response.hasMore);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load messages';
-      messageStore.setError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Failed to load messages:', err);
+      setError('메시지를 불러오는데 실패했습니다.');
+      toast.error('메시지를 불러오는데 실패했습니다.');
     } finally {
-      messageStore.setLoading(false);
+      setIsLoading(false);
     }
-  }, [channelId, user, messageStore]);
+  }, [channelId, token]);
 
-  const sendMessage = useCallback(async (messageData: { 
-    content: string; 
-    type: 'text' | 'image' | 'file' | 'system'; 
-    channelId: string; 
-  }) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return null;
-    }
+  // 메시지 전송
+  const sendMessage = useCallback(async (content: string, type: 'text' | 'image' | 'file' | 'system' = 'text') => {
+    if (!channelId || !token) return;
 
     try {
-      messageStore.setLoading(true);
-      messageStore.setError(null);
-      
-      // 실제 API 호출
-      const message = await messageApi.sendMessage({
-        ...messageData,
-        senderId: user.id,
-      }, token || '');
-      
-      messageStore.addMessage(channelId, message);
-      return message;
+      const newMessage = await messageService.sendMessage({
+        content,
+        type,
+        channelId,
+        senderId: 'current-user' // TODO: 실제 사용자 ID로 교체
+      });
+
+      setMessages(prev => [...prev, newMessage]);
+      return newMessage;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
-      messageStore.setError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Failed to send message:', err);
+      toast.error('메시지 전송에 실패했습니다.');
       throw err;
-    } finally {
-      messageStore.setLoading(false);
     }
-  }, [user, channelId, messageStore]);
+  }, [channelId, token]);
 
-  const updateMessage = useCallback(async (messageId: string, updates: { content?: string }) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return;
-    }
+  // 메시지 수정
+  const updateMessage = useCallback(async (messageId: string, content: string) => {
+    if (!token) return;
 
     try {
-      messageStore.setLoading(true);
-      messageStore.setError(null);
+      const updatedMessage = await messageService.updateMessage(messageId, { content });
       
-      // 실제 API 호출
-      await messageApi.updateMessage(messageId, updates, user.token || '');
+      setMessages(prev => prev.map(msg => 
+        msg.id === messageId ? updatedMessage : msg
+      ));
       
-      messageStore.updateMessage(channelId, messageId, updates);
-      toast.success('Message updated successfully');
+      return updatedMessage;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update message';
-      messageStore.setError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Failed to update message:', err);
+      toast.error('메시지 수정에 실패했습니다.');
       throw err;
-    } finally {
-      messageStore.setLoading(false);
     }
-  }, [user, channelId, messageStore]);
+  }, [token]);
 
+  // 메시지 삭제
   const deleteMessage = useCallback(async (messageId: string) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return;
-    }
+    if (!token) return;
 
     try {
-      messageStore.setLoading(true);
-      messageStore.setError(null);
+      await messageService.deleteMessage(messageId);
       
-      // 실제 API 호출
-      await messageApi.deleteMessage(messageId, user.token || '');
-      
-      messageStore.removeMessage(channelId, messageId);
-      toast.success('Message deleted successfully');
+      setMessages(prev => prev.filter(msg => msg.id !== messageId));
+      toast.success('메시지가 삭제되었습니다.');
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete message';
-      messageStore.setError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Failed to delete message:', err);
+      toast.error('메시지 삭제에 실패했습니다.');
       throw err;
-    } finally {
-      messageStore.setLoading(false);
     }
-  }, [user, channelId, messageStore]);
+  }, [token]);
 
+  // 메시지 반응 추가
   const addReaction = useCallback(async (messageId: string, emoji: string) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return null;
-    }
+    if (!token) return;
 
     try {
-      // 실제 API 호출
-      const reaction = await messageApi.addReaction(messageId, emoji, user.token || '');
+      await messageService.addReaction(messageId, { emoji, userId: 'current-user' });
       
-      messageStore.addReaction(channelId, messageId, reaction);
-      return reaction;
+      setMessages(prev => prev.map(msg => {
+        if (msg.id === messageId) {
+          const newReaction = {
+            id: crypto.randomUUID(),
+            messageId,
+            userId: 'current-user',
+            emoji,
+            createdAt: new Date().toISOString()
+          };
+          return {
+            ...msg,
+            reactions: [...(msg.reactions || []), newReaction]
+          };
+        }
+        return msg;
+      }));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to add reaction';
-      messageStore.setError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Failed to add reaction:', err);
+      toast.error('반응 추가에 실패했습니다.');
       throw err;
     }
-  }, [user, channelId, messageStore]);
+  }, [token]);
 
+  // 메시지 반응 제거
   const removeReaction = useCallback(async (messageId: string, emoji: string) => {
-    if (!user?.id) {
-      toast.error('User not authenticated');
-      return;
-    }
+    if (!token) return;
 
     try {
-      // 실제 API 호출
-      await messageApi.removeReaction(messageId, emoji, user.token || '');
+      await messageService.removeReaction(messageId, emoji);
       
-      messageStore.removeReaction(channelId, messageId, user.id, emoji);
+      setMessages(prev => prev.map(msg => {
+        if (msg.id === messageId) {
+          return {
+            ...msg,
+            reactions: (msg.reactions || []).filter(r => 
+              !(r.emoji === emoji && r.userId === 'current-user')
+            )
+          };
+        }
+        return msg;
+      }));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to remove reaction';
-      messageStore.setError(errorMessage);
-      toast.error(errorMessage);
+      console.error('Failed to remove reaction:', err);
+      toast.error('반응 제거에 실패했습니다.');
       throw err;
     }
-  }, [user, channelId, messageStore]);
+  }, [token]);
 
-  // Load messages on mount
+  // 초기 로딩
   useEffect(() => {
-    if (channelId) {
-      loadMessages();
-    }
-  }, [channelId, loadMessages]);
+    loadMessages();
+  }, [loadMessages]);
 
   return {
-    // State
-    messages: messageStore.messages[channelId] || [],
-    loading: messageStore.loading,
-    error: messageStore.error,
-    hasMore: messageStore.hasMore[channelId] || false,
-
-    // Actions
+    messages,
+    isLoading,
+    error,
+    hasMore,
     loadMessages,
     sendMessage,
     updateMessage,
     deleteMessage,
     addReaction,
-    removeReaction,
-    setLoading: messageStore.setLoading,
-    setError: messageStore.setError,
-    setHasMore: (hasMore: boolean) => messageStore.setHasMore(channelId, hasMore),
+    removeReaction
   };
 }; 

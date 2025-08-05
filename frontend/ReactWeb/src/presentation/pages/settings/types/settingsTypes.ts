@@ -7,7 +7,7 @@ export interface UserSettings {
   privacy: PrivacySettings;
   accessibility: AccessibilitySettings;
   display: DisplaySettings;
-  updatedAt: Date;
+  updatedAt: string; // API에서 string으로 오므로 Date에서 string으로 변경
 }
 
 export interface NotificationSettings {

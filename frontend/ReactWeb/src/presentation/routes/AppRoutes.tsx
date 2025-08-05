@@ -45,7 +45,8 @@ const InvitePartnerPage = createLazyPage(() => import("../pages/invite"));
 const ChannelInvitationPage = createLazyPage(() => import("../pages/invite"));
 const PaymentPage = createLazyPage(() => import("../pages/payment"));
 const ExamplesPage = createLazyPage(() => import("../pages/examples"));
-
+const SettingsPage = createLazyPage(() => import("../pages/settings"));
+const SearchPage = createLazyPage(() => import("../pages/search"));
 
 
 // Route configuration for better maintainability
@@ -67,6 +68,8 @@ const routeConfig = [
   { path: "/payment", element: PaymentPage, name: "Payment" },
   { path: "/profile", element: MyPage, name: "Profile" },
   { path: "/examples", element: ExamplesPage, name: "Examples" },
+  { path: "/settings", element: SettingsPage, name: "Settings" },
+  { path: "/search", element: SearchPage, name: "Search" },
 ];
 
 export const AppRoutes: React.FC = () => {
