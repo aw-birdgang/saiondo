@@ -1,8 +1,6 @@
 import type { 
   Category, 
-  CategoryCode, 
-  CategoryRequest, 
-  CategoryResponse,
+  CategoryCode,
   CategoryStats,
   CategoryUsageGuide,
   CategoryFilter

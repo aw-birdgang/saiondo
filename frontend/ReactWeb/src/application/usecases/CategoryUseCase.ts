@@ -2,9 +2,7 @@ import type { ICategoryService } from './interfaces/ICategoryService';
 import type { ICategoryUseCase } from './interfaces/ICategoryUseCase';
 import type { 
   Category, 
-  CategoryCode, 
-  CategoryRequest, 
-  CategoryResponse,
+  CategoryCode,
   CategoryStats,
   CategoryUsageGuide,
   CategoryFilter

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDataLoader } from '../../../hooks/useDataLoader';
 import { ROUTES } from '../../../../shared/constants/app';
 import { MOCK_CHANNELS, calculateChannelStats, INITIAL_CHANNEL_STATS } from '../constants/channelData';
-import type { ChannelListItem, ChannelStats, ChannelPageState } from '../types/channelTypes';
+import type { ChannelPageState } from '../types/channelTypes';
 
 export const useChannelData = () => {
   const navigate = useNavigate();

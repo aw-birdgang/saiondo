@@ -1,11 +1,7 @@
 import type { 
   Category, 
-  CategoryCode, 
-  CategoryRequest, 
-  CategoryResponse,
-  CategoryStats,
-  CategoryUsageGuide,
-  CategoryFilter
+  CategoryCode,
+  CategoryStats
 } from '../../../domain/types/category';
 
 // Category Repository 인터페이스 - 데이터 접근만 담당

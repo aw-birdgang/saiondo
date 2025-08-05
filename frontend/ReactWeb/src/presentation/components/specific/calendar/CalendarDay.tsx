@@ -1,5 +1,5 @@
 import React from 'react';
-import { format, isSameDay } from 'date-fns';
+import { format } from 'date-fns';
 import { cn } from '../../../../utils/cn';
 import { EVENT_TYPE_CONFIG } from '../../../pages/calendar/constants/calendarData';
 import type { CalendarDayProps, Event } from '../../../pages/calendar/types/calendarTypes';

@@ -1,6 +1,5 @@
 import type { 
   SearchResult, 
-  SearchFilter, 
   SearchRequest, 
   SearchResponse,
   SearchSuggestion,

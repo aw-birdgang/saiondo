@@ -4,7 +4,6 @@ import type {
   ApplicationMetrics,
   HealthCheckRequest,
   HealthCheckResponse,
-  PerformanceMetrics,
   GetPerformanceMetricsRequest,
   GetPerformanceMetricsResponse
 } from '../dto/MonitoringDto';

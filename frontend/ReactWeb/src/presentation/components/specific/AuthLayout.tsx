@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "../../../utils/cn";
 import type { AuthLayoutProps } from "../../pages/auth/types/authTypes";
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ 

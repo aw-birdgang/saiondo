@@ -8,8 +8,7 @@ import {
   LANGUAGE_OPTIONS,
   FONT_SIZE_OPTIONS,
   COLOR_BLINDNESS_OPTIONS,
-  PROFILE_VISIBILITY_OPTIONS,
-  TIME_OPTIONS
+  PROFILE_VISIBILITY_OPTIONS
 } from '../../../pages/settings/constants/settingsData';
 import type { SettingsContentProps } from '../../../pages/settings/types/settingsTypes';
 

@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useDataLoader } from '../../../hooks/useDataLoader';
 import { useErrorHandler } from '../../../hooks/useErrorHandler';
 import { MOCK_ANALYSIS_DATA, NEW_ANALYSIS_DATA, ANALYSIS_CREATION_TIME, DATA_LOADING_TIME } from '../constants/analysisData';
-import type { AnalysisData, AnalysisState } from '../types/analysisTypes';
+import type { AnalysisState } from '../types/analysisTypes';
 
 export const useAnalysisData = () => {
   const params = useParams();

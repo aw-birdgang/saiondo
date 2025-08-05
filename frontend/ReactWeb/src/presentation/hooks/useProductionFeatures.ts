@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { usePeriodicUpdate } from './usePeriodicUpdate';
 import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
 import type { 

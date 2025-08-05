@@ -1,8 +1,6 @@
 import { UserPermissionService } from '../services/UserPermissionService';
 import type {
   Permission,
-  Role,
-  UserRole,
   CheckPermissionRequest,
   CheckPermissionResponse,
   AssignRoleRequest,

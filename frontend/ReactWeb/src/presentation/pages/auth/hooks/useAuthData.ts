@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
 import { useErrorHandler } from '../../../hooks/useErrorHandler';
 import { ROUTES } from '../../../../shared/constants/app';
-import type { LoginFormData, RegisterFormData, AuthPageState } from '../types/authTypes';
+import type { LoginFormData, RegisterFormData } from '../types/authTypes';
 
 export const useAuthData = () => {
   const navigate = useNavigate();

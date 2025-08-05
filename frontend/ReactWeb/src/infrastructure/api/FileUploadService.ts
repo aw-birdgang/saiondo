@@ -1,4 +1,3 @@
-import { toast } from 'react-hot-toast';
 
 export interface FileUploadConfig {
   maxFileSize: number; // bytes

@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { addDays } from 'date-fns';
 import { toast } from 'react-hot-toast';
-import { MOCK_EVENTS, DEFAULT_EVENT } from '../constants/calendarData';
+import { MOCK_EVENTS } from '../constants/calendarData';
 import type { Event, CalendarState, ViewMode, EventStats } from '../types/calendarTypes';
 
 export const useCalendarData = () => {

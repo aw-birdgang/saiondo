@@ -5,10 +5,7 @@ import type {
   SearchState, 
   SearchResult, 
   SearchFilter, 
-  SearchRequest,
-  SearchSuggestion,
-  SearchHistoryItem,
-  SearchTrendingItem
+  SearchRequest
 } from '../../domain/types/search';
 import type { ISearchUseCase } from '../../application/usecases/SearchUseCase';
 

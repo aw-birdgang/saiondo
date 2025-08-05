@@ -1,12 +1,10 @@
 import type { IMessageRepository } from '../../../domain/repositories/IMessageRepository';
 import type { IUserRepository } from '../../../domain/repositories/IUserRepository';
-import { DomainErrorFactory } from '../../../domain/errors/DomainError';
 import { BaseService } from '../base/BaseService';
 import type { ILogger } from '../../../domain/interfaces/ILogger';
 import type {
   NotificationProfile,
   NotificationStats,
-  NotificationValidationSchema,
   NotificationServiceConfig
 } from '../../dto/NotificationDto';
 

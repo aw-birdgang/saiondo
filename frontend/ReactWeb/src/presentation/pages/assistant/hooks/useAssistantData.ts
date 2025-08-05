@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { useDataLoader } from '../../../hooks/useDataLoader';
 import { aiChatService } from '../../../../infrastructure/api/services';
 import { MOCK_ASSISTANTS, ASSISTANT_CATEGORIES } from '../constants/assistantData';
-import type { Assistant, AssistantCategory } from '../types/assistantTypes';
 
 export const useAssistantData = () => {
   const [searchTerm, setSearchTerm] = useState('');

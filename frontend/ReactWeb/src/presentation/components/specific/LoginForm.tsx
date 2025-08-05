@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Form } from "../common";
 import AuthHeader from "./auth/AuthHeader";
-import { cn } from "../../../utils/cn";
-import { DEFAULT_LOGIN_DATA, EMAIL_REGEX, PASSWORD_MIN_LENGTH } from "../../pages/auth/constants/authData";
 import type { LoginFormProps, LoginFormData } from "../../pages/auth/types/authTypes";
 
 const LoginForm: React.FC<LoginFormProps> = ({ 

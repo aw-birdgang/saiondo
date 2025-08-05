@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, LoadingSpinner } from '../common';
+import { LoadingSpinner } from '../common';
 import { InvitationCard } from './InvitationCard';
 import type { ChannelInvitationItem } from '../../../domain/types/invite';
 

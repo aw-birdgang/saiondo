@@ -6,9 +6,7 @@ import type {
   MultiLevelCacheEntry,
   CacheStats,
   CacheConfig,
-  CacheLifecycle,
-  CacheWarmupRequest,
-  CacheBatchRequest
+  CacheLifecycle
 } from '../dto/MultiLevelCacheDto';
 
 export class MultiLevelCacheService {

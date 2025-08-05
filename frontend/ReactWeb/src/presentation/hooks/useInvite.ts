@@ -4,10 +4,8 @@ import { ROUTES } from '../../shared/constants/app';
 import { useToastContext } from '../providers/ToastProvider';
 import type { 
   InviteState, 
-  InviteRequest, 
-  InviteResponse,
+  InviteRequest,
   InvitationResponseRequest,
-  ChannelInvitationItem,
   InviteStats
 } from '../../domain/types/invite';
 import type { IInviteUseCase } from '../../application/usecases/interfaces/IInviteUseCase';

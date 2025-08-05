@@ -1,4 +1,4 @@
-import type { Message, MessageMetadata, MessageReaction } from '../dto/MessageDto';
+import type { Message } from '../dto/MessageDto';
 
 export class MessageEntity {
   private constructor(

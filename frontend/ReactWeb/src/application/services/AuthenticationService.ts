@@ -2,7 +2,6 @@ import { AuthenticateUserUseCase } from '../usecases/AuthenticateUserUseCase';
 import { RegisterUserUseCase } from '../usecases/RegisterUserUseCase';
 import { LogoutUserUseCase } from '../usecases/LogoutUserUseCase';
 import { GetCurrentUserUseCase } from '../usecases/GetCurrentUserUseCase';
-import type { AuthenticateUserRequest, AuthenticateUserResponse, RegisterUserRequest, RegisterUserResponse, LogoutUserRequest } from '../dto/AuthDto';
 
 export interface AuthCredentials {
   email: string;

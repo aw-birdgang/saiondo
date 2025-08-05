@@ -3,7 +3,6 @@ import { useCaseRegistry } from '../../di/UseCaseRegistry';
 import { AnalyticsUseCase } from './AnalyticsUseCase';
 import { CreateChannelUseCase } from './CreateChannelUseCase';
 import { UserUseCases } from './UserUseCases';
-import { ChannelUseCases } from './ChannelUseCases';
 import { MessageUseCases } from './MessageUseCases';
 import { FileUseCases } from './FileUseCases';
 import { NotificationUseCases } from './NotificationUseCases';

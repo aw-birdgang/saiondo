@@ -4,13 +4,9 @@ import { MemoryCache } from '../../../base/BaseCacheService';
 import { ConsoleLogger } from '../../../../../domain/interfaces/ILogger';
 import type {
   TrackEventRequest,
-  TrackEventResponse,
   AnalyticsReportRequest,
-  AnalyticsReportResponse,
   UserBehaviorRequest,
-  UserBehaviorResponse,
-  RealTimeActivityRequest,
-  RealTimeActivityResponse
+  RealTimeActivityRequest
 } from '../../../dto/AnalyticsDto';
 
 // Mock AnalyticsService

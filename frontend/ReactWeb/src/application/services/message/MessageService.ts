@@ -7,7 +7,6 @@ import type { ILogger } from '../../../domain/interfaces/ILogger';
 import type {
   MessageProfile,
   MessageStats,
-  MessageValidationSchema,
   MessageServiceConfig
 } from '../../dto/MessageDto';
 

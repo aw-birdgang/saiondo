@@ -7,10 +7,8 @@ import type {
   InviteValidationError,
   InviteStats
 } from '../../domain/types/invite';
-import type { IInviteRepository } from './interfaces/IInviteRepository';
 import type { IInviteService } from './interfaces/IInviteService';
 import type { IInviteUseCase } from './interfaces/IInviteUseCase';
-import { InviteService } from './services/InviteService';
 import { createInviteUseCase, createMockInviteUseCase } from './factories/InviteUseCaseFactory';
 
 // UseCase 구현체 - Service를 사용하여 애플리케이션 로직 조율

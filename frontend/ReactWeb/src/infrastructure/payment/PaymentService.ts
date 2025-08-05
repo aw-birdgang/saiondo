@@ -1,4 +1,3 @@
-import { toast } from 'react-hot-toast';
 
 export interface PaymentConfig {
   apiKey: string;

@@ -2,7 +2,6 @@ import type { ISearchService } from './interfaces/ISearchService';
 import type { ISearchUseCase } from './interfaces/ISearchUseCase';
 import type { 
   SearchResult, 
-  SearchFilter, 
   SearchRequest, 
   SearchResponse,
   SearchSuggestion,

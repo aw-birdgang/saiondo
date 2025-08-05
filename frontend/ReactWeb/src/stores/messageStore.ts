@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import { container } from '../di/container';
 import type { Message } from '../domain/dto/MessageDto';
 import type { MessageReaction } from '../domain/dto/MessageDto';

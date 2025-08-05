@@ -12,6 +12,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
@@ -21,7 +22,10 @@
     "audit": "pnpm audit",
     "outdated": "pnpm outdated",
     "validate-translations": "node scripts/validate-translations.js",
-    "check-translations": "pnpm validate-translations"
+    "check-translations": "pnpm validate-translations",
+    "prune": "ts-prune",
+    "prune:check": "ts-prune --error",
+    "code-cleanup": "pnpm lint:fix && pnpm prune"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
@@ -52,6 +56,8 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.32.0",
@@ -60,10 +66,12 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.3.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^3.4.0",
+    "ts-prune": "^0.10.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.4"

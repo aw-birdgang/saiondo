@@ -1,6 +1,5 @@
 import React from 'react';
 import { eachDayOfInterval, endOfMonth, startOfMonth, isSameDay, isSameMonth } from 'date-fns';
-import { ko } from 'date-fns/locale';
 import { cn } from '../../../../utils/cn';
 import { DAY_LABELS } from '../../../pages/calendar/constants/calendarData';
 import CalendarDay from './CalendarDay';

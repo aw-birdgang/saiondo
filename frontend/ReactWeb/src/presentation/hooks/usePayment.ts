@@ -6,8 +6,6 @@ import type {
   PaymentState, 
   PaymentStep, 
   SubscriptionProduct, 
-  PaymentMethod, 
-  Coupon, 
   CardDetails,
   PaymentRequest 
 } from '../../domain/types/payment';

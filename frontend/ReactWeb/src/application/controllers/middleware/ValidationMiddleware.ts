@@ -1,5 +1,5 @@
 import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
-import type { ControllerContext, ControllerResult } from '../interfaces/IController';
+import type { ControllerContext } from '../interfaces/IController';
 import { Logger } from '../../../shared/utils/Logger';
 
 interface ValidationRule {

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMessageController } from '../../providers/ControllerProvider';
-import { Button, LoadingSpinner } from '../common';
+import { Button } from '../common';
 import { useToastContext } from '../../providers/ToastProvider';
 import { cn } from '../../../utils/cn';
 

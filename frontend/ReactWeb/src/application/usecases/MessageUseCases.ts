@@ -1,6 +1,4 @@
-import type { MessageService } from '../services/MessageService';
 import { MessageUseCaseService } from './services/message/MessageUseCaseService';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
 import type {
   CreateMessageRequest,
   CreateMessageResponse,
@@ -13,9 +11,7 @@ import type {
   UpdateMessageRequest,
   UpdateMessageResponse,
   SendMessageRequest,
-  SendMessageResponse,
   GetChannelMessagesRequest,
-  GetChannelMessagesResponse,
   GetUserMessagesRequest,
   GetUserMessagesResponse,
   GetMessageStatsRequest,

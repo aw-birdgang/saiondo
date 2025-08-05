@@ -1,7 +1,7 @@
 import { Logger } from '../../shared/utils/Logger';
 import { FlowTracker } from '../../shared/utils/FlowTracker';
 import { ErrorHandler } from '../../shared/utils/ErrorHandler';
-import type { IController, ControllerContext, ControllerResult } from './interfaces/IController';
+import type { IController, ControllerContext } from './interfaces/IController';
 import type { IMiddlewareChain } from './interfaces/IControllerMiddleware';
 import { MiddlewareChain } from './middleware/MiddlewareChain';
 import { LoggingMiddleware } from './middleware/LoggingMiddleware';

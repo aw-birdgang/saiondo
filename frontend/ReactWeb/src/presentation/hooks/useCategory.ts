@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../shared/constants/app';
 import { useToastContext } from '../providers/ToastProvider';
 import type { 
-  CategoryState, 
-  Category, 
-  CategoryCode,
+  CategoryState,
   CategoryStats
 } from '../../domain/types/category';
 import type { ICategoryUseCase } from '../../application/usecases/CategoryUseCase';

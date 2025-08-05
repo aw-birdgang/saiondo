@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../common";
-import { cn } from "../../../utils/cn";
 import type { ChannelHeaderProps } from "../../pages/channel/types/channelTypes";
 
 const ChannelHeader: React.FC<ChannelHeaderProps> = ({ 

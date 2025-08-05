@@ -1,5 +1,4 @@
 import React from "react";
-import { cn } from "../../../utils/cn";
 import type { ChannelListProps } from "../../pages/channel/types/channelTypes";
 import { ChannelCard, EmptyChannelState } from "./channel";
 

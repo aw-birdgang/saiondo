@@ -1,4 +1,4 @@
-import { MessageDomainService, MessagePermissionError } from '../../domain/services/MessageDomainService';
+import { MessageDomainService } from '../../domain/services/MessageDomainService';
 import { MessageEntity } from '../../domain/entities/Message';
 import { UserEntity } from '../../domain/entities/User';
 import { ChannelEntity } from '../../domain/entities/Channel';

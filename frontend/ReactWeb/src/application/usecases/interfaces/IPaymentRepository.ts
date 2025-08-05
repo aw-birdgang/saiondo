@@ -3,9 +3,7 @@ import type {
   PaymentMethod, 
   Coupon, 
   PaymentRequest, 
-  PaymentResponse,
-  PaymentValidationError,
-  CardDetails 
+  PaymentResponse 
 } from '../../../domain/types/payment';
 
 // Payment Repository 인터페이스 - 데이터 접근만 담당

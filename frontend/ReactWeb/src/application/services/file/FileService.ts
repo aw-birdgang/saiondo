@@ -13,9 +13,7 @@ import type {
   FileDownloadResponse
 } from '../../dto/FileDownloadDto';
 import type {
-  FileProfile,
   FileStats,
-  FileValidationSchema,
   FileServiceConfig
 } from '../../dto/FileDto';
 
