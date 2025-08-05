@@ -30,10 +30,10 @@ const UserProfileSection: React.FC<UserProfileSectionProps> = ({
       </div>
       <div className='space-y-2 lg:space-y-3'>
         <h3 className='text-xl lg:text-2xl font-bold text-gray-900 dark:text-white leading-tight'>
-          {user?.name || t('common.user')}님
+          {user?.name || t('common.user')}{t('common.user_suffix')}
         </h3>
         <p className='text-sm lg:text-base text-gray-600 dark:text-gray-400 font-medium'>
-          프로필 관리
+          {t('profile.management')}
         </p>
         <div className='flex items-center space-x-6 pt-2'>
           <div className='flex items-center space-x-2'>
@@ -42,13 +42,13 @@ const UserProfileSection: React.FC<UserProfileSectionProps> = ({
               <div className='absolute inset-0 w-3 h-3 bg-emerald-400 rounded-full animate-ping'></div>
             </div>
             <span className='text-xs lg:text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider'>
-              온라인
+              {t('profile.online')}
             </span>
           </div>
           <div className='flex items-center space-x-2'>
             <div className='w-3 h-3 bg-blue-500 rounded-full shadow-sm'></div>
             <span className='text-xs lg:text-sm text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider'>
-              활성
+              {t('profile.active')}
             </span>
           </div>
         </div>

@@ -86,7 +86,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
             navigate(`${ROUTES.PROFILE}/${displayUser?.id || 'me'}`)
           }
         >
-          {t('common.view_profile')}
+          {t('view_profile')}
         </Button>
       </div>
     </Card>
