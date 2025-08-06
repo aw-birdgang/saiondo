@@ -9,16 +9,12 @@ import { useToastContext } from '../../providers/ToastProvider';
 import { AIChatWidget } from '../../components/chat/AIChatWidget';
 import { AuthGuard } from '../../components/specific';
 import {
-  ActivityListSection,
   AIInfoWidget,
-  ChartsSection,
   DashboardHeader,
   HomeContainer,
   HomeLoadingState,
   QuickActionsSection,
   SearchSection,
-  StatsGrid,
-  SystemStatusSection,
 } from '../../components/specific/home';
 import { useHomeData } from './hooks/useHomeData';
 
@@ -34,13 +30,7 @@ const HomePage: React.FC = () => {
 
   // 커스텀 훅으로 데이터 관리
   const {
-    chartData,
-    barData,
-    statsData,
     quickActions,
-    activities,
-    systemStatus,
-    notifications,
     isLoading: dataLoading,
     // refreshData,
   } = useHomeData();
@@ -100,17 +90,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleSwipeDelete = (index: number) => {
-    toast.success(`항목 ${index + 1}이 삭제되었습니다!`);
-  };
 
-  const handleSwipeEdit = (index: number) => {
-    toast.info(`항목 ${index + 1}을 편집합니다!`);
-  };
-
-  const handleChartPointClick = (point: any) => {
-    toast.info(`${point.label}: ${point.y}점`);
-  };
 
   // 검색 처리
   const handleSearch = (query: string) => {
@@ -136,28 +116,9 @@ const HomePage: React.FC = () => {
           suggestions={searchSuggestions}
         />
 
-        <StatsGrid stats={statsData} />
-
-        <ChartsSection
-          lineChartData={chartData}
-          barChartData={barData}
-          onChartPointClick={handleChartPointClick}
-        />
-
         <QuickActionsSection
           actions={quickActions}
           onActionClick={handleQuickAction}
-        />
-
-        <ActivityListSection
-          activities={activities}
-          onDelete={handleSwipeDelete}
-          onEdit={handleSwipeEdit}
-        />
-
-        <SystemStatusSection
-          systemStatus={systemStatus}
-          notifications={notifications}
         />
       </HomeContainer>
 
