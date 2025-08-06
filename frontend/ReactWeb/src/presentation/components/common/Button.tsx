@@ -1,6 +1,8 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import { cn } from '../../../shared/utils/cn';
+import { useLoading } from '../../../shared/design-system/hooks';
+import { useShakeAnimation } from '../../../shared/design-system/animations';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 hover:scale-105 focus:scale-105',
@@ -23,6 +25,12 @@ const buttonVariants = cva(
           'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-400 shadow-lg hover:shadow-xl',
         gradient:
           'bg-gradient-to-r from-primary to-primary-container text-on-primary hover:from-primary-container hover:to-primary focus:ring-primary shadow-lg hover:shadow-xl',
+        glass:
+          'bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 focus:ring-white/50 shadow-glass hover:shadow-glass-dark',
+        neu:
+          'bg-gray-100 shadow-neu-light hover:shadow-neu-light/80 dark:bg-gray-800 dark:shadow-neu-dark dark:hover:shadow-neu-dark/80 text-gray-900 dark:text-white',
+        floating:
+          'bg-white dark:bg-gray-800 shadow-xl hover:shadow-2xl border border-gray-200 dark:border-gray-700 hover:border-primary/50 dark:hover:border-primary/50',
       },
       size: {
         sm: 'h-8 px-3 text-xs',

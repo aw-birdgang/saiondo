@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-// import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-// import { useAuthStore } from '../../../stores/authStore';
 import { useUserStore } from '../../../stores/userStore';
-// import { useChannelStore } from '../../../stores/channelStore';
-// import { useDataLoader } from '../../hooks/useDataLoader';
 import { useToastContext } from '../../providers/ToastProvider';
 import { AIChatWidget } from '../../components/chat/AIChatWidget';
 import { AuthGuard } from '../../components/specific';
@@ -17,6 +13,8 @@ import {
   SearchSection,
 } from '../../components/specific/home';
 import { useHomeData } from './hooks/useHomeData';
+import { FloatingActionButton } from '../../components/common/FloatingActionButton';
+import { useIntersectionAnimation } from '../../../shared/design-system/animations';
 
 const HomePage: React.FC = () => {
   // const { t } = useTranslation();
@@ -127,6 +125,32 @@ const HomePage: React.FC = () => {
 
       {/* AI 기능 안내 */}
       <AIInfoWidget />
+
+      {/* Floating Action Button */}
+      <FloatingActionButton
+        icon={
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+        }
+        label="Quick Actions"
+        variant="primary"
+        size="lg"
+        position="bottom-right"
+        onClick={() => {
+          toast.success('Quick actions menu opened!');
+        }}
+      />
     </AuthGuard>
   );
 };

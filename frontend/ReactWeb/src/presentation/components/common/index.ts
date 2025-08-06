@@ -1,6 +1,7 @@
 // Button Components
 export { Button } from './Button';
 export { TouchFriendlyButton } from './TouchFriendlyButton';
+export { FloatingActionButton } from './FloatingActionButton';
 export { Input } from './Input';
 export { default as Form } from './Form';
 export { default as FormField } from './FormField';
@@ -15,6 +16,8 @@ export {
   CardFooter,
 } from './Card';
 export { SwipeableCard, SwipeableListItem } from './SwipeableCard';
+export { GlassmorphicCard } from './GlassmorphicCard';
+export { NeumorphicCard } from './NeumorphicCard';
 
 // Loading Components
 export {
@@ -68,6 +71,7 @@ export { default as MainNavigation } from './MainNavigation';
 export { default as TimeFormatter } from './TimeFormatter';
 export { default as Tooltip } from './Tooltip';
 export { default as Tabs } from './Tabs';
+export { Tabs as ModernTabs, TabsList, TabsTrigger, TabsContent } from './ModernTabs';
 export { default as Text } from './Text';
 export { default as TextArea } from './TextArea';
 export { default as Stack } from './Stack';

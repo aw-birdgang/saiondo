@@ -1,6 +1,7 @@
 import React, { forwardRef, useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import { cn } from '../../../shared/utils/cn';
+import { getAriaAttributes } from '../../../shared/design-system/accessibility';
 
 const inputVariants = cva(
   'flex w-full rounded-lg border bg-surface text-txt placeholder:text-txt-secondary transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-txt placeholder:text-txt-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 group',
@@ -12,6 +13,12 @@ const inputVariants = cva(
         error: 'border-error focus-visible:ring-error',
         success: 'border-green-500 focus-visible:ring-green-500',
         warning: 'border-yellow-500 focus-visible:ring-yellow-500',
+        glass:
+          'bg-white/20 backdrop-blur-md border-white/30 focus:border-white/50 focus:ring-white/50',
+        neu:
+          'bg-gray-100 shadow-inner border-0 dark:bg-gray-800 focus:ring-2 focus:ring-primary/50',
+        modern:
+          'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 focus:border-primary focus:ring-primary/20',
       },
       size: {
         sm: 'h-8 px-3 text-xs',

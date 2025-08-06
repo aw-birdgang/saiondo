@@ -35,7 +35,13 @@ const SplashPage = createLazyPage(() => import('../pages/splash'));
 const LoginPage = createLazyPage(() => import('../pages/auth'));
 const RegisterPage = createLazyPage(() => import('../pages/auth'));
 const HomePage = createLazyPage(() => import('../pages/home'));
+const ModernHomePage = createLazyPage(() => import('../pages/home/ModernHomePage'));
 const ChatPage = createLazyPage(() => import('../pages/chat'));
+const ModernChatPage = createLazyPage(() => import('../pages/chat/ModernChatPage'));
+const ModernMyPage = createLazyPage(() => import('../pages/mypage/ModernMyPage'));
+const ModernAnalysisPage = createLazyPage(() => import('../pages/analysis/ModernAnalysisPage'));
+const ModernLoginPage = createLazyPage(() => import('../pages/auth/ModernLoginPage'));
+const ModernChannelPage = createLazyPage(() => import('../pages/channel/ModernChannelPage'));
 const ChannelPage = createLazyPage(() => import('../pages/channel'));
 const MyPage = createLazyPage(() => import('../pages/mypage'));
 const AnalysisPage = createLazyPage(() => import('../pages/analysis'));
@@ -58,7 +64,13 @@ const routeConfig = [
   { path: '/login', element: LoginPage, name: 'Login' },
   { path: '/register', element: RegisterPage, name: 'Register' },
   { path: '/home', element: HomePage, name: 'Home' },
+  { path: '/modern', element: ModernHomePage, name: 'ModernHome' },
   { path: '/chat', element: ChatPage, name: 'Chat' },
+  { path: '/modern-chat', element: ModernChatPage, name: 'ModernChat' },
+  { path: '/modern-profile', element: ModernMyPage, name: 'ModernProfile' },
+  { path: '/modern-analysis', element: ModernAnalysisPage, name: 'ModernAnalysis' },
+  { path: '/modern-login', element: ModernLoginPage, name: 'ModernLogin' },
+  { path: '/modern-channels', element: ModernChannelPage, name: 'ModernChannels' },
   { path: '/channels', element: ChannelPage, name: 'Channels' },
   { path: '/analysis', element: AnalysisPage, name: 'Analysis' },
   { path: '/assistant', element: AssistantPage, name: 'Assistant' },

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import { cn } from '../../../shared/utils/cn';
 import { Button } from './Button';
+import { useFocusTrap, getAriaAttributes } from '../../../shared/design-system/accessibility';
+import { useAnimation } from '../../../shared/design-system/animations';
 
 const modalVariants = cva(
   'relative bg-surface rounded-lg shadow-xl border border-border transform transition-all duration-300',
@@ -15,9 +17,16 @@ const modalVariants = cva(
         xl: 'w-full max-w-4xl',
         full: 'w-full h-full max-w-none',
       },
+      variant: {
+        default: 'bg-white dark:bg-gray-800',
+        glass: 'bg-white/20 backdrop-blur-md border-white/30',
+        neu: 'bg-gray-100 shadow-neu-light dark:bg-gray-800 dark:shadow-neu-dark',
+        modern: 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900',
+      },
     },
     defaultVariants: {
       size: 'md',
+      variant: 'default',
     },
   }
 );

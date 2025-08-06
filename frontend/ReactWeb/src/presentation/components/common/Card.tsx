@@ -1,6 +1,7 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import { cn } from '../../../shared/utils/cn';
+import { useIntersectionAnimation } from '../../../shared/design-system/animations';
 
 const cardVariants = cva(
   'rounded-xl border bg-surface text-txt shadow-sm transition-all duration-300 hover:shadow-lg',
@@ -16,6 +17,14 @@ const cardVariants = cva(
           'border-border hover:border-primary/30 hover:shadow-xl hover:scale-[1.01] transform-gpu cursor-pointer',
         gradient:
           'border-transparent bg-gradient-to-br from-surface to-surface/80 shadow-lg hover:shadow-xl',
+        glass:
+          'bg-white/20 backdrop-blur-md border-white/30 shadow-glass hover:shadow-glass-dark',
+        neu:
+          'bg-gray-100 shadow-neu-light dark:bg-gray-800 dark:shadow-neu-dark border-0',
+        floating:
+          'bg-white dark:bg-gray-800 shadow-xl hover:shadow-2xl border border-gray-200 dark:border-gray-700',
+        modern:
+          'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl',
       },
       padding: {
         none: '',
