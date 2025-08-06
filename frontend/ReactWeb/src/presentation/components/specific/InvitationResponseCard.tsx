@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../common';
-import { StatusBadge } from '../common';
+import { Button } from '@/presentation/components/common';
+import { StatusBadge } from '@/presentation/components/common';
 
 interface ChannelInvitation {
   id: string;

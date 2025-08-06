@@ -1,6 +1,6 @@
-import { SystemRepository } from '../repositories/SystemRepository';
-import { ApiClient } from '../api/ApiClient';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import { SystemRepository } from '@/infrastructure/repositories/SystemRepository';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 
 /**
  * SystemInfrastructureService - 시스템 관련 모든 기능을 통합한 Infrastructure Service

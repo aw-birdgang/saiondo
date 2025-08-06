@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle, Button } from '../../common';
+import { Card, CardContent, CardHeader, CardTitle, Button } from '@/presentation/components/common';
 
 interface ProfileAnalyticsProps {
   userId: string;

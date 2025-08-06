@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAutoScroll } from '../../hooks/useAutoScroll';
-import { MessageBubble, LoadingSpinner } from '../common';
+import { useAutoScroll } from '@/presentation/hooks/useAutoScroll';
+import { MessageBubble, LoadingSpinner } from '@/presentation/components/common';
 
 interface Message {
   id: string;

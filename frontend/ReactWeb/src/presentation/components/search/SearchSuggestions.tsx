@@ -1,7 +1,7 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Button } from '../common';
-import { cn } from '../../../utils/cn';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface SearchSuggestionsProps {
   suggestions: string[];

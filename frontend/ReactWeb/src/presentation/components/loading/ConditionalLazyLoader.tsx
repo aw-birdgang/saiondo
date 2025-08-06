@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ComponentType, ReactNode } from 'react';
-import { LoadingSpinner } from '../common/LoadingSpinner';
-import { LazyLoader } from './LazyLoader';
+import { LoadingSpinner } from '@/presentation/components/common/LoadingSpinner';
+import { LazyLoader } from '@/presentation/components/loading/LazyLoader';
 
 interface ConditionalLazyLoaderProps {
   condition: boolean;

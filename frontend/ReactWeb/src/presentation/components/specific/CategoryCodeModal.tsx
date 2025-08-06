@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CategoryCode } from '../../../domain/types';
+import type { CategoryCode } from '@/domain/types';
 
 interface CategoryCodeModalProps {
   code: CategoryCode | null;

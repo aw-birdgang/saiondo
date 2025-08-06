@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Button, Input } from '../common';
+import { Button, Input } from '@/presentation/components/common';
 
 interface ChatInputAreaProps {
   inputMessage: string;

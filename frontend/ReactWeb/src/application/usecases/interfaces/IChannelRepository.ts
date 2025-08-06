@@ -11,7 +11,7 @@ import type {
   RemoveMemberResponse,
   UpdateChannelRequest,
   UpdateChannelResponse,
-} from '../../dto/ChannelDto';
+} from '@/application/dto/ChannelDto';
 
 // Channel Repository 인터페이스 - 데이터 접근만 담당
 export interface IChannelRepository {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { SearchFiltersProps } from '../../../pages/search/types/searchTypes';
+import { cn } from '@/utils/cn';
+import type { SearchFiltersProps } from '@/presentation/pages/search/types/searchTypes';
 
 const SearchFilters: React.FC<SearchFiltersProps> = ({
   filters,

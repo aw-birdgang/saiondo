@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Input, Button } from '../common';
-import { cn } from '../../../utils/cn';
+import { Input, Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface SearchInputProps {
   placeholder?: string;

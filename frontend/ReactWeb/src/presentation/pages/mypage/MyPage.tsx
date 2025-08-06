@@ -1,21 +1,21 @@
 import React from 'react';
-import { MyPageContainer } from '../../components/specific/mypage';
-import { ErrorBoundary } from '../../components/loading/ErrorBoundary';
-import { AuthGuard } from '../../components/specific';
-import { useUnifiedProfile } from '../../hooks/useUnifiedProfile';
-import { UnifiedProfileSection } from '../../components/specific/profile/UnifiedProfileSection';
-import PageHeader from './PageHeader';
-import MyPageError from './MyPageError';
-import MyPageSkeleton from './MyPageSkeleton';
-import LoadingContainer from './LoadingContainer';
-import IconWrapper from './IconWrapper';
+import { MyPageContainer } from '@/presentation/components/specific/mypage';
+import { ErrorBoundary } from '@/presentation/components/loading/ErrorBoundary';
+import { AuthGuard } from '@/presentation/components/specific';
+import { useUnifiedProfile } from '@/presentation/hooks/useUnifiedProfile';
+import { UnifiedProfileSection } from '@/presentation/components/specific/profile/UnifiedProfileSection';
+import PageHeader from '@/presentation/pages/mypage/PageHeader';
+import MyPageError from '@/presentation/pages/mypage/MyPageError';
+import MyPageSkeleton from '@/presentation/pages/mypage/MyPageSkeleton';
+import LoadingContainer from '@/presentation/pages/mypage/LoadingContainer';
+import IconWrapper from '@/presentation/pages/mypage/IconWrapper';
 import {
   StatsSectionWrapper,
   ActivitiesGridWrapper,
   ProgressSectionWrapper,
   ManagementSectionWrapper,
-} from './sections';
-import { cn } from '../../../utils/cn';
+} from '@/presentation/pages/mypage/sections';
+import { cn } from '@/utils/cn';
 
 const MyPage: React.FC = () => {
   const {

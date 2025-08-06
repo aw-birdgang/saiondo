@@ -1,8 +1,8 @@
-import type { IChannelRepository } from '../interfaces/IChannelRepository';
-import type { IChannelUseCase } from '../interfaces/IChannelUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { ChannelService } from '../services/ChannelService';
-import { ChannelUseCases } from '../ChannelUseCases';
+import type { IChannelRepository } from '@/application/usecases/interfaces/IChannelRepository';
+import type { IChannelUseCase } from '@/application/usecases/interfaces/IChannelUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { ChannelService } from '@/application/usecases/services/ChannelService';
+import { ChannelUseCases } from '@/application/usecases/ChannelUseCases';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createChannelUseCase = (

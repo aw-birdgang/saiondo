@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../../utils/cn';
-import type { CategoryUsageGuide } from '../../../domain/types/category';
+import { cn } from '@/utils/cn';
+import type { CategoryUsageGuide } from '@/domain/types/category';
 
 interface UsageGuideProps {
   guide: CategoryUsageGuide;

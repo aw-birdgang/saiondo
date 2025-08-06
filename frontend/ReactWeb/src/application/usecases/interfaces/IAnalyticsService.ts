@@ -2,7 +2,7 @@ import type {
   AnalyticsReport,
   UserBehavior,
   UserEvent,
-} from './IAnalyticsRepository';
+} from '@/application/usecases/interfaces/IAnalyticsRepository';
 
 // Analytics Service 인터페이스 - 비즈니스 로직 담당
 export interface IAnalyticsService {

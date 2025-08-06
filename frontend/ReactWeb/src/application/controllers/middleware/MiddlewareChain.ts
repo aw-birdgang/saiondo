@@ -1,12 +1,12 @@
 import type {
   IControllerMiddleware,
   IMiddlewareChain,
-} from '../interfaces/IControllerMiddleware';
+} from '@/application/controllers/interfaces/IControllerMiddleware';
 import type {
   ControllerContext,
   ControllerResult,
-} from '../interfaces/IController';
-import { Logger } from '../../../shared/utils/Logger';
+} from '@/application/controllers/interfaces/IController';
+import { Logger } from '@/shared/utils/Logger';
 
 /**
  * 미들웨어 체인 구현체

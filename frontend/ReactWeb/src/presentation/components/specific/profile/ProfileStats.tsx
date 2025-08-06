@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '../../common';
+import { Card, CardContent, CardHeader, CardTitle } from '@/presentation/components/common';
 
 interface ProfileStatsProps {
   stats: {

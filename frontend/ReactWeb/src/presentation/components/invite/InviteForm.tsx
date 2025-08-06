@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Input, Button, TextArea } from '../common';
-import { cn } from '../../../utils/cn';
+import { Input, Button, TextArea } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface InviteFormProps {
   partnerEmail: string;

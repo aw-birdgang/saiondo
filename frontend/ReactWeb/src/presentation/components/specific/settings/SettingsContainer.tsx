@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { SettingsContainerProps } from '../../../pages/settings/types/settingsTypes';
+import { cn } from '@/utils/cn';
+import type { SettingsContainerProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const SettingsContainer: React.FC<SettingsContainerProps> = ({
   children,

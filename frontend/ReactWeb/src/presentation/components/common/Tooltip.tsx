@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTooltip } from '../../hooks/useTooltip';
+import { useTooltip } from '@/presentation/hooks/useTooltip';
 
 interface TooltipProps {
   content: string;

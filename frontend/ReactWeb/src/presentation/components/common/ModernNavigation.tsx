@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ROUTES } from '../../../shared/constants/app';
-import { useAuthStore } from '../../../stores/authStore';
+import { ROUTES } from '@/shared/constants/app';
+import { useAuthStore } from '@/stores/authStore';
 import { Button, Avatar, Badge, GlassmorphicCard, NeumorphicCard } from './';
-import { useTheme } from '../../../shared/design-system/hooks';
-import { useIntersectionAnimation } from '../../../shared/design-system/animations';
+import { useTheme } from '@/shared/design-system/hooks';
+import { useIntersectionAnimation } from '@/shared/design-system/animations';
 
 interface ModernNavigationProps {
   className?: string;

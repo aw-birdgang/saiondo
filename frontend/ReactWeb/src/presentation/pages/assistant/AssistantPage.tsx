@@ -2,16 +2,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { ROUTES } from '../../../shared/constants/app';
-import { EmptyState, LoadingState } from '../../components/common';
-import { ErrorState, PageHeader, AuthGuard } from '../../components/specific';
+import { ROUTES } from '@/shared/constants/app';
+import { EmptyState, LoadingState } from '@/presentation/components/common';
+import { ErrorState, PageHeader, AuthGuard } from '@/presentation/components/specific';
 import {
   AssistantContainer,
   AssistantFilters,
   AssistantGrid,
-} from '../../components/specific/assistant';
-import { useAssistantData } from './hooks/useAssistantData';
-import type { Assistant } from './types/assistantTypes';
+} from '@/presentation/components/specific/assistant';
+import { useAssistantData } from '@/presentation/pages/assistant/hooks/useAssistantData';
+import type { Assistant } from '@/presentation/pages/assistant/types/assistantTypes';
 
 const AssistantListScreen: React.FC = () => {
   const { t } = useTranslation();

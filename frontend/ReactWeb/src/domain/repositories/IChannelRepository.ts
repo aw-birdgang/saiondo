@@ -1,4 +1,4 @@
-import type { Channel, ChannelInvitation } from '../types/channel';
+import type { Channel, ChannelInvitation } from '@/domain/types/channel';
 
 export interface IChannelRepository {
   // ==================== 기본 CRUD 작업 ====================

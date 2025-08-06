@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ReactNode } from 'react';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { LoadingSpinner } from '@/presentation/components/common/LoadingSpinner';
 
 interface InfiniteScrollLoaderProps {
   isLoading: boolean;

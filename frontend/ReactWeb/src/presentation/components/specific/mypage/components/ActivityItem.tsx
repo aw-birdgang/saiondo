@@ -6,7 +6,7 @@ import {
   getTypeLabel,
   getTypeBadgeColor,
   type ActivityType,
-} from '../utils/activityUtils';
+} from '@/presentation/components/specific/mypage/utils/activityUtils';
 
 interface ActivityItemProps {
   activity: {

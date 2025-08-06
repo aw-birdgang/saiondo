@@ -1,6 +1,7 @@
 import React from 'react';
-import { ChatMessages, ChatInput } from './';
-import { Container } from '../common';
+// import { ChatMessages, ChatInput } from './';
+import { Container } from '@/presentation/components/common';
+import { ChatMessages, ChatInput } from "@/presentation";
 
 interface Message {
   id: string;

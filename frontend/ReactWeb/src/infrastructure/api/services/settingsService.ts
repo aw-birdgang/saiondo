@@ -1,4 +1,4 @@
-import type { UserSettings } from '../../../domain/types';
+import type { UserSettings } from '@/domain/types';
 
 const SETTINGS_STORAGE_KEY = 'user_settings';
 

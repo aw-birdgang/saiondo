@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../../shared/constants/app';
-import { useAuthStore } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
+import { ROUTES } from '@/shared/constants/app';
+import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore';
 import { Card, Button } from './';
 
 interface UserProfileProps {

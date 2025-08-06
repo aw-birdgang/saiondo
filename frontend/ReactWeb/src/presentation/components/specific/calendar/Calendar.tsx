@@ -9,7 +9,7 @@ import {
   isToday,
 } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Button } from '../../common';
+import { Button } from '@/presentation/components/common';
 
 interface Event {
   id: string;

@@ -1,4 +1,4 @@
-import { EventEmitter } from './EventEmitter';
+import { EventEmitter } from '@/infrastructure/websocket/EventEmitter';
 import { toast } from 'react-hot-toast';
 
 export interface WebSocketMessage {

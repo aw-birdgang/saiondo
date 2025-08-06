@@ -1,13 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { LoadingSpinner } from '../../components/common';
-import { ErrorState } from '../../components/specific';
+import { LoadingSpinner } from '@/presentation/components/common';
+import { ErrorState } from '@/presentation/components/specific';
 import {
   SettingsHeader,
   SettingsSidebar,
   SettingsContent,
   SettingsContainer,
-} from '../../components/specific/settings';
-import { useSettingsData } from './hooks/useSettingsData';
+} from '@/presentation/components/specific/settings';
+import { useSettingsData } from '@/presentation/pages/settings/hooks/useSettingsData';
 
 const SettingsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('general');

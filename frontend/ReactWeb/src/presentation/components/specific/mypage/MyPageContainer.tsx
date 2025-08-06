@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import { getMaxWidthClasses, type MaxWidth } from './utils/containerUtils';
+import { cn } from '@/utils/cn';
+import { getMaxWidthClasses, type MaxWidth } from '@/presentation/components/specific/mypage/utils/containerUtils';
 
 interface MyPageContainerProps {
   children: React.ReactNode;

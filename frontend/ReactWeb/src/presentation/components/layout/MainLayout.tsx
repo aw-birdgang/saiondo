@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
-import { useRouteChange } from '../../hooks/useRouteChange';
-import { ThemeToggle } from '../common/ThemeToggle';
-import { Button } from '../common/Button';
-import { cn } from '../../../utils/cn';
+import { useRouteChange } from '@/presentation/hooks/useRouteChange';
+import { ThemeToggle } from '@/presentation/components/common/ThemeToggle';
+import { Button } from '@/presentation/components/common/Button';
+import { cn } from '@/utils/cn';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import { SearchInput } from '../search';
+import { useMediaQuery } from '@/presentation/hooks/useMediaQuery';
+import { SearchInput } from '@/presentation/components/search';
 
 interface NavItem {
   name: string;

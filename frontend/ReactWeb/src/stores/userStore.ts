@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { container } from '../di/container';
-import type { User } from '../domain/dto/UserDto';
+import { container } from '@/di/container';
+import type { User } from '@/domain/dto/UserDto';
 
 export interface UserProfile extends User {
   bio?: string;

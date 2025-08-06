@@ -21,7 +21,7 @@ import type {
   GetFollowersResponse,
   GetFollowingRequest,
   GetFollowingResponse,
-} from '../../../domain/dto/ProfileDto';
+} from '@/domain/dto/ProfileDto';
 
 export interface IProfileUseCase {
   // Basic CRUD operations

@@ -11,7 +11,7 @@ import type {
   RemoveMemberResponse,
   UpdateChannelRequest,
   UpdateChannelResponse,
-} from '../../dto/ChannelDto';
+} from '@/application/dto/ChannelDto';
 
 // Channel Service 인터페이스 - 비즈니스 로직 담당
 export interface IChannelService {

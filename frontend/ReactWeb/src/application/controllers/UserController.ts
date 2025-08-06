@@ -1,8 +1,8 @@
-import { BaseController } from './BaseController';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
-import type { User } from '../../domain/dto/UserDto';
-import type { ActivityLog } from '../dto/UserActivityDto';
-import type { Permission } from '../dto/UserPermissionDto';
+import { BaseController } from '@/application/controllers/BaseController';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
+import type { User } from '@/domain/dto/UserDto';
+import type { ActivityLog } from '@/application/dto/UserActivityDto';
+import type { Permission } from '@/application/dto/UserPermissionDto';
 
 /**
  * 사용자 활동 타입 정의

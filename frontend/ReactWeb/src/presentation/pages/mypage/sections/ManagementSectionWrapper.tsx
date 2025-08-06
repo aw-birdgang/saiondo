@@ -1,7 +1,7 @@
 import React from 'react';
-import { AccountManagement } from '../../../components/specific/mypage';
-import SectionBlock from '../SectionBlock';
-import IconWrapper from '../IconWrapper';
+import { AccountManagement } from '@/presentation/components/specific/mypage';
+import SectionBlock from '@/presentation/pages/mypage/SectionBlock';
+import IconWrapper from '@/presentation/pages/mypage/IconWrapper';
 
 interface ManagementSectionWrapperProps {
   onLogout: () => void;

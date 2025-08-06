@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ROUTES } from '../../../shared/constants/app';
-import { Button } from '../common';
+import { ROUTES } from '@/shared/constants/app';
+import { Button } from '@/presentation/components/common';
 
 interface Category {
   id: string;

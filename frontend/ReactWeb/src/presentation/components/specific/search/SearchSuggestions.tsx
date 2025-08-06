@@ -1,7 +1,7 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import { TRENDING_SEARCHES } from '../../../pages/search/constants/searchData';
-import type { SearchSuggestionsProps } from '../../../pages/search/types/searchTypes';
+import { cn } from '@/utils/cn';
+import { TRENDING_SEARCHES } from '@/presentation/pages/search/constants/searchData';
+import type { SearchSuggestionsProps } from '@/presentation/pages/search/types/searchTypes';
 
 const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   suggestions,

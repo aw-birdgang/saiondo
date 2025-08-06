@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../di/container';
-import { DI_TOKENS } from '../../../di/tokens';
-import { useInvite } from '../../hooks/useInvite';
-import { useAuthStore } from '../../../stores/authStore';
-import { useToastContext } from '../../providers/ToastProvider';
-import { Header, ContentCard } from '../../components/common';
-import { PageWrapper, PageContainer } from '../../components/layout';
-import { InviteForm } from '../../components/invite';
-import type { InviteUseCase } from '../../../application/usecases/InviteUseCase';
+import { getContainer } from '@/di/container';
+import { DI_TOKENS } from '@/di/tokens';
+import { useInvite } from '@/presentation/hooks/useInvite';
+import { useAuthStore } from '@/stores/authStore';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { Header, ContentCard } from '@/presentation/components/common';
+import { PageWrapper, PageContainer } from '@/presentation/components/layout';
+import { InviteForm } from '@/presentation/components/invite';
+import type { InviteUseCase } from '@/application/usecases/InviteUseCase';
 
 const InvitePartnerPage: React.FC = () => {
   const { t } = useTranslation();

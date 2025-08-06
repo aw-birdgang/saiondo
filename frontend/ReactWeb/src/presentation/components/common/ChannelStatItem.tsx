@@ -1,5 +1,5 @@
 import React from 'react';
-import { InfoCard } from './index';
+import { InfoCard } from '@/presentation/components/common/index';
 
 interface ChannelStatItemProps {
   title: string;

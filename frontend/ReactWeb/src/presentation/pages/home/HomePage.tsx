@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {useUserStore} from '../../../stores/userStore';
-import {useToastContext} from '../../providers/ToastProvider';
-import {AIChatWidget} from '../../components/chat/AIChatWidget';
-import {AuthGuard} from '../../components/specific';
+import {useUserStore} from '@/stores/userStore';
+import {useToastContext} from '@/presentation/providers/ToastProvider';
+import {AIChatWidget} from '@/presentation/components/chat/AIChatWidget';
+import {AuthGuard} from '@/presentation/components/specific';
 import {
   AIInfoWidget,
   DashboardHeader,
@@ -11,9 +11,9 @@ import {
   HomeLoadingState,
   QuickActionsSection,
   SearchSection,
-} from '../../components/specific/home';
-import {useHomeData} from './hooks/useHomeData';
-import {FloatingActionButton} from '../../components/common/FloatingActionButton';
+} from '@/presentation/components/specific/home';
+import {useHomeData} from '@/presentation/pages/home/hooks/useHomeData';
+import {FloatingActionButton} from '@/presentation/components/common/FloatingActionButton';
 
 const HomePage: React.FC = () => {
   // const { t } = useTranslation();

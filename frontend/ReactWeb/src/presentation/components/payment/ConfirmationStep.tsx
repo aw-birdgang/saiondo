@@ -1,11 +1,11 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Card, CardHeader, CardTitle, CardContent, Button } from '../common';
+import { Card, CardHeader, CardTitle, CardContent, Button } from '@/presentation/components/common';
 import type {
   SubscriptionProduct,
   PaymentMethod,
   Coupon,
-} from '../../../domain/types/payment';
+} from '@/domain/types/payment';
 
 interface ConfirmationStepProps {
   selectedProduct: SubscriptionProduct;

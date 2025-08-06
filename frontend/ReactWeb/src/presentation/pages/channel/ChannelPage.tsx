@@ -1,13 +1,12 @@
 import React from 'react';
-import { LoadingState } from '../../components/common';
-import { PageLayout } from '../../components/specific';
+import { LoadingState } from '@/presentation/components/common';
+import { PageLayout } from '@/presentation/components/specific';
 import {
-  // ChannelHeader,
   ChannelStats,
   ChannelList,
-} from '../../components/specific';
-import { ChannelContainer } from '../../components/specific/channel';
-import { useChannelData } from './hooks/useChannelData';
+} from '@/presentation/components/specific';
+import { ChannelContainer } from '@/presentation/components/specific/channel';
+import { useChannelData } from '@/presentation/pages/channel/hooks/useChannelData';
 
 const ChannelTab: React.FC = () => {
   const {

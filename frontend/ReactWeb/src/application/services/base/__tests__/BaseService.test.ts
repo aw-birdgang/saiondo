@@ -1,5 +1,5 @@
-import { BaseService } from '../BaseService';
-import { ConsoleLogger } from '../../../../domain/interfaces/ILogger';
+import { BaseService } from '@/application/services/base/BaseService';
+import { ConsoleLogger } from '@/domain/interfaces/ILogger';
 
 // 테스트용 Mock Repository
 class MockRepository {

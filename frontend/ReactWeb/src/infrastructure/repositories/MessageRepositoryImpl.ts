@@ -1,8 +1,8 @@
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { Message } from '../../domain/types/message';
-import { MessageEntity } from '../../domain/entities/Message';
-import { ApiClient } from '../api/ApiClient';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import type { Message } from '@/domain/types/message';
+import { MessageEntity } from '@/domain/entities/Message';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 
 export class MessageRepositoryImpl implements IMessageRepository {
   constructor(private readonly apiClient: ApiClient) {}

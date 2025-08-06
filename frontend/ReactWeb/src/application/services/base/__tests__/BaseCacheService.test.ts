@@ -2,8 +2,8 @@ import {
   BaseCacheService,
   MemoryCache,
   type ICache,
-} from '../BaseCacheService';
-import { ConsoleLogger } from '../../../../domain/interfaces/ILogger';
+} from '@/application/services/base/BaseCacheService';
+import { ConsoleLogger } from '@/domain/interfaces/ILogger';
 
 // 테스트용 Cache Service 구현체
 class TestCacheService extends BaseCacheService {

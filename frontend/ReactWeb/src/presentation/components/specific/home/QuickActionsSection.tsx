@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, Badge, CounterBadge } from '../../common';
-import { cn } from '../../../../utils/cn';
+import { Card, CardContent, Badge, CounterBadge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface QuickActionProps {
   title: string;

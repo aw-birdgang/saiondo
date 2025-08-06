@@ -1,4 +1,4 @@
-import type { Message } from '../dto/MessageDto';
+import type { Message } from '@/domain/dto/MessageDto';
 
 export class MessageEntity {
   private constructor(

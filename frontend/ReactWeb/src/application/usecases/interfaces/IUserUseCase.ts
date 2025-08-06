@@ -9,7 +9,7 @@ import type {
   SearchUsersResponse,
   UpdateUserRequest,
   UpdateUserResponse,
-} from '../../dto/UserDto';
+} from '@/application/dto/UserDto';
 
 // User UseCase 인터페이스 - 애플리케이션 로직 조율
 export interface IUserUseCase {

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AiAdviceCard, QuickActionsGrid, WelcomeMessage } from './';
-import { CenteredContainer } from '../common';
+import { CenteredContainer } from '@/presentation/components/common';
 
 interface QuickAction {
   icon: string;

@@ -1,2 +1,2 @@
-export { default as EnvironmentConfigManager } from './EnvironmentConfig';
-export * from './EnvironmentConfig';
+export { default as EnvironmentConfigManager } from '@/infrastructure/config/EnvironmentConfig';
+export * from '@/infrastructure/config/EnvironmentConfig';

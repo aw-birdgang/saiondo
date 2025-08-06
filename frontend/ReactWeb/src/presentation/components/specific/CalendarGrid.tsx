@@ -1,5 +1,5 @@
 import React from 'react';
-import { CalendarDay, CalendarHeader } from '../common';
+import { CalendarDay, CalendarHeader } from '@/presentation/components/common';
 
 interface Event {
   id: string;

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { useAuthStore } from '../../stores/authStore';
-import { apiClient } from '../../infrastructure/api/ApiClient';
+import { useAuthStore } from '@/stores/authStore';
+import { apiClient } from '@/infrastructure/api/ApiClient';
 import { toast } from 'react-hot-toast';
 
 interface UseAuthInitializerOptions {

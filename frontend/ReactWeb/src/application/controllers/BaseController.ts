@@ -1,13 +1,13 @@
-import { Logger } from '../../shared/utils/Logger';
-import { FlowTracker } from '../../shared/utils/FlowTracker';
-import { ErrorHandler } from '../../shared/utils/ErrorHandler';
-import type { IController, ControllerContext } from './interfaces/IController';
-import type { IMiddlewareChain } from './interfaces/IControllerMiddleware';
-import { MiddlewareChain } from './middleware/MiddlewareChain';
-import { LoggingMiddleware } from './middleware/LoggingMiddleware';
-import { PerformanceMiddleware } from './middleware/PerformanceMiddleware';
-import { CachingMiddleware } from './middleware/CachingMiddleware';
-import { ValidationMiddleware } from './middleware/ValidationMiddleware';
+import { Logger } from '@/shared/utils/Logger';
+import { FlowTracker } from '@/shared/utils/FlowTracker';
+import { ErrorHandler } from '@/shared/utils/ErrorHandler';
+import type { IController, ControllerContext } from '@/application/controllers/interfaces/IController';
+import type { IMiddlewareChain } from '@/application/controllers/interfaces/IControllerMiddleware';
+import { MiddlewareChain } from '@/application/controllers/middleware/MiddlewareChain';
+import { LoggingMiddleware } from '@/application/controllers/middleware/LoggingMiddleware';
+import { PerformanceMiddleware } from '@/application/controllers/middleware/PerformanceMiddleware';
+import { CachingMiddleware } from '@/application/controllers/middleware/CachingMiddleware';
+import { ValidationMiddleware } from '@/application/controllers/middleware/ValidationMiddleware';
 
 /**
  * Base Controller - 모든 Controller의 기본 클래스

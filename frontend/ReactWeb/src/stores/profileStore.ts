@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import type { Profile } from '../domain/dto/ProfileDto';
-import { container } from '../di/container';
-import { ProfileUseCases } from '../application/usecases/ProfileUseCases';
+import type { Profile } from '@/domain/dto/ProfileDto';
+import { container } from '@/di/container';
+import { ProfileUseCases } from '@/application/usecases/ProfileUseCases';
 // ProfileUseCaseService가 삭제되었으므로 any 타입으로 대체
 // type ProfileUseCaseService = any;
 

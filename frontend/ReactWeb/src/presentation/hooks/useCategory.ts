@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../shared/constants/app';
-import { useToastContext } from '../providers/ToastProvider';
-import type { CategoryState, CategoryStats } from '../../domain/types/category';
-import type { CategoryUseCase } from '../../application/usecases/CategoryUseCase';
+import { ROUTES } from '@/shared/constants/app';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import type { CategoryState, CategoryStats } from '@/domain/types/category';
+import type { CategoryUseCase } from '@/application/usecases/CategoryUseCase';
 
 export const useCategory = (categoryUseCase: CategoryUseCase) => {
   const navigate = useNavigate();

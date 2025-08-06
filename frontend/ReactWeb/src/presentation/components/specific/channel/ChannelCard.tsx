@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, Badge, CounterBadge } from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { ChannelCardProps } from '../../../pages/channel/types/channelTypes';
+import { Card, CardContent, Badge, CounterBadge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { ChannelCardProps } from '@/presentation/pages/channel/types/channelTypes';
 
 const ChannelCard: React.FC<ChannelCardProps> = ({
   channel,

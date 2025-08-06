@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '../../../../utils/cn';
-import type { AuthHeaderProps } from '../../../pages/auth/types/authTypes';
+import { cn } from '@/utils/cn';
+import type { AuthHeaderProps } from '@/presentation/pages/auth/types/authTypes';
 
 const AuthHeader: React.FC<AuthHeaderProps> = ({
   title,

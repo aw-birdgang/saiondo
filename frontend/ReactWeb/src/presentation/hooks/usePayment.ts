@@ -1,15 +1,15 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../shared/constants/app';
-import { useToastContext } from '../providers/ToastProvider';
+import { ROUTES } from '@/shared/constants/app';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 import type {
   PaymentState,
   PaymentStep,
   SubscriptionProduct,
   CardDetails,
   PaymentRequest,
-} from '../../domain/types/payment';
-import type { PaymentUseCase } from '../../application/usecases/PaymentUseCase';
+} from '@/domain/types/payment';
+import type { PaymentUseCase } from '@/application/usecases/PaymentUseCase';
 
 const PAYMENT_STEPS: PaymentStep[] = [
   {

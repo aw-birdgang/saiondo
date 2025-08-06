@@ -1,7 +1,7 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import { SETTINGS_SECTIONS } from '../../../pages/settings/constants/settingsData';
-import type { SettingsSidebarProps } from '../../../pages/settings/types/settingsTypes';
+import { cn } from '@/utils/cn';
+import { SETTINGS_SECTIONS } from '@/presentation/pages/settings/constants/settingsData';
+import type { SettingsSidebarProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   activeSection,

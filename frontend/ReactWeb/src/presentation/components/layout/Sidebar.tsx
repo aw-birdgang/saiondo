@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ROUTES } from '../../../shared/constants/app';
+import { ROUTES } from '@/shared/constants/app';
 
 interface MenuItem {
   id: string;

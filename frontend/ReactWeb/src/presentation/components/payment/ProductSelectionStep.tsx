@@ -8,9 +8,9 @@ import {
   Button,
   Badge,
   LoadingSpinner,
-} from '../common';
-import { cn } from '../../../utils/cn';
-import type { SubscriptionProduct } from '../../../domain/types/payment';
+} from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { SubscriptionProduct } from '@/domain/types/payment';
 
 interface ProductSelectionStepProps {
   products: SubscriptionProduct[];

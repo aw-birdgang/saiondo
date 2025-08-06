@@ -1,20 +1,20 @@
 // Controller 인터페이스들
-export * from './interfaces';
+export * from '@/application/controllers/interfaces';
 
 // 미들웨어들
-export * from './middleware';
+export * from '@/application/controllers/middleware';
 
 // Controller 구현체들
-export { BaseController } from './BaseController';
-export { ControllerFactory } from './ControllerFactory';
+export { BaseController } from '@/application/controllers/BaseController';
+export { ControllerFactory } from '@/application/controllers/ControllerFactory';
 
 // 개별 Controller들
-export { UserController } from './UserController';
-export { ChannelController } from './ChannelController';
-export { MessageController } from './MessageController';
-export { NotificationController } from './NotificationController';
-export { FileController } from './FileController';
-export { AnalyticsController } from './AnalyticsController';
+export { UserController } from '@/application/controllers/UserController';
+export { ChannelController } from '@/application/controllers/ChannelController';
+export { MessageController } from '@/application/controllers/MessageController';
+export { NotificationController } from '@/application/controllers/NotificationController';
+export { FileController } from '@/application/controllers/FileController';
+export { AnalyticsController } from '@/application/controllers/AnalyticsController';
 
 // Controller 타입 정의
 export type ControllerType =

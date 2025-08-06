@@ -2,8 +2,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 // Import translation files
-import enTranslations from './translations/en.json';
-import koTranslations from './translations/ko.json';
+import enTranslations from '@/di/translations/en.json';
+import koTranslations from '@/di/translations/ko.json';
 
 const resources = {
   en: { translation: enTranslations },

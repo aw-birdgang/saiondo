@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import type { ComponentType, ReactNode } from 'react';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { LoadingSpinner } from '@/presentation/components/common/LoadingSpinner';
 
 interface LazyLoaderProps {
   component: () => Promise<{ default: ComponentType<any> }>;

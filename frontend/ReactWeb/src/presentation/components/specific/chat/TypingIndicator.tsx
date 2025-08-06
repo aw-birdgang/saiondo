@@ -1,6 +1,6 @@
 import React from 'react';
-import { LoadingSpinner } from '../../common';
-import { cn } from '../../../../utils/cn';
+import { LoadingSpinner } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface TypingIndicatorProps {
   typingUsers: string[];

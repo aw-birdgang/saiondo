@@ -1,5 +1,5 @@
-import { BaseController } from './BaseController';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
+import { BaseController } from '@/application/controllers/BaseController';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
 
 /**
  * 시간 범위 타입 정의

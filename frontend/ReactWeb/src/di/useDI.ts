@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { container } from './container';
-import { DI_TOKENS, type DIToken } from './tokens';
-import { useAuthStore } from '../stores/authStore';
-import { useThemeStore } from '../stores/themeStore';
-import { useUserStore } from '../stores/userStore';
-import { useChannelStore } from '../stores/channelStore';
-import { useMessageStore } from '../stores/messageStore';
-import { useUIStore } from '../stores/uiStore';
+import { container } from '@/di/container';
+import { DI_TOKENS, type DIToken } from '@/di/tokens';
+import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
+import { useUserStore } from '@/stores/userStore';
+import { useChannelStore } from '@/stores/channelStore';
+import { useMessageStore } from '@/stores/messageStore';
+import { useUIStore } from '@/stores/uiStore';
 
 // Core DI hook
 export const useDI = <T>(token: DIToken): T => {

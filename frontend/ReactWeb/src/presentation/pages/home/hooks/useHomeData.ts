@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import {
   transformQuickActions,
-} from '../utils/dataTransformer';
+} from '@/presentation/pages/home/utils/dataTransformer';
 
 export const useHomeData = () => {
   const [quickActions, setQuickActions] = useState(transformQuickActions());

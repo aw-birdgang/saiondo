@@ -1,10 +1,10 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { ActivityStatsProps } from '../../../pages/mypage/types/mypageTypes';
+import { cn } from '@/utils/cn';
+import type { ActivityStatsProps } from '@/presentation/pages/mypage/types/mypageTypes';
 
 // Import separated components
-import StatCard from './components/StatCard';
-import ActivitySummary from './components/ActivitySummary';
+import StatCard from '@/presentation/components/specific/mypage/components/StatCard';
+import ActivitySummary from '@/presentation/components/specific/mypage/components/ActivitySummary';
 
 const ActivityStats: React.FC<ActivityStatsProps> = ({ stats, className }) => {
   return (

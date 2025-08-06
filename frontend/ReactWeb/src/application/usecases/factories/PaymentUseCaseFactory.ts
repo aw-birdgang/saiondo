@@ -1,8 +1,8 @@
-import type { IPaymentRepository } from '../interfaces/IPaymentRepository';
-import type { IPaymentUseCase } from '../interfaces/IPaymentUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { PaymentService } from '../services/PaymentService';
-import { PaymentUseCase } from '../PaymentUseCase';
+import type { IPaymentRepository } from '@/application/usecases/interfaces/IPaymentRepository';
+import type { IPaymentUseCase } from '@/application/usecases/interfaces/IPaymentUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { PaymentService } from '@/application/usecases/services/PaymentService';
+import { PaymentUseCase } from '@/application/usecases/PaymentUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createPaymentUseCase = (

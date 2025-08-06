@@ -1,6 +1,6 @@
-import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
-import type { ControllerContext } from '../interfaces/IController';
-import { Logger } from '../../../shared/utils/Logger';
+import { BaseMiddleware } from '@/application/controllers/interfaces/IControllerMiddleware';
+import type { ControllerContext } from '@/application/controllers/interfaces/IController';
+import { Logger } from '@/shared/utils/Logger';
 
 interface ValidationRule {
   field: string;

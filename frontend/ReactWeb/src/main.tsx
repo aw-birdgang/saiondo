@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import ModernApp from './app/ModernApp.tsx';
+import ModernApp from '@/app/ModernApp.tsx';
 import './index.css';
 import './di/i18n'; // Import i18n configuration to initialize it
-import { initializeLanguage } from './di/languageUtils'; // Initialize language
+import { initializeLanguage } from '@/di/languageUtils'; // Initialize language
 
 initializeLanguage();
 

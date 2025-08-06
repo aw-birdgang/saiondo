@@ -1,11 +1,11 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
+import { cn } from '@/utils/cn';
 import {
   SEARCH_TYPE_ICONS,
   SEARCH_TYPE_COLORS,
   highlightText,
-} from '../../../pages/search/constants/searchData';
-import type { SearchResultItemProps } from '../../../pages/search/types/searchTypes';
+} from '@/presentation/pages/search/constants/searchData';
+import type { SearchResultItemProps } from '@/presentation/pages/search/types/searchTypes';
 
 const SearchResultItem: React.FC<SearchResultItemProps> = ({
   result,

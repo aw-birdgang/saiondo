@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { useThemeStore } from '../../stores/themeStore';
+import { useThemeStore } from '@/stores/themeStore';
 
 interface UseThemeManagerOptions {
   autoApply?: boolean;

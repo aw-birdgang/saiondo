@@ -1,5 +1,5 @@
-import { useThemeStore } from '../../stores/themeStore';
-import { useTheme as useThemeContext } from '../../contexts/ThemeContext';
+import { useThemeStore } from '@/stores/themeStore';
+import { useTheme as useThemeContext } from '@/contexts/ThemeContext';
 
 export const useTheme = () => {
   const themeStore = useThemeStore();

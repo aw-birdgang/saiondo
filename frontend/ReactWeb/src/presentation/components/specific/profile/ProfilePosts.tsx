@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent } from '../../common';
+import { Card, CardContent } from '@/presentation/components/common';
 
 interface ProfilePostsProps {
   posts: any[];

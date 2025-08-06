@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeDashboard } from '../../components/specific';
+import {HomeDashboard} from "@/presentation/components/specific";
 
 const HomeTab: React.FC = () => {
   return (

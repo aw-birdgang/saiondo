@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { LocalStorageCache } from '../../../infrastructure/cache/LocalStorageCache';
+import { LocalStorageCache } from '@/infrastructure/cache/LocalStorageCache';
 
 describe('LocalStorageCache', () => {
   let cache: LocalStorageCache;

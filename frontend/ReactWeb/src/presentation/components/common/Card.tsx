@@ -1,7 +1,7 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../shared/utils/cn';
-import { useIntersectionAnimation } from '../../../shared/design-system/animations';
+import { cn } from '@/shared/utils/cn';
+import { useIntersectionAnimation } from '@/shared/design-system/animations';
 
 const cardVariants = cva(
   'rounded-xl border bg-surface text-txt shadow-sm transition-all duration-300 hover:shadow-lg',

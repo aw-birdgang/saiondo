@@ -1,8 +1,8 @@
 // Progress utilities
-export * from './progressUtils';
+export * from '@/presentation/components/specific/mypage/utils/progressUtils';
 
 // Container utilities
-export * from './containerUtils';
+export * from '@/presentation/components/specific/mypage/utils/containerUtils';
 
 // Activity utilities
-export * from './activityUtils';
+export * from '@/presentation/components/specific/mypage/utils/activityUtils';

@@ -1,24 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { useMessageController } from '../../providers/ControllerProvider';
-import { useUserController } from '../../providers/ControllerProvider';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AuthGuard } from '../../components/specific';
+import { useMessageController } from '@/presentation/providers/ControllerProvider';
+import { useUserController } from '@/presentation/providers/ControllerProvider';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { AuthGuard } from '@/presentation/components/specific';
 import {
-  Card,
-  CardContent,
   Button,
   Input,
   Avatar,
   Badge,
   Skeleton,
   GlassmorphicCard,
-  NeumorphicCard,
   FloatingActionButton
-} from '../../components/common';
-import { useIntersectionAnimation, useStaggerAnimation } from '../../../shared/design-system/animations';
-import { useTheme } from '../../../shared/design-system/hooks';
-import type { Message, User } from './types/chatTypes';
+} from '@/presentation/components/common';
+import { useIntersectionAnimation, } from '@/shared/design-system/animations';
+import { useTheme } from '@/shared/design-system/hooks';
+import type { Message, User } from '@/presentation/pages/chat/types/chatTypes';
 
 const ModernChatPage: React.FC = () => {
   const { channelId } = useParams<{ channelId: string }>();
@@ -27,7 +24,6 @@ const ModernChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -293,7 +289,7 @@ const ModernChatPage: React.FC = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3">
                 <Badge variant="success" className="flex items-center space-x-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -337,7 +333,7 @@ const ModernChatPage: React.FC = () => {
 
         {/* Messages Container */}
         <div className="flex-1 overflow-hidden">
-          <div 
+          <div
             ref={messagesContainerRef}
             className="h-[calc(100vh-200px)] overflow-y-auto px-4 py-6 space-y-4"
           >
@@ -367,7 +363,7 @@ const ModernChatPage: React.FC = () => {
                      size="md"
                      className="flex-shrink-0"
                    />
-                  
+
                   <div className={`flex-1 max-w-[70%] ${
                     message.senderId === currentUser.id ? 'text-right' : ''
                   }`}>
@@ -382,7 +378,7 @@ const ModernChatPage: React.FC = () => {
                         <Badge variant="secondary" size="sm">읽지 않음</Badge>
                       )}
                     </div>
-                    
+
                     <GlassmorphicCard className={`p-4 ${
                       message.senderId === currentUser.id 
                         ? 'bg-primary/10 border-primary/20' 
@@ -391,7 +387,7 @@ const ModernChatPage: React.FC = () => {
                       <div className="text-gray-900 dark:text-white">
                         {message.content}
                       </div>
-                      
+
                       {message.type === 'file' && (
                         <div className="mt-2 p-2 bg-white/50 dark:bg-gray-700/50 rounded-lg">
                           <div className="flex items-center space-x-2">
@@ -407,7 +403,7 @@ const ModernChatPage: React.FC = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {message.reactions && message.reactions.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {message.reactions.map((reaction, idx) => (
@@ -495,4 +491,4 @@ const ModernChatPage: React.FC = () => {
   );
 };
 
-export default ModernChatPage; 
+export default ModernChatPage;

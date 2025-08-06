@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../di/container';
-import { DI_TOKENS } from '../../../di/tokens';
-import { useInvite } from '../../hooks/useInvite';
-import { useAuthStore } from '../../../stores/authStore';
-import { useToastContext } from '../../providers/ToastProvider';
-import { PageHeader } from '../../components/layout';
-import { Container, RefreshButton } from '../../components/common';
-import { InvitationList, InviteStats } from '../../components/invite';
-import type { InviteUseCase } from '../../../application/usecases/InviteUseCase';
+import { getContainer } from '@/di/container';
+import { DI_TOKENS } from '@/di/tokens';
+import { useInvite } from '@/presentation/hooks/useInvite';
+import { useAuthStore } from '@/stores/authStore';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { PageHeader } from '@/presentation/components/layout';
+import { Container, RefreshButton } from '@/presentation/components/common';
+import { InvitationList, InviteStats } from '@/presentation/components/invite';
+import type { InviteUseCase } from '@/application/usecases/InviteUseCase';
 
 const ChannelInvitationPage: React.FC = () => {
   const { t } = useTranslation();

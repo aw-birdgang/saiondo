@@ -1,5 +1,5 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   CreateUserRequest,
   CreateUserResponse,
@@ -17,11 +17,11 @@ import type {
   GetUserStatsResponse,
   GetUsersRequest,
   GetUsersResponse,
-} from '../dto/UserDto';
+} from '@/application/dto/UserDto';
 import type {
   AuthenticateUserRequest,
   AuthenticateUserResponse,
-} from '../dto/AuthDto';
+} from '@/application/dto/AuthDto';
 
 /**
  * UserUseCase - 사용자 관련 모든 기능을 통합한 Use Case

@@ -1,5 +1,5 @@
-import type { IFileRepository } from '../../domain/repositories/IFileRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IFileRepository } from '@/domain/repositories/IFileRepository';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   FileUploadRequest,
   FileUploadResponse,
@@ -11,7 +11,7 @@ import type {
   GetFileStatsResponse,
   ValidateFileRequest,
   ValidateFileResponse,
-} from '../dto/FileDto';
+} from '@/application/dto/FileDto';
 
 /**
  * FileUseCase - 파일 관련 모든 기능을 통합한 Use Case

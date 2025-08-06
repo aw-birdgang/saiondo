@@ -1,8 +1,8 @@
-import type { IUserRepository } from '../interfaces/IUserRepository';
-import type { IUserUseCase } from '../interfaces/IUserUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { UserService } from '../services/UserService';
-import { UserUseCases } from '../UserUseCases';
+import type { IUserRepository } from '@/application/usecases/interfaces/IUserRepository';
+import type { IUserUseCase } from '@/application/usecases/interfaces/IUserUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { UserService } from '@/application/usecases/services/UserService';
+import { UserUseCases } from '@/application/usecases/UserUseCases';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createUserUseCase = (

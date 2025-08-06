@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ROUTES } from '../../../shared/constants/app';
-import { useAuthGuard } from '../../hooks/useAuthGuard';
-import { LoadingSpinner } from '../common';
+import { ROUTES } from '@/shared/constants/app';
+import { useAuthGuard } from '@/presentation/hooks/useAuthGuard';
+import { LoadingSpinner } from '@/presentation/components/common';
 
 interface AuthGuardProps {
   children: React.ReactNode;

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { UserProfile, Card, Button } from '../common';
+import { UserProfile, Card, Button } from '@/presentation/components/common';
 import { MenuGrid } from './';
 
 interface MenuItem {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AuthGuard } from '../../components/specific';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { AuthGuard } from '@/presentation/components/specific';
 import {
   Card,
   CardHeader,
@@ -19,9 +19,9 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger
-} from '../../components/common';
-import { useIntersectionAnimation, useStaggerAnimation } from '../../../shared/design-system/animations';
-import { useTheme } from '../../../shared/design-system/hooks';
+} from '@/presentation/components/common';
+import { useIntersectionAnimation, useStaggerAnimation } from '@/shared/design-system/animations';
+import { useTheme } from '@/shared/design-system/hooks';
 
 interface Profile {
   id: string;

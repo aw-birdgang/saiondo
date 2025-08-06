@@ -5,19 +5,19 @@ import type {
   SearchSuggestion,
   SearchHistoryItem,
   SearchTrendingItem,
-} from '../../domain/types/search';
+} from '@/domain/types/search';
 import type {
   SubscriptionProduct,
   PaymentMethod,
   Coupon,
   PaymentRequest,
   PaymentResponse,
-} from '../../domain/types/payment';
+} from '@/domain/types/payment';
 import type {
   Category,
   CategoryCode,
   CategoryStats,
-} from '../../domain/types/category';
+} from '@/domain/types/category';
 import type {
   ChannelInvitationItem,
   InviteRequest,
@@ -25,7 +25,7 @@ import type {
   InvitationResponseRequest,
   InvitationResponseResponse,
   InviteStats,
-} from '../../domain/types/invite';
+} from '@/domain/types/invite';
 
 /**
  * SystemRepository - 시스템 관련 모든 기능을 통합한 Repository

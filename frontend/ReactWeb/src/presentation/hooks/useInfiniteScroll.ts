@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useIntersectionObserver } from './useIntersectionObserver';
-import { useThrottle } from './useThrottle';
+import { useIntersectionObserver } from '@/presentation/hooks/useIntersectionObserver';
+import { useThrottle } from '@/presentation/hooks/useThrottle';
 
 interface UseInfiniteScrollOptions<T> {
   data: T[];

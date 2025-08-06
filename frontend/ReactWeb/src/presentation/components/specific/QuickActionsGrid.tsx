@@ -1,5 +1,5 @@
 import React from 'react';
-import { QuickActionButton } from '../common';
+import { QuickActionButton } from '@/presentation/components/common';
 
 interface QuickAction {
   icon: string;

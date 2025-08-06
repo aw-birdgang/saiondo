@@ -6,7 +6,7 @@ import type {
   InvitationResponseResponse,
   InviteValidationError,
   InviteStats,
-} from '../../../domain/types/invite';
+} from '@/domain/types/invite';
 
 // UseCase 인터페이스 - 애플리케이션 로직 조율
 export interface IInviteUseCase {

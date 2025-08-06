@@ -1,6 +1,6 @@
 // import React from 'react';
 import type { ComponentType, ReactNode } from 'react';
-import { LazyLoader } from './LazyLoader';
+import { LazyLoader } from '@/presentation/components/loading/LazyLoader';
 
 export const withLazyLoading = <P extends object>(
   component: () => Promise<{ default: ComponentType<P> }>,

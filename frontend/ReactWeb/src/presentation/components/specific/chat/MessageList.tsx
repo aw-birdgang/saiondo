@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
-import { LoadingSpinner } from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { Message } from '../../../pages/chat/types/chatTypes';
-import MessageItem from './MessageItem';
+import { LoadingSpinner } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { Message } from '@/presentation/pages/chat/types/chatTypes';
+import MessageItem from '@/presentation/components/specific/chat/MessageItem';
 
 interface MessageListProps {
   messages: Message[];

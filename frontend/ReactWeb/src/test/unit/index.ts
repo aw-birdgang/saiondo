@@ -1,6 +1,6 @@
 // Service Tests
-export * from './services/AuthenticationService.test';
-export * from './services/LocalStorageCache.test';
+export * from '@/test/unit/services/AuthenticationService.test';
+export * from '@/test/unit/services/LocalStorageCache.test';
 
 // Test Utilities
 export const createMockUseCase = <T>(returnValue: T) => ({

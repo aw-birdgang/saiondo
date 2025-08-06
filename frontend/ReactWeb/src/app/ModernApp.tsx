@@ -8,15 +8,15 @@ import {
   AuthProvider,
   ThemeProvider,
   UserProvider,
-} from '../contexts';
-import { ToastProvider } from '../presentation/providers/ToastProvider';
-import { AccessibilityProvider } from '../presentation/components/common/AccessibilityProvider';
-import { initializeServices } from '../di/index';
-import { useAuthStore } from '../stores/authStore';
-import { useThemeStore } from '../stores/themeStore';
-import { AppRoutes } from '../presentation/routes/AppRoutes';
-import { ErrorBoundary } from '../presentation/components/loading';
-import ModernNavigation from '../presentation/components/common/ModernNavigation';
+} from '@/contexts';
+import { ToastProvider } from '@/presentation/providers/ToastProvider';
+import { AccessibilityProvider } from '@/presentation/components/common/AccessibilityProvider';
+import { initializeServices } from '@/di/index';
+import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
+import { AppRoutes } from '@/presentation/routes/AppRoutes';
+import { ErrorBoundary } from '@/presentation/components/loading';
+import ModernNavigation from '@/presentation/components/common/ModernNavigation';
 
 // 타입 정의
 interface ModernAppProvidersProps {
@@ -72,8 +72,8 @@ const ModernAppContent: React.FC<ModernAppContentProps> = ({ onError }) => {
         );
 
         // UseCaseFactory와 ControllerFactory 초기화
-        const { UseCaseFactory } = await import('../application/usecases/UseCaseFactory');
-        const { ControllerFactory } = await import('../application/controllers/ControllerFactory');
+        const { UseCaseFactory } = await import('@/application/usecases/UseCaseFactory');
+        const { ControllerFactory } = await import('@/application/controllers/ControllerFactory');
 
         await UseCaseFactory.initialize();
         await ControllerFactory.getInstance().initialize();

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SubscriptionProduct } from '../../../domain/types';
+import type { SubscriptionProduct } from '@/domain/types';
 
 interface ProductCardProps {
   product: SubscriptionProduct;

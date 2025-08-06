@@ -1,5 +1,5 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useThemeManager } from '../presentation/hooks/useThemeManager';
+import { useThemeManager } from '@/presentation/hooks/useThemeManager';
 
 interface ThemeContextType {
   isDarkMode: boolean;

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useUseCases } from '../di/useDI';
+import { useUseCases } from '@/di/useDI';
 
 interface UseCaseContextType {
   user: ReturnType<typeof useUseCases>['user'];

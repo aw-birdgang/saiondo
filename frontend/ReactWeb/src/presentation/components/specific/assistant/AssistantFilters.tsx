@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input } from '../../common';
-import { cn } from '../../../../utils/cn';
+import { Button, Input } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface AssistantFiltersExtendedProps {
   selectedCategory: string;

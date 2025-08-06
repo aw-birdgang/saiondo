@@ -3,8 +3,8 @@ import {
   useAuthStore,
   useIsAuthenticated,
   type User,
-} from '../stores/authStore';
-import { useAuthInitializer } from '../presentation/hooks/useAuthInitializer';
+} from '@/stores/authStore';
+import { useAuthInitializer } from '@/presentation/hooks/useAuthInitializer';
 
 interface AuthContextType {
   isAuthenticated: boolean;

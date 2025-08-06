@@ -1,2 +1,2 @@
-export * from './api';
-export * from './app';
+export * from '@/shared/constants/api';
+export * from '@/shared/constants/app';

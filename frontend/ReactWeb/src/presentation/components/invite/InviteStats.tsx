@@ -1,7 +1,7 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { cn } from '../../../utils/cn';
-import type { InviteStats as InviteStatsType } from '../../../domain/types/invite';
+import { cn } from '@/utils/cn';
+import type { InviteStats as InviteStatsType } from '@/domain/types/invite';
 
 interface InviteStatsProps {
   stats: InviteStatsType;

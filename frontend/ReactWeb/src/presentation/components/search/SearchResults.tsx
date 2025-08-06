@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Button, LoadingSpinner } from '../common';
-import { SearchResultItem } from './SearchResultItem';
-import type { SearchResult } from '../../../domain/types/search';
+import { Button, LoadingSpinner } from '@/presentation/components/common';
+import { SearchResultItem } from '@/presentation/components/search/SearchResultItem';
+import type { SearchResult } from '@/domain/types/search';
 
 interface SearchResultsProps {
   results: SearchResult[];

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 import {
   initializeWebSocket,
   cleanupWebSocket,
-} from '../../infrastructure/websocket/WebSocketService';
+} from '@/infrastructure/websocket/WebSocketService';
 
 export interface UseWebSocketOptions {
   autoConnect?: boolean;

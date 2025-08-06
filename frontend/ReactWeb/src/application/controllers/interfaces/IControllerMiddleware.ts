@@ -1,4 +1,4 @@
-import type { ControllerContext, ControllerResult } from './IController';
+import type { ControllerContext, ControllerResult } from '@/application/controllers/interfaces/IController';
 
 /**
  * Controller 미들웨어 인터페이스

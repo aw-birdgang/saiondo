@@ -1,8 +1,8 @@
-import { UserUseCase } from './UserUseCase';
-import { ChannelUseCase } from './ChannelUseCase';
-import { MessageUseCase } from './MessageUseCase';
-import { FileUseCase } from './FileUseCase';
-import { SystemUseCase } from './SystemUseCase';
+import { UserUseCase } from '@/application/usecases/UserUseCase';
+import { ChannelUseCase } from '@/application/usecases/ChannelUseCase';
+import { MessageUseCase } from '@/application/usecases/MessageUseCase';
+import { FileUseCase } from '@/application/usecases/FileUseCase';
+import { SystemUseCase } from '@/application/usecases/SystemUseCase';
 
 /**
  * UseCaseFactory - 통합된 Use Case들을 생성하는 팩토리 클래스

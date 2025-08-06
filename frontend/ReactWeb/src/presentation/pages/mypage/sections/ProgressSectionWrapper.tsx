@@ -1,7 +1,7 @@
 import React from 'react';
-import { AccountProgress } from '../../../components/specific/mypage';
-import SectionBlock from '../SectionBlock';
-import IconWrapper from '../IconWrapper';
+import { AccountProgress } from '@/presentation/components/specific/mypage';
+import SectionBlock from '@/presentation/pages/mypage/SectionBlock';
+import IconWrapper from '@/presentation/pages/mypage/IconWrapper';
 
 interface ProgressSectionWrapperProps {
   progress: number;

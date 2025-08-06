@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { useMessageController } from '../../providers/ControllerProvider';
-import { useUserController } from '../../providers/ControllerProvider';
-import { ChatMessageInput } from '../../components/chat/ChatMessageInput';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AuthGuard } from '../../components/specific';
+import { useMessageController } from '@/presentation/providers/ControllerProvider';
+import { useUserController } from '@/presentation/providers/ControllerProvider';
+import { ChatMessageInput } from '@/presentation/components/chat/ChatMessageInput';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { AuthGuard } from '@/presentation/components/specific';
 import {
   ChatContainer,
   ChatHeader,
   MessageList,
   TypingIndicator,
-} from '../../components/specific/chat';
-import type { Message, User } from './types/chatTypes';
+} from '@/presentation/components/specific/chat';
+import type { Message, User } from '@/presentation/pages/chat/types/chatTypes';
 
 const ChatPage: React.FC = () => {
   const { channelId } = useParams<{ channelId: string }>();
@@ -20,8 +20,6 @@ const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  // const [isTyping, setIsTyping] = useState(false);
-  // const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);

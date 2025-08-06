@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../../stores/userStore';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AuthGuard } from '../../components/specific';
+import { useUserStore } from '@/stores/userStore';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { AuthGuard } from '@/presentation/components/specific';
 import { 
   Card, 
   CardHeader, 
@@ -16,9 +16,9 @@ import {
   GlassmorphicCard,
   NeumorphicCard,
   FloatingActionButton
-} from '../../components/common';
-import { useIntersectionAnimation, useStaggerAnimation } from '../../../shared/design-system/animations';
-import { useTheme } from '../../../shared/design-system/hooks';
+} from '@/presentation/components/common';
+import { useIntersectionAnimation, useStaggerAnimation } from '@/shared/design-system/animations';
+import { useTheme } from '@/shared/design-system/hooks';
 
 const ModernHomePage: React.FC = () => {
   const navigate = useNavigate();

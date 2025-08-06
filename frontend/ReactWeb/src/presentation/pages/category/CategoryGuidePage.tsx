@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../di/container';
-import { DI_TOKENS } from '../../../di/tokens';
-import { useCategory } from '../../hooks/useCategory';
-import { useToastContext } from '../../providers/ToastProvider';
+import { getContainer } from '@/di/container';
+import { DI_TOKENS } from '@/di/tokens';
+import { useCategory } from '@/presentation/hooks/useCategory';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 import {
   PageWrapper,
   PageContainer,
   PageHeader,
-} from '../../components/layout';
-import { SectionHeader, ActionButtons } from '../../components/common';
+} from '@/presentation/components/layout';
+import { SectionHeader, ActionButtons } from '@/presentation/components/common';
 import {
   CategoryGrid,
   CategoryDetailCard,
   UsageGuide,
-} from '../../components/category';
-import type { CategoryUseCase } from '../../../application/usecases/CategoryUseCase';
+} from '@/presentation/components/category';
+import type { CategoryUseCase } from '@/application/usecases/CategoryUseCase';
 
 const CategoryGuidePage: React.FC = () => {
   // const { t } = useTranslation();

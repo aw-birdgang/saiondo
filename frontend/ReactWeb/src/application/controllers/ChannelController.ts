@@ -1,6 +1,6 @@
-import { BaseController } from './BaseController';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
-import type { IUseCase } from '../usecases/interfaces/IUseCase';
+import { BaseController } from '@/application/controllers/BaseController';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
+import type { IUseCase } from '@/application/usecases/interfaces/IUseCase';
 
 /**
  * ChannelController - 채널 관련 비즈니스 로직 조정

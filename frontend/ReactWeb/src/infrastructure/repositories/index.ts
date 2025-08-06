@@ -1,3 +1,3 @@
-export * from './UserRepositoryImpl';
-export * from './ChannelRepositoryImpl';
-export * from './MessageRepositoryImpl';
+export * from '@/infrastructure/repositories/UserRepositoryImpl';
+export * from '@/infrastructure/repositories/ChannelRepositoryImpl';
+export * from '@/infrastructure/repositories/MessageRepositoryImpl';

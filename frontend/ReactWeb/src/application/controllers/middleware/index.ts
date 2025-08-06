@@ -1,12 +1,12 @@
 // 미들웨어 인터페이스
-export * from '../interfaces/IControllerMiddleware';
+export * from '@/application/controllers/interfaces/IControllerMiddleware';
 
 // 미들웨어 구현체들
-export { MiddlewareChain } from './MiddlewareChain';
-export { LoggingMiddleware } from './LoggingMiddleware';
-export { PerformanceMiddleware } from './PerformanceMiddleware';
-export { CachingMiddleware } from './CachingMiddleware';
-export { ValidationMiddleware } from './ValidationMiddleware';
+export { MiddlewareChain } from '@/application/controllers/middleware/MiddlewareChain';
+export { LoggingMiddleware } from '@/application/controllers/middleware/LoggingMiddleware';
+export { PerformanceMiddleware } from '@/application/controllers/middleware/PerformanceMiddleware';
+export { CachingMiddleware } from '@/application/controllers/middleware/CachingMiddleware';
+export { ValidationMiddleware } from '@/application/controllers/middleware/ValidationMiddleware';
 
 // 미들웨어 팩토리 함수
 export const createDefaultMiddlewareChain = () => {

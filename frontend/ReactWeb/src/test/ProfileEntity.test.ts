@@ -1,5 +1,5 @@
-import { ProfileEntity } from '../domain/entities/Profile';
-import type { Profile } from '../domain/dto/ProfileDto';
+import { ProfileEntity } from '@/domain/entities/Profile';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 describe('ProfileEntity', () => {
   const mockProfileData: Omit<

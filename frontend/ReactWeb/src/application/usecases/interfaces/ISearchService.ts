@@ -5,7 +5,7 @@ import type {
   SearchSuggestion,
   SearchHistoryItem,
   SearchTrendingItem,
-} from '../../../domain/types/search';
+} from '@/domain/types/search';
 
 // Search Service 인터페이스 - 비즈니스 로직 담당
 export interface ISearchService {

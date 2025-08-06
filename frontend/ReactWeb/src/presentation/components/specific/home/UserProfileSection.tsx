@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuthStore } from '../../../../stores/authStore';
-import { cn } from '../../../../utils/cn';
+import { useAuthStore } from '@/stores/authStore';
+import { cn } from '@/utils/cn';
 
 interface UserProfileSectionProps {
   className?: string;

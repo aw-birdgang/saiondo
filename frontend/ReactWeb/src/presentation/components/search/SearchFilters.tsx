@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Button, Badge } from '../common';
-import { cn } from '../../../utils/cn';
-import type { SearchFilter } from '../../../domain/types/search';
+import { Button, Badge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { SearchFilter } from '@/domain/types/search';
 
 interface SearchFiltersProps {
   filters: SearchFilter[];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AssistantCard } from './assistant';
+import { AssistantCard } from '@/presentation/components/specific/assistant';
 
 interface Assistant {
   id: string;

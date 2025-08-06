@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserAvatar, HeartIcon } from '../common';
+import { UserAvatar, HeartIcon } from '@/presentation/components/common';
 
 interface User {
   name: string;

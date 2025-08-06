@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../../shared/constants/app';
-import { useAuth } from '../../../contexts/AuthContext';
-import { useAuthStore } from '../../../stores/authStore';
-// import { useUserStore } from '../../../stores/userStore';
-import { ThemeToggle } from './ThemeToggle';
+import { ROUTES } from '@/shared/constants/app';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAuthStore } from '@/stores/authStore';
+// import { useUserStore } from '@/stores/userStore';
+import { ThemeToggle } from '@/presentation/components/common/ThemeToggle';
 
 interface HeaderProps {
   title?: string;

@@ -1,1 +1,1 @@
-export { default as CalendarPage } from './CalendarPage';
+export { default as CalendarPage } from '@/presentation/pages/calendar/CalendarPage';

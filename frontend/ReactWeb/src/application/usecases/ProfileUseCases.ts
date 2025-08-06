@@ -1,4 +1,4 @@
-import type { Profile } from '../../domain/dto/ProfileDto';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 export interface ProfileUseCaseService {
   getProfile: (params: { userId: string }) => Promise<{ success: boolean; profile?: Profile; error?: string }>;

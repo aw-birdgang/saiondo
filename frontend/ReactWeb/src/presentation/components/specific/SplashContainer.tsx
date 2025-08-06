@@ -1,5 +1,5 @@
 import React from 'react';
-import { SplashScreen } from './splash';
+import { SplashScreen } from '@/presentation/components/specific/splash';
 
 interface SplashContainerProps {
   appName: string;

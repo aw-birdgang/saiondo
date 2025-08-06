@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { toast } from 'react-hot-toast';
-import { apiClient } from '../infrastructure/api/ApiClient';
+import { apiClient } from '@/infrastructure/api/ApiClient';
 
 export interface User {
   id: string;

@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input } from '../common';
-import { useToastContext } from '../../providers/ToastProvider';
-import { useAIChat } from '../../hooks/useAIChat';
-import { cn } from '../../../utils/cn';
+import { Button, Input } from '@/presentation/components/common';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { useAIChat } from '@/presentation/hooks/useAIChat';
+import { cn } from '@/utils/cn';
 
 interface AIChatWidgetProps {
   className?: string;

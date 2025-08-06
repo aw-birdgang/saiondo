@@ -1,6 +1,6 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
+import { cn } from '@/utils/cn';
 
 const statusIndicatorVariants = cva(
   'inline-flex items-center rounded-full transition-all duration-200',

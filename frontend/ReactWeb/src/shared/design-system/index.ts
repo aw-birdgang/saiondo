@@ -1,7 +1,7 @@
 // Design System - Modern Enterprise UI/UX Patterns
-export * from './tokens';
-export * from './components';
-export * from './hooks';
-export * from './utils';
-export * from './animations';
-export * from './accessibility'; 
+export * from '@/shared/design-system/tokens';
+export * from '@/shared/design-system/components';
+export * from '@/shared/design-system/hooks';
+export * from '@/shared/design-system/utils';
+export * from '@/shared/design-system/animations';
+export * from '@/shared/design-system/accessibility'; 

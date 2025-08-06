@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { container } from '../di/container';
-import type { Channel } from '../domain/types/channel';
-import type { ChannelInvitation } from '../domain/types';
+import { container } from '@/di/container';
+import type { Channel } from '@/domain/types/channel';
+import type { ChannelInvitation } from '@/domain/types';
 
 export interface Channels {
   ownedChannels: Channel[];

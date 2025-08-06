@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Caption } from './index';
+import { Caption } from '@/presentation/components/common/index';
 
 interface ChatActionProps {
   className?: string;

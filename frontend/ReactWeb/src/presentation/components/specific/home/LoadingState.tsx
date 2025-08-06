@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton } from '../../common';
+import { Skeleton } from '@/presentation/components/common';
 
 interface HomeLoadingStateProps {
   className?: string;

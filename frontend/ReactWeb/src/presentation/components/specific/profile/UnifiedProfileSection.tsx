@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../../../utils/cn';
-import type { Profile } from '../../../../domain/dto/ProfileDto';
+import { cn } from '@/utils/cn';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 interface UnifiedProfileSectionProps {
   profile: Profile | null;

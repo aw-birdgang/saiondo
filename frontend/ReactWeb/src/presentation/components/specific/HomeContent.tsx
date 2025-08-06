@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserProfile, LoadingState } from '../common';
-import { QuickActionsCard, SystemStatusCard, ChannelInfoCard } from './';
+import { UserProfile, LoadingState } from '@/presentation/components/common';
+import { QuickActionsCard, SystemStatusCard, ChannelInfoCard } from '@/presentation/components/specific';
 
 interface ChannelInfo {
   ownedChannels?: any[];

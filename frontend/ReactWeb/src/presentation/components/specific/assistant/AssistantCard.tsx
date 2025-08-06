@@ -6,9 +6,9 @@ import {
   CardTitle,
   Badge,
   Button,
-} from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { Assistant } from '../../../pages/assistant/types/assistantTypes';
+} from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { Assistant } from '@/presentation/pages/assistant/types/assistantTypes';
 
 interface AssistantCardProps {
   assistant: Assistant;

@@ -1,8 +1,8 @@
 import React from 'react';
-import { ChatEmptyState } from './ChatEmptyState';
-import { ChatMessageList } from './ChatMessageList';
-import { ChatInputArea } from './ChatInputArea';
-import type { AIChatMessage } from '../../../infrastructure/api/services/aiChatService';
+import { ChatEmptyState } from '@/presentation/components/chat/ChatEmptyState';
+import { ChatMessageList } from '@/presentation/components/chat/ChatMessageList';
+import { ChatInputArea } from '@/presentation/components/chat/ChatInputArea';
+import type { AIChatMessage } from '@/infrastructure/api/services/aiChatService';
 
 interface ChatContainerProps {
   messages: AIChatMessage[];

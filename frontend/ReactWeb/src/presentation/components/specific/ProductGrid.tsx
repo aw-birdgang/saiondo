@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProductCard } from './payment';
+import { ProductCard } from '@/presentation/components/specific/payment';
 
 interface SubscriptionProduct {
   id: string;

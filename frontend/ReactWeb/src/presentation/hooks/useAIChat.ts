@@ -1,10 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 import {
   aiChatService,
   type AIChatMessage,
   type AIChatRequest,
-} from '../../infrastructure/api/services/aiChatService';
+} from '@/infrastructure/api/services/aiChatService';
 import { toast } from 'react-hot-toast';
 
 export interface UseAIChatReturn {

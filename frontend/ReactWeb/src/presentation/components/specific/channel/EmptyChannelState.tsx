@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, EmptyState } from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { EmptyChannelStateProps } from '../../../pages/channel/types/channelTypes';
+import { Button, EmptyState } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { EmptyChannelStateProps } from '@/presentation/pages/channel/types/channelTypes';
 
 const EmptyChannelState: React.FC<EmptyChannelStateProps> = ({
   onCreateChannel,

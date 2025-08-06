@@ -1,16 +1,16 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { useSearchData } from './hooks/useSearchData';
-import { useToastContext } from '../../providers/ToastProvider';
+import { useSearchData } from '@/presentation/pages/search/hooks/useSearchData';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 import {
   SearchContainer,
   SearchFilters,
   SearchHeader,
   SearchResults,
   SearchSuggestions,
-} from '../../components/search';
-import { ErrorState } from '../../components/specific';
+} from '@/presentation/components/search';
+import { ErrorState } from '@/presentation/components/specific';
 
 const SearchPage: React.FC = () => {
   // const { t } = useTranslation();

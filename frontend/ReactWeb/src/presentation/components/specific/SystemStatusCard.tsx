@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SystemStatItem } from '../common';
+import { SystemStatItem } from '@/presentation/components/common';
 
 const SystemStatusCard: React.FC = () => {
   const { t } = useTranslation();

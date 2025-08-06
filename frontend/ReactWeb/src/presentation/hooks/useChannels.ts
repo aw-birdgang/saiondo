@@ -1,9 +1,9 @@
 import { useEffect, useCallback } from 'react';
-import { useChannelStore } from '../../stores/channelStore';
-import { useAuthStore } from '../../stores/authStore';
-// import { useUseCases } from '../../di/useDI';
+import { useChannelStore } from '@/stores/channelStore';
+import { useAuthStore } from '@/stores/authStore';
+// import { useUseCases } from '@/di/useDI';
 import { toast } from 'react-hot-toast';
-import type { Channel } from '../../domain/types/channel';
+import type { Channel } from '@/domain/types/channel';
 
 // 임시 API 함수들 (실제 구현 시 교체)
 const channelApi = {

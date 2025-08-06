@@ -1,7 +1,7 @@
-import { initializeFileUploadService } from '../infrastructure/api/FileUploadService';
-import { initializeWebSocket } from '../infrastructure/websocket/WebSocketService';
-import { initializePaymentService } from '../infrastructure/payment/PaymentService';
-import { initializePushNotificationService } from '../infrastructure/notification/PushNotificationService';
+import { initializeFileUploadService } from '@/infrastructure/api/FileUploadService';
+import { initializeWebSocket } from '@/infrastructure/websocket/WebSocketService';
+import { initializePaymentService } from '@/infrastructure/payment/PaymentService';
+import { initializePushNotificationService } from '@/infrastructure/notification/PushNotificationService';
 
 // 서비스 초기화 함수
 export const initializeServices = (token?: string) => {
@@ -38,8 +38,8 @@ export const initializeServices = (token?: string) => {
 };
 
 // Container and core DI functionality
-export { container, DIContainer, getContainer } from './container';
-export { DI_TOKENS, type DIToken } from './tokens';
+export { container, DIContainer, getContainer } from '@/di/container';
+export { DI_TOKENS, type DIToken } from '@/di/tokens';
 export {
   type ApiConfig,
   type WebSocketConfig,
@@ -53,7 +53,7 @@ export {
   createWebSocketConfig,
   createI18nConfig,
   createAppConfig,
-} from './config';
+} from '@/di/config';
 
 // React hooks for DI
 export {
@@ -65,10 +65,10 @@ export {
   useInfrastructure,
   useStores,
   useConfig,
-} from './useDI';
+} from '@/di/useDI';
 
 // i18n and language utilities
-export { default as i18n } from './i18n';
+export { default as i18n } from '@/di/i18n';
 export {
   initializeLanguage,
   setLanguage,
@@ -76,7 +76,7 @@ export {
   getLanguageName,
   getNativeLanguageName,
   availableLanguages,
-} from './languageUtils';
+} from '@/di/languageUtils';
 
 // Re-export for convenience
-export { container as di } from './container'; 
+export { container as di } from '@/di/container'; 

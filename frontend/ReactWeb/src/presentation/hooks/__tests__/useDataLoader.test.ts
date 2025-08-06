@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { useDataLoader } from '../useDataLoader';
+import { useDataLoader } from '@/presentation/hooks/useDataLoader';
 
 // Mock toast
 jest.mock('react-hot-toast', () => ({

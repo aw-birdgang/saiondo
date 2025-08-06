@@ -1,18 +1,18 @@
 // Common components
-export * from './common';
+export * from '@/presentation/components/common';
 
 // Specific components
-export * from './specific';
-export * from './specific/assistant';
-export * from './specific/payment';
-export * from './specific/calendar';
-export * from './specific/splash';
+export * from '@/presentation/components/specific';
+export * from '@/presentation/components/specific/assistant';
+export * from '@/presentation/components/specific/payment';
+export * from '@/presentation/components/specific/calendar';
+export * from '@/presentation/components/specific/splash';
 
 // Layout components
-export * from './layout';
+export * from '@/presentation/components/layout';
 
 // Chat components
-export * from './chat';
+export * from '@/presentation/components/chat';
 
 // Loading components
-export * from './loading';
+export * from '@/presentation/components/loading';

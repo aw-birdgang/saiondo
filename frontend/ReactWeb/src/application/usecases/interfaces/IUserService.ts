@@ -9,7 +9,7 @@ import type {
   SearchUsersResponse,
   UpdateUserRequest,
   UpdateUserResponse,
-} from '../../dto/UserDto';
+} from '@/application/dto/UserDto';
 
 // User Service 인터페이스 - 비즈니스 로직 담당
 export interface IUserService {

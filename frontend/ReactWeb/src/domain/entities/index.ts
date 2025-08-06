@@ -1,3 +1,3 @@
-export * from './User';
-export * from './Channel';
-export * from './Message';
+export * from '@/domain/entities/User';
+export * from '@/domain/entities/Channel';
+export * from '@/domain/entities/Message';

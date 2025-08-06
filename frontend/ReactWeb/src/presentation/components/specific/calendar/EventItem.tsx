@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button, StatusBadge } from '../../common';
-import { cn } from '../../../../utils/cn';
-import { EVENT_TYPE_CONFIG } from '../../../pages/calendar/constants/calendarData';
-import type { EventItemProps } from '../../../pages/calendar/types/calendarTypes';
+import { Button, StatusBadge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import { EVENT_TYPE_CONFIG } from '@/presentation/pages/calendar/constants/calendarData';
+import type { EventItemProps } from '@/presentation/pages/calendar/types/calendarTypes';
 
 const EventItem: React.FC<EventItemProps> = ({
   event,

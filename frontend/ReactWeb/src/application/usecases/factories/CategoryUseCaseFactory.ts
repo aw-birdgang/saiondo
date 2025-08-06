@@ -1,8 +1,8 @@
-import type { ICategoryRepository } from '../interfaces/ICategoryRepository';
-import type { ICategoryUseCase } from '../interfaces/ICategoryUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { CategoryService } from '../services/CategoryService';
-import { CategoryUseCase } from '../CategoryUseCase';
+import type { ICategoryRepository } from '@/application/usecases/interfaces/ICategoryRepository';
+import type { ICategoryUseCase } from '@/application/usecases/interfaces/ICategoryUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { CategoryService } from '@/application/usecases/services/CategoryService';
+import { CategoryUseCase } from '@/application/usecases/CategoryUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createCategoryUseCase = (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '../../../utils/cn';
-import type { CategoryCode } from '../../../domain/types/category';
+import { cn } from '@/utils/cn';
+import type { CategoryCode } from '@/domain/types/category';
 
 interface CategoryCodeGridProps {
   codes: CategoryCode[];

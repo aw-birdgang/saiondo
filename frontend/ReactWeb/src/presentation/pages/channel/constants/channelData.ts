@@ -1,4 +1,4 @@
-import type { ChannelListItem, ChannelStats } from '../types/channelTypes';
+import type { ChannelListItem, ChannelStats } from '@/presentation/pages/channel/types/channelTypes';
 
 // Mock 채널 데이터
 export const MOCK_CHANNELS: ChannelListItem[] = [

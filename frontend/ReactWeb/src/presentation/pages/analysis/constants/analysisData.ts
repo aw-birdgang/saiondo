@@ -1,4 +1,4 @@
-import type { AnalysisData, AnalysisChartData } from '../types/analysisTypes';
+import type { AnalysisData, AnalysisChartData } from '@/presentation/pages/analysis/types/analysisTypes';
 
 // Mock 분석 데이터
 export const MOCK_ANALYSIS_DATA: AnalysisData = {

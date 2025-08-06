@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '../common';
-import { PageHeader } from '../specific';
+import { Button } from '@/presentation/components/common';
+import { PageHeader } from '@/presentation/components/specific';
 
 interface ChatHeaderProps {
   onNewConversation: () => void;

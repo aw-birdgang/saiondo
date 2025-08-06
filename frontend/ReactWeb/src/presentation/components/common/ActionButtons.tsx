@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionButton } from './index';
+import { ActionButton } from '@/presentation/components/common/index';
 
 interface ActionButtonsProps {
   actions: {

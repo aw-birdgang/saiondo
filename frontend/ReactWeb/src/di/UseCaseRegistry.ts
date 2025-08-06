@@ -1,6 +1,6 @@
-import { container } from './container';
-import { DI_TOKENS } from './tokens';
-import type { UseCaseRegistration } from '../application/usecases/interfaces/IUseCase';
+import { container } from '@/di/container';
+import { DI_TOKENS } from '@/di/tokens';
+import type { UseCaseRegistration } from '@/application/usecases/interfaces/IUseCase';
 
 /**
  * UseCase 레지스트리

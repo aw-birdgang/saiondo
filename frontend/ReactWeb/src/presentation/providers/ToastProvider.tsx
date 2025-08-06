@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { ToastContainer, useToast } from '../components/common/Toast';
+import { ToastContainer, useToast } from '@/presentation/components/common/Toast';
 
 interface ToastContextType {
   success: (message: string, options?: any) => string;

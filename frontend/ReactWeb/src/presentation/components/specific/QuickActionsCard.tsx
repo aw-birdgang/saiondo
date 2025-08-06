@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../../shared/constants/app';
-import { Card, QuickActionButton } from '../common';
+import { ROUTES } from '@/shared/constants/app';
+import { Card, QuickActionButton } from '@/presentation/components/common';
 
 interface QuickActionsCardProps {
   className?: string;

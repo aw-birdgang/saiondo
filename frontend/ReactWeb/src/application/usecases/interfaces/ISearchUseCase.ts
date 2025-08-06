@@ -5,7 +5,7 @@ import type {
   SearchSuggestion,
   SearchHistoryItem,
   SearchTrendingItem,
-} from '../../../domain/types/search';
+} from '@/domain/types/search';
 
 // Search UseCase 인터페이스 - 애플리케이션 로직 조율
 export interface ISearchUseCase {

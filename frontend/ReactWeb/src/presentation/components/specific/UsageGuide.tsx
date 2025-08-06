@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '../common';
+import { Grid } from '@/presentation/components/common';
 
 interface Step {
   number: number;

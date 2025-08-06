@@ -1,16 +1,16 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import SettingsSection from './SettingsSection';
-import ToggleSetting from './ToggleSetting';
-import SelectSetting from './SelectSetting';
+import { cn } from '@/utils/cn';
+import SettingsSection from '@/presentation/components/specific/settings/SettingsSection';
+import ToggleSetting from '@/presentation/components/specific/settings/ToggleSetting';
+import SelectSetting from '@/presentation/components/specific/settings/SelectSetting';
 import {
   THEME_OPTIONS,
   LANGUAGE_OPTIONS,
   FONT_SIZE_OPTIONS,
   COLOR_BLINDNESS_OPTIONS,
   PROFILE_VISIBILITY_OPTIONS,
-} from '../../../pages/settings/constants/settingsData';
-import type { SettingsContentProps } from '../../../pages/settings/types/settingsTypes';
+} from '@/presentation/pages/settings/constants/settingsData';
+import type { SettingsContentProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const SettingsContent: React.FC<SettingsContentProps> = ({
   activeSection,

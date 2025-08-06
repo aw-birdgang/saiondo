@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../shared/utils/cn';
-import { Button } from './Button';
-import { useFocusTrap, getAriaAttributes } from '../../../shared/design-system/accessibility';
-import { useAnimation } from '../../../shared/design-system/animations';
+import { cn } from '@/shared/utils/cn';
+import { Button } from '@/presentation/components/common/Button';
+import { useFocusTrap, getAriaAttributes } from '@/shared/design-system/accessibility';
+import { useAnimation } from '@/shared/design-system/animations';
 
 const modalVariants = cva(
   'relative bg-surface rounded-lg shadow-xl border border-border transform transition-all duration-300',

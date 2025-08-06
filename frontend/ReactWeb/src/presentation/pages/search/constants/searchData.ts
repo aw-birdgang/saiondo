@@ -1,4 +1,4 @@
-import type { SearchResult, SearchFilter } from '../types/searchTypes';
+import type { SearchResult, SearchFilter } from '@/presentation/pages/search/types/searchTypes';
 
 // Mock 검색 결과 데이터
 export const MOCK_SEARCH_RESULTS: SearchResult[] = [

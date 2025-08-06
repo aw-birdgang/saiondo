@@ -1,5 +1,5 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   CreateChannelRequest,
   CreateChannelResponse,
@@ -13,7 +13,7 @@ import type {
   AddMemberResponse,
   RemoveMemberRequest,
   RemoveMemberResponse,
-} from '../dto/ChannelDto';
+} from '@/application/dto/ChannelDto';
 
 /**
  * ChannelUseCase - 채널 관련 모든 기능을 통합한 Use Case

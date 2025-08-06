@@ -1,4 +1,4 @@
-import type { LoginFormData, RegisterFormData } from '../types/authTypes';
+import type { LoginFormData, RegisterFormData } from '@/presentation/pages/auth/types/authTypes';
 
 // 테스트용 기본 로그인 데이터
 export const DEFAULT_LOGIN_DATA: LoginFormData = {

@@ -4,7 +4,7 @@ import type {
   SearchSuggestion,
   SearchHistoryItem,
   SearchTrendingItem,
-} from '../../../domain/types/search';
+} from '@/domain/types/search';
 
 // Search Repository 인터페이스 - 데이터 접근만 담당
 export interface ISearchRepository {

@@ -6,7 +6,7 @@ import type {
   PaymentResponse,
   PaymentValidationError,
   CardDetails,
-} from '../../../domain/types/payment';
+} from '@/domain/types/payment';
 
 // Payment Service 인터페이스 - 비즈니스 로직 담당
 export interface IPaymentService {

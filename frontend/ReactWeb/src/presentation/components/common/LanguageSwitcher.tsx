@@ -4,7 +4,7 @@ import {
   setLanguage,
   getCurrentLanguage,
   availableLanguages,
-} from '../../../di/languageUtils';
+} from '@/di/languageUtils';
 
 interface LanguageSwitcherProps {
   className?: string;

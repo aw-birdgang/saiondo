@@ -1,12 +1,12 @@
-import { apiClient } from '../ApiClient';
-import { ENDPOINTS } from '../endpoints';
+import { apiClient } from '@/infrastructure/api/ApiClient';
+import { ENDPOINTS } from '@/infrastructure/api/endpoints';
 import type {
   User,
   UserWithWallet,
   Assistant,
   PersonaProfile,
   PersonaProfileRequest,
-} from '../../../domain/types';
+} from '@/domain/types';
 
 export class UserService {
   async fetchUsers(): Promise<User[]> {

@@ -1,4 +1,4 @@
-import type { IProfileRepository } from '../../domain/repositories/IProfileRepository';
+import type { IProfileRepository } from '@/domain/repositories/IProfileRepository';
 import type {
   CreateProfileRequest,
   CreateProfileResponse,
@@ -23,9 +23,9 @@ import type {
   GetFollowingRequest,
   GetFollowingResponse,
   Profile,
-} from '../../domain/dto/ProfileDto';
-import { ApiClient } from '../api/ApiClient';
-import { ENDPOINTS } from '../api/endpoints';
+} from '@/domain/dto/ProfileDto';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import { ENDPOINTS } from '@/infrastructure/api/endpoints';
 
 export class ProfileRepositoryImpl implements IProfileRepository {
   constructor(private apiClient: ApiClient) {}

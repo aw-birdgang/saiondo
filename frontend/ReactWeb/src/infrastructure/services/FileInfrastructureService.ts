@@ -1,7 +1,7 @@
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import { ApiClient } from '../api/ApiClient';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
 
 /**
  * FileInfrastructureService - 파일 관련 모든 기능을 통합한 Infrastructure Service

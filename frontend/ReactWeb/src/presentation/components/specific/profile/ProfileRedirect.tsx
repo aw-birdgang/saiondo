@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LoadingState } from '../../common';
+import { LoadingState } from '@/presentation/components/common';
 
 interface ProfileRedirectProps {
   message?: string;

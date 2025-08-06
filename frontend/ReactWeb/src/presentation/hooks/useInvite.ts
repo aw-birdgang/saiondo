@@ -1,14 +1,14 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../shared/constants/app';
-import { useToastContext } from '../providers/ToastProvider';
+import { ROUTES } from '@/shared/constants/app';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 import type {
   InviteState,
   InviteRequest,
   InvitationResponseRequest,
   InviteStats,
-} from '../../domain/types/invite';
-import type { IInviteUseCase } from '../../application/usecases/interfaces/IInviteUseCase';
+} from '@/domain/types/invite';
+import type { IInviteUseCase } from '@/application/usecases/interfaces/IInviteUseCase';
 
 export const useInvite = (inviteUseCase: IInviteUseCase, userId?: string) => {
   const navigate = useNavigate();

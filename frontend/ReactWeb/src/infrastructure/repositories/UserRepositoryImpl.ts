@@ -1,8 +1,8 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { User, UserProfile } from '../../domain/types/user';
-import { UserEntity } from '../../domain/entities/User';
-import { ApiClient } from '../api/ApiClient';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import type { User, UserProfile } from '@/domain/types/user';
+import { UserEntity } from '@/domain/entities/User';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   CreateProfileRequest,
   CreateProfileResponse,
@@ -26,7 +26,7 @@ import type {
   GetFollowersResponse,
   GetFollowingRequest,
   GetFollowingResponse,
-} from '../../domain/dto/ProfileDto';
+} from '@/domain/dto/ProfileDto';
 
 export class UserRepositoryImpl implements IUserRepository {
   constructor(private readonly apiClient: ApiClient) {}

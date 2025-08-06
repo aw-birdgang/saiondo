@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { usePeriodicUpdate } from './usePeriodicUpdate';
-import { UseCaseFactory } from '../../application/usecases/UseCaseFactory';
+import { usePeriodicUpdate } from '@/presentation/hooks/usePeriodicUpdate';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
 // 임시 타입 정의
 interface WebSocketConfig {
   url?: string;

@@ -1,4 +1,4 @@
-import type { FlowInfo } from '../../../shared/utils/FlowTracker';
+import type { FlowInfo } from '@/shared/utils/FlowTracker';
 
 /**
  * Controller 기본 인터페이스

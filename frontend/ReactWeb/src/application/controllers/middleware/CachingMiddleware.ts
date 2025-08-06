@@ -1,9 +1,9 @@
-import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
+import { BaseMiddleware } from '@/application/controllers/interfaces/IControllerMiddleware';
 import type {
   ControllerContext,
   ControllerResult,
-} from '../interfaces/IController';
-import { Logger } from '../../../shared/utils/Logger';
+} from '@/application/controllers/interfaces/IController';
+import { Logger } from '@/shared/utils/Logger';
 
 interface CacheEntry<T = any> {
   data: T;

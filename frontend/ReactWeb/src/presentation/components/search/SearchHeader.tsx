@@ -1,7 +1,7 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Input, Button, LoadingSpinner } from '../common';
-import { cn } from '../../../utils/cn';
+import { Input, Button, LoadingSpinner } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface SearchHeaderProps {
   query: string;

@@ -1,4 +1,4 @@
-import type { User, UserProfile } from '../types/user';
+import type { User, UserProfile } from '@/domain/types/user';
 
 export interface IUserRepository {
   // ==================== 기본 CRUD 작업 ====================

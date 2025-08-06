@@ -1,6 +1,6 @@
 import React from 'react';
-import MessageContent from './MessageContent';
-import MessageTimestamp from './MessageTimestamp';
+import MessageContent from '@/presentation/components/common/MessageContent';
+import MessageTimestamp from '@/presentation/components/common/MessageTimestamp';
 
 interface MessageBubbleProps {
   content: string;

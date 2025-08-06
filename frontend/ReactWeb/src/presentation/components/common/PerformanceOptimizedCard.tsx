@@ -6,8 +6,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from './Card';
-import { cn } from '../../../utils/cn';
+} from '@/presentation/components/common/Card';
+import { cn } from '@/utils/cn';
 
 interface PerformanceOptimizedCardProps {
   title: string;

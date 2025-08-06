@@ -1,14 +1,10 @@
-// Components
-export * from './components';
+export * from '@/presentation/components';
 
 // Pages
-export * from './pages';
+export * from '@/presentation/pages';
 
 // Hooks
-export * from './hooks';
+export * from '@/presentation/hooks';
 
 // Routes
-export * from './routes';
-
-// Error Handling
-// export * from './error-handling';
+export * from '@/presentation/routes';

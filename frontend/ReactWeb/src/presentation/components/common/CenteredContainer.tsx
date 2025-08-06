@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from './Container';
+import Container from '@/presentation/components/common/Container';
 
 interface CenteredContainerProps {
   children: React.ReactNode;

@@ -1,5 +1,5 @@
-import { getIconComponent } from '../../../components/specific/home/IconComponents';
-import { QUICK_ACTIONS } from '../constants/homeData';
+import { getIconComponent } from '@/presentation/components/specific/home/IconComponents';
+import { QUICK_ACTIONS } from '@/presentation/pages/home/constants/homeData';
 
 export const transformQuickActions = () => {
   return QUICK_ACTIONS.map(action => ({

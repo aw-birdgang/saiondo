@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../common';
-import { cn } from '../../../utils/cn';
-import type { Category } from '../../../domain/types/category';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { Category } from '@/domain/types/category';
 
 interface CategoryDetailCardProps {
   category: Category;

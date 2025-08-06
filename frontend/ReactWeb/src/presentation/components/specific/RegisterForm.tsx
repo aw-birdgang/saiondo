@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form } from '../common';
-import AuthHeader from './auth/AuthHeader';
+import { Form } from '@/presentation/components/common';
+import AuthHeader from '@/presentation/components/specific/auth/AuthHeader';
 
 import type {
   RegisterFormProps,
   RegisterFormData,
-} from '../../pages/auth/types/authTypes';
+} from '@/presentation/pages/auth/types/authTypes';
 
 const RegisterForm: React.FC<RegisterFormProps> = ({
   onSubmit,

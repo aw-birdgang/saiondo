@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { settingsService } from '../../../../infrastructure/api/services';
-import type { UserSettings, SettingsState } from '../types/settingsTypes';
+import { settingsService } from '@/infrastructure/api/services';
+import type { UserSettings, SettingsState } from '@/presentation/pages/settings/types/settingsTypes';
 
 // 자동 저장 지연 시간 (ms)
 const AUTO_SAVE_DELAY = 2000;

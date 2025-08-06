@@ -1,6 +1,6 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useUserManager } from '../presentation/hooks/useUserManager';
-import type { User } from '../domain/dto/UserDto';
+import { useUserManager } from '@/presentation/hooks/useUserManager';
+import type { User } from '@/domain/dto/UserDto';
 
 interface UserContextType {
   currentUser: User | null;

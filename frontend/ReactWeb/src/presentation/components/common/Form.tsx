@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import FormField from './FormField';
+import FormField from '@/presentation/components/common/FormField';
 import { Button } from './';
-import { useToastContext } from '../../providers/ToastProvider';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 
 interface FormField {
   name: string;

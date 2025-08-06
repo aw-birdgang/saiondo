@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../shared/utils/cn';
-import { useIntersectionAnimation } from '../../../shared/design-system/animations';
+import { cn } from '@/shared/utils/cn';
+import { useIntersectionAnimation } from '@/shared/design-system/animations';
 
 export interface NeumorphicCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;

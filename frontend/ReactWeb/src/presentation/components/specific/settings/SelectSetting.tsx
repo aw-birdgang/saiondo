@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { SelectSettingProps } from '../../../pages/settings/types/settingsTypes';
+import { cn } from '@/utils/cn';
+import type { SelectSettingProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const SelectSetting: React.FC<SelectSettingProps> = ({
   title,

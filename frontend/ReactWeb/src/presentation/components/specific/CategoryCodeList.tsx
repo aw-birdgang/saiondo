@@ -1,5 +1,5 @@
 import React from 'react';
-import { EmptyState } from '../common';
+import { EmptyState } from '@/presentation/components/common';
 
 interface CategoryCode {
   id: string;

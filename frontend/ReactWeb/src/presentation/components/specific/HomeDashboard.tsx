@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../../shared/constants/app';
+import { ROUTES } from '@/shared/constants/app';
 import {
   InfoCard,
   Grid,
@@ -9,7 +9,7 @@ import {
   Heading,
   Caption,
   CenteredContainer,
-} from '../common';
+} from '@/presentation/components/common';
 import { AiAdviceCard, QuickActionsGrid, WelcomeMessage } from './';
 
 interface HomeStats {

@@ -1,12 +1,12 @@
-export { default as PerformanceMonitor } from './PerformanceMonitor';
-export { default as ErrorTracker } from './ErrorTracker';
+export { default as PerformanceMonitor } from '@/infrastructure/monitoring/PerformanceMonitor';
+export { default as ErrorTracker } from '@/infrastructure/monitoring/ErrorTracker';
 export {
   performanceMonitor,
   startPerformanceMeasurement,
   endPerformanceMeasurement,
   measurePerformance,
   measurePerformanceSync,
-} from './PerformanceMonitor';
+} from '@/infrastructure/monitoring/PerformanceMonitor';
 export {
   errorTracker,
   trackError,
@@ -14,6 +14,6 @@ export {
   trackInfo,
   trackAsyncError,
   trackSyncError,
-} from './ErrorTracker';
-export * from './PerformanceMonitor';
-export * from './ErrorTracker';
+} from '@/infrastructure/monitoring/ErrorTracker';
+export * from '@/infrastructure/monitoring/PerformanceMonitor';
+export * from '@/infrastructure/monitoring/ErrorTracker';

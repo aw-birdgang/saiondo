@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, PriceDisplay, FeatureList, PopularBadge } from '../../common';
+import { Button, PriceDisplay, FeatureList, PopularBadge } from '@/presentation/components/common';
 
 interface SubscriptionProduct {
   id: string;

@@ -1,9 +1,9 @@
-import { BaseMiddleware } from '../interfaces/IControllerMiddleware';
+import { BaseMiddleware } from '@/application/controllers/interfaces/IControllerMiddleware';
 import type {
   ControllerContext,
   ControllerResult,
-} from '../interfaces/IController';
-import { Logger } from '../../../shared/utils/Logger';
+} from '@/application/controllers/interfaces/IController';
+import { Logger } from '@/shared/utils/Logger';
 
 /**
  * 성능 모니터링 미들웨어

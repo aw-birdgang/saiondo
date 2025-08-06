@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, Button } from '../../common';
-import type { Profile } from '../../../../domain/dto/ProfileDto';
+import { Card, CardContent, Button } from '@/presentation/components/common';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 interface ProfileFollowingProps {
   following: Profile[];

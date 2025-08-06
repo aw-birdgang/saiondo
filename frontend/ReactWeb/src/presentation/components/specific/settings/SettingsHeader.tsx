@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { SettingsHeaderProps } from '../../../pages/settings/types/settingsTypes';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { SettingsHeaderProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const SettingsHeader: React.FC<SettingsHeaderProps> = ({
   onSave,

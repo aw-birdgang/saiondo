@@ -1,6 +1,6 @@
 import React from 'react';
-import { ProgressBar } from '../common';
-import type { PaymentStep } from '../../../domain/types/payment';
+import { ProgressBar } from '@/presentation/components/common';
+import type { PaymentStep } from '@/domain/types/payment';
 
 interface PaymentProgressProps {
   currentStep: PaymentStep['id'];

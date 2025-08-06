@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Badge } from '../common';
-import { cn } from '../../../utils/cn';
-import type { SearchResult } from '../../../domain/types/search';
+import { Badge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { SearchResult } from '@/domain/types/search';
 
 interface SearchResultItemProps {
   result: SearchResult;

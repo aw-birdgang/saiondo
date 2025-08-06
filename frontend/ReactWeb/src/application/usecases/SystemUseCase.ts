@@ -1,6 +1,6 @@
-import type { ApiClient } from '../../infrastructure/api/ApiClient';
-import type { CacheService } from '../../infrastructure/services/CacheService';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { ApiClient } from '@/infrastructure/api/ApiClient';
+import type { CacheService } from '@/infrastructure/services/CacheService';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 
 /**
  * SystemUseCase - 시스템 관련 모든 기능을 통합한 Use Case

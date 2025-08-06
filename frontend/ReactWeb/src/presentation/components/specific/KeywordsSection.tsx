@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeywordTag } from '../common';
+import { KeywordTag } from '@/presentation/components/common';
 
 interface KeywordsSectionProps {
   keywords: string[];

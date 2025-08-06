@@ -1,4 +1,4 @@
-import type { UserSettings } from '../types/settingsTypes';
+import type { UserSettings } from '@/presentation/pages/settings/types/settingsTypes';
 
 // Mock 사용자 설정 데이터
 export const MOCK_USER_SETTINGS: UserSettings = {

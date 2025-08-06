@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from '../common';
+import { Container } from '@/presentation/components/common';
 
 interface PageContainerProps {
   children: React.ReactNode;

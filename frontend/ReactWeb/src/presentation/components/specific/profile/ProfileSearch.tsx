@@ -7,9 +7,9 @@ import {
   CardTitle,
   Button,
   Input,
-} from '../../common';
-import { useProfileStore } from '../../../../stores/profileStore';
-import type { Profile } from '../../../../domain/dto/ProfileDto';
+} from '@/presentation/components/common';
+import { useProfileStore } from '@/stores/profileStore';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 interface ProfileSearchProps {
   onProfileSelect?: (profile: Profile) => void;

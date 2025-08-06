@@ -1,5 +1,5 @@
 import React from 'react';
-import { CategoryIcon, ExampleList, TipList } from '../common';
+import { CategoryIcon, ExampleList, TipList } from '@/presentation/components/common';
 
 interface Category {
   id: string;

@@ -1,7 +1,7 @@
-export { LazyLoader } from './LazyLoader';
-export { ConditionalLazyLoader } from './ConditionalLazyLoader';
-export { InfiniteScrollLoader } from './InfiniteScrollLoader';
-export { VirtualizedListLoader } from './VirtualizedListLoader';
-export { withLazyLoading } from './withLazyLoading';
-export { ErrorBoundary } from './ErrorBoundary';
-export { LoadingExamples } from './LoadingExamples';
+export { LazyLoader } from '@/presentation/components/loading/LazyLoader';
+export { ConditionalLazyLoader } from '@/presentation/components/loading/ConditionalLazyLoader';
+export { InfiniteScrollLoader } from '@/presentation/components/loading/InfiniteScrollLoader';
+export { VirtualizedListLoader } from '@/presentation/components/loading/VirtualizedListLoader';
+export { withLazyLoading } from '@/presentation/components/loading/withLazyLoading';
+export { ErrorBoundary } from '@/presentation/components/loading/ErrorBoundary';
+export { LoadingExamples } from '@/presentation/components/loading/LoadingExamples';

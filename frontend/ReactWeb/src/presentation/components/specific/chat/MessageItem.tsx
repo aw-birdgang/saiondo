@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button, StatusBadge } from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { Message } from '../../../pages/chat/types/chatTypes';
+import { Button, StatusBadge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { Message } from '@/presentation/pages/chat/types/chatTypes';
 
 interface MessageItemProps {
   message: Message;

@@ -1,4 +1,4 @@
-import type { Profile } from '../dto/ProfileDto';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 // Domain Entity with Business Logic
 export class ProfileEntity {

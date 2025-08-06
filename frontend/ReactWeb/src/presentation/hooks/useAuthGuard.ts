@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, useIsAuthenticated } from '../../stores/authStore';
-import { ROUTES } from '../../shared/constants/app';
+import { useAuthStore, useIsAuthenticated } from '@/stores/authStore';
+import { ROUTES } from '@/shared/constants/app';
 
 interface UseAuthGuardOptions {
   requireAuth?: boolean;

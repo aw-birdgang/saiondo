@@ -1,2 +1,2 @@
-export { default as LocalStorageCache } from './LocalStorageCache';
-export * from './LocalStorageCache';
+export { default as LocalStorageCache } from '@/infrastructure/cache/LocalStorageCache';
+export * from '@/infrastructure/cache/LocalStorageCache';

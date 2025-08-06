@@ -11,7 +11,7 @@ import type {
   RemoveMemberResponse,
   UpdateChannelRequest,
   UpdateChannelResponse,
-} from '../../dto/ChannelDto';
+} from '@/application/dto/ChannelDto';
 
 // Channel UseCase 인터페이스 - 애플리케이션 로직 조율
 export interface IChannelUseCase {

@@ -4,7 +4,7 @@ import type {
   Coupon,
   PaymentRequest,
   PaymentResponse,
-} from '../../../domain/types/payment';
+} from '@/domain/types/payment';
 
 // Payment Repository 인터페이스 - 데이터 접근만 담당
 export interface IPaymentRepository {

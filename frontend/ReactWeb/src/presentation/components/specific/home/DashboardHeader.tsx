@@ -1,7 +1,7 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import UserProfileSection from './UserProfileSection';
-import ActionButtons from './ActionButtons';
+import { cn } from '@/utils/cn';
+import UserProfileSection from '@/presentation/components/specific/home/UserProfileSection';
+import ActionButtons from '@/presentation/components/specific/home/ActionButtons';
 
 interface DashboardHeaderProps {
   className?: string;

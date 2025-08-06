@@ -1,7 +1,7 @@
-import type { IInviteRepository } from '../interfaces/IInviteRepository';
-import type { IInviteUseCase } from '../interfaces/IInviteUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { InviteUseCase } from '../InviteUseCase';
+import type { IInviteRepository } from '@/application/usecases/interfaces/IInviteRepository';
+import type { IInviteUseCase } from '@/application/usecases/interfaces/IInviteUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { InviteUseCase } from '@/application/usecases/InviteUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createInviteUseCase = (

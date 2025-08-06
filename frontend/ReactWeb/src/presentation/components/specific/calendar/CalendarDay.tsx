@@ -1,11 +1,11 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { cn } from '../../../../utils/cn';
-import { EVENT_TYPE_CONFIG } from '../../../pages/calendar/constants/calendarData';
+import { cn } from '@/utils/cn';
+import { EVENT_TYPE_CONFIG } from '@/presentation/pages/calendar/constants/calendarData';
 import type {
   CalendarDayProps,
   Event,
-} from '../../../pages/calendar/types/calendarTypes';
+} from '@/presentation/pages/calendar/types/calendarTypes';
 
 const CalendarDay: React.FC<CalendarDayProps> = ({
   date,

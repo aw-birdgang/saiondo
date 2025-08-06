@@ -1,9 +1,9 @@
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { MessageId } from '../../domain/value-objects/MessageId';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
-import type { Message } from '../../domain/types/message';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import { MessageId } from '@/domain/value-objects/MessageId';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
+import type { Message } from '@/domain/types/message';
 
 /**
  * MessageInfrastructureService - 메시지 관련 모든 기능을 통합한 Infrastructure Service

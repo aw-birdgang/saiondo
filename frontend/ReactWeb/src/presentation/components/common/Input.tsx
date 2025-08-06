@@ -1,7 +1,7 @@
 import React, { forwardRef, useState } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../shared/utils/cn';
-import { getAriaAttributes } from '../../../shared/design-system/accessibility';
+import { cn } from '@/shared/utils/cn';
+import { getAriaAttributes } from '@/shared/design-system/accessibility';
 
 const inputVariants = cva(
   'flex w-full rounded-lg border bg-surface text-txt placeholder:text-txt-secondary transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-txt placeholder:text-txt-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 group',

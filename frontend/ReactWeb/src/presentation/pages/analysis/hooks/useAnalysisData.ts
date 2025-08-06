@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { useDataLoader } from '../../../hooks/useDataLoader';
-import { useErrorHandler } from '../../../hooks/useErrorHandler';
+import { useDataLoader } from '@/presentation/hooks/useDataLoader';
+import { useErrorHandler } from '@/presentation/hooks/useErrorHandler';
 import {
   MOCK_ANALYSIS_DATA,
   NEW_ANALYSIS_DATA,
   ANALYSIS_CREATION_TIME,
   DATA_LOADING_TIME,
-} from '../constants/analysisData';
-import type { AnalysisState } from '../types/analysisTypes';
+} from '@/presentation/pages/analysis/constants/analysisData';
+import type { AnalysisState } from '@/presentation/pages/analysis/types/analysisTypes';
 
 export const useAnalysisData = () => {
   const params = useParams();

@@ -1,13 +1,13 @@
 import React from 'react';
-import { LoadingSpinner } from '../../components/common';
+import { LoadingSpinner } from '@/presentation/components/common';
 import {
   CalendarContainer,
   CalendarHeader,
   CalendarSidebar,
   MonthView,
   EventFormModal,
-} from '../../components/specific/calendar';
-import { useCalendarData } from './hooks/useCalendarData';
+} from '@/presentation/components/specific/calendar';
+import { useCalendarData } from '@/presentation/pages/calendar/hooks/useCalendarData';
 
 const CalendarPage: React.FC = () => {
   const {

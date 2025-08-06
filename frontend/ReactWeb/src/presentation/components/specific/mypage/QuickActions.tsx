@@ -1,10 +1,10 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { QuickActionsProps } from '../../../pages/mypage/types/mypageTypes';
+import { cn } from '@/utils/cn';
+import type { QuickActionsProps } from '@/presentation/pages/mypage/types/mypageTypes';
 
 // Import separated components
-import ActionCard from './components/ActionCard';
-import RecommendedAction from './components/RecommendedAction';
+import ActionCard from '@/presentation/components/specific/mypage/components/ActionCard';
+import RecommendedAction from '@/presentation/components/specific/mypage/components/RecommendedAction';
 
 const QuickActions: React.FC<QuickActionsProps> = ({
   actions,

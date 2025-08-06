@@ -1,4 +1,4 @@
-import type { SettingsOption } from '../components/SettingsCard';
+import type { SettingsOption } from '@/presentation/components/specific/mypage/components/SettingsCard';
 
 export const SETTINGS_OPTIONS: SettingsOption[] = [
   {

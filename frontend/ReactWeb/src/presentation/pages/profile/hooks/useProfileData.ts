@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
-import { useAuthStore, useIsAuthenticated } from '../../../../stores/authStore';
-import { useProfileStore } from '../../../../stores/profileStore';
-import type { Profile } from '../../../../domain/dto/ProfileDto';
+import { useAuthStore, useIsAuthenticated } from '@/stores/authStore';
+import { useProfileStore } from '@/stores/profileStore';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 type TabType = 'posts' | 'followers' | 'following';
 

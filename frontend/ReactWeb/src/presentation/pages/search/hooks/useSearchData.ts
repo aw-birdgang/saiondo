@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { searchService } from '../../../../infrastructure/api/services';
-import type { SearchResult } from '../../../../infrastructure/api/services/searchService';
+import { searchService } from '@/infrastructure/api/services';
+import type { SearchResult } from '@/infrastructure/api/services/searchService';
 
 export interface SearchState {
   query: string;

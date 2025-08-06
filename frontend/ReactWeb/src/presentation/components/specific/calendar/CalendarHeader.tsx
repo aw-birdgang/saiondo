@@ -1,13 +1,13 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Button } from '../../common';
-import { cn } from '../../../../utils/cn';
-import { VIEW_MODE_OPTIONS } from '../../../pages/calendar/constants/calendarData';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import { VIEW_MODE_OPTIONS } from '@/presentation/pages/calendar/constants/calendarData';
 import type {
   CalendarHeaderProps,
   ViewMode,
-} from '../../../pages/calendar/types/calendarTypes';
+} from '@/presentation/pages/calendar/types/calendarTypes';
 
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   currentDate,

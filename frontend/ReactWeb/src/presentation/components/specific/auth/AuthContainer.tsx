@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container } from '../../common';
-import { cn } from '../../../../utils/cn';
+import { Container } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface AuthContainerProps {
   children: React.ReactNode;

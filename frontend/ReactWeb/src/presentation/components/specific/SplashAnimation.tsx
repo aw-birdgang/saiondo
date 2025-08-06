@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useAnimation } from '../../hooks/useAnimation';
-import { useTimeout } from '../../hooks/useTimeout';
+import { useAnimation } from '@/presentation/hooks/useAnimation';
+import { useTimeout } from '@/presentation/hooks/useTimeout';
 import {
   LogoAnimation,
   LoadingDots,
   SplashProgressBar,
   SplashTagline,
-} from '../common';
+} from '@/presentation/components/common';
 
 interface SplashAnimationProps {
   appName: string;

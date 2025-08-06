@@ -1,10 +1,10 @@
-import { ApiClient } from '../ApiClient';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
 import type {
   Message,
   MessageRequest,
   MessageUpdateRequest,
   ReactionRequest,
-} from '../../../domain/types';
+} from '@/domain/types';
 
 const apiClient = new ApiClient();
 

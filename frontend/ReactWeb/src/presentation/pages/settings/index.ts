@@ -1,1 +1,1 @@
-export { default } from './SettingsPage';
+export { default } from '@/presentation/pages/settings/SettingsPage';

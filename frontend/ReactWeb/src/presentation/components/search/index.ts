@@ -1,7 +1,7 @@
-export { SearchHeader } from './SearchHeader';
-export { SearchFilters } from './SearchFilters';
-export { SearchResults } from './SearchResults';
-export { SearchResultItem } from './SearchResultItem';
-export { SearchSuggestions } from './SearchSuggestions';
-export { SearchContainer } from './SearchContainer';
-export { SearchInput } from './SearchInput';
+export { SearchHeader } from '@/presentation/components/search/SearchHeader';
+export { SearchFilters } from '@/presentation/components/search/SearchFilters';
+export { SearchResults } from '@/presentation/components/search/SearchResults';
+export { SearchResultItem } from '@/presentation/components/search/SearchResultItem';
+export { SearchSuggestions } from '@/presentation/components/search/SearchSuggestions';
+export { SearchContainer } from '@/presentation/components/search/SearchContainer';
+export { SearchInput } from '@/presentation/components/search/SearchInput';

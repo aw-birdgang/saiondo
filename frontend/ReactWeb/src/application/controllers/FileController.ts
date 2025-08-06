@@ -1,5 +1,5 @@
-import { BaseController } from './BaseController';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
+import { BaseController } from '@/application/controllers/BaseController';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
 
 /**
  * 파일 업로드 데이터 인터페이스

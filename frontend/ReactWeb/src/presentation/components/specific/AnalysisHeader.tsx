@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../common';
-import { cn } from '../../../utils/cn';
-import { ROUTES } from '../../../shared/constants/app';
-import type { AnalysisHeaderProps } from '../../pages/analysis/types/analysisTypes';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import { ROUTES } from '@/shared/constants/app';
+import type { AnalysisHeaderProps } from '@/presentation/pages/analysis/types/analysisTypes';
 
 const AnalysisHeader: React.FC<AnalysisHeaderProps> = ({
   onCreateAnalysis,

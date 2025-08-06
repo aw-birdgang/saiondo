@@ -2,10 +2,10 @@ import React from 'react';
 import {
   RecentActivities,
   QuickActions,
-} from '../../../components/specific/mypage';
-import SectionBlock from '../SectionBlock';
-import ContentGrid from '../ContentGrid';
-import IconWrapper from '../IconWrapper';
+} from '@/presentation/components/specific/mypage';
+import SectionBlock from '@/presentation/pages/mypage/SectionBlock';
+import ContentGrid from '@/presentation/pages/mypage/ContentGrid';
+import IconWrapper from '@/presentation/pages/mypage/IconWrapper';
 
 interface ActivitiesGridWrapperProps {
   recentActivities: any[];

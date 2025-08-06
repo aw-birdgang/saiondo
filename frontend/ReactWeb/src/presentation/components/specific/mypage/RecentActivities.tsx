@@ -1,11 +1,11 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { RecentActivitiesProps } from '../../../pages/mypage/types/mypageTypes';
+import { cn } from '@/utils/cn';
+import type { RecentActivitiesProps } from '@/presentation/pages/mypage/types/mypageTypes';
 
 // Import separated components
-import ActivityItem from './components/ActivityItem';
-import EmptyActivities from './components/EmptyActivities';
-import ActivitiesSummary from './components/ActivitiesSummary';
+import ActivityItem from '@/presentation/components/specific/mypage/components/ActivityItem';
+import EmptyActivities from '@/presentation/components/specific/mypage/components/EmptyActivities';
+import ActivitiesSummary from '@/presentation/components/specific/mypage/components/ActivitiesSummary';
 
 const RecentActivities: React.FC<RecentActivitiesProps> = ({
   activities,

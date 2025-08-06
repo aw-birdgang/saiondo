@@ -1,10 +1,10 @@
-import { apiClient } from '../ApiClient';
-import { ENDPOINTS } from '../endpoints';
+import { apiClient } from '@/infrastructure/api/ApiClient';
+import { ENDPOINTS } from '@/infrastructure/api/endpoints';
 import type {
   Channel,
   Channels,
   ChannelInvitation,
-} from '../../../domain/types';
+} from '@/domain/types';
 
 export class ChannelService {
   async fetchAllChannels(): Promise<Channel[]> {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { usePayment } from '../../../infrastructure/payment/PaymentService';
+import { usePayment } from '@/infrastructure/payment/PaymentService';
 import type {
   PaymentItem,
   PaymentRequest,
-} from '../../../infrastructure/payment/PaymentService';
-import { useAuthStore } from '../../../stores/authStore';
+} from '@/infrastructure/payment/PaymentService';
+import { useAuthStore } from '@/stores/authStore';
 import { toast } from 'react-hot-toast';
 
 interface PaymentModalProps {

@@ -6,7 +6,7 @@ import type {
   InvitationResponseResponse,
   InviteValidationError,
   InviteStats,
-} from '../../../domain/types/invite';
+} from '@/domain/types/invite';
 
 // Service 인터페이스 - 비즈니스 로직 담당
 export interface IInviteService {

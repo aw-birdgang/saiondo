@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useMemo } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { ErrorBoundary } from '../components/loading';
-import { PageLoader, ErrorFallback } from '../components/common';
+import { ErrorBoundary } from '@/presentation/components/loading';
+import { PageLoader, ErrorFallback } from '@/presentation/components/common';
 
 // Extended LazyComponent type with preload capability
 interface LazyComponentWithPreload extends React.LazyExoticComponent<any> {

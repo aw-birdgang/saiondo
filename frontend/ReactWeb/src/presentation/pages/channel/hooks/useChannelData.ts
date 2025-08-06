@@ -1,13 +1,13 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDataLoader } from '../../../hooks/useDataLoader';
-import { ROUTES } from '../../../../shared/constants/app';
+import { useDataLoader } from '@/presentation/hooks/useDataLoader';
+import { ROUTES } from '@/shared/constants/app';
 import {
   MOCK_CHANNELS,
   calculateChannelStats,
   INITIAL_CHANNEL_STATS,
-} from '../constants/channelData';
-import type { ChannelPageState } from '../types/channelTypes';
+} from '@/presentation/pages/channel/constants/channelData';
+import type { ChannelPageState } from '@/presentation/pages/channel/types/channelTypes';
 
 export const useChannelData = () => {
   const navigate = useNavigate();

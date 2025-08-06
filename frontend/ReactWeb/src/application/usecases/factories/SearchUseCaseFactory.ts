@@ -1,8 +1,8 @@
-import type { ISearchRepository } from '../interfaces/ISearchRepository';
-import type { ISearchUseCase } from '../interfaces/ISearchUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { SearchService } from '../services/SearchService';
-import { SearchUseCase } from '../SearchUseCase';
+import type { ISearchRepository } from '@/application/usecases/interfaces/ISearchRepository';
+import type { ISearchUseCase } from '@/application/usecases/interfaces/ISearchUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { SearchService } from '@/application/usecases/services/SearchService';
+import { SearchUseCase } from '@/application/usecases/SearchUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createSearchUseCase = (

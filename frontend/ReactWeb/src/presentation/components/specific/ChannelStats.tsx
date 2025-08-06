@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChannelStatItem, Grid, Stack } from '../common';
-import type { ChannelStatsProps } from '../../pages/channel/types/channelTypes';
+import { ChannelStatItem, Grid, Stack } from '@/presentation/components/common';
+import type { ChannelStatsProps } from '@/presentation/pages/channel/types/channelTypes';
 
 const ChannelStats: React.FC<ChannelStatsProps> = ({
   stats,

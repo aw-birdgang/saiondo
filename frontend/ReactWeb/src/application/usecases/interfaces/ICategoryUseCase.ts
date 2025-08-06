@@ -4,7 +4,7 @@ import type {
   CategoryStats,
   CategoryUsageGuide,
   CategoryFilter,
-} from '../../../domain/types/category';
+} from '@/domain/types/category';
 
 // Category UseCase 인터페이스 - 애플리케이션 로직 조율
 export interface ICategoryUseCase {

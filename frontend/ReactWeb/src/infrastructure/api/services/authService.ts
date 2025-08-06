@@ -1,11 +1,11 @@
-import { apiClient } from '../ApiClient';
-import { ENDPOINTS } from '../endpoints';
+import { apiClient } from '@/infrastructure/api/ApiClient';
+import { ENDPOINTS } from '@/infrastructure/api/endpoints';
 import type {
   LoginRequest,
   RegisterRequest,
   AuthResponse,
   ApiResponse,
-} from '../../../domain/types';
+} from '@/domain/types';
 
 export class AuthService {
   async login(credentials: LoginRequest): Promise<AuthResponse> {

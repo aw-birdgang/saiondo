@@ -1,5 +1,5 @@
-import type { User } from '../types/user';
-import { UserStatus } from '../types/UserStatus';
+import type { User } from '@/domain/types/user';
+import { UserStatus } from '@/domain/types/UserStatus';
 
 // Domain Entity with Business Logic
 export class UserEntity {

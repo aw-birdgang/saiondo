@@ -1,5 +1,5 @@
 import React from 'react';
-import { useFormInitialization } from '../../hooks/useFormInitialization';
+import { useFormInitialization } from '@/presentation/hooks/useFormInitialization';
 
 interface Event {
   id?: string;

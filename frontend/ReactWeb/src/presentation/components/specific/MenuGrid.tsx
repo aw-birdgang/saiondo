@@ -1,5 +1,5 @@
 import React from 'react';
-import MenuCard from './MenuCard';
+import MenuCard from '@/presentation/components/specific/MenuCard';
 
 interface MenuItem {
   id: string;

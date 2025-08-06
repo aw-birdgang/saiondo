@@ -4,7 +4,7 @@ import type {
   CategoryStats,
   CategoryUsageGuide,
   CategoryFilter,
-} from '../../../domain/types/category';
+} from '@/domain/types/category';
 
 // Category Service 인터페이스 - 비즈니스 로직 담당
 export interface ICategoryService {

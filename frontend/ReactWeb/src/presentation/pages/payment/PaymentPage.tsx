@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../di/container';
-import { DI_TOKENS } from '../../../di/tokens';
-import { usePayment } from '../../hooks/usePayment';
-import { useDataLoader } from '../../hooks/useDataLoader';
-import { useToastContext } from '../../providers/ToastProvider';
+import { getContainer } from '@/di/container';
+import { DI_TOKENS } from '@/di/tokens';
+import { usePayment } from '@/presentation/hooks/usePayment';
+import { useDataLoader } from '@/presentation/hooks/useDataLoader';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 import {
   ProductSelectionStep,
   PaymentMethodStep,
@@ -12,9 +12,9 @@ import {
   ProcessingStep,
   CompleteStep,
   PaymentProgress,
-} from '../../components/payment';
-import type { PaymentUseCase } from '../../../application/usecases/PaymentUseCase';
-import type { PaymentStep } from '../../../domain/types/payment';
+} from '@/presentation/components/payment';
+import type { PaymentUseCase } from '@/application/usecases/PaymentUseCase';
+import type { PaymentStep } from '@/domain/types/payment';
 
 const PAYMENT_STEPS: PaymentStep[] = [
   {

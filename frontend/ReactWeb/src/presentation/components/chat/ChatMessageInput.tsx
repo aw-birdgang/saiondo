@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useMessageController } from '../../providers/ControllerProvider';
-import { Button } from '../common';
-import { useToastContext } from '../../providers/ToastProvider';
-import { cn } from '../../../utils/cn';
+import { useMessageController } from '@/presentation/providers/ControllerProvider';
+import { Button } from '@/presentation/components/common';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { cn } from '@/utils/cn';
 
 interface ChatMessageInputProps {
   channelId: string;

@@ -1,4 +1,4 @@
-import type { ICache } from '../interfaces/ICache';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
 
 // 메모리 캐시 구현
 export class MemoryCache implements ICache {

@@ -1,4 +1,4 @@
-import type { Event, EventTypeConfig } from '../types/calendarTypes';
+import type { Event, EventTypeConfig } from '@/presentation/pages/calendar/types/calendarTypes';
 
 // 이벤트 타입별 설정
 export const EVENT_TYPE_CONFIG: EventTypeConfig = {

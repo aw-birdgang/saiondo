@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore, useIsAuthenticated } from '../../../stores/authStore';
-import { useUserStore } from '../../../stores/userStore';
-import { ROUTES } from '../../../shared/constants/app';
-import { useTimeout } from '../../hooks/useTimeout';
-import { SplashAnimation } from '../../components/specific';
+import { useAuthStore, useIsAuthenticated } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore';
+import { ROUTES } from '@/shared/constants/app';
+import { useTimeout } from '@/presentation/hooks/useTimeout';
+import { SplashAnimation } from '@/presentation/components/specific';
 
 const SplashPage: React.FC = () => {
   const navigate = useNavigate();

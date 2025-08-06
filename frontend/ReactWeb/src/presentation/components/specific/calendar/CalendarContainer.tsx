@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { CalendarContainerProps } from '../../../pages/calendar/types/calendarTypes';
+import { cn } from '@/utils/cn';
+import type { CalendarContainerProps } from '@/presentation/pages/calendar/types/calendarTypes';
 
 const CalendarContainer: React.FC<CalendarContainerProps> = ({
   children,

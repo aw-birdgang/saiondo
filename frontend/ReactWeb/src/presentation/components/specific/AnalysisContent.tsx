@@ -7,12 +7,12 @@ import {
   AnalysisSection,
   PersonasSection,
   AnalysisChart,
-} from './';
+} from '@/presentation';
 import {
   COMPATIBILITY_CHART_DATA,
   MBTI_COMPATIBILITY_DATA,
-} from '../../pages/analysis/constants/analysisData';
-import type { AnalysisContentProps } from '../../pages/analysis/types/analysisTypes';
+} from '@/presentation/pages/analysis/constants/analysisData';
+import type { AnalysisContentProps } from '@/presentation/pages/analysis/types/analysisTypes';
 
 const AnalysisContent: React.FC<AnalysisContentProps> = ({
   data,

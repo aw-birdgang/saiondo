@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuthStore } from '../../stores/authStore';
-import { messageService } from '../../infrastructure/api/services';
+import { useAuthStore } from '@/stores/authStore';
+import { messageService } from '@/infrastructure/api/services';
 import { toast } from 'react-hot-toast';
-import type { Message } from '../../domain/types';
+import type { Message } from '@/domain/types';
 
 export const useMessages = (channelId: string) => {
   const { token } = useAuthStore();

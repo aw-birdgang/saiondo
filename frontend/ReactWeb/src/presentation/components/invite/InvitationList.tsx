@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { LoadingSpinner } from '../common';
-import { InvitationCard } from './InvitationCard';
-import type { ChannelInvitationItem } from '../../../domain/types/invite';
+import { LoadingSpinner } from '@/presentation/components/common';
+import { InvitationCard } from '@/presentation/components/invite/InvitationCard';
+import type { ChannelInvitationItem } from '@/domain/types/invite';
 
 interface InvitationListProps {
   invitations: ChannelInvitationItem[];

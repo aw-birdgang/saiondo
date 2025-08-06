@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Header } from '../common';
+import { Header } from '@/presentation/components/common';
 
 interface ChatHeaderProps {
   channelId: string;

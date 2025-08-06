@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
-import { getContainer } from '../../../di/container';
-import { DI_TOKENS } from '../../../di/tokens';
-import { useCategory } from '../../hooks/useCategory';
-import { useToastContext } from '../../providers/ToastProvider';
-import { LoadingSpinner } from '../../components/common';
+import { getContainer } from '@/di/container';
+import { DI_TOKENS } from '@/di/tokens';
+import { useCategory } from '@/presentation/hooks/useCategory';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { LoadingSpinner } from '@/presentation/components/common';
 import {
   CategoryCodeGrid,
   CategoryCodeModal,
   CategoryCodeHeader,
   CategoryCodeSearch,
-} from '../../components/category';
-import type { CategoryUseCase } from '../../../application/usecases/CategoryUseCase';
+} from '@/presentation/components/category';
+import type { CategoryUseCase } from '@/application/usecases/CategoryUseCase';
 
 const CategoryCodeGuidePage: React.FC = () => {
   // const { t } = useTranslation();

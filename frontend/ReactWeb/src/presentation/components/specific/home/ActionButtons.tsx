@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TouchFriendlyButton } from '../../common';
+import { TouchFriendlyButton } from '@/presentation/components/common';
 import {
   SettingsIcon,
-} from './IconComponents';
+} from '@/presentation/components/specific/home/IconComponents';
 
 interface ActionButtonsProps {
   className?: string;

@@ -1,18 +1,18 @@
-export { authService } from './authService';
-export { userService } from './userService';
-export { channelService } from './channelService';
-export { messageService } from './messageService';
-export { settingsService } from './settingsService';
-export { notificationService } from './notificationService';
-export { searchService } from './searchService';
-export { aiChatService } from './aiChatService';
+export { authService } from '@/infrastructure/api/services/authService';
+export { userService } from '@/infrastructure/api/services/userService';
+export { channelService } from '@/infrastructure/api/services/channelService';
+export { messageService } from '@/infrastructure/api/services/messageService';
+export { settingsService } from '@/infrastructure/api/services/settingsService';
+export { notificationService } from '@/infrastructure/api/services/notificationService';
+export { searchService } from '@/infrastructure/api/services/searchService';
+export { aiChatService } from '@/infrastructure/api/services/aiChatService';
 
 // 타입들도 함께 export
-export type { Notification, NotificationRequest } from './notificationService';
-export type { SearchResult, SearchRequest } from './searchService';
+export type { Notification, NotificationRequest } from '@/infrastructure/api/services/notificationService';
+export type { SearchResult, SearchRequest } from '@/infrastructure/api/services/searchService';
 export type {
   AIChatMessage,
   AIChatRequest,
   AIChatResponse,
   AIConversation,
-} from './aiChatService';
+} from '@/infrastructure/api/services/aiChatService';

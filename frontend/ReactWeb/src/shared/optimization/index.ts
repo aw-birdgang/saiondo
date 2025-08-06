@@ -1,8 +1,8 @@
-export { default as BundleAnalyzer } from './BundleAnalyzer';
+export { default as BundleAnalyzer } from '@/shared/optimization/BundleAnalyzer';
 export {
   bundleAnalyzer,
   analyzeBundle,
   formatSize,
   suggestCodeSplitting,
-} from './BundleAnalyzer';
-export * from './BundleAnalyzer';
+} from '@/shared/optimization/BundleAnalyzer';
+export * from '@/shared/optimization/BundleAnalyzer';

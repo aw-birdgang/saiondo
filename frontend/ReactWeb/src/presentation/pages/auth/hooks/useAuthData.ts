@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../hooks/useAuth';
-import { useErrorHandler } from '../../../hooks/useErrorHandler';
-import { ROUTES } from '../../../../shared/constants/app';
-import type { LoginFormData, RegisterFormData } from '../types/authTypes';
+import { useAuth } from '@/presentation/hooks/useAuth';
+import { useErrorHandler } from '@/presentation/hooks/useErrorHandler';
+import { ROUTES } from '@/shared/constants/app';
+import type { LoginFormData, RegisterFormData } from '@/presentation/pages/auth/types/authTypes';
 
 export const useAuthData = () => {
   const navigate = useNavigate();

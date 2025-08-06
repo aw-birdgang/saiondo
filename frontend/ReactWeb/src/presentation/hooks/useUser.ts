@@ -1,5 +1,5 @@
-import { useUserStore } from '../../stores/userStore';
-import { useUser as useUserContext } from '../../contexts/UserContext';
+import { useUserStore } from '@/stores/userStore';
+import { useUser as useUserContext } from '@/contexts/UserContext';
 
 export const useUser = () => {
   const userStore = useUserStore();

@@ -1,6 +1,6 @@
 import React from 'react';
-import type { ChannelListProps } from '../../pages/channel/types/channelTypes';
-import { ChannelCard, EmptyChannelState } from './channel';
+import type { ChannelListProps } from '@/presentation/pages/channel/types/channelTypes';
+import { ChannelCard, EmptyChannelState } from '@/presentation/components/specific/channel';
 
 const ChannelList: React.FC<ChannelListProps> = ({
   channels,

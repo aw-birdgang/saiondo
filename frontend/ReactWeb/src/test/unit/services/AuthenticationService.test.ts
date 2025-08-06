@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AuthenticationService } from '../../../application/services/AuthenticationService';
-import { AuthenticateUserUseCase } from '../../../application/usecases/AuthenticateUserUseCase';
-import { RegisterUserUseCase } from '../../../application/usecases/RegisterUserUseCase';
-import { LogoutUserUseCase } from '../../../application/usecases/LogoutUserUseCase';
-import { GetCurrentUserUseCase } from '../../../application/usecases/GetCurrentUserUseCase';
+import { AuthenticationService } from '@/application/services/AuthenticationService';
+import { AuthenticateUserUseCase } from '@/application/usecases/AuthenticateUserUseCase';
+import { RegisterUserUseCase } from '@/application/usecases/RegisterUserUseCase';
+import { LogoutUserUseCase } from '@/application/usecases/LogoutUserUseCase';
+import { GetCurrentUserUseCase } from '@/application/usecases/GetCurrentUserUseCase';
 
 // Mock Use Cases
 const mockAuthenticateUserUseCase = {

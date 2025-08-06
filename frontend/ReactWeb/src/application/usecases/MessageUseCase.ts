@@ -1,5 +1,5 @@
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   CreateMessageRequest,
   CreateMessageResponse,
@@ -13,7 +13,7 @@ import type {
   DeleteMessageResponse,
   SearchMessagesRequest,
   SearchMessagesResponse,
-} from '../dto/MessageDto';
+} from '@/application/dto/MessageDto';
 
 /**
  * MessageUseCase - 메시지 관련 모든 기능을 통합한 Use Case

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ROUTES } from '../../../shared/constants/app';
-import { useAuthStore } from '../../../stores/authStore';
+import { ROUTES } from '@/shared/constants/app';
+import { useAuthStore } from '@/stores/authStore';
 import { Button } from './';
 
 interface MainNavigationProps {

@@ -1,6 +1,6 @@
 import React from 'react';
-import SettingsCard from './SettingsCard';
-import type { SettingsOption } from './SettingsCard';
+import SettingsCard from '@/presentation/components/specific/mypage/components/SettingsCard';
+import type { SettingsOption } from '@/presentation/components/specific/mypage/components/SettingsCard';
 
 interface SettingsGridProps {
   options: SettingsOption[];

@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AuthGuard } from '../../components/specific';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { AuthGuard } from '@/presentation/components/specific';
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
   Button,
   Input,
   Badge,
@@ -15,9 +11,9 @@ import {
   NeumorphicCard,
   FloatingActionButton,
   Avatar
-} from '../../components/common';
-import { useIntersectionAnimation, useStaggerAnimation } from '../../../shared/design-system/animations';
-import { useTheme } from '../../../shared/design-system/hooks';
+} from '@/presentation/components/common';
+import { useIntersectionAnimation, useStaggerAnimation } from '@/shared/design-system/animations';
+import { useTheme } from '@/shared/design-system/hooks';
 
 interface Channel {
   id: string;
@@ -149,7 +145,7 @@ const ModernChannelPage: React.FC = () => {
   const filteredChannels = channels.filter(channel => {
     const matchesSearch = channel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          channel.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || 
+    const matchesCategory = selectedCategory === 'all' ||
                            (selectedCategory === 'private' && channel.isPrivate) ||
                            (selectedCategory === 'public' && !channel.isPrivate);
     return matchesSearch && matchesCategory;
@@ -198,7 +194,7 @@ const ModernChannelPage: React.FC = () => {
                   팀과 함께 소통하고 협업하세요
                 </p>
               </div>
-              
+
               <div className="flex items-center space-x-3">
                 <Button
                   variant="ghost"
@@ -273,7 +269,7 @@ const ModernChannelPage: React.FC = () => {
               variant="modern"
               className="max-w-md"
             />
-            
+
             <div className="flex space-x-2">
               {categories.map(category => (
                 <Button
@@ -324,7 +320,7 @@ const ModernChannelPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     {channel.lastMessage && (
                       <div className="text-right">
@@ -388,4 +384,4 @@ const ModernChannelPage: React.FC = () => {
   );
 };
 
-export default ModernChannelPage; 
+export default ModernChannelPage;

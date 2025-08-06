@@ -1,4 +1,4 @@
-import type { Message } from '../types/message';
+import type { Message } from '@/domain/types/message';
 
 export interface IMessageRepository {
   // ==================== 기본 CRUD 작업 ====================

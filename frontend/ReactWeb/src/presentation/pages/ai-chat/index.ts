@@ -1,1 +1,1 @@
-export { default } from './AIChatPage';
+export { default } from '@/presentation/pages/ai-chat/AIChatPage';

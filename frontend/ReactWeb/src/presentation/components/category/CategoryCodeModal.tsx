@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Button } from '../common';
-import type { CategoryCode } from '../../../domain/types/category';
-import { cn } from '../../../utils/cn';
+import { Modal, Button } from '@/presentation/components/common';
+import type { CategoryCode } from '@/domain/types/category';
+import { cn } from '@/utils/cn';
 
 interface CategoryCodeModalProps {
   code: CategoryCode | null;

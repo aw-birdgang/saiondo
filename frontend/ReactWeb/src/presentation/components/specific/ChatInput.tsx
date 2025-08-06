@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../common';
+import { Button } from '@/presentation/components/common';
 import { toast } from 'react-hot-toast';
 
 interface ChatInputProps {

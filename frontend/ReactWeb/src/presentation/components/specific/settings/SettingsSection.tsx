@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { SettingsSectionProps } from '../../../pages/settings/types/settingsTypes';
+import { cn } from '@/utils/cn';
+import type { SettingsSectionProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const SettingsSection: React.FC<SettingsSectionProps> = ({
   title,

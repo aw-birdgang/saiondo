@@ -1,5 +1,5 @@
-import type { Channel } from '../dto/ChannelDto';
-import { ChannelType } from '../types/ChannelType';
+import type { Channel } from '@/domain/dto/ChannelDto';
+import { ChannelType } from '@/domain/types/ChannelType';
 
 export class ChannelEntity {
   private constructor(

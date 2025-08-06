@@ -1,14 +1,14 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import { ChannelId } from '../../domain/value-objects/ChannelId';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import { ChannelId } from '@/domain/value-objects/ChannelId';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   Channel,
   ChannelMember,
   ChannelInvitation,
   ChannelStats,
-} from '../../domain/types/channel';
+} from '@/domain/types/channel';
 
 /**
  * ChannelInfrastructureService - 채널 관련 모든 기능을 통합한 Infrastructure Service

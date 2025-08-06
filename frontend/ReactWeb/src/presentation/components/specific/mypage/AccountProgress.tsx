@@ -6,15 +6,15 @@ import {
   CardHeader,
   CardTitle,
   ProgressBar,
-} from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { AccountProgressProps } from '../../../pages/mypage/types/mypageTypes';
+} from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { AccountProgressProps } from '@/presentation/pages/mypage/types/mypageTypes';
 
 // Import separated components
-import ProgressCircle from './components/ProgressCircle';
-import ProgressItem from './components/ProgressItem';
-import ProgressCompletionMessage from './components/ProgressCompletionMessage';
-import { getProgressColor } from './utils/progressUtils';
+import ProgressCircle from '@/presentation/components/specific/mypage/components/ProgressCircle';
+import ProgressItem from '@/presentation/components/specific/mypage/components/ProgressItem';
+import ProgressCompletionMessage from '@/presentation/components/specific/mypage/components/ProgressCompletionMessage';
+import { getProgressColor } from '@/presentation/components/specific/mypage/utils/progressUtils';
 
 const AccountProgress: React.FC<AccountProgressProps> = ({
   progress,

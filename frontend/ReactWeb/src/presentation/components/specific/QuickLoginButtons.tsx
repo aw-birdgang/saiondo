@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '../common';
-import { cn } from '../../../utils/cn';
-import { QUICK_LOGIN_ACCOUNTS } from '../../pages/auth/constants/authData';
-import type { QuickLoginButtonsProps } from '../../pages/auth/types/authTypes';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import { QUICK_LOGIN_ACCOUNTS } from '@/presentation/pages/auth/constants/authData';
+import type { QuickLoginButtonsProps } from '@/presentation/pages/auth/types/authTypes';
 
 const QuickLoginButtons: React.FC<QuickLoginButtonsProps> = ({
   onQuickLogin,

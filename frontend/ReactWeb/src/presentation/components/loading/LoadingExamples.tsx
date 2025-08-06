@@ -6,7 +6,7 @@ import {
   VirtualizedListLoader,
   ErrorBoundary,
   withLazyLoading,
-} from './index';
+} from '@/presentation/components/loading/index';
 
 // 예시용 무거운 컴포넌트
 const HeavyComponent = () => (

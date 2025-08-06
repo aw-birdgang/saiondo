@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '../../common';
-import type { Event } from '../../../pages/calendar/types/calendarTypes';
+import { Modal } from '@/presentation/components/common';
+import type { Event } from '@/presentation/pages/calendar/types/calendarTypes';
 
 interface EventFormModalProps {
   isOpen: boolean;

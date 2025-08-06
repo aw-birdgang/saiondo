@@ -1,4 +1,4 @@
-import type { Assistant, AssistantCategory } from '../types/assistantTypes';
+import type { Assistant, AssistantCategory } from '@/presentation/pages/assistant/types/assistantTypes';
 
 // Mock 어시스턴트 데이터
 export const MOCK_ASSISTANTS: Assistant[] = [

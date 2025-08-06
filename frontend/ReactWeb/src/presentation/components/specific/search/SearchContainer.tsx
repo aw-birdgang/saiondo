@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { SearchContainerProps } from '../../../pages/search/types/searchTypes';
+import { cn } from '@/utils/cn';
+import type { SearchContainerProps } from '@/presentation/pages/search/types/searchTypes';
 
 const SearchContainer: React.FC<SearchContainerProps> = ({
   children,

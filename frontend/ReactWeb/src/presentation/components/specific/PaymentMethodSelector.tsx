@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PaymentMethodCard, EmptyState } from '../common';
+import { PaymentMethodCard, EmptyState } from '@/presentation/components/common';
 
 interface PaymentMethod {
   id: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import InvitationCard from './InvitationCard';
+import InvitationCard from '@/presentation/components/specific/InvitationCard';
 
 interface ChannelInvitation {
   id: string;

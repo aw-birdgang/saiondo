@@ -1,7 +1,7 @@
 import React from 'react';
-import { ActivityStats } from '../../../components/specific/mypage';
-import SectionBlock from '../SectionBlock';
-import IconWrapper from '../IconWrapper';
+import { ActivityStats } from '@/presentation/components/specific/mypage';
+import SectionBlock from '@/presentation/pages/mypage/SectionBlock';
+import IconWrapper from '@/presentation/pages/mypage/IconWrapper';
 
 interface StatsSectionWrapperProps {
   stats: any[];

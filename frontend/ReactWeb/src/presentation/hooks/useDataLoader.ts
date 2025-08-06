@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { usePerformanceMonitor } from './usePerformanceMonitor';
+import { usePerformanceMonitor } from '@/presentation/hooks/usePerformanceMonitor';
 
 interface DataLoaderState<T> {
   data: T | null;

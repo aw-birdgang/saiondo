@@ -1,13 +1,13 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Card, CardHeader, CardTitle, CardContent } from '../../common';
-import { cn } from '../../../../utils/cn';
-import EventItem from './EventItem';
+import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import EventItem from '@/presentation/components/specific/calendar/EventItem';
 import type {
   CalendarSidebarProps,
   Event,
-} from '../../../pages/calendar/types/calendarTypes';
+} from '@/presentation/pages/calendar/types/calendarTypes';
 
 const CalendarSidebar: React.FC<CalendarSidebarProps> = ({
   events,

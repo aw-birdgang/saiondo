@@ -5,7 +5,7 @@ export type {
   UpdateChannelRequest,
   ChannelResponse,
   ChannelListResponse,
-} from './ChannelDto';
+} from '@/domain/dto/ChannelDto';
 
 // Message DTOs
 export type {
@@ -16,7 +16,7 @@ export type {
   MessageListResponse,
   MessageMetadata,
   MessageReaction,
-} from './MessageDto';
+} from '@/domain/dto/MessageDto';
 
 // User DTOs
 export type {
@@ -28,4 +28,4 @@ export type {
   UpdateUserRequest,
   UserResponse,
   UserListResponse,
-} from './UserDto';
+} from '@/domain/dto/UserDto';

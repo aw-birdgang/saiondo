@@ -4,10 +4,10 @@ import {
   AuthLayout,
   QuickLoginButtons,
   AuthGuard,
-} from '../../components/specific';
-import { AuthContainer } from '../../components/specific/auth';
-import { useAuthData } from './hooks/useAuthData';
-import { ROUTES } from '../../../shared/constants/app';
+} from '@/presentation/components/specific';
+import { AuthContainer } from '@/presentation/components/specific/auth';
+import { useAuthData } from '@/presentation/pages/auth/hooks/useAuthData';
+import { ROUTES } from '@/shared/constants/app';
 
 const LoginPage: React.FC = () => {
   const {

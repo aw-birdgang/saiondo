@@ -1,5 +1,5 @@
 import React from 'react';
-import CategoryCodeCard from './CategoryCodeCard';
+import CategoryCodeCard from '@/presentation/components/specific/CategoryCodeCard';
 
 interface CategoryCode {
   id: string;

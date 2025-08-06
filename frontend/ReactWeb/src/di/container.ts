@@ -1,54 +1,54 @@
-import { ApiClient } from '../infrastructure/api/ApiClient';
-import { WebSocketClient } from '../infrastructure/websocket/WebSocketClient';
-import { UserRepositoryImpl } from '../infrastructure/repositories/UserRepositoryImpl';
-import { ChannelRepositoryImpl } from '../infrastructure/repositories/ChannelRepositoryImpl';
-import { MessageRepositoryImpl } from '../infrastructure/repositories/MessageRepositoryImpl';
-import { ProfileRepositoryImpl } from '../infrastructure/repositories/ProfileRepositoryImpl';
-import { SystemRepository } from '../infrastructure/repositories/SystemRepository';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import { WebSocketClient } from '@/infrastructure/websocket/WebSocketClient';
+import { UserRepositoryImpl } from '@/infrastructure/repositories/UserRepositoryImpl';
+import { ChannelRepositoryImpl } from '@/infrastructure/repositories/ChannelRepositoryImpl';
+import { MessageRepositoryImpl } from '@/infrastructure/repositories/MessageRepositoryImpl';
+import { ProfileRepositoryImpl } from '@/infrastructure/repositories/ProfileRepositoryImpl';
+import { SystemRepository } from '@/infrastructure/repositories/SystemRepository';
 
 // Use Cases
-import { UseCaseFactory } from '../application/usecases/UseCaseFactory';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
 import type {
   IUseCase,
   UseCaseRegistration,
-} from '../application/usecases/interfaces/IUseCase';
+} from '@/application/usecases/interfaces/IUseCase';
 
 // Infrastructure Services
-import { UserInfrastructureService } from '../infrastructure/services/UserInfrastructureService';
-import { ChannelInfrastructureService } from '../infrastructure/services/ChannelInfrastructureService';
-import { MessageInfrastructureService } from '../infrastructure/services/MessageInfrastructureService';
-import { FileInfrastructureService } from '../infrastructure/services/FileInfrastructureService';
-import { SystemInfrastructureService } from '../infrastructure/services/SystemInfrastructureService';
+import { UserInfrastructureService } from '@/infrastructure/services/UserInfrastructureService';
+import { ChannelInfrastructureService } from '@/infrastructure/services/ChannelInfrastructureService';
+import { MessageInfrastructureService } from '@/infrastructure/services/MessageInfrastructureService';
+import { FileInfrastructureService } from '@/infrastructure/services/FileInfrastructureService';
+import { SystemInfrastructureService } from '@/infrastructure/services/SystemInfrastructureService';
 
 // API Services
-import { AuthService, authService } from '../infrastructure/api/services/authService';
-import { UserService } from '../infrastructure/api/services/userService';
-import { ChannelService } from '../infrastructure/api/services/channelService';
-import { messageService } from '../infrastructure/api/services/messageService';
-import { FileUploadService } from '../infrastructure/api/FileUploadService';
-import { notificationService } from '../infrastructure/api/services/notificationService';
+import { AuthService, authService } from '@/infrastructure/api/services/authService';
+import { UserService } from '@/infrastructure/api/services/userService';
+import { ChannelService } from '@/infrastructure/api/services/channelService';
+import { messageService } from '@/infrastructure/api/services/messageService';
+import { FileUploadService } from '@/infrastructure/api/FileUploadService';
+import { notificationService } from '@/infrastructure/api/services/notificationService';
 
 // Domain Interfaces
-import type { IUserRepository } from '../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../domain/repositories/IMessageRepository';
-import type { IProfileRepository } from '../domain/repositories/IProfileRepository';
+import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import type { IProfileRepository } from '@/domain/repositories/IProfileRepository';
 
 // Base Services
-import { ConsoleLogger } from '../domain/interfaces/ILogger';
-import { MemoryCache } from '../application/services/base/BaseCacheService';
+import { ConsoleLogger } from '@/domain/interfaces/ILogger';
+import { MemoryCache } from '@/application/services/base/BaseCacheService';
 
 // Configuration
-import { DI_TOKENS, type DIToken } from './tokens';
-import { defaultAppConfig, type AppConfig } from './config';
+import { DI_TOKENS, type DIToken } from '@/di/tokens';
+import { defaultAppConfig, type AppConfig } from '@/di/config';
 
 // Zustand Stores
-import { useAuthStore } from '../stores/authStore';
-import { useThemeStore } from '../stores/themeStore';
-import { useUserStore } from '../stores/userStore';
-import { useChannelStore } from '../stores/channelStore';
-import { useMessageStore } from '../stores/messageStore';
-import { useUIStore } from '../stores/uiStore';
+import { useAuthStore } from '@/stores/authStore';
+import { useThemeStore } from '@/stores/themeStore';
+import { useUserStore } from '@/stores/userStore';
+import { useChannelStore } from '@/stores/channelStore';
+import { useMessageStore } from '@/stores/messageStore';
+import { useUIStore } from '@/stores/uiStore';
 
 interface ServiceProvider<T = unknown> {
   token: DIToken;
@@ -518,4 +518,4 @@ export const container = DIContainer.getInstance();
 export const getContainer = () => container;
 
 // Export DI_TOKENS for external use
-export { DI_TOKENS, type DIToken } from './tokens';
+export { DI_TOKENS, type DIToken } from '@/di/tokens';

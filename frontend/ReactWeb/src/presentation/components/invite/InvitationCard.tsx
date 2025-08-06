@@ -1,8 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
-import { Button, Badge } from '../common';
-import { cn } from '../../../utils/cn';
-import type { ChannelInvitationItem } from '../../../domain/types/invite';
+import { Button, Badge } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { ChannelInvitationItem } from '@/domain/types/invite';
 
 interface InvitationCardProps {
   invitation: ChannelInvitationItem;

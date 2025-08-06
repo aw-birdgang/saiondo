@@ -1,8 +1,8 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../shared/utils/cn';
-import { useLoading } from '../../../shared/design-system/hooks';
-import { useShakeAnimation } from '../../../shared/design-system/animations';
+import { cn } from '@/shared/utils/cn';
+import { useLoading } from '@/shared/design-system/hooks';
+import { useShakeAnimation } from '@/shared/design-system/animations';
 
 const buttonVariants = cva(
   'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 hover:scale-105 focus:scale-105',

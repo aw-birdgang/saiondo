@@ -1,4 +1,4 @@
-import type { ILogger } from '../../../domain/interfaces/ILogger';
+import type { ILogger } from '@/domain/interfaces/ILogger';
 
 /**
  * 캐시 인터페이스

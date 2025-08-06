@@ -1,4 +1,4 @@
-import type { ILogger } from '../../../domain/interfaces/ILogger';
+import type { ILogger } from '@/domain/interfaces/ILogger';
 
 /**
  * 검증 서비스의 기본 추상 클래스

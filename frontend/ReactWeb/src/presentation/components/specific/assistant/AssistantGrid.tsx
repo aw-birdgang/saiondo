@@ -1,7 +1,7 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { AssistantGridProps } from '../../../pages/assistant/types/assistantTypes';
-import AssistantCard from './AssistantCard';
+import { cn } from '@/utils/cn';
+import type { AssistantGridProps } from '@/presentation/pages/assistant/types/assistantTypes';
+import AssistantCard from '@/presentation/components/specific/assistant/AssistantCard';
 
 const AssistantGrid: React.FC<AssistantGridProps> = ({
   assistants,

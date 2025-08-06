@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../../utils/cn';
-import type { ToggleSettingProps } from '../../../pages/settings/types/settingsTypes';
+import { cn } from '@/utils/cn';
+import type { ToggleSettingProps } from '@/presentation/pages/settings/types/settingsTypes';
 
 const ToggleSetting: React.FC<ToggleSettingProps> = ({
   title,

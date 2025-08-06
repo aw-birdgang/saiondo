@@ -1,6 +1,6 @@
 import React from 'react';
-import { cn } from '../../../shared/utils/cn';
-import { useAnimation } from '../../../shared/design-system/animations';
+import { cn } from '@/shared/utils/cn';
+import { useAnimation } from '@/shared/design-system/animations';
 
 export interface FloatingActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;

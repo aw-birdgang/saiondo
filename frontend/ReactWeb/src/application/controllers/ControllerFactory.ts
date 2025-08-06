@@ -1,12 +1,12 @@
-import type { ControllerMetadata, IController } from './interfaces/IController';
-import { UserController } from './UserController';
-import { ChannelController } from './ChannelController';
-import { MessageController } from './MessageController';
-import { NotificationController } from './NotificationController';
-import { FileController } from './FileController';
-import { AnalyticsController } from './AnalyticsController';
-import { Logger } from '../../shared/utils/Logger';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
+import type { ControllerMetadata, IController } from '@/application/controllers/interfaces/IController';
+import { UserController } from '@/application/controllers/UserController';
+import { ChannelController } from '@/application/controllers/ChannelController';
+import { MessageController } from '@/application/controllers/MessageController';
+import { NotificationController } from '@/application/controllers/NotificationController';
+import { FileController } from '@/application/controllers/FileController';
+import { AnalyticsController } from '@/application/controllers/AnalyticsController';
+import { Logger } from '@/shared/utils/Logger';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
 
 /**
  * Controller Factory - Controller 인스턴스 생성 및 관리

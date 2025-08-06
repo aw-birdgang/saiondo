@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, MenuIcon, MenuItemContent } from '../common';
+import { Card, MenuIcon, MenuItemContent } from '@/presentation/components/common';
 
 interface MenuItem {
   id: string;

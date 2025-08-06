@@ -1,8 +1,8 @@
-import type { IUserRepository } from '../../domain/repositories/IUserRepository';
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { IMessageRepository } from '../../domain/repositories/IMessageRepository';
-import { UserId } from '../../domain/value-objects/UserId';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IUserRepository } from '@/domain/repositories/IUserRepository';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import type { IMessageRepository } from '@/domain/repositories/IMessageRepository';
+import { UserId } from '@/domain/value-objects/UserId';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 import type {
   UserProfile,
   UserStats,
@@ -11,8 +11,8 @@ import type {
   LoginRequest,
   RegisterRequest,
   AuthResponse,
-} from '../../application/dto/UserDto';
-import { ApiClient } from '../api/ApiClient';
+} from '@/application/dto/UserDto';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
 
 /**
  * UserInfrastructureService - 사용자 관련 모든 기능을 통합한 Infrastructure Service

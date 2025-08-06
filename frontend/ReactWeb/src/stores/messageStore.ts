@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { container } from '../di/container';
-import type { Message } from '../domain/types/message';
-import type { MessageReaction } from '../domain/types/message';
+import { container } from '@/di/container';
+import type { Message } from '@/domain/types/message';
+import type { MessageReaction } from '@/domain/types/message';
 
 export interface MessageState {
   // State

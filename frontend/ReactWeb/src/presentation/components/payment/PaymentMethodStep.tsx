@@ -7,13 +7,13 @@ import {
   CardContent,
   Button,
   Input,
-} from '../common';
-import { cn } from '../../../utils/cn';
+} from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 import type {
   PaymentMethod,
   CardDetails,
   Coupon,
-} from '../../../domain/types/payment';
+} from '@/domain/types/payment';
 
 interface PaymentMethodStepProps {
   paymentMethods: PaymentMethod[];

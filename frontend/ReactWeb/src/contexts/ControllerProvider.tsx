@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { IController } from '../application/controllers/interfaces/IController';
-import { ControllerFactory } from '../application/controllers/ControllerFactory';
-import { Logger } from '../shared/utils/Logger';
+import type { IController } from '@/application/controllers/interfaces/IController';
+import { ControllerFactory } from '@/application/controllers/ControllerFactory';
+import { Logger } from '@/shared/utils/Logger';
 
 /**
  * Controller 인스턴스들을 관리하는 인터페이스

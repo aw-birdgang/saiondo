@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from '../../common';
-import { cn } from '../../../../utils/cn';
-import type { SearchHeaderProps } from '../../../pages/search/types/searchTypes';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import type { SearchHeaderProps } from '@/presentation/pages/search/types/searchTypes';
 
 const SearchHeader: React.FC<SearchHeaderProps> = ({
   query,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { InfoCard } from '../common';
+import { InfoCard } from '@/presentation/components/common';
 
 interface ChannelInfoCardProps {
   ownedChannelsCount: number;

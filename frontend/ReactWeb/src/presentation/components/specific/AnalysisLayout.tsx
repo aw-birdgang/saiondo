@@ -1,5 +1,5 @@
 import React from 'react';
-import type { AnalysisLayoutProps } from '../../pages/analysis/types/analysisTypes';
+import type { AnalysisLayoutProps } from '@/presentation/pages/analysis/types/analysisTypes';
 
 const AnalysisLayout: React.FC<AnalysisLayoutProps> = ({
   children,

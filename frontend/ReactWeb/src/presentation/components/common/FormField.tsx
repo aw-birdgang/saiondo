@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from './';
-import { cn } from '../../../utils/cn';
+import { cn } from '@/utils/cn';
 
 interface FormFieldOption {
   value: string;

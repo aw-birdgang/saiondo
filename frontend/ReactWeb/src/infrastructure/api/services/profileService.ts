@@ -1,4 +1,4 @@
-import { ApiClient } from '../ApiClient';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
 import type {
   CreateProfileRequest,
   CreateProfileResponse,
@@ -22,7 +22,7 @@ import type {
   GetFollowersResponse,
   GetFollowingRequest,
   GetFollowingResponse,
-} from '../../../domain/dto/ProfileDto';
+} from '@/domain/dto/ProfileDto';
 
 /**
  * Profile API Service

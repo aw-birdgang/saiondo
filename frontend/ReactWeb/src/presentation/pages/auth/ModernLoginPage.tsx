@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuthStore } from '../../../stores/authStore';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AuthGuard } from '../../components/specific';
+import { useAuthStore } from '@/stores/authStore';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import { AuthGuard } from '@/presentation/components/specific';
 import {
   Button,
   Input,
@@ -13,10 +13,10 @@ import {
   GlassmorphicCard,
   NeumorphicCard,
   FloatingActionButton
-} from '../../components/common';
-import { useIntersectionAnimation, useStaggerAnimation } from '../../../shared/design-system/animations';
-import { useTheme } from '../../../shared/design-system/hooks';
-import { ROUTES } from '../../../shared/constants/app';
+} from '@/presentation/components/common';
+import { useIntersectionAnimation, useStaggerAnimation } from '@/shared/design-system/animations';
+import { useTheme } from '@/shared/design-system/hooks';
+import { ROUTES } from '@/shared/constants/app';
 
 const ModernLoginPage: React.FC = () => {
   const navigate = useNavigate();

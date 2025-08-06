@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Modal } from '../common';
-import { ROUTES } from '../../../shared/constants/app';
+import { Modal } from '@/presentation/components/common';
+import { ROUTES } from '@/shared/constants/app';
 import { toast } from 'react-hot-toast';
 
 interface CategoryCode {

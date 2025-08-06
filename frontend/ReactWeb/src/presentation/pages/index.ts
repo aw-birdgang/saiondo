@@ -1,35 +1,35 @@
 // Auth Pages
-export * from './auth';
+export * from '@/presentation/pages/auth';
 
 // Chat Pages
-export * from './chat';
+export * from '@/presentation/pages/chat';
 
 // Channel Pages
-export * from './channel';
+export * from '@/presentation/pages/channel';
 
 // Home Pages
-export * from './home';
+export * from '@/presentation/pages/home';
 
 // MyPage
-export * from './mypage';
+export * from '@/presentation/pages/mypage';
 
 // Analysis Pages
-export * from './analysis';
+export * from '@/presentation/pages/analysis';
 
 // Assistant Pages
-export * from './assistant';
+export * from '@/presentation/pages/assistant';
 
 // Calendar Pages
-export * from './calendar';
+export * from '@/presentation/pages/calendar';
 
 // Category Pages
-export * from './category';
+export * from '@/presentation/pages/category';
 
 // Invite Pages
-export * from './invite';
+export * from '@/presentation/pages/invite';
 
 // Payment Pages
-export * from './payment';
+export * from '@/presentation/pages/payment';
 
 // Splash Pages
-export * from './splash';
+export * from '@/presentation/pages/splash';

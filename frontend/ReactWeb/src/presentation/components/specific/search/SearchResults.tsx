@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from '../../common';
-import { cn } from '../../../../utils/cn';
-import SearchResultItem from './SearchResultItem';
-import type { SearchResultsProps } from '../../../pages/search/types/searchTypes';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import SearchResultItem from '@/presentation/components/specific/search/SearchResultItem';
+import type { SearchResultsProps } from '@/presentation/pages/search/types/searchTypes';
 
 const SearchResults: React.FC<SearchResultsProps> = ({
   results,

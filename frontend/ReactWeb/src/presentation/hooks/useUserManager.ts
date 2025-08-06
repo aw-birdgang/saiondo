@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
-import { useUserStore } from '../../stores/userStore';
-import { useAuthStore } from '../../stores/authStore';
-import { useUseCases } from '../../di/useDI';
+import { useUserStore } from '@/stores/userStore';
+import { useAuthStore } from '@/stores/authStore';
+import { useUseCases } from '@/di/useDI';
 import { toast } from 'react-hot-toast';
 
 interface UseUserManagerOptions {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useChannelController } from '../../providers/ControllerProvider';
+import { useChannelController } from '@/presentation/providers/ControllerProvider';
 import { toast } from 'react-hot-toast';
 
 interface CreateChannelModalProps {

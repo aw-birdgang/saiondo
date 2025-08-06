@@ -1,5 +1,5 @@
-export { default as MainLayout } from './MainLayout';
-export { default as Sidebar } from './Sidebar';
-export { default as PageHeader } from './PageHeader';
-export { default as PageContainer } from './PageContainer';
-export { default as PageWrapper } from './PageWrapper';
+export { default as MainLayout } from '@/presentation/components/layout/MainLayout';
+export { default as Sidebar } from '@/presentation/components/layout/Sidebar';
+export { default as PageHeader } from '@/presentation/components/layout/PageHeader';
+export { default as PageContainer } from '@/presentation/components/layout/PageContainer';
+export { default as PageWrapper } from '@/presentation/components/layout/PageWrapper';

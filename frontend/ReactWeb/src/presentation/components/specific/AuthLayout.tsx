@@ -1,5 +1,5 @@
 import React from 'react';
-import type { AuthLayoutProps } from '../../pages/auth/types/authTypes';
+import type { AuthLayoutProps } from '@/presentation/pages/auth/types/authTypes';
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({
   children,

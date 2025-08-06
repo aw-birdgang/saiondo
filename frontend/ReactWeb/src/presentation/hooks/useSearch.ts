@@ -1,13 +1,13 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useToastContext } from '../providers/ToastProvider';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
 import type {
   SearchState,
   SearchResult,
   SearchFilter,
   SearchRequest,
-} from '../../domain/types/search';
-import type { SearchUseCase } from '../../application/usecases/SearchUseCase';
+} from '@/domain/types/search';
+import type { SearchUseCase } from '@/application/usecases/SearchUseCase';
 
 const SEARCH_FILTERS: SearchFilter[] = [
   { type: 'all', label: '전체', count: 0, isActive: true },

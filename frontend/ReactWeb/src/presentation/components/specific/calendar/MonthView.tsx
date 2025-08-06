@@ -6,13 +6,13 @@ import {
   isSameDay,
   isSameMonth,
 } from 'date-fns';
-import { cn } from '../../../../utils/cn';
-import { DAY_LABELS } from '../../../pages/calendar/constants/calendarData';
-import CalendarDay from './CalendarDay';
+import { cn } from '@/utils/cn';
+import { DAY_LABELS } from '@/presentation/pages/calendar/constants/calendarData';
+import CalendarDay from '@/presentation/components/specific/calendar/CalendarDay';
 import type {
   MonthViewProps,
   Event,
-} from '../../../pages/calendar/types/calendarTypes';
+} from '@/presentation/pages/calendar/types/calendarTypes';
 
 const MonthView: React.FC<MonthViewProps> = ({
   currentDate,

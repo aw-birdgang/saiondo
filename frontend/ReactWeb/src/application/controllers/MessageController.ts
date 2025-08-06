@@ -1,6 +1,6 @@
-import { BaseController } from './BaseController';
-import { UseCaseFactory } from '../usecases/UseCaseFactory';
-import type { Message } from '../../domain/dto/MessageDto';
+import { BaseController } from '@/application/controllers/BaseController';
+import { UseCaseFactory } from '@/application/usecases/UseCaseFactory';
+import type { Message } from '@/domain/dto/MessageDto';
 
 /**
  * 메시지 타입 정의

@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuthStore, useIsAuthenticated } from '../../stores/authStore';
-import { useProfileStore } from '../../stores/profileStore';
-import { useToastContext } from '../providers/ToastProvider';
-import type { Profile } from '../../domain/dto/ProfileDto';
+import { useAuthStore, useIsAuthenticated } from '@/stores/authStore';
+import { useProfileStore } from '@/stores/profileStore';
+import { useToastContext } from '@/presentation/providers/ToastProvider';
+import type { Profile } from '@/domain/dto/ProfileDto';
 
 interface UseUnifiedProfileReturn {
   // 상태

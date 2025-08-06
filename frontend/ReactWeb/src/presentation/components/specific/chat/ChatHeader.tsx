@@ -7,8 +7,8 @@ import {
   StatusBadge,
   Input,
   LoadingSpinner,
-} from '../../common';
-import { cn } from '../../../../utils/cn';
+} from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface ChatHeaderProps {
   channelId: string;

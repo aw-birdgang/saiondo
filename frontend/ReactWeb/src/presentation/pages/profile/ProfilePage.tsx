@@ -1,18 +1,18 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useProfileData } from './hooks/useProfileData';
-import { UnifiedProfileSection } from '../../components/specific/profile/UnifiedProfileSection';
-import { ProfileRedirect } from '../../components/specific/profile/ProfileRedirect';
+import { useProfileData } from '@/presentation/pages/profile/hooks/useProfileData';
+import { UnifiedProfileSection } from '@/presentation/components/specific/profile/UnifiedProfileSection';
+import { ProfileRedirect } from '@/presentation/components/specific/profile/ProfileRedirect';
 import {
   ProfileHeader,
   ProfileStats,
   ProfilePosts,
   ProfileFollowers,
   ProfileFollowing,
-} from '../../components/specific/profile';
-import { LoadingState } from '../../components/common';
-import { ErrorState } from '../../components/specific';
+} from '@/presentation/components/specific/profile';
+import { LoadingState } from '@/presentation/components/common';
+import { ErrorState } from '@/presentation/components/specific';
 
 const ProfilePage: React.FC = () => {
   const { t } = useTranslation();

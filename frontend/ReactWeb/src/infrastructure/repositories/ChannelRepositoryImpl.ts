@@ -1,8 +1,8 @@
-import type { IChannelRepository } from '../../domain/repositories/IChannelRepository';
-import type { Channel, ChannelInvitation } from '../../domain/types/channel';
-import { ChannelEntity } from '../../domain/entities/Channel';
-import { ApiClient } from '../api/ApiClient';
-import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type { IChannelRepository } from '@/domain/repositories/IChannelRepository';
+import type { Channel, ChannelInvitation } from '@/domain/types/channel';
+import { ChannelEntity } from '@/domain/entities/Channel';
+import { ApiClient } from '@/infrastructure/api/ApiClient';
+import { DomainErrorFactory } from '@/domain/errors/DomainError';
 
 export class ChannelRepositoryImpl implements IChannelRepository {
   constructor(private readonly apiClient: ApiClient) {}

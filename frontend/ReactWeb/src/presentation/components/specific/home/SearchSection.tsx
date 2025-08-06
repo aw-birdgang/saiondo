@@ -1,6 +1,6 @@
 import React from 'react';
-import { SearchInput } from '../../search';
-import { cn } from '../../../../utils/cn';
+import { SearchInput } from '@/presentation/components/search';
+import { cn } from '@/utils/cn';
 
 interface SearchSectionProps {
   onSearch: (query: string) => void;

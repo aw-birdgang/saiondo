@@ -1,2 +1,2 @@
-export { default as HomePage } from './HomePage';
-export { default as HomeTabComponent } from './HomeTabComponent';
+export { default as HomePage } from '@/presentation/pages/home/HomePage';
+export { default as HomeTabComponent } from '@/presentation/pages/home/HomeTabComponent';

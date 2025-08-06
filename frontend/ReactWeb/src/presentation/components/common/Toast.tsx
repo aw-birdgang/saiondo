@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../../utils/cn';
-import { Button } from './Button';
+import { cn } from '@/utils/cn';
+import { Button } from '@/presentation/components/common/Button';
 
 const toastVariants = cva(
   'flex items-center w-full max-w-sm p-4 rounded-lg shadow-lg border transition-all duration-300 transform',

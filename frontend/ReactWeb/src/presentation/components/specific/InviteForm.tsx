@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Button, InviteIcon, InviteHeader } from '../common';
+import { Input, Button, InviteIcon, InviteHeader } from '@/presentation/components/common';
 
 interface InviteFormProps {
   onInvite: (email: string) => void;

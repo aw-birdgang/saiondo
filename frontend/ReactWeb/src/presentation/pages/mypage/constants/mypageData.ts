@@ -3,7 +3,7 @@ import type {
   RecentActivity,
   QuickAction,
   AccountProgressItem,
-} from '../types/mypageTypes';
+} from '@/presentation/pages/mypage/types/mypageTypes';
 
 // 활동 통계 데이터
 export const ACTIVITY_STATS: ActivityStat[] = [

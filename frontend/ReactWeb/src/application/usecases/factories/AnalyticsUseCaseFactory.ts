@@ -1,8 +1,8 @@
-import type { IAnalyticsRepository } from '../interfaces/IAnalyticsRepository';
-import type { IAnalyticsUseCase } from '../interfaces/IAnalyticsUseCase';
-import type { ICache } from '../interfaces/ICache';
-import { AnalyticsService } from '../services/AnalyticsService';
-import { AnalyticsUseCase } from '../AnalyticsUseCase';
+import type { IAnalyticsRepository } from '@/application/usecases/interfaces/IAnalyticsRepository';
+import type { IAnalyticsUseCase } from '@/application/usecases/interfaces/IAnalyticsUseCase';
+import type { ICache } from '@/application/usecases/interfaces/ICache';
+import { AnalyticsService } from '@/application/usecases/services/AnalyticsService';
+import { AnalyticsUseCase } from '@/application/usecases/AnalyticsUseCase';
 
 // 의존성 주입을 위한 팩토리 함수
 export const createAnalyticsUseCase = (

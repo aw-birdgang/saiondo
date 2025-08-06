@@ -1,6 +1,6 @@
 import React from 'react';
-import SecurityWarning from './SecurityWarning';
-import LogoutButton from './LogoutButton';
+import SecurityWarning from '@/presentation/components/specific/mypage/components/SecurityWarning';
+import LogoutButton from '@/presentation/components/specific/mypage/components/LogoutButton';
 
 interface LogoutSectionProps {
   onLogout: () => void;

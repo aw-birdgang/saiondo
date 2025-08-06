@@ -1,14 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { LoadingState } from '../../components/common';
-import { ErrorState } from '../../components/specific';
+import { LoadingState } from '@/presentation/components/common';
+import { ErrorState } from '@/presentation/components/specific';
 import {
   AnalysisHeader,
   AnalysisContent,
   AnalysisLayout,
-} from '../../components/specific';
-import { AnalysisContainer } from '../../components/specific/analysis';
-import { useAnalysisData } from './hooks/useAnalysisData';
+} from '@/presentation/components/specific';
+import { AnalysisContainer } from '@/presentation/components/specific/analysis';
+import { useAnalysisData } from '@/presentation/pages/analysis/hooks/useAnalysisData';
 
 const AnalysisPage: React.FC = () => {
   const { t } = useTranslation();

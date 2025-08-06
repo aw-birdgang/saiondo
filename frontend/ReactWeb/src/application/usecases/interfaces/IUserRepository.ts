@@ -9,7 +9,7 @@ import type {
   SearchUsersResponse,
   UpdateUserRequest,
   UpdateUserResponse,
-} from '../../dto/UserDto';
+} from '@/application/dto/UserDto';
 
 // User Repository 인터페이스 - 데이터 접근만 담당
 export interface IUserRepository {
