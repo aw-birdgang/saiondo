@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MyPageContainer } from '../../components/specific/mypage';
 import { ErrorBoundary } from '../../components/loading/ErrorBoundary';
 import { AuthGuard } from '../../components/specific';
-import { useMyPageData } from './hooks/useMyPageData';
+import { useUnifiedProfile } from '../../hooks/useUnifiedProfile';
+import { UnifiedProfileSection } from '../../components/specific/profile/UnifiedProfileSection';
 import PageHeader from './PageHeader';
 import MyPageError from './MyPageError';
 import MyPageSkeleton from './MyPageSkeleton';
 import LoadingContainer from './LoadingContainer';
 import IconWrapper from './IconWrapper';
 import {
-  ProfileSectionWrapper,
   StatsSectionWrapper,
   ActivitiesGridWrapper,
   ProgressSectionWrapper,
@@ -18,14 +18,16 @@ import {
 import { cn } from '../../../utils/cn';
 
 const MyPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-
   const {
     // 상태
     isLoading,
+    isError,
     isEditing,
+    isOwnProfile,
+    activeTab,
     profileCompletion,
     // 데이터
+    profile,
     activityStats,
     recentActivities,
     quickActions,
@@ -37,7 +39,8 @@ const MyPage: React.FC = () => {
     handleCancelEdit,
     handleSettings,
     handleQuickActionClick,
-  } = useMyPageData();
+    handleTabChange,
+  } = useUnifiedProfile();
 
   if (isLoading) {
     return (
@@ -45,6 +48,10 @@ const MyPage: React.FC = () => {
         <MyPageSkeleton />
       </LoadingContainer>
     );
+  }
+
+  if (isError) {
+    return <MyPageError />;
   }
 
   const tabItems = [
@@ -102,7 +109,7 @@ const MyPage: React.FC = () => {
                   {tabItems.map(tab => (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
+                      onClick={() => handleTabChange(tab.id)}
                       className={cn(
                         'w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200',
                         'hover:bg-gray-50 dark:hover:bg-gray-700',
@@ -130,7 +137,7 @@ const MyPage: React.FC = () => {
                 {tabItems.map(tab => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => handleTabChange(tab.id)}
                     className={cn(
                       'flex flex-col items-center gap-1 py-3 px-2 text-xs rounded-md transition-all duration-200',
                       activeTab === tab.id
@@ -150,37 +157,6 @@ const MyPage: React.FC = () => {
               {/* 개요 탭 */}
               {activeTab === 'overview' && (
                 <div className='space-y-6'>
-                  {/* 프로필 요약 카드 */}
-                  <div className='bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 border-l-4 border-l-blue-500 rounded-lg p-6'>
-                    <div className='flex items-center gap-4'>
-                      <div className='w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center'>
-                        <span className='text-2xl'>👤</span>
-                      </div>
-                      <div className='flex-1'>
-                        <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>
-                          프로필 완성도
-                        </h3>
-                        <div className='flex items-center gap-2 mt-1'>
-                          <div className='flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2'>
-                            <div
-                              className='bg-blue-500 h-2 rounded-full transition-all duration-500'
-                              style={{ width: `${profileCompletion}%` }}
-                            />
-                          </div>
-                          <span className='text-sm font-medium text-gray-600 dark:text-gray-300'>
-                            {profileCompletion}%
-                          </span>
-                        </div>
-                      </div>
-                      <button
-                        onClick={handleEditProfile}
-                        className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium'
-                      >
-                        완성하기
-                      </button>
-                    </div>
-                  </div>
-
                   {/* 통계 섹션 */}
                   <StatsSectionWrapper stats={activityStats} />
 
@@ -217,19 +193,16 @@ const MyPage: React.FC = () => {
 
               {/* 프로필 탭 */}
               {activeTab === 'profile' && (
-                <div className='space-y-6'>
-                  <ProfileSectionWrapper
-                    isEditing={isEditing}
-                    onEdit={handleEditProfile}
-                    onSave={handleSaveProfile}
-                    onCancel={handleCancelEdit}
-                  />
-
-                  <ProgressSectionWrapper
-                    progress={profileCompletion}
-                    items={accountProgressItems}
-                  />
-                </div>
+                <UnifiedProfileSection
+                  profile={profile}
+                  isEditing={isEditing}
+                  isOwnProfile={isOwnProfile}
+                  profileCompletion={profileCompletion}
+                  onEdit={handleEditProfile}
+                  onSave={handleSaveProfile}
+                  onCancel={handleCancelEdit}
+                  onSettings={handleSettings}
+                />
               )}
 
               {/* 활동 탭 */}
@@ -246,6 +219,10 @@ const MyPage: React.FC = () => {
               {/* 설정 탭 */}
               {activeTab === 'settings' && (
                 <div className='space-y-6'>
+                  <ProgressSectionWrapper
+                    progress={profileCompletion}
+                    items={accountProgressItems}
+                  />
                   <ManagementSectionWrapper
                     onLogout={handleLogout}
                     onSettings={handleSettings}

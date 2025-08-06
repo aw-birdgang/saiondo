@@ -39,3 +39,6 @@ export * from './useAsyncState';
 
 // Performance monitoring hooks
 export * from './usePerformanceMonitor';
+
+// Unified profile management hook
+export * from './useUnifiedProfile';

@@ -8,3 +8,5 @@ export { default as ProfileFollowing } from './ProfileFollowing';
 export { default as ImageUpload } from './ImageUpload';
 export { default as ProfileSearch } from './ProfileSearch';
 export { default as ProfileAnalytics } from './ProfileAnalytics';
+export { UnifiedProfileSection } from './UnifiedProfileSection';
+export { ProfileRedirect } from './ProfileRedirect';

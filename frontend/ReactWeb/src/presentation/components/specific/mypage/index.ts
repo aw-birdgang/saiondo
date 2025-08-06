@@ -1,4 +1,3 @@
-export { default as ProfileSection } from './ProfileSection';
 export { default as ActivityStats } from './ActivityStats';
 export { default as RecentActivities } from './RecentActivities';
 export { default as QuickActions } from './QuickActions';

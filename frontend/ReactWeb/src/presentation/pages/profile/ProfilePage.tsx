@@ -2,11 +2,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useProfileData } from './hooks/useProfileData';
+import { UnifiedProfileSection } from '../../components/specific/profile/UnifiedProfileSection';
+import { ProfileRedirect } from '../../components/specific/profile/ProfileRedirect';
 import {
   ProfileHeader,
-  ProfileInfo,
   ProfileStats,
-  ProfileActions,
   ProfilePosts,
   ProfileFollowers,
   ProfileFollowing,
@@ -56,6 +56,11 @@ const ProfilePage: React.FC = () => {
     );
   }
 
+  // 자신의 프로필인 경우 마이페이지로 리다이렉트
+  if (isOwnProfile) {
+    return <ProfileRedirect />;
+  }
+
   return (
     <div className='min-h-screen bg-gray-50'>
       {/* Profile Header */}
@@ -71,24 +76,18 @@ const ProfilePage: React.FC = () => {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Left Column - Profile Info & Actions */}
           <div className='lg:col-span-1 space-y-6'>
-            <ProfileInfo
+            {/* 통합된 프로필 섹션 사용 */}
+            <UnifiedProfileSection
               profile={profile}
               isEditing={isEditing}
+              isOwnProfile={isOwnProfile}
+              profileCompletion={0} // 다른 사용자의 프로필이므로 완성도 표시 안함
               onEdit={handleEditProfile}
               onSave={handleSaveProfile}
               onCancel={handleCancelEdit}
             />
 
             <ProfileStats stats={stats} additionalInfo={profile?.additionalInfo} />
-
-            {isOwnProfile && (
-              <ProfileActions
-                onEdit={handleEditProfile}
-                onSettings={() => {
-                  /* TODO: Navigate to settings */
-                }}
-              />
-            )}
           </div>
 
           {/* Right Column - Content Tabs */}

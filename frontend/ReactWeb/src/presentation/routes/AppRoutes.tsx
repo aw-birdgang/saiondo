@@ -63,7 +63,11 @@ const routeConfig = [
   { path: '/analysis', element: AnalysisPage, name: 'Analysis' },
   { path: '/assistant', element: AssistantPage, name: 'Assistant' },
   { path: '/calendar', element: CalendarPage, name: 'Calendar' },
+  // 통합된 프로필 라우팅 - /mypage와 /profile/me를 모두 MyPage로 리다이렉트
   { path: '/mypage', element: MyPage, name: 'MyPage' },
+  { path: '/profile/me', element: MyPage, name: 'MyProfile' },
+  // 다른 사용자의 프로필은 별도 페이지 사용
+  { path: '/profile/:userId', element: ProfilePage, name: 'UserProfile' },
   {
     path: '/category/guide',
     element: CategoryGuidePage,
@@ -85,12 +89,9 @@ const routeConfig = [
     name: 'ChannelInvitation',
   },
   { path: '/payment', element: PaymentPage, name: 'Payment' },
-  { path: '/profile', element: MyPage, name: 'Profile' },
-
   { path: '/settings', element: SettingsPage, name: 'Settings' },
   { path: '/search', element: SearchPage, name: 'Search' },
   { path: '/ai-chat', element: AIChatPage, name: 'AI Chat' },
-  { path: '/profile/:userId', element: ProfilePage, name: 'Profile' },
 ];
 
 export const AppRoutes: React.FC = () => {
