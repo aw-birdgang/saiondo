@@ -16,8 +16,6 @@ import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
 import { AppRoutes } from '../presentation/routes/AppRoutes';
 import { ErrorBoundary } from '../presentation/components/loading';
-import { PageLoader } from '../presentation/components/common';
-import ErrorState from '../presentation/components/specific/ErrorState';
 import ModernNavigation from '../presentation/components/common/ModernNavigation';
 
 // 타입 정의
@@ -76,10 +74,10 @@ const ModernAppContent: React.FC<ModernAppContentProps> = ({ onError }) => {
         // UseCaseFactory와 ControllerFactory 초기화
         const { UseCaseFactory } = await import('../application/usecases/UseCaseFactory');
         const { ControllerFactory } = await import('../application/controllers/ControllerFactory');
-        
+
         await UseCaseFactory.initialize();
         await ControllerFactory.getInstance().initialize();
-        
+
         await initializeServices(authToken || '');
         setIsServicesInitialized(true);
       } catch (error) {
@@ -120,18 +118,18 @@ const ModernAppContent: React.FC<ModernAppContentProps> = ({ onError }) => {
         // localStorage에서 토큰 확인
         const storedToken = localStorage.getItem('accessToken');
         const storedUser = localStorage.getItem('user');
-        
+
         console.log('🔍 Checking stored auth data:', {
           hasToken: !!storedToken,
           hasUser: !!storedUser,
           tokenLength: storedToken?.length
         });
-        
+
         // 토큰이 있지만 store에 없는 경우 복원
         if (storedToken && !token) {
           console.log('🔄 Restoring auth state from localStorage');
           setToken(storedToken);
-          
+
           if (storedUser) {
             try {
               const user = JSON.parse(storedUser);
@@ -141,7 +139,7 @@ const ModernAppContent: React.FC<ModernAppContentProps> = ({ onError }) => {
             }
           }
         }
-        
+
         // 서비스 초기화
         await initializeAppServices(storedToken || token);
       } catch (error) {
@@ -149,7 +147,7 @@ const ModernAppContent: React.FC<ModernAppContentProps> = ({ onError }) => {
         onError(error instanceof Error ? error : new Error('Auth initialization failed'));
       }
     };
-    
+
     // 인증 초기화는 한 번만 실행
     if (!isServicesInitialized) {
       initializeAuth();
@@ -241,4 +239,4 @@ const ModernApp: React.FC = () => {
   );
 };
 
-export default ModernApp; 
+export default ModernApp;

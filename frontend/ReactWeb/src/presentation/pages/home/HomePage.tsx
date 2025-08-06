@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUserStore } from '../../../stores/userStore';
-import { useToastContext } from '../../providers/ToastProvider';
-import { AIChatWidget } from '../../components/chat/AIChatWidget';
-import { AuthGuard } from '../../components/specific';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useUserStore} from '../../../stores/userStore';
+import {useToastContext} from '../../providers/ToastProvider';
+import {AIChatWidget} from '../../components/chat/AIChatWidget';
+import {AuthGuard} from '../../components/specific';
 import {
   AIInfoWidget,
   DashboardHeader,
@@ -12,9 +12,8 @@ import {
   QuickActionsSection,
   SearchSection,
 } from '../../components/specific/home';
-import { useHomeData } from './hooks/useHomeData';
-import { FloatingActionButton } from '../../components/common/FloatingActionButton';
-import { useIntersectionAnimation } from '../../../shared/design-system/animations';
+import {useHomeData} from './hooks/useHomeData';
+import {FloatingActionButton} from '../../components/common/FloatingActionButton';
 
 const HomePage: React.FC = () => {
   // const { t } = useTranslation();
@@ -38,15 +37,6 @@ const HomePage: React.FC = () => {
     const timer = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timer);
   }, []);
-
-  // 임시로 데이터 로딩을 비활성화하여 무한 로딩 문제 해결
-  // const { loadData: loadHomeData } = useDataLoader(
-  //   async () => {
-  //     console.log('HomePage data loading disabled temporarily');
-  //   },
-  //   [user?.id, fetchCurrentUser, fetchChannelsByUserId],
-  //   { autoLoad: false }
-  // );
 
   // 검색 제안 로드
   useEffect(() => {
@@ -126,31 +116,6 @@ const HomePage: React.FC = () => {
       {/* AI 기능 안내 */}
       <AIInfoWidget />
 
-      {/* Floating Action Button */}
-      <FloatingActionButton
-        icon={
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        }
-        label="Quick Actions"
-        variant="primary"
-        size="lg"
-        position="bottom-right"
-        onClick={() => {
-          toast.success('Quick actions menu opened!');
-        }}
-      />
     </AuthGuard>
   );
 };
