@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import {useUserStore} from '@/stores/userStore';
 import {useToastContext} from '@/presentation/providers/ToastProvider';
 import {AIChatWidget} from '@/presentation/components/chat/AIChatWidget';
-import {AuthGuard} from '@/presentation/components/specific';
+import {AuthGuard} from '@/presentation/components/auth';
 import {
   AIInfoWidget,
   DashboardHeader,
@@ -11,7 +11,7 @@ import {
   HomeLoadingState,
   QuickActionsSection,
   SearchSection,
-} from '@/presentation/components/specific/home';
+} from '@/presentation/components/home';
 import {useHomeData} from '@/presentation/pages/home/hooks/useHomeData';
 import {FloatingActionButton} from '@/presentation/components/common/FloatingActionButton';
 

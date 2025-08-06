@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useToastContext } from '@/presentation/providers/ToastProvider';
-import { AuthGuard } from '@/presentation/components/specific';
+import { AuthGuard } from '@/presentation/components';
 import {
   Button,
   Input,

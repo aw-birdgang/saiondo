@@ -1,13 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingState } from '@/presentation/components/common';
-import { ErrorState } from '@/presentation/components/specific';
+import { ErrorState } from '@/presentation/components';
 import {
   AnalysisHeader,
   AnalysisContent,
   AnalysisLayout,
-} from '@/presentation/components/specific';
-import { AnalysisContainer } from '@/presentation/components/specific/analysis';
+} from '@/presentation/components';
+import { AnalysisContainer } from '@/presentation/components/analysis';
 import { useAnalysisData } from '@/presentation/pages/analysis/hooks/useAnalysisData';
 
 const AnalysisPage: React.FC = () => {

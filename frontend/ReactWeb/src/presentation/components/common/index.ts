@@ -129,7 +129,7 @@ export { default as CenteredContainer } from '@/presentation/components/common/C
 export { default as CategoryFilter } from '@/presentation/components/common/CategoryFilter';
 export { default as CategoryIcon } from '@/presentation/components/common/CategoryIcon';
 export { default as CategoryBadge } from '@/presentation/components/common/CategoryBadge';
-export { default as CalendarHeader } from '@/presentation/components/common/CalendarHeader';
+// CalendarHeader moved to calendar folder
 export { default as CalendarDay } from '@/presentation/components/common/CalendarDay';
 export { default as Caption } from '@/presentation/components/common/Caption';
 export { default as Avatar } from '@/presentation/components/common/Avatar';
@@ -142,3 +142,4 @@ export { default as TipList } from '@/presentation/components/common/TipList';
 export { default as SystemStatItem } from '@/presentation/components/common/SystemStatItem';
 export { default as PageLoader } from '@/presentation/components/common/PageLoader';
 export { default as ErrorFallback } from '@/presentation/components/common/ErrorFallback';
+export { default as ErrorState } from '@/presentation/components/common/ErrorState';

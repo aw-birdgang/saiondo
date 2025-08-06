@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountManagement } from '@/presentation/components/specific/mypage';
+import { AccountManagement } from '@/presentation/components/mypage';
 import SectionBlock from '@/presentation/pages/mypage/SectionBlock';
 import IconWrapper from '@/presentation/pages/mypage/IconWrapper';
 

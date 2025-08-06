@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useToastContext } from '@/presentation/providers/ToastProvider';
-import { AuthGuard } from '@/presentation/components/specific';
+import { AuthGuard } from '@/presentation/components';
 import {
   Card,
   CardHeader,

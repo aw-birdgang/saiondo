@@ -1,102 +1,77 @@
 import React from 'react';
-// import { useTranslation } from 'react-i18next';
-import { Input, Button, LoadingSpinner } from '@/presentation/components/common';
+import { Button } from '@/presentation/components/common';
 import { cn } from '@/utils/cn';
+import type { SearchHeaderProps } from '@/presentation/pages/search/types/searchTypes';
 
-interface SearchHeaderProps {
-  query: string;
-  onQueryChange: (query: string) => void;
-  onSearch: () => void;
-  onClear: () => void;
-  onKeyPress: (e: React.KeyboardEvent) => void;
-  isSearching: boolean;
-  totalResults: number;
-  className?: string;
-}
-
-export const SearchHeader: React.FC<SearchHeaderProps> = ({
+const SearchHeader: React.FC<SearchHeaderProps> = ({
   query,
   onQueryChange,
   onSearch,
   onClear,
-  onKeyPress,
   isSearching,
   totalResults,
   className,
 }) => {
-  // const { t } = useTranslation();
-
   return (
-    <div
-      className={cn(
-        'sticky top-0 z-10 bg-surface border-b border-border p-4',
-        className
-      )}
-    >
+    <div className={cn('p-4 bg-surface border-b border-border', className)}>
       <div className='max-w-4xl mx-auto'>
-        <div className='flex items-center space-x-4'>
-          {/* 검색 입력창 */}
-          <div className='flex-1 relative'>
-            <Input
-              type='text'
-              placeholder='검색어를 입력하세요...'
-              value={query}
-              onChange={e => onQueryChange(e.target.value)}
-              onKeyPress={onKeyPress}
-              className='pr-12'
-              disabled={isSearching}
-            />
+        {/* 검색 입력창 */}
+        <div className='relative'>
+          <div className='flex items-center space-x-2'>
+            <div className='flex-1 relative'>
+              <input
+                type='text'
+                value={query}
+                onChange={e => onQueryChange(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && onSearch()}
+                placeholder='사용자, 채널, 메시지, 분석 결과를 검색하세요...'
+                className={cn(
+                  'w-full px-4 py-3 pl-12 pr-20 border border-border rounded-lg',
+                  'focus:outline-none focus:ring-2 focus:ring-primary',
+                  'bg-surface text-txt placeholder-txt-secondary',
+                  'text-lg'
+                )}
+              />
 
-            {/* 검색 버튼 */}
-            <div className='absolute right-2 top-1/2 transform -translate-y-1/2'>
-              {isSearching ? (
-                <LoadingSpinner size='sm' />
-              ) : (
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={onSearch}
-                  disabled={!query.trim()}
-                  className='h-8 w-8 p-0'
+              {/* 검색 아이콘 */}
+              <div className='absolute left-4 top-1/2 transform -translate-y-1/2 text-txt-secondary'>
+                🔍
+              </div>
+
+              {/* 클리어 버튼 */}
+              {query && (
+                <button
+                  onClick={onClear}
+                  className='absolute right-4 top-1/2 transform -translate-y-1/2 text-txt-secondary hover:text-txt'
                 >
-                  <svg
-                    className='w-4 h-4'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                    />
-                  </svg>
-                </Button>
+                  ✕
+                </button>
               )}
             </div>
-          </div>
 
-          {/* 클리어 버튼 */}
-          {query && (
+            {/* 검색 버튼 */}
             <Button
-              variant='outline'
-              onClick={onClear}
-              disabled={isSearching}
-              className='whitespace-nowrap'
+              variant='primary'
+              onClick={onSearch}
+              disabled={isSearching || !query.trim()}
+              loading={isSearching}
+              loadingText='검색 중...'
+              className='px-6 py-3'
             >
-              클리어
+              검색
             </Button>
-          )}
+          </div>
         </div>
 
-        {/* 검색 결과 수 표시 */}
+        {/* 검색 결과 통계 */}
         {totalResults > 0 && (
-          <div className='mt-2 text-sm text-txt-secondary'>
-            {totalResults.toLocaleString()}개의 검색 결과
+          <div className='mt-4 text-sm text-txt-secondary'>
+            {totalResults}개의 검색 결과를 찾았습니다.
           </div>
         )}
       </div>
     </div>
   );
 };
+
+export default SearchHeader;

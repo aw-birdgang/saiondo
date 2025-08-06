@@ -10,7 +10,7 @@ import {
   SearchResults,
   SearchSuggestions,
 } from '@/presentation/components/search';
-import { ErrorState } from '@/presentation/components/specific';
+import { ErrorState } from '@/presentation/components';
 
 const SearchPage: React.FC = () => {
   // const { t } = useTranslation();

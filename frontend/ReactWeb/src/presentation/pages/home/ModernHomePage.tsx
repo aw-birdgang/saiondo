@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
 import { useToastContext } from '@/presentation/providers/ToastProvider';
-import { AuthGuard } from '@/presentation/components/specific';
+import { AuthGuard } from '@/presentation/components';
 import { 
   Card, 
   CardHeader, 

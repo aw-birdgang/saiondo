@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { LoadingSpinner } from '@/presentation/components/common';
-import { ErrorState } from '@/presentation/components/specific';
+import { ErrorState } from '@/presentation/components';
 import {
   SettingsHeader,
   SettingsSidebar,
   SettingsContent,
   SettingsContainer,
-} from '@/presentation/components/specific/settings';
+} from '@/presentation/components/settings';
 import { useSettingsData } from '@/presentation/pages/settings/hooks/useSettingsData';
 
 const SettingsPage: React.FC = () => {

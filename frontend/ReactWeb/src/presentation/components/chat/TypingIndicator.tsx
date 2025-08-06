@@ -1,26 +1,32 @@
 import React from 'react';
+import { LoadingSpinner } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
-export const TypingIndicator: React.FC = () => {
+interface TypingIndicatorProps {
+  typingUsers: string[];
+  className?: string;
+}
+
+const TypingIndicator: React.FC<TypingIndicatorProps> = ({
+  typingUsers,
+  className,
+}) => {
+  if (typingUsers.length === 0) {
+    return null;
+  }
+
   return (
-    <div className='flex justify-start'>
-      <div className='bg-secondary text-txt px-4 py-3 rounded-lg'>
-        <div className='flex items-center space-x-2'>
-          <div className='flex space-x-1'>
-            <div className='w-2 h-2 bg-txt-secondary rounded-full animate-bounce'></div>
-            <div
-              className='w-2 h-2 bg-txt-secondary rounded-full animate-bounce'
-              style={{ animationDelay: '0.1s' }}
-            ></div>
-            <div
-              className='w-2 h-2 bg-txt-secondary rounded-full animate-bounce'
-              style={{ animationDelay: '0.2s' }}
-            ></div>
-          </div>
-          <span className='text-xs text-txt-secondary'>
-            AI가 응답을 작성 중입니다...
-          </span>
-        </div>
+    <div
+      className={cn('px-4 py-2 bg-focus/50 border-t border-border', className)}
+    >
+      <div className='flex items-center space-x-2'>
+        <LoadingSpinner size='sm' />
+        <span className='text-sm text-txt-secondary'>
+          {typingUsers.join(', ')}님이 타이핑 중...
+        </span>
       </div>
     </div>
   );
 };
+
+export default TypingIndicator;

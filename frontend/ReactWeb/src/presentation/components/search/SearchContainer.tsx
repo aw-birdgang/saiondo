@@ -1,18 +1,16 @@
 import React from 'react';
 import { cn } from '@/utils/cn';
+import type { SearchContainerProps } from '@/presentation/pages/search/types/searchTypes';
 
-interface SearchContainerProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const SearchContainer: React.FC<SearchContainerProps> = ({
+const SearchContainer: React.FC<SearchContainerProps> = ({
   children,
   className,
 }) => {
   return (
-    <div className={cn('min-h-screen bg-bg flex flex-col', className)}>
+    <div className={cn('min-h-screen bg-background', className)}>
       {children}
     </div>
   );
 };
+
+export default SearchContainer;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { MyPageContainer } from '@/presentation/components/specific/mypage';
+import { MyPageContainer } from '@/presentation/components/mypage';
 import { ErrorBoundary } from '@/presentation/components/loading/ErrorBoundary';
-import { AuthGuard } from '@/presentation/components/specific';
+import { AuthGuard } from '@/presentation/components';
 import { useUnifiedProfile } from '@/presentation/hooks/useUnifiedProfile';
-import { UnifiedProfileSection } from '@/presentation/components/specific/profile/UnifiedProfileSection';
+import { UnifiedProfileSection } from '@/presentation/components/profile/UnifiedProfileSection';
 import PageHeader from '@/presentation/pages/mypage/PageHeader';
 import MyPageError from '@/presentation/pages/mypage/MyPageError';
 import MyPageSkeleton from '@/presentation/pages/mypage/MyPageSkeleton';

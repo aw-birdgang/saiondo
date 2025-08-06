@@ -4,8 +4,8 @@ import {
   AuthLayout,
   QuickLoginButtons,
   AuthGuard,
-} from '@/presentation/components/specific';
-import { AuthContainer } from '@/presentation/components/specific/auth';
+} from '@/presentation/components';
+import { AuthContainer } from '@/presentation/components/auth';
 import { useAuthData } from '@/presentation/pages/auth/hooks/useAuthData';
 import { ROUTES } from '@/shared/constants/app';
 

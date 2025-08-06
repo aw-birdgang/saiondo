@@ -1,19 +1,10 @@
 import React from 'react';
-// import { useTranslation } from 'react-i18next';
-import { Button, LoadingSpinner } from '@/presentation/components/common';
-import { SearchResultItem } from '@/presentation/components/search/SearchResultItem';
-import type { SearchResult } from '@/domain/types/search';
+import { Button } from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
+import SearchResultItem from '@/presentation/components/search/SearchResultItem';
+import type { SearchResultsProps } from '@/presentation/pages/search/types/searchTypes';
 
-interface SearchResultsProps {
-  results: SearchResult[];
-  isLoading: boolean;
-  hasMore: boolean;
-  onLoadMore: () => void;
-  onResultClick: (result: SearchResult) => void;
-  className?: string;
-}
-
-export const SearchResults: React.FC<SearchResultsProps> = ({
+const SearchResults: React.FC<SearchResultsProps> = ({
   results,
   isLoading,
   hasMore,
@@ -21,81 +12,65 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   onResultClick,
   className,
 }) => {
-  // const { t } = useTranslation();
-
-  if (isLoading && results.length === 0) {
+  if (isLoading) {
     return (
-      <div className='flex items-center justify-center min-h-[400px]'>
-        <LoadingSpinner size='lg' text='검색 중...' />
+      <div
+        className={cn(
+          'flex flex-col items-center justify-center py-12',
+          className
+        )}
+      >
+        <div className='text-6xl mb-4'>🔍</div>
+        <h3 className='text-lg font-medium text-txt mb-2'>검색 중...</h3>
+        <p className='text-sm text-txt-secondary text-center'>
+          검색 결과를 찾고 있습니다.
+        </p>
       </div>
     );
   }
 
   if (results.length === 0) {
     return (
-      <div className='flex items-center justify-center min-h-[400px]'>
-        <div className='text-center'>
-          <div className='w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4'>
-            <svg
-              className='w-8 h-8 text-txt-secondary'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-              />
-            </svg>
-          </div>
-          <h3 className='text-lg font-medium text-txt mb-2'>
-            검색 결과가 없습니다
-          </h3>
-          <p className='text-txt-secondary'>다른 검색어를 시도해보세요.</p>
-        </div>
+      <div
+        className={cn(
+          'flex flex-col items-center justify-center py-12',
+          className
+        )}
+      >
+        <div className='text-6xl mb-4'>🔍</div>
+        <h3 className='text-lg font-medium text-txt mb-2'>
+          검색 결과가 없습니다
+        </h3>
+        <p className='text-sm text-txt-secondary text-center'>
+          다른 검색어를 시도해보세요.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className={className}>
-      <div className='max-w-4xl mx-auto'>
-        {/* 검색 결과 목록 */}
-        <div className='space-y-4'>
-          {results.map(result => (
-            <SearchResultItem
-              key={result.id}
-              result={result}
-              onClick={onResultClick}
-            />
-          ))}
-        </div>
-
-        {/* 더 많은 결과 로드 버튼 */}
-        {hasMore && (
-          <div className='mt-8 text-center'>
-            <Button onClick={onLoadMore} disabled={isLoading} className='px-8'>
-              {isLoading ? (
-                <>
-                  <LoadingSpinner size='sm' className='mr-2' />
-                  로딩 중...
-                </>
-              ) : (
-                '더 많은 결과 보기'
-              )}
-            </Button>
-          </div>
-        )}
-
-        {/* 결과 끝 표시 */}
-        {!hasMore && results.length > 0 && (
-          <div className='mt-8 text-center text-txt-secondary text-sm'>
-            모든 검색 결과를 확인했습니다.
-          </div>
-        )}
+    <div className={cn('', className)}>
+      {/* 검색 결과 목록 */}
+      <div className='divide-y divide-border'>
+        {results.map(result => (
+          <SearchResultItem
+            key={result.id}
+            result={result}
+            onClick={onResultClick}
+          />
+        ))}
       </div>
+
+      {/* 더 보기 버튼 */}
+      {hasMore && (
+        <div className='flex justify-center p-6'>
+          <Button variant='outline' onClick={onLoadMore} className='px-8'>
+            더 많은 결과 보기
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
+
+export default SearchResults;

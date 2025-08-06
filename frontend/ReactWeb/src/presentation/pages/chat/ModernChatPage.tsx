@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useMessageController } from '@/presentation/providers/ControllerProvider';
 import { useUserController } from '@/presentation/providers/ControllerProvider';
 import { useToastContext } from '@/presentation/providers/ToastProvider';
-import { AuthGuard } from '@/presentation/components/specific';
+import { AuthGuard } from '@/presentation/components';
 import {
   Button,
   Input,

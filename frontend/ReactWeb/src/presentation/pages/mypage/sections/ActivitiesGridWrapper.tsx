@@ -2,7 +2,7 @@ import React from 'react';
 import {
   RecentActivities,
   QuickActions,
-} from '@/presentation/components/specific/mypage';
+} from '@/presentation/components/mypage';
 import SectionBlock from '@/presentation/pages/mypage/SectionBlock';
 import ContentGrid from '@/presentation/pages/mypage/ContentGrid';
 import IconWrapper from '@/presentation/pages/mypage/IconWrapper';

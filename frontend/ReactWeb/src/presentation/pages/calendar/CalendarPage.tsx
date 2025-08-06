@@ -6,7 +6,7 @@ import {
   CalendarSidebar,
   MonthView,
   EventFormModal,
-} from '@/presentation/components/specific/calendar';
+} from '@/presentation/components/calendar';
 import { useCalendarData } from '@/presentation/pages/calendar/hooks/useCalendarData';
 
 const CalendarPage: React.FC = () => {

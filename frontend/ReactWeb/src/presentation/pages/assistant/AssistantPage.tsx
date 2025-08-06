@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '@/shared/constants/app';
 import { EmptyState, LoadingState } from '@/presentation/components/common';
-import { ErrorState, PageHeader, AuthGuard } from '@/presentation/components/specific';
+import { ErrorState, PageHeader, AuthGuard } from '@/presentation/components';
 import {
   AssistantContainer,
   AssistantFilters,
   AssistantGrid,
-} from '@/presentation/components/specific/assistant';
+} from '@/presentation/components/assistant';
 import { useAssistantData } from '@/presentation/pages/assistant/hooks/useAssistantData';
 import type { Assistant } from '@/presentation/pages/assistant/types/assistantTypes';
 

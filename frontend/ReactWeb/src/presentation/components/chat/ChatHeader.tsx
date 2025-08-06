@@ -1,52 +1,98 @@
 import React from 'react';
-import { Button } from '@/presentation/components/common';
-import { PageHeader } from '@/presentation/components/specific';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  Button,
+  StatusBadge,
+  Input,
+  LoadingSpinner,
+} from '@/presentation/components/common';
+import { cn } from '@/utils/cn';
 
 interface ChatHeaderProps {
-  onNewConversation: () => void;
-  onClearChat: () => void;
-  onGoToAssistants: () => void;
-  isTyping: boolean;
+  channelId: string;
+  messageCount: number;
+  searchQuery: string;
+  isSearching: boolean;
+  onSearchChange: (query: string) => void;
+  onSearch: () => void;
+  onClearSearch: () => void;
+  className?: string;
 }
 
-export const ChatHeader: React.FC<ChatHeaderProps> = ({
-  onNewConversation,
-  onClearChat,
-  onGoToAssistants,
-  isTyping,
+const ChatHeader: React.FC<ChatHeaderProps> = ({
+  channelId,
+  messageCount,
+  searchQuery,
+  isSearching,
+  onSearchChange,
+  onSearch,
+  onClearSearch,
+  className,
 }) => {
   return (
-    <div className='border-b border-border bg-surface'>
-      <div className='max-w-4xl mx-auto px-4 py-4'>
-        <PageHeader
-          title='AI 상담사와 대화'
-          subtitle='실시간 AI 상담 서비스를 이용해보세요'
-          showBackButton
-        />
+    <Card className={cn('border-b border-border rounded-none', className)}>
+      <CardHeader className='pb-4'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center space-x-3'>
+            <div>
+              <CardTitle className='text-lg'>채널 #{channelId}</CardTitle>
+              <div className='flex items-center space-x-2 mt-1'>
+                <StatusBadge status='online' />
+                <span className='text-sm text-txt-secondary'>
+                  {messageCount}개의 메시지
+                </span>
+              </div>
+            </div>
+          </div>
 
-        {/* 액션 버튼들 */}
-        <div className='flex items-center space-x-2 mt-4'>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={onNewConversation}
-            disabled={isTyping}
-          >
-            새 대화
-          </Button>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={onClearChat}
-            disabled={isTyping}
-          >
-            대화 초기화
-          </Button>
-          <Button variant='outline' size='sm' onClick={onGoToAssistants}>
-            AI 상담사 선택
-          </Button>
+          {/* 검색 */}
+          <div className='flex items-center gap-2'>
+            <Input
+              type='text'
+              value={searchQuery}
+              onChange={e => onSearchChange(e.target.value)}
+              onKeyPress={e => e.key === 'Enter' && onSearch()}
+              placeholder='메시지 검색...'
+              className='w-64'
+              rightIcon={
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={onSearch}
+                  disabled={isSearching || !searchQuery.trim()}
+                >
+                  {isSearching ? (
+                    <LoadingSpinner size='sm' />
+                  ) : (
+                    <svg
+                      className='w-4 h-4'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                      />
+                    </svg>
+                  )}
+                </Button>
+              }
+            />
+            {searchQuery && (
+              <Button variant='outline' size='sm' onClick={onClearSearch}>
+                초기화
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
+      </CardHeader>
+    </Card>
   );
 };
+
+export default ChatHeader;

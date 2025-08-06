@@ -4,13 +4,13 @@ import { useMessageController } from '@/presentation/providers/ControllerProvide
 import { useUserController } from '@/presentation/providers/ControllerProvider';
 import { ChatMessageInput } from '@/presentation/components/chat/ChatMessageInput';
 import { useToastContext } from '@/presentation/providers/ToastProvider';
-import { AuthGuard } from '@/presentation/components/specific';
+import { AuthGuard } from '@/presentation/components';
 import {
   ChatContainer,
   ChatHeader,
   MessageList,
   TypingIndicator,
-} from '@/presentation/components/specific/chat';
+} from '@/presentation/components/chat';
 import type { Message, User } from '@/presentation/pages/chat/types/chatTypes';
 
 const ChatPage: React.FC = () => {

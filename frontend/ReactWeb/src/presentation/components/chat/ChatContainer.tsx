@@ -1,56 +1,24 @@
-import React from 'react';
-import { ChatEmptyState } from '@/presentation/components/chat/ChatEmptyState';
-import { ChatMessageList } from '@/presentation/components/chat/ChatMessageList';
-import { ChatInputArea } from '@/presentation/components/chat/ChatInputArea';
-import type { AIChatMessage } from '@/infrastructure/api/services/aiChatService';
+import React, { forwardRef } from 'react';
+import { cn } from '@/utils/cn';
 
 interface ChatContainerProps {
-  messages: AIChatMessage[];
-  inputMessage: string;
-  isTyping: boolean;
-  isLoading: boolean;
-  messagesEndRef: React.RefObject<HTMLDivElement | null>;
-  onInputChange: (value: string) => void;
-  onSendMessage: () => void;
-  onKeyPress: (e: React.KeyboardEvent) => void;
-  onSendSuggestion: (message: string) => void;
+  children: React.ReactNode;
+  className?: string;
 }
 
-export const ChatContainer: React.FC<ChatContainerProps> = ({
-  messages,
-  inputMessage,
-  isTyping,
-  isLoading,
-  messagesEndRef,
-  onInputChange,
-  onSendMessage,
-  onKeyPress,
-  onSendSuggestion,
-}) => {
-  return (
-    <div className='max-w-4xl mx-auto px-4 py-6'>
-      <div className='bg-surface border border-border rounded-lg shadow-sm h-[600px] flex flex-col'>
-        {/* 메시지 영역 */}
-        {messages.length === 0 && !isLoading ? (
-          <ChatEmptyState onSendMessage={onSendSuggestion} />
-        ) : (
-          <ChatMessageList
-            messages={messages}
-            isTyping={isTyping}
-            messagesEndRef={messagesEndRef}
-          />
-        )}
-
-        {/* 입력 영역 */}
-        <ChatInputArea
-          inputMessage={inputMessage}
-          onInputChange={onInputChange}
-          onSendMessage={onSendMessage}
-          onKeyPress={onKeyPress}
-          isTyping={isTyping}
-          isLoading={isLoading}
-        />
+const ChatContainer = forwardRef<HTMLDivElement, ChatContainerProps>(
+  ({ children, className }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn('flex flex-col h-full bg-background', className)}
+      >
+        {children}
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
+
+ChatContainer.displayName = 'ChatContainer';
+
+export default ChatContainer;

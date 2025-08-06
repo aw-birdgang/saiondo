@@ -1,18 +1,9 @@
 import React from 'react';
-// import { useTranslation } from 'react-i18next';
-import { Button } from '@/presentation/components/common';
 import { cn } from '@/utils/cn';
+import { TRENDING_SEARCHES } from '@/presentation/pages/search/constants/searchData';
+import type { SearchSuggestionsProps } from '@/presentation/pages/search/types/searchTypes';
 
-interface SearchSuggestionsProps {
-  suggestions: string[];
-  recentSearches: string[];
-  onSuggestionClick: (suggestion: string) => void;
-  onRecentSearchClick: (search: string) => void;
-  onClearHistory: () => void;
-  className?: string;
-}
-
-export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
+const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   suggestions,
   recentSearches,
   onSuggestionClick,
@@ -20,157 +11,83 @@ export const SearchSuggestions: React.FC<SearchSuggestionsProps> = ({
   onClearHistory,
   className,
 }) => {
-  // const { t } = useTranslation();
-
   return (
-    <div className={cn('max-w-4xl mx-auto p-6', className)}>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-        {/* 검색 제안 */}
-        <div>
-          <h3 className='text-lg font-medium text-txt mb-4'>추천 검색어</h3>
-          <div className='space-y-2'>
-            {suggestions.length > 0 ? (
-              suggestions.map((suggestion, index) => (
-                <button
-                  key={index}
-                  onClick={() => onSuggestionClick(suggestion)}
-                  className='w-full text-left p-3 rounded-lg hover:bg-secondary transition-colors group'
-                >
-                  <div className='flex items-center space-x-3'>
-                    <svg
-                      className='w-4 h-4 text-txt-secondary group-hover:text-primary'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                      />
-                    </svg>
-                    <span className='text-txt group-hover:text-primary'>
-                      {suggestion}
-                    </span>
-                  </div>
-                </button>
-              ))
-            ) : (
-              <div className='text-center py-8'>
-                <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3'>
-                  <svg
-                    className='w-6 h-6 text-txt-secondary'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                    />
-                  </svg>
-                </div>
-                <p className='text-txt-secondary'>
-                  검색어를 입력하면 추천 검색어가 나타납니다.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
+    <div className={cn('p-6', className)}>
+      <div className='max-w-4xl mx-auto space-y-8'>
         {/* 최근 검색어 */}
-        <div>
-          <div className='flex items-center justify-between mb-4'>
-            <h3 className='text-lg font-medium text-txt'>최근 검색어</h3>
-            {recentSearches.length > 0 && (
-              <Button
-                variant='ghost'
-                size='sm'
+        {recentSearches.length > 0 && (
+          <div>
+            <div className='flex items-center justify-between mb-4'>
+              <h3 className='text-lg font-medium text-txt'>최근 검색어</h3>
+              <button
                 onClick={onClearHistory}
-                className='text-txt-secondary hover:text-txt'
+                className='text-sm text-txt-secondary hover:text-txt'
               >
                 기록 삭제
-              </Button>
-            )}
-          </div>
-
-          <div className='space-y-2'>
-            {recentSearches.length > 0 ? (
-              recentSearches.map((search, index) => (
+              </button>
+            </div>
+            <div className='flex flex-wrap gap-2'>
+              {recentSearches.slice(0, 8).map((search, index) => (
                 <button
                   key={index}
                   onClick={() => onRecentSearchClick(search)}
-                  className='w-full text-left p-3 rounded-lg hover:bg-secondary transition-colors group'
+                  className='px-3 py-2 bg-focus text-txt rounded-lg hover:bg-focus-dark transition-colors text-sm'
                 >
-                  <div className='flex items-center space-x-3'>
-                    <svg
-                      className='w-4 h-4 text-txt-secondary group-hover:text-primary'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                    >
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-                      />
-                    </svg>
-                    <span className='text-txt group-hover:text-primary'>
-                      {search}
-                    </span>
-                  </div>
+                  {search}
                 </button>
-              ))
-            ) : (
-              <div className='text-center py-8'>
-                <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto mb-3'>
-                  <svg
-                    className='w-6 h-6 text-txt-secondary'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-                    />
-                  </svg>
-                </div>
-                <p className='text-txt-secondary'>아직 검색 기록이 없습니다.</p>
-              </div>
-            )}
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 검색 제안 */}
+        {suggestions.length > 0 && (
+          <div>
+            <h3 className='text-lg font-medium text-txt mb-4'>검색 제안</h3>
+            <div className='flex flex-wrap gap-2'>
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  onClick={() => onSuggestionClick(suggestion)}
+                  className='px-3 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors text-sm'
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 인기 검색어 */}
+        <div>
+          <h3 className='text-lg font-medium text-txt mb-4'>인기 검색어</h3>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+            {TRENDING_SEARCHES.map((search, index) => (
+              <button
+                key={index}
+                onClick={() => onSuggestionClick(search)}
+                className='p-3 bg-surface border border-border rounded-lg hover:bg-focus transition-colors text-left'
+              >
+                <div className='text-sm font-medium text-txt'>{search}</div>
+                <div className='text-xs text-txt-secondary mt-1'>🔥 인기</div>
+              </button>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* 트렌딩 검색어 */}
-      <div className='mt-8'>
-        <h3 className='text-lg font-medium text-txt mb-4'>인기 검색어</h3>
-        <div className='flex flex-wrap gap-2'>
-          {[
-            'React 개발',
-            'TypeScript',
-            '프론트엔드',
-            'AI 상담사',
-            '관계 분석',
-            '채팅 기능',
-          ].map((trend, index) => (
-            <button
-              key={index}
-              onClick={() => onSuggestionClick(trend)}
-              className='px-3 py-2 bg-secondary text-txt rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors'
-            >
-              #{trend}
-            </button>
-          ))}
+        {/* 검색 팁 */}
+        <div className='bg-primary/5 border border-primary/20 rounded-lg p-4'>
+          <h4 className='font-medium text-txt mb-2'>💡 검색 팁</h4>
+          <ul className='text-sm text-txt-secondary space-y-1'>
+            <li>• 사용자 이름으로 친구를 찾아보세요</li>
+            <li>• 채널명으로 관심 있는 채널을 검색하세요</li>
+            <li>• 메시지 내용으로 대화를 찾아보세요</li>
+            <li>• 태그나 키워드로 관련 내용을 검색하세요</li>
+          </ul>
         </div>
       </div>
     </div>
   );
 };
+
+export default SearchSuggestions;

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { RegisterForm, AuthLayout, AuthGuard } from '@/presentation/components/specific';
-import { AuthContainer } from '@/presentation/components/specific/auth';
+import { RegisterForm, AuthLayout, AuthGuard } from '@/presentation/components';
+import { AuthContainer } from '@/presentation/components/auth';
 import { useAuthData } from '@/presentation/pages/auth/hooks/useAuthData';
 
 const RegisterPage: React.FC = () => {

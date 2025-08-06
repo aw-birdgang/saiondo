@@ -1,7 +1,7 @@
 import React from 'react';
-import { cn } from '@/utils/cn';
-import { TypingIndicator } from '@/presentation/components/chat/TypingIndicator';
-import type { AIChatMessage } from '@/infrastructure/api/services/aiChatService';
+import {cn} from '@/utils/cn';
+import type {AIChatMessage} from '@/infrastructure/api/services/aiChatService';
+import TypingIndicator from "@/presentation/components/chat/TypingIndicator";
 
 interface ChatMessageListProps {
   messages: AIChatMessage[];

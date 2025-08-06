@@ -4,7 +4,7 @@ import { useAuthStore, useIsAuthenticated } from '@/stores/authStore';
 import { useUserStore } from '@/stores/userStore';
 import { ROUTES } from '@/shared/constants/app';
 import { useTimeout } from '@/presentation/hooks/useTimeout';
-import { SplashAnimation } from '@/presentation/components/specific';
+import { SplashAnimation } from '@/presentation/components';
 
 const SplashPage: React.FC = () => {
   const navigate = useNavigate();

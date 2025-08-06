@@ -2,17 +2,17 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useProfileData } from '@/presentation/pages/profile/hooks/useProfileData';
-import { UnifiedProfileSection } from '@/presentation/components/specific/profile/UnifiedProfileSection';
-import { ProfileRedirect } from '@/presentation/components/specific/profile/ProfileRedirect';
+import { UnifiedProfileSection } from '@/presentation/components/profile/UnifiedProfileSection';
+import { ProfileRedirect } from '@/presentation/components/profile/ProfileRedirect';
 import {
   ProfileHeader,
   ProfileStats,
   ProfilePosts,
   ProfileFollowers,
   ProfileFollowing,
-} from '@/presentation/components/specific/profile';
+} from '@/presentation/components/profile';
 import { LoadingState } from '@/presentation/components/common';
-import { ErrorState } from '@/presentation/components/specific';
+import { ErrorState } from '@/presentation/components';
 
 const ProfilePage: React.FC = () => {
   const { t } = useTranslation();

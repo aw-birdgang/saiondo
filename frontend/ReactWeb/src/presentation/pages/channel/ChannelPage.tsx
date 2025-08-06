@@ -1,11 +1,11 @@
 import React from 'react';
 import { LoadingState } from '@/presentation/components/common';
-import { PageLayout } from '@/presentation/components/specific';
+import { PageLayout } from '@/presentation/components';
 import {
   ChannelStats,
   ChannelList,
-} from '@/presentation/components/specific';
-import { ChannelContainer } from '@/presentation/components/specific/channel';
+} from '@/presentation/components';
+import { ChannelContainer } from '@/presentation/components/channel';
 import { useChannelData } from '@/presentation/pages/channel/hooks/useChannelData';
 
 const ChannelTab: React.FC = () => {

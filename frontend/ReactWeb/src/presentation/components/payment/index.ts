@@ -1,6 +1,12 @@
-export { ProductSelectionStep } from '@/presentation/components/payment/ProductSelectionStep';
-export { PaymentMethodStep } from '@/presentation/components/payment/PaymentMethodStep';
-export { ConfirmationStep } from '@/presentation/components/payment/ConfirmationStep';
-export { ProcessingStep } from '@/presentation/components/payment/ProcessingStep';
-export { CompleteStep } from '@/presentation/components/payment/CompleteStep';
-export { PaymentProgress } from '@/presentation/components/payment/PaymentProgress';
+// Payment components
+export { PaymentModal } from './PaymentModal';
+export { default as PaymentMethodSelector } from './PaymentMethodSelector';
+export { default as ProductCard } from './ProductCard';
+export { default as ProductGrid } from './ProductGrid';
+export { default as PurchaseConfirmation } from './PurchaseConfirmation';
+export { ProductSelectionStep } from './ProductSelectionStep';
+export { PaymentMethodStep } from './PaymentMethodStep';
+export { ConfirmationStep } from './ConfirmationStep';
+export { ProcessingStep } from './ProcessingStep';
+export { CompleteStep } from './CompleteStep';
+export { PaymentProgress } from './PaymentProgress';

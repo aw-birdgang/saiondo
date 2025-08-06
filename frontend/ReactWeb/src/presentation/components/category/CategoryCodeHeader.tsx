@@ -1,30 +1,53 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 interface CategoryCodeHeaderProps {
-  onNavigateBack: () => void;
+  codesCount: number;
+  className?: string;
 }
 
 const CategoryCodeHeader: React.FC<CategoryCodeHeaderProps> = ({
-  onNavigateBack,
+  codesCount,
+  className = '',
 }) => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
   return (
-    <div className='bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6'>
+    <div className={`bg-surface shadow-sm border-b border-border ${className}`}>
+      <div className='max-w-6xl mx-auto px-6 py-6'>
         <div className='flex items-center justify-between'>
-          <div>
-            <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
-              카테고리 코드 가이드
-            </h1>
-            <p className='mt-2 text-gray-600 dark:text-gray-400'>
-              대화 분석에 사용되는 카테고리 코드들을 확인하세요
-            </p>
+          <div className='flex items-center space-x-4'>
+            <button
+              onClick={() => navigate(-1)}
+              className='p-3 hover:bg-secondary rounded-full transition-all duration-200 hover:scale-105'
+            >
+              <svg
+                className='w-6 h-6 text-txt-secondary'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M15 19l-7-7 7-7'
+                />
+              </svg>
+            </button>
+            <div className='flex items-center space-x-3'>
+              <span className='text-3xl'>📋</span>
+              <h1 className='text-2xl font-bold text-txt leading-tight'>
+                {t('category_code_guide') || '카테고리 코드 안내'}
+              </h1>
+            </div>
           </div>
-          <button
-            onClick={onNavigateBack}
-            className='px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600'
-          >
-            뒤로 가기
-          </button>
+
+          <div className='text-sm text-txt-secondary font-medium'>
+            총 {codesCount}개 코드
+          </div>
         </div>
       </div>
     </div>
