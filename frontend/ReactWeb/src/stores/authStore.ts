@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { toast } from 'react-hot-toast';
+import { apiClient } from '../infrastructure/api/ApiClient';
 
 export interface User {
   id: string;
@@ -180,7 +181,7 @@ export const useAuthStore = create<AuthState>()(
       // Initial state
       user: null,
       token: null,
-      loading: false, // 초기 로딩 상태를 false로 설정
+      loading: true, // 초기 로딩 상태를 true로 설정하여 초기화 완료까지 대기
       error: null,
 
       // Actions
@@ -234,18 +235,34 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        console.log('🔄 Logging out...');
+        
         // 로컬 스토리지에서 토큰과 사용자 정보 제거
         localStorage.removeItem('accessToken');
         localStorage.removeItem('user');
+        
+        // Zustand persist 데이터도 제거
+        localStorage.removeItem('auth-storage');
+        
+        // API 클라이언트에서도 토큰 제거
+        apiClient.removeAuthToken();
 
         set({
           user: null,
           token: null,
-          loading: false, // 로그아웃 시에도 로딩 상태를 false로 설정
+          loading: false,
           error: null,
         });
 
         toast.success('로그아웃되었습니다.');
+        
+        // 로그인 페이지로 리다이렉트 (React Router 사용)
+        setTimeout(() => {
+          // 현재 페이지가 로그인 페이지가 아닌 경우에만 리다이렉트
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
+          }
+        }, 100);
       },
 
       clearError: () => set({ error: null }),

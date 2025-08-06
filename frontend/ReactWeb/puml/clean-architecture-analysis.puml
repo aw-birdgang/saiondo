@@ -1,0 +1,278 @@
+@startuml ReactWeb Clean Architecture Analysis
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+
+title ReactWeb 프로젝트 - 클린 아키텍처 구조 분석
+
+package "Presentation Layer" as Presentation {
+  package "React Components" as Components {
+    [Pages]
+    [Common Components]
+    [Layout Components]
+    [Specific Components]
+  }
+
+  package "Hooks" as Hooks {
+    [useProductionFeatures]
+    [useAuth]
+    [useChannel]
+    [useMessage]
+    [useTheme]
+    [useUI]
+  }
+
+  package "Stores (Zustand)" as Stores {
+    [authStore]
+    [userStore]
+    [channelStore]
+    [messageStore]
+    [themeStore]
+    [uiStore]
+    [profileStore]
+  }
+
+  package "Contexts" as Contexts {
+    [AuthContext]
+    [UserContext]
+    [ThemeContext]
+    [UseCaseContext]
+  }
+
+  package "Routes" as Routes {
+    [AppRoutes]
+  }
+}
+
+package "Application Layer" as Application {
+  package "Use Cases" as UseCases {
+    [UseCaseFactory]
+    [UserUseCases]
+    [ChannelUseCases]
+    [MessageUseCases]
+    [FileUseCases]
+    [ProfileUseCases]
+    [AnalyticsUseCase]
+    [PaymentUseCase]
+    [SearchUseCase]
+    [InviteUseCase]
+    [CategoryUseCase]
+    [SystemManagementUseCase]
+    [WebSocketUseCase]
+    [RedisCacheUseCase]
+    [APMMonitoringUseCase]
+  }
+
+  package "Services" as Services {
+    [AuthService]
+    [UserService]
+    [ChannelService]
+    [MessageService]
+    [FileService]
+    [NotificationService]
+    [PaymentService]
+    [SearchService]
+    [InviteService]
+    [CategoryService]
+  }
+
+  package "Controllers" as Controllers {
+    [UserController]
+    [ChannelController]
+    [MessageController]
+  }
+
+  package "DTOs" as DTOs {
+    [UserDTO]
+    [ChannelDTO]
+    [MessageDTO]
+  }
+}
+
+package "Domain Layer" as Domain {
+  package "Entities" as Entities {
+    [UserEntity]
+    [ChannelEntity]
+    [MessageEntity]
+    [ProfileEntity]
+  }
+
+  package "Value Objects" as ValueObjects {
+    [Email]
+    [UserId]
+    [ChannelId]
+    [MessageId]
+    [Timestamp]
+  }
+
+  package "Repository Interfaces" as RepoInterfaces {
+    [IUserRepository]
+    [IChannelRepository]
+    [IMessageRepository]
+    [IProfileRepository]
+    [IPaymentRepository]
+    [ISearchRepository]
+    [IInviteRepository]
+    [ICategoryRepository]
+  }
+
+  package "Domain Types" as DomainTypes {
+    [UserType]
+    [ChannelType]
+    [MessageType]
+    [PermissionType]
+  }
+
+  package "Domain Errors" as DomainErrors {
+    [DomainError]
+    [ValidationError]
+    [AuthenticationError]
+  }
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  package "API Client" as Api {
+    [ApiClient]
+    [endpoints]
+    [interceptors]
+  }
+
+  package "Repository Implementations" as RepoImpl {
+    [UserRepositoryImpl]
+    [ChannelRepositoryImpl]
+    [MessageRepositoryImpl]
+    [ProfileRepository]
+    [PaymentRepository]
+    [SearchRepository]
+    [InviteRepository]
+    [CategoryRepository]
+  }
+
+  package "WebSocket" as WebSocket {
+    [WebSocketClient]
+  }
+
+  package "Cache" as Cache {
+    [RedisCache]
+    [MemoryCache]
+  }
+
+  package "Storage" as Storage {
+    [LocalStorage]
+    [SessionStorage]
+  }
+
+  package "Monitoring" as Monitoring {
+    [APMMonitoring]
+    [ErrorTracking]
+  }
+
+  package "Payment" as Payment {
+    [PaymentGateway]
+  }
+
+  package "Notification" as Notification {
+    [PushNotification]
+    [EmailService]
+  }
+}
+
+package "Dependency Injection" as DI {
+  [DIContainer]
+  [DI_TOKENS]
+  [UseCaseRegistry]
+  [container]
+}
+
+package "Shared" as Shared {
+  package "Utils" as Utils {
+    [dateUtils]
+    [stringUtils]
+    [validationUtils]
+  }
+
+  package "Constants" as Constants {
+    [API_ENDPOINTS]
+    [ERROR_MESSAGES]
+    [UI_CONSTANTS]
+  }
+
+  package "Types" as Types {
+    [CommonTypes]
+    [UtilityTypes]
+  }
+}
+
+' 계층 간 의존성
+Presentation --> Application : 의존
+Application --> Domain : 의존
+Infrastructure --> Domain : 의존
+Presentation --> DI : 의존
+Application --> DI : 의존
+Infrastructure --> DI : 의존
+
+' Presentation 내부
+Components --> Hooks
+Components --> Stores
+Components --> Contexts
+Hooks --> Stores
+Hooks --> UseCases
+Stores --> UseCases
+
+' Application 내부
+UseCases --> Services
+UseCases --> RepoInterfaces
+Services --> RepoInterfaces
+
+' Infrastructure 내부
+RepoImpl --> ApiClient
+RepoImpl --> WebSocketClient
+RepoImpl --> RedisCache
+
+' DI Container 연결
+DIContainer --> UseCases
+DIContainer --> Services
+DIContainer --> RepoImpl
+DIContainer --> ApiClient
+
+' Shared 연결
+Presentation --> Shared
+Application --> Shared
+Infrastructure --> Shared
+
+note right of Presentation
+  ✅ React 컴포넌트, Hooks, Stores
+  ✅ UI 로직과 상태 관리
+  ✅ 외부 레이어에만 의존
+end note
+
+note right of Application
+  ✅ Use Cases (21개)
+  ✅ Application Services
+  ✅ 비즈니스 워크플로우 조정
+  ✅ Domain Layer에만 의존
+end note
+
+note right of Domain
+  ✅ Entities, Value Objects
+  ✅ Repository Interfaces
+  ✅ Domain Types, Errors
+  ✅ 순수한 비즈니스 로직
+  ✅ 다른 레이어에 의존하지 않음
+end note
+
+note right of Infrastructure
+  ✅ Repository Implementations
+  ✅ API Client, WebSocket
+  ✅ 외부 서비스 연동
+  ✅ Domain Layer에만 의존
+end note
+
+note right of DI
+  ✅ 의존성 주입 컨테이너
+  ✅ UseCase Registry
+  ✅ 모든 레이어 연결
+end note
+
+@enduml

@@ -34,9 +34,14 @@ const Header: React.FC<HeaderProps> = ({
   const { user } = useAuthStore();
   // const { currentUser } = useUserStore();
 
-  const handleLogout = () => {
-    logout();
-    navigate(ROUTES.LOGIN, { replace: true });
+  const handleLogout = async () => {
+    try {
+      console.log('🔄 Header: Logging out...');
+      logout();
+      // 로그아웃 후 리다이렉트는 authStore에서 처리됨
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const handleBack = () => {

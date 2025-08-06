@@ -4,6 +4,7 @@ import { useMessageController } from '../../providers/ControllerProvider';
 import { useUserController } from '../../providers/ControllerProvider';
 import { ChatMessageInput } from '../../components/chat/ChatMessageInput';
 import { useToastContext } from '../../providers/ToastProvider';
+import { AuthGuard } from '../../components/specific';
 import {
   ChatContainer,
   ChatHeader,
@@ -247,39 +248,41 @@ const ChatPage: React.FC = () => {
   }
 
   return (
-    <ChatContainer>
-      <ChatHeader
-        channelId={channelId || ''}
-        messageCount={messages.length}
-        searchQuery={searchQuery}
-        isSearching={isSearching}
-        onSearchChange={setSearchQuery}
-        onSearch={handleSearch}
-        onClearSearch={handleClearSearch}
-      />
+    <AuthGuard requireAuth={true}>
+      <ChatContainer>
+        <ChatHeader
+          channelId={channelId || ''}
+          messageCount={messages.length}
+          searchQuery={searchQuery}
+          isSearching={isSearching}
+          onSearchChange={setSearchQuery}
+          onSearch={handleSearch}
+          onClearSearch={handleClearSearch}
+        />
 
-      <MessageList
-        ref={messagesContainerRef}
-        messages={messages}
-        isLoading={isLoading}
-        currentUserId={currentUser.id}
-        selectedMessage={selectedMessage}
-        onSelectMessage={setSelectedMessage}
-        onAddReaction={handleAddReaction}
-      />
+        <MessageList
+          ref={messagesContainerRef}
+          messages={messages}
+          isLoading={isLoading}
+          currentUserId={currentUser.id}
+          selectedMessage={selectedMessage}
+          onSelectMessage={setSelectedMessage}
+          onAddReaction={handleAddReaction}
+        />
 
-      <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} />
 
-      <TypingIndicator typingUsers={[]} />
+        <TypingIndicator typingUsers={[]} />
 
-      <ChatMessageInput
-        channelId={channelId || ''}
-        userId={currentUser.id}
-        onMessageSent={handleMessageSent}
-        onTyping={() => {}}
-        onStopTyping={() => {}}
-      />
-    </ChatContainer>
+        <ChatMessageInput
+          channelId={channelId || ''}
+          userId={currentUser.id}
+          onMessageSent={handleMessageSent}
+          onTyping={() => {}}
+          onStopTyping={() => {}}
+        />
+      </ChatContainer>
+    </AuthGuard>
   );
 };
 

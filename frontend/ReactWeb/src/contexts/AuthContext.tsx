@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isAuthenticated = useIsAuthenticated();
 
   // Use custom hook for auth initialization
-  useAuthInitializer({
+  const { isInitialized } = useAuthInitializer({
     autoInitialize: true,
     onTokenFound: _token => {
       // Token found callback - can be used for analytics or other side effects
@@ -46,6 +46,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout: authStore.logout,
     register: authStore.register,
   };
+
+  // 인증 초기화가 완료될 때까지 로딩 상태 유지
+  if (!isInitialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">인증 상태를 확인하는 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

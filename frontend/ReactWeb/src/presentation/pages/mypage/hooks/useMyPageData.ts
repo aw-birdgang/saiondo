@@ -27,16 +27,16 @@ export const useMyPageData = () => {
   const handleLogout = useCallback(async () => {
     setState(prev => ({ ...prev, isLoading: true }));
     try {
-      await logout();
-      toast.success('로그아웃되었습니다.');
-      navigate(ROUTES.LOGIN);
+      console.log('🔄 MyPage: Logging out...');
+      logout();
+      // 로그아웃 후 리다이렉트는 authStore에서 처리됨
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('로그아웃 중 오류가 발생했습니다.');
     } finally {
       setState(prev => ({ ...prev, isLoading: false }));
     }
-  }, [logout, navigate, toast]);
+  }, [logout, toast]);
 
   // 프로필 편집 모드 전환
   const handleEditProfile = useCallback(() => {

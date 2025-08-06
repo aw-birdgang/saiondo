@@ -36,6 +36,17 @@ export interface Profile {
   };
   createdAt: Date;
   updatedAt: Date;
+  // 백엔드 User 모델의 실제 필드들을 포함하는 추가 정보
+  additionalInfo?: {
+    gender?: string;
+    birthDate?: string;
+    point?: number;
+    isSubscribed?: boolean;
+    subscriptionUntil?: string;
+    personaProfilesCount?: number;
+    assistantsCount?: number;
+    channelsCount?: number;
+  };
 }
 
 // Request/Response DTOs

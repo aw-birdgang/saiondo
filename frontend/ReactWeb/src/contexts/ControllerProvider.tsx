@@ -64,12 +64,12 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({
 
         // Controller 인스턴스들을 생성
         const controllerInstances: Controllers = {
-          userController: factory.createController('user'),
-          channelController: factory.createController('channel'),
-          messageController: factory.createController('message'),
-          notificationController: factory.createController('notification'),
-          fileController: factory.createController('file'),
-          analyticsController: factory.createController('analytics'),
+          userController: await factory.createController('user'),
+          channelController: await factory.createController('channel'),
+          messageController: await factory.createController('message'),
+          notificationController: await factory.createController('notification'),
+          fileController: await factory.createController('file'),
+          analyticsController: await factory.createController('analytics'),
         };
 
         // 모든 Controller 초기화
@@ -80,7 +80,7 @@ export const ControllerProvider: React.FC<ControllerProviderProps> = ({
 
         logger.info('Controllers initialized successfully');
       } catch (error) {
-        logger.error('Failed to initialize controllers:', error);
+        logger.error('Failed to initialize controllers:', { error: error instanceof Error ? error.message : String(error) });
       }
     };
 

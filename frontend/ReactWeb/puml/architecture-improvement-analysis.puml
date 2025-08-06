@@ -1,0 +1,165 @@
+@startuml Architecture Improvement Analysis
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+
+title ReactWeb 클린 아키텍처 구조 개선 분석
+
+package "현재 구조 분석" as CurrentAnalysis {
+  package "✅ 잘 구현된 부분" as GoodParts {
+    [Use Case 위치] as UseCaseLocation
+    [의존성 방향] as DependencyDirection
+    [DI Container] as DIContainer
+    [Repository Pattern] as RepositoryPattern
+    [레이어 분리] as LayerSeparation
+  }
+  
+  package "⚠️ 개선이 필요한 부분" as ImprovementNeeds {
+    [중복된 Use Case] as DuplicateUseCases
+    [과도한 Use Case] as TooManyUseCases
+    [복잡한 DI 구조] as ComplexDI
+    [불필요한 Services] as UnnecessaryServices
+    [중복된 Repository] as DuplicateRepositories
+  }
+  
+  package "❌ 문제점" as Problems {
+    [Use Case 과다] as UseCaseOverload
+    [의존성 복잡성] as DependencyComplexity
+    [테스트 어려움] as TestingDifficulty
+    [유지보수 복잡성] as MaintenanceComplexity
+  }
+}
+
+package "개선 제안사항" as Improvements {
+  package "1. Use Case 통합" as UseCaseConsolidation {
+    [UserUseCases 통합] as UserUseCasesConsolidated
+    [ChannelUseCases 통합] as ChannelUseCasesConsolidated
+    [MessageUseCases 통합] as MessageUseCasesConsolidated
+    [FileUseCases 통합] as FileUseCasesConsolidated
+    [ProfileUseCases 통합] as ProfileUseCasesConsolidated
+  }
+  
+  package "2. DI 구조 단순화" as DISimplification {
+    [단일 DI Container] as SingleDIContainer
+    [토큰 정리] as TokenCleanup
+    [Factory 패턴 단순화] as FactorySimplification
+  }
+  
+  package "3. Repository 정리" as RepositoryCleanup {
+    [중복 Repository 제거] as RemoveDuplicateRepo
+    [Interface 통합] as InterfaceConsolidation
+    [Implementation 단순화] as ImplementationSimplification
+  }
+  
+  package "4. Service Layer 정리" as ServiceCleanup {
+    [불필요한 Service 제거] as RemoveUnnecessaryService
+    [Service 책임 명확화] as ServiceResponsibilityClarification
+    [Use Case와 Service 통합] as UseCaseServiceIntegration
+  }
+}
+
+package "제거 대상" as RemovalTargets {
+  package "중복된 Use Cases" as DuplicateUseCasesToRemove {
+    [GetCurrentUserUseCase] as GetCurrentUserUseCase
+    [UpdateUserUseCase] as UpdateUserUseCase
+    [AuthenticateUserUseCase] as AuthenticateUserUseCase
+    [RegisterUserUseCase] as RegisterUserUseCase
+    [LogoutUserUseCase] as LogoutUserUseCase
+    [CreateChannelUseCase] as CreateChannelUseCase
+    [InviteToChannelUseCase] as InviteToChannelUseCase
+    [LeaveChannelUseCase] as LeaveChannelUseCase
+    [SendMessageUseCase] as SendMessageUseCase
+    [SearchMessagesUseCase] as SearchMessagesUseCase
+    [UploadFileUseCase] as UploadFileUseCase
+    [FileDownloadUseCase] as FileDownloadUseCase
+  }
+  
+  package "불필요한 Services" as UnnecessaryServicesToRemove {
+    [AuthService] as AuthService
+    [UserService] as UserService
+    [ChannelService] as ChannelService
+    [MessageService] as MessageService
+    [FileService] as FileService
+    [NotificationService] as NotificationService
+  }
+  
+  package "중복된 Repositories" as DuplicateRepositoriesToRemove {
+    [ProfileRepository] as ProfileRepository
+    [PaymentRepository] as PaymentRepository
+    [SearchRepository] as SearchRepository
+    [InviteRepository] as InviteRepository
+    [CategoryRepository] as CategoryRepository
+  }
+}
+
+package "통합 후 구조" as IntegratedStructure {
+  package "Application Layer" as IntegratedApplication {
+    [UserUseCase] as IntegratedUserUseCase
+    [ChannelUseCase] as IntegratedChannelUseCase
+    [MessageUseCase] as IntegratedMessageUseCase
+    [FileUseCase] as IntegratedFileUseCase
+    [SystemUseCase] as IntegratedSystemUseCase
+  }
+  
+  package "Domain Layer" as IntegratedDomain {
+    [IUserRepository] as IntegratedIUserRepo
+    [IChannelRepository] as IntegratedIChannelRepo
+    [IMessageRepository] as IntegratedIMessageRepo
+    [IFileRepository] as IntegratedIFileRepo
+  }
+  
+  package "Infrastructure Layer" as IntegratedInfrastructure {
+    [UserRepositoryImpl] as IntegratedUserRepoImpl
+    [ChannelRepositoryImpl] as IntegratedChannelRepoImpl
+    [MessageRepositoryImpl] as IntegratedMessageRepoImpl
+    [FileRepositoryImpl] as IntegratedFileRepoImpl
+  }
+}
+
+' 현재 문제점 연결
+UseCaseOverload --> DuplicateUseCases : 원인
+DependencyComplexity --> ComplexDI : 원인
+TestingDifficulty --> UseCaseOverload : 원인
+MaintenanceComplexity --> DependencyComplexity : 원인
+
+' 개선 제안 연결
+UseCaseConsolidation --> DuplicateUseCasesToRemove : 해결
+DISimplification --> ComplexDI : 해결
+RepositoryCleanup --> DuplicateRepositoriesToRemove : 해결
+ServiceCleanup --> UnnecessaryServicesToRemove : 해결
+
+' 통합 후 구조 연결
+IntegratedUserUseCase --> IntegratedIUserRepo : 의존
+IntegratedChannelUseCase --> IntegratedIChannelRepo : 의존
+IntegratedMessageUseCase --> IntegratedIMessageRepo : 의존
+IntegratedFileUseCase --> IntegratedIFileRepo : 의존
+
+IntegratedUserRepoImpl ..|> IntegratedIUserRepo : 구현
+IntegratedChannelRepoImpl ..|> IntegratedIChannelRepo : 구현
+IntegratedMessageRepoImpl ..|> IntegratedIMessageRepo : 구현
+IntegratedFileRepoImpl ..|> IntegratedIFileRepo : 구현
+
+note right of CurrentAnalysis
+  현재 구조는 클린 아키텍처 원칙을
+  잘 따르고 있지만, 과도한 복잡성과
+  중복이 존재합니다.
+end note
+
+note right of Improvements
+  Use Case 통합과 DI 구조 단순화를 통해
+  유지보수성과 테스트 가능성을
+  크게 향상시킬 수 있습니다.
+end note
+
+note right of RemovalTargets
+  중복된 Use Case들과 불필요한 Service들을
+  제거하여 코드베이스를 단순화합니다.
+end note
+
+note right of IntegratedStructure
+  통합 후에는 5개의 핵심 Use Case로
+  모든 비즈니스 로직을 처리할 수 있습니다.
+end note
+
+@enduml 

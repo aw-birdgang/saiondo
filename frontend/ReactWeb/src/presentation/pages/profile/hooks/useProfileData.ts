@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { useTranslation } from 'react-i18next';
-import { useAuthStore } from '../../../../stores/authStore';
+import { useAuthStore, useIsAuthenticated } from '../../../../stores/authStore';
 import { useProfileStore } from '../../../../stores/profileStore';
 import type { Profile } from '../../../../domain/dto/ProfileDto';
 
@@ -36,7 +36,8 @@ interface UseProfileDataReturn {
 export const useProfileData = (userId?: string): UseProfileDataReturn => {
   // const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, token } = useAuthStore();
+  const { user, token, loading: authLoading } = useAuthStore();
+  const isAuthenticated = useIsAuthenticated();
   const {
     profile,
     stats,
@@ -60,25 +61,33 @@ export const useProfileData = (userId?: string): UseProfileDataReturn => {
   const [activeTab, setActiveTab] = useState<TabType>('posts');
 
   // 현재 사용자의 프로필인지 확인
-  const isOwnProfile = user?.id === userId;
+  const isOwnProfile = userId === 'me' || user?.id === userId;
 
   // 프로필 데이터 로드
   useEffect(() => {
-    if (userId) {
+    if (userId && !authLoading) {
       console.log('🔍 Fetching profile for userId:', userId);
       console.log('🔐 Current user:', user);
       console.log('🔑 Token in localStorage:', localStorage.getItem('accessToken') ? 'exists' : 'missing');
+      console.log('✅ Is authenticated:', isAuthenticated);
       
-      // 인증 확인
-      if (userId === 'me' && (!token || !user)) {
-        console.log('🚫 User not authenticated, redirecting to login');
-        navigate('/login');
-        return;
+      // 인증 확인 - 로딩이 완료된 후에만 체크
+      if (userId === 'me') {
+        if (!isAuthenticated) {
+          console.log('🚫 User not authenticated, redirecting to login');
+          navigate('/login');
+          return;
+        } else {
+          console.log('✅ User authenticated, fetching own profile');
+          // 'me'인 경우 'me'로 프로필 조회 (백엔드에서 /users/me로 처리)
+          fetchProfile('me');
+        }
+      } else {
+        // 다른 사용자의 프로필 조회
+        fetchProfile(userId);
       }
-      
-      fetchProfile(userId);
     }
-  }, [userId, fetchProfile, user, token, navigate]);
+  }, [userId, fetchProfile, user, isAuthenticated, authLoading, navigate]);
 
   // 탭 변경 시 해당 데이터 로드
   useEffect(() => {

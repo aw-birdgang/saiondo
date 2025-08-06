@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useAuthStore } from '../../stores/authStore';
+import { apiClient } from '../../infrastructure/api/ApiClient';
 import { toast } from 'react-hot-toast';
 
 interface UseAuthInitializerOptions {
@@ -84,47 +85,55 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
 
   const initializeAuth = useCallback(async () => {
     try {
+      // 초기화 시작 시 로딩 상태를 true로 설정
+      useAuthStore.getState().setLoading(true);
+      
       const token = localStorage.getItem('accessToken');
 
       if (token && token.trim() !== '') {
+        console.log('🔍 Found token in localStorage, validating...');
         // Zustand store의 setToken 메서드를 직접 호출하여 의존성 문제 해결
         useAuthStore.getState().setToken(token);
+        // ApiClient에도 토큰 설정
+        apiClient.setAuthToken(token);
         callbacksRef.current.onTokenFound?.(token);
 
         // 토큰 검증
         const isValid = await validateToken(token);
 
         if (isValid) {
+          console.log('✅ Token is valid, extracting user info...');
           // TODO: 실제 사용자 정보 가져오기
           // const user = await authService.getCurrentUser();
           // useAuthStore.getState().setUser(user);
           // callbacksRef.current.onTokenValidated?.(user);
 
-          // 임시로 토큰에서 사용자 정보 추출
+          // API를 통해 사용자 정보 가져오기
           try {
-            const tokenParts = token.split('.');
-            const payload = JSON.parse(atob(tokenParts[1]));
+            const userData = await apiClient.get<any>('/users/me');
             const user = {
-              id: payload.sub || payload.userId,
-              email: payload.email,
-              name: payload.name || payload.username,
-              role: payload.role || 'user',
+              id: userData.id,
+              email: userData.email,
+              name: userData.name,
+              role: 'user',
             };
 
             useAuthStore.getState().setUser(user);
-            useAuthStore.getState().setLoading(false); // 로딩 상태를 false로 설정
+            useAuthStore.getState().setLoading(false);
             callbacksRef.current.onTokenValidated?.(user);
+            console.log('✅ Auth initialization completed successfully');
             toast.success('로그인이 유지되었습니다.');
           } catch (error) {
-            console.error('Failed to extract user from token:', error);
-            // 토큰 파싱 실패 시 토큰 제거
+            console.error('Failed to fetch user data:', error);
+            // API 호출 실패 시 토큰 제거
             localStorage.removeItem('accessToken');
             useAuthStore.getState().setToken(null);
             useAuthStore.getState().setUser(null);
-            useAuthStore.getState().setLoading(false); // 에러 시에도 로딩 상태를 false로 설정
+            useAuthStore.getState().setLoading(false);
             callbacksRef.current.onTokenInvalid?.();
           }
         } else {
+          console.log('❌ Token is invalid, removing...');
           // 토큰이 유효하지 않으면 제거
           localStorage.removeItem('accessToken');
           useAuthStore.getState().setToken(null);
@@ -134,6 +143,7 @@ export const useAuthInitializer = (options: UseAuthInitializerOptions = {}) => {
           toast.error('로그인이 만료되었습니다. 다시 로그인해주세요.');
         }
       } else {
+        console.log('❌ No token found in localStorage');
         // 토큰이 없는 경우 store 상태를 정리
         useAuthStore.getState().setToken(null);
         useAuthStore.getState().setUser(null);

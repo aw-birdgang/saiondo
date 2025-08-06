@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { ROUTES } from '../../../shared/constants/app';
 import { EmptyState, LoadingState } from '../../components/common';
-import { ErrorState, PageHeader } from '../../components/specific';
+import { ErrorState, PageHeader, AuthGuard } from '../../components/specific';
 import {
   AssistantContainer,
   AssistantFilters,
@@ -77,46 +77,48 @@ const AssistantListScreen: React.FC = () => {
   }
 
   return (
-    <AssistantContainer>
-      {/* Header */}
-      <div className='mb-6'>
-        <PageHeader
-          title={t('ai_assistants') || 'AI 상담사'}
-          subtitle={`${filteredAssistants.length}명의 상담사`}
-          showBackButton
-        />
-      </div>
-
-      {/* Search and Filter */}
-      <div className='mb-6'>
-        <AssistantFilters
-          selectedCategory={selectedCategory}
-          categories={categories}
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          onCategoryChange={setSelectedCategory}
-        />
-      </div>
-
-      {/* Content */}
-      <div>
-        {filteredAssistants.length === 0 ? (
-          <EmptyState
-            icon='🤖'
-            title={t('no_assistants_found') || 'AI 상담사를 찾을 수 없습니다'}
-            description={
-              t('no_assistants_found_description') ||
-              '다른 검색어나 카테고리를 시도해보세요.'
-            }
+    <AuthGuard requireAuth={true}>
+      <AssistantContainer>
+        {/* Header */}
+        <div className='mb-6'>
+          <PageHeader
+            title={t('ai_assistants') || 'AI 상담사'}
+            subtitle={`${filteredAssistants.length}명의 상담사`}
+            showBackButton
           />
-        ) : (
-          <AssistantGrid
-            assistants={filteredAssistants}
-            onAssistantSelect={handleAssistantSelect}
+        </div>
+
+        {/* Search and Filter */}
+        <div className='mb-6'>
+          <AssistantFilters
+            selectedCategory={selectedCategory}
+            categories={categories}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            onCategoryChange={setSelectedCategory}
           />
-        )}
-      </div>
-    </AssistantContainer>
+        </div>
+
+        {/* Content */}
+        <div>
+          {filteredAssistants.length === 0 ? (
+            <EmptyState
+              icon='🤖'
+              title={t('no_assistants_found') || 'AI 상담사를 찾을 수 없습니다'}
+              description={
+                t('no_assistants_found_description') ||
+                '다른 검색어나 카테고리를 시도해보세요.'
+              }
+            />
+          ) : (
+            <AssistantGrid
+              assistants={filteredAssistants}
+              onAssistantSelect={handleAssistantSelect}
+            />
+          )}
+        </div>
+      </AssistantContainer>
+    </AuthGuard>
   );
 };
 

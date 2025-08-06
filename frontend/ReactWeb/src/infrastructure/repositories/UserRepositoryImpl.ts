@@ -3,6 +3,30 @@ import type { User, UserProfile } from '../../domain/types/user';
 import { UserEntity } from '../../domain/entities/User';
 import { ApiClient } from '../api/ApiClient';
 import { DomainErrorFactory } from '../../domain/errors/DomainError';
+import type {
+  CreateProfileRequest,
+  CreateProfileResponse,
+  GetProfileRequest,
+  GetProfileResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
+  DeleteProfileRequest,
+  DeleteProfileResponse,
+  SearchProfilesRequest,
+  SearchProfilesResponse,
+  GetProfileStatsRequest,
+  GetProfileStatsResponse,
+  UpdateProfileStatsRequest,
+  UpdateProfileStatsResponse,
+  FollowUserRequest,
+  FollowUserResponse,
+  UnfollowUserRequest,
+  UnfollowUserResponse,
+  GetFollowersRequest,
+  GetFollowersResponse,
+  GetFollowingRequest,
+  GetFollowingResponse,
+} from '../../domain/dto/ProfileDto';
 
 export class UserRepositoryImpl implements IUserRepository {
   constructor(private readonly apiClient: ApiClient) {}

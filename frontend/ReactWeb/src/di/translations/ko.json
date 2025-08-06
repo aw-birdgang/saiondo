@@ -133,5 +133,21 @@
   "no_assistants_found_description": "새로운 AI 상담사를 추가해보세요",
   "authentication_required": "인증이 필요합니다",
   "error_occurred": "오류가 발생했습니다",
-  "retry": "다시 시도"
+  "retry": "다시 시도",
+  
+  "edit_profile": "프로필 수정",
+  "edit_profile_description": "프로필 정보를 수정하세요",
+  "profile_info": "프로필 정보",
+  "display_name": "이름",
+  "bio": "소개",
+  "points": "포인트",
+  "assistants": "어시스턴트",
+  "channels": "채널",
+  "statistics": "통계",
+  "settings": "설정",
+  "settings_description": "앱 설정을 관리하세요",
+  "actions": "동작",
+  "no_posts_yet": "아직 게시물이 없습니다",
+  "no_posts_description": "게시물이 곧 여기에 표시됩니다",
+  "no_stats_available": "통계 정보가 없습니다"
 } 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MyPageContainer } from '../../components/specific/mypage';
 import { ErrorBoundary } from '../../components/loading/ErrorBoundary';
+import { AuthGuard } from '../../components/specific';
 import { useMyPageData } from './hooks/useMyPageData';
 import PageHeader from './PageHeader';
 import MyPageError from './MyPageError';
@@ -74,8 +75,9 @@ const MyPage: React.FC = () => {
   ];
 
   return (
-    <ErrorBoundary fallback={<MyPageError />}>
-      <MyPageContainer>
+    <AuthGuard requireAuth={true}>
+      <ErrorBoundary fallback={<MyPageError />}>
+        <MyPageContainer>
         {/* 헤더 섹션 */}
         <div className='mb-8'>
           <PageHeader
@@ -256,6 +258,7 @@ const MyPage: React.FC = () => {
         </div>
       </MyPageContainer>
     </ErrorBoundary>
+    </AuthGuard>
   );
 };
 

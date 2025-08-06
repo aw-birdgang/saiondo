@@ -7,6 +7,7 @@ import { useUserStore } from '../../../stores/userStore';
 // import { useDataLoader } from '../../hooks/useDataLoader';
 import { useToastContext } from '../../providers/ToastProvider';
 import { AIChatWidget } from '../../components/chat/AIChatWidget';
+import { AuthGuard } from '../../components/specific';
 import {
   ActivityListSection,
   AIInfoWidget,
@@ -125,7 +126,7 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard requireAuth={true}>
       <HomeContainer isVisible={isVisible}>
         <DashboardHeader />
 
@@ -165,7 +166,7 @@ const HomePage: React.FC = () => {
 
       {/* AI 기능 안내 */}
       <AIInfoWidget />
-    </>
+    </AuthGuard>
   );
 };
 

@@ -1,0 +1,189 @@
+@startuml Use Case Dependency Flow
+
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam componentStyle rectangle
+
+title Use Case 의존성 흐름 및 DI Container 구조
+
+package "Presentation Layer" as Presentation {
+  [React Component] as Component
+  [Custom Hook] as Hook
+  [Zustand Store] as Store
+}
+
+package "Application Layer" as Application {
+  package "Use Case Factory" as Factory {
+    [UseCaseFactory] as UseCaseFactory
+  }
+  
+  package "Use Cases" as UseCases {
+    [UserUseCases] as UserUseCases
+    [ChannelUseCases] as ChannelUseCases
+    [MessageUseCases] as MessageUseCases
+    [FileUseCases] as FileUseCases
+    [ProfileUseCases] as ProfileUseCases
+    [AnalyticsUseCase] as AnalyticsUseCase
+    [PaymentUseCase] as PaymentUseCase
+    [SearchUseCase] as SearchUseCase
+    [SystemManagementUseCase] as SystemManagementUseCase
+  }
+  
+  package "Application Services" as AppServices {
+    [AuthService] as AuthService
+    [UserService] as UserService
+    [ChannelService] as ChannelService
+    [MessageService] as MessageService
+    [FileService] as FileService
+    [NotificationService] as NotificationService
+  }
+}
+
+package "Domain Layer" as Domain {
+  package "Repository Interfaces" as RepoInterfaces {
+    [IUserRepository] as IUserRepo
+    [IChannelRepository] as IChannelRepo
+    [IMessageRepository] as IMessageRepo
+    [IProfileRepository] as IProfileRepo
+    [IPaymentRepository] as IPaymentRepo
+    [ISearchRepository] as ISearchRepo
+  }
+  
+  package "Entities" as Entities {
+    [UserEntity] as UserEntity
+    [ChannelEntity] as ChannelEntity
+    [MessageEntity] as MessageEntity
+    [ProfileEntity] as ProfileEntity
+  }
+  
+  package "Value Objects" as ValueObjects {
+    [Email] as Email
+    [UserId] as UserId
+    [ChannelId] as ChannelId
+    [MessageId] as MessageId
+  }
+}
+
+package "Infrastructure Layer" as Infrastructure {
+  package "Repository Implementations" as RepoImpl {
+    [UserRepositoryImpl] as UserRepoImpl
+    [ChannelRepositoryImpl] as ChannelRepoImpl
+    [MessageRepositoryImpl] as MessageRepoImpl
+    [ProfileRepository] as ProfileRepoImpl
+    [PaymentRepository] as PaymentRepoImpl
+    [SearchRepository] as SearchRepoImpl
+  }
+  
+  package "External Services" as External {
+    [ApiClient] as ApiClient
+    [WebSocketClient] as WebSocketClient
+    [RedisCache] as RedisCache
+    [APMMonitoring] as APMMonitoring
+  }
+}
+
+package "Dependency Injection" as DI {
+  [DIContainer] as DIContainer
+  [DI_TOKENS] as DITokens
+  [UseCaseRegistry] as UseCaseRegistry
+}
+
+' 의존성 흐름 (클린 아키텍처 원칙)
+Presentation --> Application : 의존
+Application --> Domain : 의존
+Infrastructure --> Domain : 의존
+
+' DI Container를 통한 의존성 주입
+DIContainer --> UseCaseFactory : 생성
+DIContainer --> UserUseCases : 주입
+DIContainer --> ChannelUseCases : 주입
+DIContainer --> MessageUseCases : 주입
+DIContainer --> FileUseCases : 주입
+DIContainer --> ProfileUseCases : 주입
+DIContainer --> AnalyticsUseCase : 주입
+DIContainer --> PaymentUseCase : 주입
+DIContainer --> SearchUseCase : 주입
+DIContainer --> SystemManagementUseCase : 주입
+
+' Use Case Factory를 통한 Use Case 생성
+UseCaseFactory --> UserUseCases : createUserUseCases()
+UseCaseFactory --> ChannelUseCases : createChannelUseCases()
+UseCaseFactory --> MessageUseCases : createMessageUseCases()
+UseCaseFactory --> FileUseCases : createFileUseCases()
+UseCaseFactory --> ProfileUseCases : createProfileUseCases()
+UseCaseFactory --> AnalyticsUseCase : createAnalyticsUseCase()
+UseCaseFactory --> PaymentUseCase : createPaymentUseCase()
+UseCaseFactory --> SearchUseCase : createSearchUseCase()
+UseCaseFactory --> SystemManagementUseCase : createSystemManagementUseCase()
+
+' Use Cases가 Repository Interfaces에 의존
+UserUseCases --> IUserRepo : 의존
+ChannelUseCases --> IChannelRepo : 의존
+MessageUseCases --> IMessageRepo : 의존
+FileUseCases --> IProfileRepo : 의존
+ProfileUseCases --> IProfileRepo : 의존
+PaymentUseCase --> IPaymentRepo : 의존
+SearchUseCase --> ISearchRepo : 의존
+
+' Repository Implementations가 Repository Interfaces 구현
+UserRepoImpl ..|> IUserRepo : 구현
+ChannelRepoImpl ..|> IChannelRepo : 구현
+MessageRepoImpl ..|> IMessageRepo : 구현
+ProfileRepoImpl ..|> IProfileRepo : 구현
+PaymentRepoImpl ..|> IPaymentRepo : 구현
+SearchRepoImpl ..|> ISearchRepo : 구현
+
+' Repository Implementations가 External Services 사용
+UserRepoImpl --> ApiClient : 사용
+ChannelRepoImpl --> ApiClient : 사용
+MessageRepoImpl --> ApiClient : 사용
+MessageRepoImpl --> WebSocketClient : 사용
+ProfileRepoImpl --> ApiClient : 사용
+PaymentRepoImpl --> ApiClient : 사용
+SearchRepoImpl --> ApiClient : 사용
+
+' DI Container가 Repository Implementations 등록
+DIContainer --> UserRepoImpl : 등록
+DIContainer --> ChannelRepoImpl : 등록
+DIContainer --> MessageRepoImpl : 등록
+DIContainer --> ProfileRepoImpl : 등록
+DIContainer --> PaymentRepoImpl : 등록
+DIContainer --> SearchRepoImpl : 등록
+
+' DI Container가 External Services 등록
+DIContainer --> ApiClient : 등록
+DIContainer --> WebSocketClient : 등록
+DIContainer --> RedisCache : 등록
+DIContainer --> APMMonitoring : 등록
+
+' Presentation Layer에서 Use Case 사용
+Component --> Hook : 사용
+Hook --> UseCaseFactory : createUserUseCases()
+Store --> UseCaseFactory : createChannelUseCases()
+
+' Use Case Registry
+UseCaseRegistry --> DIContainer : 등록 관리
+UseCaseRegistry --> UseCaseFactory : 메타데이터 제공
+
+note right of DI
+  ✅ 의존성 역전 원칙 준수
+  ✅ Interface 기반 의존성
+  ✅ 런타임 의존성 주입
+  ✅ 테스트 가능한 구조
+end note
+
+note right of Application
+  ✅ Use Case Factory 패턴
+  ✅ 21개 Use Case 관리
+  ✅ 비즈니스 로직 캡슐화
+  ✅ 단일 책임 원칙
+end note
+
+note right of Domain
+  ✅ 순수한 비즈니스 로직
+  ✅ Repository Interface 정의
+  ✅ Entity와 Value Object
+  ✅ 외부 의존성 없음
+end note
+
+@enduml 

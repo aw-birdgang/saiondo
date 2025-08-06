@@ -6,19 +6,14 @@ export const WEBSOCKET_CLIENT = Symbol('WebSocketClient');
 export const USER_REPOSITORY = Symbol('UserRepository');
 export const CHANNEL_REPOSITORY = Symbol('ChannelRepository');
 export const MESSAGE_REPOSITORY = Symbol('MessageRepository');
-export const PROFILE_REPOSITORY = Symbol('ProfileRepository');
-export const PAYMENT_REPOSITORY = Symbol('PaymentRepository');
-export const SEARCH_REPOSITORY = Symbol('SearchRepository');
-export const INVITE_REPOSITORY = Symbol('InviteRepository');
-export const CATEGORY_REPOSITORY = Symbol('CategoryRepository');
+export const SYSTEM_REPOSITORY = Symbol('SystemRepository');
 
-// Service Tokens
-export const AUTH_SERVICE = Symbol('AuthService');
-export const USER_SERVICE = Symbol('UserService');
-export const CHANNEL_SERVICE = Symbol('ChannelService');
-export const MESSAGE_SERVICE = Symbol('MessageService');
-export const FILE_SERVICE = Symbol('FileService');
-export const NOTIFICATION_SERVICE = Symbol('NotificationService');
+// Infrastructure Service Tokens
+export const USER_INFRASTRUCTURE_SERVICE = Symbol('UserInfrastructureService');
+export const CHANNEL_INFRASTRUCTURE_SERVICE = Symbol('ChannelInfrastructureService');
+export const MESSAGE_INFRASTRUCTURE_SERVICE = Symbol('MessageInfrastructureService');
+export const FILE_INFRASTRUCTURE_SERVICE = Symbol('FileInfrastructureService');
+export const SYSTEM_INFRASTRUCTURE_SERVICE = Symbol('SystemInfrastructureService');
 
 // Use Case Tokens
 export const USER_USE_CASES = Symbol('UserUseCases');
@@ -65,6 +60,15 @@ export const I18N_CONFIG = Symbol('I18nConfig');
 export const LOGGER = Symbol('Logger');
 export const CACHE = Symbol('Cache');
 
+// Service Tokens
+export const AUTH_SERVICE = Symbol('AuthService');
+export const USER_SERVICE = Symbol('UserService');
+export const CHANNEL_SERVICE = Symbol('ChannelService');
+export const MESSAGE_SERVICE = Symbol('MessageService');
+export const FILE_SERVICE = Symbol('FileService');
+export const NOTIFICATION_SERVICE = Symbol('NotificationService');
+export const PROFILE_REPOSITORY = Symbol('ProfileRepository');
+
 // Store Tokens (for Zustand integration)
 export const AUTH_STORE = Symbol('AuthStore');
 export const THEME_STORE = Symbol('ThemeStore');
@@ -83,19 +87,14 @@ export const DI_TOKENS = {
   USER_REPOSITORY,
   CHANNEL_REPOSITORY,
   MESSAGE_REPOSITORY,
-  PROFILE_REPOSITORY,
-  PAYMENT_REPOSITORY,
-  SEARCH_REPOSITORY,
-  INVITE_REPOSITORY,
-  CATEGORY_REPOSITORY,
+  SYSTEM_REPOSITORY,
 
-  // Services
-  AUTH_SERVICE,
-  USER_SERVICE,
-  CHANNEL_SERVICE,
-  MESSAGE_SERVICE,
-  FILE_SERVICE,
-  NOTIFICATION_SERVICE,
+  // Infrastructure Services
+  USER_INFRASTRUCTURE_SERVICE,
+  CHANNEL_INFRASTRUCTURE_SERVICE,
+  MESSAGE_INFRASTRUCTURE_SERVICE,
+  FILE_INFRASTRUCTURE_SERVICE,
+  SYSTEM_INFRASTRUCTURE_SERVICE,
 
   // Use Cases
   USER_USE_CASES,
@@ -141,6 +140,15 @@ export const DI_TOKENS = {
   // Base Services
   LOGGER,
   CACHE,
+
+  // Services
+  AUTH_SERVICE,
+  USER_SERVICE,
+  CHANNEL_SERVICE,
+  MESSAGE_SERVICE,
+  FILE_SERVICE,
+  NOTIFICATION_SERVICE,
+  PROFILE_REPOSITORY,
 
   // Stores
   AUTH_STORE,

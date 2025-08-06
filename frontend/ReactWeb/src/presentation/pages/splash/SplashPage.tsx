@@ -93,7 +93,7 @@ const SplashPage: React.FC = () => {
       if (shouldNavigate === 'authenticated') {
         navigate('/home');
       } else {
-        navigate('/auth/login');
+        navigate('/login');
       }
     }
   }, [authLoading, userLoading, isAuthenticated, navigate]);
@@ -109,7 +109,7 @@ const SplashPage: React.FC = () => {
           if (shouldNavigate === 'authenticated') {
             navigate('/home');
           } else {
-            navigate('/auth/login');
+            navigate('/login');
           }
         } else {
           setTimeout(checkLoading, 100);
@@ -125,7 +125,7 @@ const SplashPage: React.FC = () => {
       if (shouldNavigate === 'authenticated') {
         navigate('/home');
       } else {
-        navigate('/auth/login');
+        navigate('/login');
       }
     }
   }, [authLoading, userLoading, isAuthenticated, navigate]);

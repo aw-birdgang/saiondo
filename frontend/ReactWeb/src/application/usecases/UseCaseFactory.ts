@@ -1,278 +1,206 @@
-import { container, DI_TOKENS } from '../../di/container';
-import { useCaseRegistry } from '../../di/UseCaseRegistry';
-import { AnalyticsUseCase } from './AnalyticsUseCase';
-import { CreateChannelUseCase } from './CreateChannelUseCase';
-import { UserUseCases } from './UserUseCases';
-import { MessageUseCases } from './MessageUseCases';
-import { FileUseCases } from './FileUseCases';
-import { ProfileUseCases } from './ProfileUseCases';
+import { UserUseCase } from './UserUseCase';
+import { ChannelUseCase } from './ChannelUseCase';
+import { MessageUseCase } from './MessageUseCase';
+import { FileUseCase } from './FileUseCase';
+import { SystemUseCase } from './SystemUseCase';
 
 /**
- * Use Case Factory
- * DI Container를 사용하여 Use Case 인스턴스를 생성하는 팩토리 클래스
- * 새로운 UseCase Service 구조를 지원
+ * UseCaseFactory - 통합된 Use Case들을 생성하는 팩토리 클래스
+ * 21개의 개별 Use Case를 5개의 통합 Use Case로 단순화
  */
 export class UseCaseFactory {
+  private static isInitialized = false;
+
   /**
-   * UseCase 레지스트리 초기화
+   * Factory 초기화
    */
   static async initialize(): Promise<void> {
-    await useCaseRegistry.initialize();
+    if (this.isInitialized) {
+      return;
+    }
+
+    try {
+      // UseCase 레지스트리 초기화 로직
+      this.isInitialized = true;
+      console.log('UseCaseFactory initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize UseCaseFactory:', error);
+      throw error;
+    }
   }
 
-  // User related use cases
-  static createGetCurrentUserUseCase() {
-    return container.createUseCase(DI_TOKENS.GET_CURRENT_USER_USE_CASE);
-  }
+  // ==================== 개별 Use Case 생성 ====================
 
-  static createUpdateUserUseCase() {
-    return container.createUseCase(DI_TOKENS.UPDATE_USER_USE_CASE);
-  }
-
-  static createAuthenticateUserUseCase() {
-    return container.createUseCase(DI_TOKENS.AUTHENTICATE_USER_USE_CASE);
-  }
-
-  static createRegisterUserUseCase() {
-    return container.createUseCase(DI_TOKENS.REGISTER_USER_USE_CASE);
-  }
-
-  static createLogoutUserUseCase() {
-    return container.createUseCase(DI_TOKENS.LOGOUT_USER_USE_CASE);
-  }
-
-  // Channel related use cases
-  static createCreateChannelUseCase() {
-    return container.createUseCase(DI_TOKENS.CREATE_CHANNEL_USE_CASE);
+  /**
+   * UserUseCase 생성
+   */
+  static createUserUseCase(userRepository: any): UserUseCase {
+    return new UserUseCase(userRepository);
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 CreateChannelUseCase 생성
+   * ChannelUseCase 생성
    */
-  static createCreateChannelUseCaseWithService(
-    channelUseCaseService: any
-  ): CreateChannelUseCase {
-    return new CreateChannelUseCase(channelUseCaseService);
+  static createChannelUseCase(channelRepository: any): ChannelUseCase {
+    return new ChannelUseCase(channelRepository);
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 UserUseCases 생성
+   * MessageUseCase 생성
    */
-  static createUserUseCasesWithService(userUseCaseService: any): UserUseCases {
-    return new UserUseCases(userUseCaseService);
+  static createMessageUseCase(messageRepository: any): MessageUseCase {
+    return new MessageUseCase(messageRepository);
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 MessageUseCases 생성
+   * FileUseCase 생성
    */
-  static createMessageUseCasesWithService(
-    messageUseCaseService: any
-  ): MessageUseCases {
-    return new MessageUseCases(messageUseCaseService);
+  static createFileUseCase(fileRepository: any): FileUseCase {
+    return new FileUseCase(fileRepository);
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 FileUseCases 생성
+   * SystemUseCase 생성
    */
-  static createFileUseCasesWithService(fileUseCaseService: any): FileUseCases {
-    return new FileUseCases(fileUseCaseService);
+  static createSystemUseCase(apiClient: any, cacheService: any): SystemUseCase {
+    return new SystemUseCase(apiClient, cacheService);
   }
+
+  // ==================== 모든 Use Case 생성 ====================
 
   /**
-   * 새로운 UseCase Service를 사용하는 ProfileUseCases 생성
+   * 모든 Use Case 생성
    */
-  static createProfileUseCasesWithService(
-    profileUseCaseService: any
-  ): ProfileUseCases {
-    return new ProfileUseCases(profileUseCaseService);
-  }
-
-  static createInviteToChannelUseCase() {
-    return container.createUseCase(DI_TOKENS.INVITE_TO_CHANNEL_USE_CASE);
-  }
-
-  static createLeaveChannelUseCase() {
-    return container.createUseCase(DI_TOKENS.LEAVE_CHANNEL_USE_CASE);
-  }
-
-  // Message related use cases
-  static createSendMessageUseCase() {
-    return container.createUseCase(DI_TOKENS.SEND_MESSAGE_USE_CASE);
-  }
-
-  static createSearchMessagesUseCase() {
-    return container.createUseCase(DI_TOKENS.SEARCH_MESSAGES_USE_CASE);
-  }
-
-  // File related use cases
-  static createUploadFileUseCase() {
-    return container.createUseCase(DI_TOKENS.UPLOAD_FILE_USE_CASE);
-  }
-
-  static createFileDownloadUseCase() {
-    return container.createUseCase(DI_TOKENS.FILE_DOWNLOAD_USE_CASE);
-  }
-
-  // System related use cases
-  // NotificationUseCase가 삭제되었으므로 주석 처리
-  // static createNotificationUseCase() {
-  //   return container.createUseCase(DI_TOKENS.NOTIFICATION_USE_CASE);
-  // }
-
-  static createUserPermissionUseCase() {
-    return container.createUseCase(DI_TOKENS.USER_PERMISSION_USE_CASE);
-  }
-
-  static createCacheUseCase() {
-    return container.createUseCase(DI_TOKENS.CACHE_USE_CASE);
-  }
-
-  static createRealTimeChatUseCase() {
-    return container.createUseCase(DI_TOKENS.REAL_TIME_CHAT_USE_CASE);
-  }
-
-  static createUserActivityLogUseCase() {
-    return container.createUseCase(DI_TOKENS.USER_ACTIVITY_LOG_USE_CASE);
-  }
-
-  static createMonitoringUseCase() {
-    return container.createUseCase(DI_TOKENS.MONITORING_USE_CASE);
-  }
-
-  static createRedisCacheUseCase() {
-    return container.createUseCase(DI_TOKENS.REDIS_CACHE_USE_CASE);
-  }
-
-  static createWebSocketUseCase() {
-    return container.createUseCase(DI_TOKENS.WEB_SOCKET_USE_CASE);
-  }
-
-  // Analytics related use cases
-  static createAnalyticsUseCase() {
-    return container.createUseCase(DI_TOKENS.ANALYTICS_USE_CASE);
-  }
-
-  /**
-   * 새로운 UseCase Service를 사용하는 AnalyticsUseCase 생성
-   */
-  static createAnalyticsUseCaseWithService(
-    analyticsUseCaseService: any
-  ): AnalyticsUseCase {
-    return new AnalyticsUseCase(analyticsUseCaseService);
-  }
-
-  static createSystemManagementUseCase() {
-    return container.createUseCase(DI_TOKENS.SYSTEM_MANAGEMENT_USE_CASE);
-  }
-
-  // Grouped use cases
-  static createAuthUseCases() {
+  static createAllUseCases(dependencies: {
+    userRepository: any;
+    channelRepository: any;
+    messageRepository: any;
+    fileRepository: any;
+    apiClient: any;
+    cacheService: any;
+  }) {
     return {
-      authenticate: this.createAuthenticateUserUseCase(),
-      register: this.createRegisterUserUseCase(),
-      logout: this.createLogoutUserUseCase(),
+      user: this.createUserUseCase(dependencies.userRepository),
+      channel: this.createChannelUseCase(dependencies.channelRepository),
+      message: this.createMessageUseCase(dependencies.messageRepository),
+      file: this.createFileUseCase(dependencies.fileRepository),
+      system: this.createSystemUseCase(dependencies.apiClient, dependencies.cacheService),
     };
   }
 
-  static createChannelUseCases() {
+  // ==================== Use Case 그룹 생성 ====================
+
+  /**
+   * 인증 관련 Use Case 그룹 생성
+   */
+  static createAuthUseCases(userRepository: any) {
     return {
-      create: this.createCreateChannelUseCase(),
-      invite: this.createInviteToChannelUseCase(),
-      leave: this.createLeaveChannelUseCase(),
+      user: this.createUserUseCase(userRepository),
     };
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 ChannelUseCases 그룹 생성
+   * 채널 관련 Use Case 그룹 생성
    */
-  static createChannelUseCasesWithService(channelUseCaseService: any) {
+  static createChannelUseCases(channelRepository: any) {
     return {
-      create: this.createCreateChannelUseCaseWithService(channelUseCaseService),
-      // 다른 채널 UseCase들도 필요시 추가
-    };
-  }
-
-  static createMessageUseCases() {
-    return {
-      send: this.createSendMessageUseCase(),
-      search: this.createSearchMessagesUseCase(),
-    };
-  }
-
-  static createFileUseCases() {
-    return {
-      upload: this.createUploadFileUseCase(),
-      download: this.createFileDownloadUseCase(),
-    };
-  }
-
-  static createUserUseCases() {
-    return {
-      getCurrent: this.createGetCurrentUserUseCase(),
-      update: this.createUpdateUserUseCase(),
-    };
-  }
-
-  static createSystemUseCases() {
-    return {
-      // notification: this.createNotificationUseCase(), // NotificationUseCase가 삭제됨
-      permission: this.createUserPermissionUseCase(),
-      cache: this.createCacheUseCase(),
-      realTimeChat: this.createRealTimeChatUseCase(),
-      activityLog: this.createUserActivityLogUseCase(),
-      monitoring: this.createMonitoringUseCase(),
-      redisCache: this.createRedisCacheUseCase(),
-      webSocket: this.createWebSocketUseCase(),
-      analytics: this.createAnalyticsUseCase(),
-      systemManagement: this.createSystemManagementUseCase(),
+      channel: this.createChannelUseCase(channelRepository),
     };
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 SystemUseCases 그룹 생성
+   * 메시지 관련 Use Case 그룹 생성
    */
-  static createSystemUseCasesWithService(analyticsUseCaseService: any) {
+  static createMessageUseCases(messageRepository: any) {
     return {
-      ...this.createSystemUseCases(),
-      analytics: this.createAnalyticsUseCaseWithService(
-        analyticsUseCaseService
-      ),
-    };
-  }
-
-  static createAllUseCases() {
-    return {
-      auth: this.createAuthUseCases(),
-      channel: this.createChannelUseCases(),
-      message: this.createMessageUseCases(),
-      file: this.createFileUseCases(),
-      user: this.createUserUseCases(),
-      system: this.createSystemUseCases(),
+      message: this.createMessageUseCase(messageRepository),
     };
   }
 
   /**
-   * 새로운 UseCase Service를 사용하는 모든 UseCases 그룹 생성
+   * 파일 관련 Use Case 그룹 생성
    */
-  static createAllUseCasesWithService(
-    analyticsUseCaseService: any,
-    channelUseCaseService: any
-  ) {
+  static createFileUseCases(fileRepository: any) {
     return {
-      auth: this.createAuthUseCases(),
-      channel: this.createChannelUseCasesWithService(channelUseCaseService),
-      message: this.createMessageUseCases(),
-      file: this.createFileUseCases(),
-      user: this.createUserUseCases(),
-      system: this.createSystemUseCasesWithService(analyticsUseCaseService),
+      file: this.createFileUseCase(fileRepository),
     };
   }
 
+  /**
+   * 시스템 관련 Use Case 그룹 생성
+   */
+  static createSystemUseCases(apiClient: any, cacheService: any) {
+    return {
+      system: this.createSystemUseCase(apiClient, cacheService),
+    };
+  }
+
+  // ==================== 유틸리티 메서드 ====================
+
+  /**
+   * 등록된 Use Case 목록 조회
+   */
   static getRegisteredUseCases(): string[] {
-    return useCaseRegistry.getRegisteredUseCases();
+    return [
+      'UserUseCase',
+      'ChannelUseCase', 
+      'MessageUseCase',
+      'FileUseCase',
+      'SystemUseCase',
+    ];
   }
 
-  static getUseCaseMetadata(token: string) {
-    return useCaseRegistry.getUseCaseMetadata(token);
+  /**
+   * Use Case 메타데이터 조회
+   */
+  static getUseCaseMetadata(useCaseName: string) {
+    const metadata = {
+      UserUseCase: {
+        description: '사용자 관련 모든 기능 (인증, 관리, 권한)',
+        methods: [
+          'authenticate', 'register', 'logout',
+          'getCurrentUser', 'updateUser', 'getUser',
+          'searchUsers', 'checkUserPermission'
+        ],
+        dependencies: ['userRepository']
+      },
+      ChannelUseCase: {
+        description: '채널 관련 모든 기능 (생성, 관리, 멤버)',
+        methods: [
+          'createChannel', 'getChannel', 'updateChannel',
+          'addMember', 'removeMember', 'inviteToChannel',
+          'searchChannels'
+        ],
+        dependencies: ['channelRepository']
+      },
+      MessageUseCase: {
+        description: '메시지 관련 모든 기능 (전송, 조회, 검색)',
+        methods: [
+          'sendMessage', 'getMessage', 'getMessages',
+          'updateMessage', 'deleteMessage', 'searchMessages',
+          'connectToRealTimeChat'
+        ],
+        dependencies: ['messageRepository']
+      },
+      FileUseCase: {
+        description: '파일 관련 모든 기능 (업로드, 다운로드, 관리)',
+        methods: [
+          'uploadFile', 'downloadFile', 'getFileInfo',
+          'deleteFile', 'searchFiles', 'processFilePayment'
+        ],
+        dependencies: ['fileRepository']
+      },
+      SystemUseCase: {
+        description: '시스템 관련 모든 기능 (분석, 모니터링, 캐시)',
+        methods: [
+          'getAnalytics', 'startAPMMonitoring', 'getFromCache',
+          'processPayment', 'globalSearch', 'getSystemStatus'
+        ],
+        dependencies: ['apiClient', 'cacheService']
+      }
+    };
+
+    return metadata[useCaseName as keyof typeof metadata] || null;
   }
 }
+

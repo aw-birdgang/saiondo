@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
               onCancel={handleCancelEdit}
             />
 
-            <ProfileStats stats={stats} />
+            <ProfileStats stats={stats} additionalInfo={profile?.additionalInfo} />
 
             {isOwnProfile && (
               <ProfileActions

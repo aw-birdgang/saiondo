@@ -142,8 +142,11 @@ const AppContent: React.FC<AppContentProps> = ({ onError }) => {
       }
     };
     
-    initializeAuth();
-  }, [token, setToken, setUser, initializeAppServices, onError]);
+    // 인증 초기화는 한 번만 실행
+    if (!isServicesInitialized) {
+      initializeAuth();
+    }
+  }, [token, setToken, setUser, initializeAppServices, onError, isServicesInitialized]);
 
   // 테마 초기화 (한 번만)
   useEffect(() => {
