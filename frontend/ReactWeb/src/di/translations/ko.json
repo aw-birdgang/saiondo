@@ -149,5 +149,7 @@
   "actions": "동작",
   "no_posts_yet": "아직 게시물이 없습니다",
   "no_posts_description": "게시물이 곧 여기에 표시됩니다",
-  "no_stats_available": "통계 정보가 없습니다"
+  "no_stats_available": "통계 정보가 없습니다",
+  "profile_completion": "프로필 완성도",
+  "complete_profile": "완성하기"
 } 
